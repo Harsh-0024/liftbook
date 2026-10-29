@@ -146,8 +146,31 @@
             </div>
         </div>
     </section>
+
+    {# ── Delete my account ── #}
+    <section class="st-section" id="delete-account">
+        <details class="st-group st-pad ac-delete">
+            <summary>Delete my account</summary>
+            <p class="st-hint mt-2">This removes your account and everything in it: every workout, your plan, lifts, settings and photo. It can't be undone. To keep a copy, download your data first from <a href="{{ url_for('data_settings') }}">Settings, Data</a>.</p>
+            <form method="POST" action="{{ url_for('user_settings') }}" id="deleteAccountForm">
+                <input type="hidden" name="form_type" value="delete_account">
+                <div class="st-field">
+                    <label for="deleteConfirmUsername">To confirm, type your username: <strong>{{ user.username }}</strong></label>
+                    <input type="text" id="deleteConfirmUsername" name="confirm_username" class="form-control" autocomplete="off" autocapitalize="none" spellcheck="false" required>
+                </div>
+                {% if not (otp_login_verified or password_change_verified) %}
+                <div class="st-field">
+                    <label for="deleteCurrentPassword">Password</label>
+                    {{ password_input('deleteCurrentPassword', 'current_password', 'current-password') }}
+                </div>
+                {% endif %}
+                <button type="submit" class="st-btn st-btn-danger st-btn-block mt-3" id="deleteAccountBtn" disabled>Delete my account</button>
+            </form>
+        </details>
+    </section>
 </div>
 <style>
+    .ac-delete summary { cursor: pointer; color: var(--st-down); font-weight: 600; }
     .ac-photo { display: flex; flex-direction: column; align-items: center; margin-top: 24px; }
     .profile-photo-preview {
         width: 112px; height: 112px;
@@ -185,6 +208,14 @@
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Delete my account: the button wakes once the username is typed out.
+        const deleteConfirm = document.getElementById('deleteConfirmUsername');
+        const deleteBtn = document.getElementById('deleteAccountBtn');
+        const myUsername = {{ user.username|lower|tojson }};
+        deleteConfirm?.addEventListener('input', () => {
+            deleteBtn.disabled = deleteConfirm.value.trim().toLowerCase() !== myUsername;
+        });
+        if (location.hash === '#delete-account') document.querySelector('.ac-delete')?.setAttribute('open', '');
         const accountTabBtns = document.querySelectorAll('.account-tab-btn');
         const accountTabContents = document.querySelectorAll('.account-tab-content');
         const passwordToggles = document.querySelectorAll('.password-toggle');

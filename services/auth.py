@@ -288,6 +288,21 @@ class AuthService:
             session.close()
 
     @staticmethod
+    def delete_account(user_id: int) -> None:
+        """Delete an account and everything in it (Settings, Account, Delete my
+        account). Every table points at users with ON DELETE CASCADE, so removing
+        the user row removes the workouts, lifts, plan and the rest with it."""
+        session = Session()
+        try:
+            session.query(User).filter(User.id == user_id).delete(synchronize_session=False)
+            session.commit()
+        except Exception:
+            session.rollback()
+            raise
+        finally:
+            session.close()
+
+    @staticmethod
     def set_password(user_id: int, new_password: str) -> bool:
         """Set a user's password without verifying the current password."""
         session = Session()
