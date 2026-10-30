@@ -143,7 +143,7 @@ if __name__ == '__main__':
         host = Config.HOST
         debug = Config.DEBUG
 
-        logger.info(f"Starting Workout Tracker on {host}:{port} (debug={debug})")
+        logger.info(f"Starting Liftbook on {host}:{port} (debug={debug})")
         app.run(host=host, port=port, debug=debug, threaded=True)
     except Exception as e:
         logger.critical(f"Failed to start application: {e}", exc_info=True)

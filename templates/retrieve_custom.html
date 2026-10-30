@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% import '_settings_ui.html' as st %}
-{% block title %}{{ 'Edit workout' if edit_session else 'Custom workout' }} - Workout Tracker{% endblock %}
+{% block title %}{{ 'Edit workout' if edit_session else 'Custom workout' }} - Liftbook{% endblock %}
 {% block content %}
 {% macro exercise_button(ex, tier) %}
 <button type="button" class="cr-ex{% if not ex.yours %} is-other{% endif %}" data-key="{{ ex.key }}" data-name="{{ ex.name }}" data-sets="{{ ex.default_sets }}" data-reps="{{ ex.rep_range }}" data-auto="{{ ex.auto_group }}" data-tier="{{ tier }}" aria-pressed="false">

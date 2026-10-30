@@ -1,10 +1,10 @@
 """
-Custom error classes for the Workout Tracker application.
+Custom error classes for the Liftbook application.
 """
 
 
 class WorkoutTrackerError(Exception):
-    """Base exception for Workout Tracker."""
+    """Base exception for Liftbook."""
     pass
 
 

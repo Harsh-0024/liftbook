@@ -326,9 +326,9 @@ class TestRouteRegressions(unittest.TestCase):
             page = self.client.get(path).get_data(as_text=True)
             found = re.search(r"<title>(.*?)</title>", page, re.S)
             self.assertIsNotNone(found, path)
-            self.assertEqual(found.group(1).strip(), f"{title} - Workout Tracker", path)
+            self.assertEqual(found.group(1).strip(), f"{title} - Liftbook", path)
 
-        self.assertIn(f"{date.today().year} Workout Tracker", self.client.get("/log").get_data(as_text=True))
+        self.assertIn(f"{date.today().year} Liftbook", self.client.get("/log").get_data(as_text=True))
 
     def test_integrations_page_does_not_overstate_how_keys_are_kept(self):
         # Keys are saved as written (not encrypted), so the page mustn't say "stored securely".

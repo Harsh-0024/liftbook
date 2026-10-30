@@ -1,1 +1,1 @@
-"""Utility functions for the Workout Tracker application."""
+"""Utility functions for the Liftbook application."""

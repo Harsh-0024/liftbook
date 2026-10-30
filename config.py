@@ -1,5 +1,5 @@
 """
-Configuration management for the Workout Tracker application.
+Configuration management for the Liftbook application.
 """
 import os
 import urllib.parse
@@ -68,7 +68,7 @@ class Config:
     # Brevo Transactional Email API (recommended for Railway)
     BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
     BREVO_SENDER_EMAIL = os.environ.get('BREVO_SENDER_EMAIL') or MAIL_DEFAULT_SENDER
-    BREVO_SENDER_NAME = os.environ.get('BREVO_SENDER_NAME', 'Workout Tracker')
+    BREVO_SENDER_NAME = os.environ.get('BREVO_SENDER_NAME', 'Liftbook')
 
     # Google Gemini API (Google AI Studio)
     GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
