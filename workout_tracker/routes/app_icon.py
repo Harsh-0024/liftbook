@@ -143,8 +143,8 @@ def register_app_icon_routes(app):
         ]
         response = jsonify({
             'id': '/',
-            'name': 'Workout Tracker',
-            'short_name': 'Workout Tracker',
+            'name': 'Liftbook',
+            'short_name': 'Liftbook',
             'start_url': '/',
             'display': 'standalone',
             'background_color': bg,

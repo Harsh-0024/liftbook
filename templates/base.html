@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>{% block title %}Workout Tracker{% endblock %}</title>
+    <title>{% block title %}Liftbook{% endblock %}</title>
     <script>
         // The theme before anything is drawn (the full theme code is at the end of the page):
         // otherwise light mode drew dark first and faded to light on every page.
@@ -28,7 +28,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Workout Tracker">
+    <meta name="apple-mobile-web-app-title" content="Liftbook">
 
     {% if ENABLE_CSRF %}
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -2280,10 +2280,10 @@
     <div class="mobile-header d-sm-none">
         <div class="container mobile-header-inner">
             <div class="mobile-brand">
-                <div class="brand-mark">WT</div>
+                <div class="brand-mark">LB</div>
                 <div class="brand-text">
-                    <span class="brand-title">Workout</span>
-                    <span class="brand-subtitle">Tracker</span>
+                    <span class="brand-title">Liftbook</span>
+                    <span class="brand-subtitle">Workout log</span>
                 </div>
             </div>
             <div class="mobile-header-actions">
@@ -2427,7 +2427,7 @@
     <footer class="footer" style="margin-bottom: env(safe-area-inset-bottom);">
         <div class="container">
             <div class="d-flex align-items-center justify-content-center gap-2">
-                <span>{{ current_year }} Workout Tracker</span>
+                <span>{{ current_year }} Liftbook</span>
             </div>
         </div>
     </footer>

@@ -1,5 +1,5 @@
 """
-Database models for the Workout Tracker application.
+Database models for the Liftbook application.
 """
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text, Float, ForeignKey, Index, Boolean, Enum, LargeBinary, event
 from sqlalchemy.orm import declarative_base, sessionmaker, scoped_session, relationship

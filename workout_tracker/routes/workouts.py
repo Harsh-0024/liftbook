@@ -47,7 +47,7 @@ from utils.dates import utc_now
 
 
 SHORTCUT_KEY_HELP = (
-    "Copy your shortcut key again from Workout Logger > Settings > Integrations > Apple Shortcuts. "
+    "Copy your shortcut key again from Liftbook > Settings > Integrations > Apple Shortcuts. "
     "Then open this shortcut in the Shortcuts app and paste the key into the first box."
 )
 SHORTCUT_KEY_INVALID = "Your shortcut key isn't valid. " + SHORTCUT_KEY_HELP
@@ -2995,7 +2995,7 @@ def register_workout_routes(app):
                 raise BadSignature("Missing data")
 
             share_user = Session.get(User, user_id)
-            share_username = share_user.username.title() if share_user else "Workout Logger User"
+            share_username = share_user.username.title() if share_user else "Liftbook user"
             # Public URL (static upload or R2 public bucket), so logged-out friends can load it.
             share_avatar_url = get_profile_image_url(getattr(share_user, 'profile_image', None)) if share_user else None
 
@@ -3034,7 +3034,7 @@ def register_workout_routes(app):
                     {"name": row["name"], "target": row["target"], "sets": row["readable_sets"] or row["sets"]}
                     for row in rows
                 ],
-                footer=f"Shared from Workout Logger: {request.url}",
+                footer=f"Shared from Liftbook: {request.url}",
             )
 
             return render_template(

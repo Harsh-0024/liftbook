@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}{% if missing %}Shared workout | Workout Logger{% else %}{{ workout_name }} · {{ share_username }} | Workout Logger{% endif %}{% endblock %}
+{% block title %}{% if missing %}Shared workout | Liftbook{% else %}{{ workout_name }} · {{ share_username }} | Liftbook{% endif %}{% endblock %}
 
 {% block head_meta %}
 {% if not missing %}
     {# Link previews (WhatsApp, iMessage, Slack, X) show the workout instead of a bare URL. #}
     <meta name="description" content="{{ share_description }}">
     <meta property="og:type" content="article">
-    <meta property="og:site_name" content="Workout Logger">
+    <meta property="og:site_name" content="Liftbook">
     <meta property="og:title" content="{{ share_username }}'s workout: {{ workout_name }}">
     <meta property="og:description" content="{{ share_description }}">
     <meta property="og:url" content="{{ share_url }}">
@@ -405,9 +405,9 @@
     <div class="sw-end" role="separator"><span>End of workout</span></div>
 
     <section class="sw-panel sw-cta">
-        <div class="sw-brand"><span class="sw-logo">WT</span>Workout Logger</div>
+        <div class="sw-brand"><span class="sw-logo">LB</span>Liftbook</div>
         <h2>Train like {{ share_username }}.<br>Log it in one tap.</h2>
-        <p>Keep writing your workouts in Apple Notes. One tap on the Workout Logger shortcut logs them for you, and turns them into personal bests, medals and progress you can see.</p>
+        <p>Keep writing your workouts in Apple Notes. One tap on the Liftbook shortcut logs them for you, and turns them into personal bests, medals and progress you can see.</p>
         <ul class="sw-features">
             <li>
                 <span class="sw-feat-icon"><i class="bi bi-lightning-charge"></i></span>

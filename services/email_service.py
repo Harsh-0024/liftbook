@@ -40,7 +40,7 @@ def _email_page(preheader: str, inner_html: str) -> str:
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light dark">
 <meta name="supported-color-schemes" content="light dark">
-<title>Workout Tracker</title>
+<title>Liftbook</title>
 <style>{_EMAIL_DARK_CSS}</style>
 </head>
 <body class="wt-bg" style="margin:0;padding:0;background:#f4f2ee;-webkit-text-size-adjust:100%;">
@@ -50,15 +50,15 @@ def _email_page(preheader: str, inner_html: str) -> str:
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;">
     <tr><td style="padding:0 4px 22px;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-        <td width="34" height="34" align="center" valign="middle" style="width:34px;height:34px;background:#0b0b0d;border-radius:10px;font-family:{font};font-size:12px;font-weight:700;letter-spacing:0.5px;color:#d4af37;">WT</td>
-        <td class="wt-t1" style="padding-left:12px;font-family:{font};font-size:15px;font-weight:600;color:#1a1a1a;">Workout Tracker</td>
+        <td width="34" height="34" align="center" valign="middle" style="width:34px;height:34px;background:#0b0b0d;border-radius:10px;font-family:{font};font-size:12px;font-weight:700;letter-spacing:0.5px;color:#d4af37;">LB</td>
+        <td class="wt-t1" style="padding-left:12px;font-family:{font};font-size:15px;font-weight:600;color:#1a1a1a;">Liftbook</td>
       </tr></table>
     </td></tr>
     <tr><td class="wt-card" style="background:#ffffff;border:1px solid #e8e4dc;border-radius:18px;padding:36px 32px 32px;font-family:{font};">
       {inner_html}
     </td></tr>
     <tr><td class="wt-t3" align="center" style="padding:22px 16px 0;font-family:{font};font-size:12px;line-height:1.6;color:#9a958a;">
-      Sent by Workout Tracker. Replies to this address aren't read.
+      Sent by Liftbook. Replies to this address aren't read.
     </td></tr>
   </table>
 </td></tr>
@@ -103,10 +103,10 @@ def _code_email_html(preheader: str, title: str, intro: str, code: str, expiry: 
 
 # purpose -> (subject, title, what the code does)
 _CODE_EMAILS = {
-    'login_otp': ('Your sign-in code', 'Your sign-in code', 'sign in to Workout Tracker'),
+    'login_otp': ('Your sign-in code', 'Your sign-in code', 'sign in to Liftbook'),
     'forgot_password': ('Your password reset code', 'Reset your password', 'reset your password'),
     'change_password': ('Your password change code', 'Confirm password change', 'change your password'),
-    'verify_email': ('Confirm your email for Workout Tracker', 'Confirm your email', 'confirm your email and finish setting up your account'),
+    'verify_email': ('Confirm your email for Liftbook', 'Confirm your email', 'confirm your email and finish setting up your account'),
     'change_email_old': ('Confirm your email change', 'Confirm email change', "confirm it's you"),
     'change_email_new': ('Confirm your new email', 'Confirm your new email', 'confirm this address'),
     'profile_update': ('Your profile update code', 'Confirm profile update', 'save changes to your profile'),
@@ -123,7 +123,7 @@ class EmailService:
             brevo_api_key = current_app.config.get('BREVO_API_KEY')
             if brevo_api_key:
                 sender_email = current_app.config.get('BREVO_SENDER_EMAIL')
-                sender_name = current_app.config.get('BREVO_SENDER_NAME', 'Workout Tracker')
+                sender_name = current_app.config.get('BREVO_SENDER_NAME', 'Liftbook')
 
                 if not sender_email:
                     logger.error("Brevo email not sent: BREVO_SENDER_EMAIL is not set")
@@ -190,7 +190,7 @@ class EmailService:
 
             name = html.escape(username)
             if normalized_purpose == 'verify_email':
-                intro = f"Hi {name}, welcome to Workout Tracker! Enter this code to {action}."
+                intro = f"Hi {name}, welcome to Liftbook! Enter this code to {action}."
             else:
                 intro = f"Hi {name}, enter this code to {action}."
 
@@ -212,7 +212,7 @@ class EmailService:
                 otp_code,
                 f"The code works for {expiry}.",
                 *notes,
-                "Workout Tracker",
+                "Liftbook",
             ]) + "\n"
 
             html_body = _code_email_html(
@@ -254,12 +254,12 @@ class EmailService:
             True if email sent successfully, False otherwise
         """
         try:
-            subject = "Workout Tracker Account Deleted"
+            subject = "Liftbook Account Deleted"
             
             body = f"""
 Hello {username.title()},
 
-Your Workout Tracker account has been deleted by an administrator.
+Your Liftbook account has been deleted by an administrator.
 
 Reason from Administrator ({admin_username}):
 {admin_message}
@@ -267,7 +267,7 @@ Reason from Administrator ({admin_username}):
 If you believe this was done in error, please contact support.
 
 Best regards,
-Workout Tracker Team
+The Liftbook team
             """
             
             html_body = f"""
@@ -360,12 +360,12 @@ Workout Tracker Team
 <body>
     <div class="container">
         <div class="header">
-            <h1>🏋️ WORKOUT TRACKER</h1>
+            <h1>🏋️ LIFTBOOK</h1>
             <p>Account Deletion Notice</p>
         </div>
         <div class="content">
             <h2>Hello {username.title()},</h2>
-            <p>Your <span class="highlight">Workout Tracker</span> account has been deleted by an administrator.</p>
+            <p>Your <span class="highlight">Liftbook</span> account has been deleted by an administrator.</p>
             
             <div class="message-box">
                 <h3>Reason from Administrator ({admin_username}):</h3>
@@ -374,7 +374,7 @@ Workout Tracker Team
             
             <p>If you believe this was done in error, please contact support.</p>
             
-            <p style="margin-top: 30px;">Best regards,<br><span class="highlight">Workout Tracker Team</span></p>
+            <p style="margin-top: 30px;">Best regards,<br><span class="highlight">The Liftbook team</span></p>
         </div>
         <div class="footer">
             <p>This is an automated message, please do not reply.</p>
@@ -393,7 +393,7 @@ Workout Tracker Team
     def send_welcome_email(self, email: str, username: str) -> bool:
         """Send welcome email after successful verification."""
         try:
-            subject = "Welcome to Workout Tracker"
+            subject = "Welcome to Liftbook"
             features = [
                 ("Log", "Type a workout the way you'd write it in your notes."),
                 ("Retrieve", "Pull up last session's plan before you lift."),
@@ -403,7 +403,7 @@ Workout Tracker Team
             body = "\n\n".join([
                 f"Hi {username}, your email is confirmed and you're all set.",
                 "\n".join(f"- {name}: {text}" for name, text in features),
-                "Workout Tracker",
+                "Liftbook",
             ]) + "\n"
 
             rows = "".join(

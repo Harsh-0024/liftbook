@@ -254,7 +254,7 @@ def run_full_migration():
 
 if __name__ == '__main__':
     print("\n" + "="*60)
-    print("Workout Tracker - Authentication Migration")
+    print("Liftbook - Authentication Migration")
     print("="*60)
     print("\nThis script will:")
     print("1. Add authentication columns to the database")

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% import '_settings_ui.html' as st %}
 
-{% block title %}Feedback - Admin - Workout Tracker{% endblock %}
+{% block title %}Feedback - Admin - Liftbook{% endblock %}
 
 {% block content %}
 {{ st.styles() }}
@@ -70,7 +70,7 @@
                     </span>
                     <span class="af-actions">
                         {% if item.email %}
-                        <a class="st-btn st-btn-quiet st-btn-sm" href="mailto:{{ item.email }}?subject={{ ('About your feedback on Workout Tracker')|urlencode }}">
+                        <a class="st-btn st-btn-quiet st-btn-sm" href="mailto:{{ item.email }}?subject={{ ('About your feedback on Liftbook')|urlencode }}">
                             <i class="bi bi-reply"></i>Reply
                         </a>
                         {% endif %}

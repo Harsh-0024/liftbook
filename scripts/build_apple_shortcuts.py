@@ -35,7 +35,7 @@ HOSTS = dict(
 )
 PRIMARY, FALLBACK = HOSTS["Railway"].rstrip("/"), HOSTS["Render"].rstrip("/")
 OUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "static", "shortcuts")
-KEY_QUESTION = "Paste your shortcut key. In Workout Logger, open Settings → Integrations → Apple Shortcuts and tap Copy."
+KEY_QUESTION = "Paste your shortcut key. In Liftbook, open Settings → Integrations → Apple Shortcuts and tap Copy."
 OBJ = "￼"  # placeholder Shortcuts uses for a variable inside text
 
 NOTES_APP = {"TeamIdentifier": "0000000000", "BundleIdentifier": "com.apple.Notes", "Name": "Notes"}
@@ -155,7 +155,7 @@ class Flow:
         self.end_if(g)
         g = if_reply_not_ours()
         self.stop_with_alert("Neither Railway nor Render answered. Try again in a minute.",
-                             title="Workout Logger is not reachable")
+                             title="Liftbook is not reachable")
         self.end_if(g)
 
     def stop_unless_ok(self):

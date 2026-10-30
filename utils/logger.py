@@ -1,5 +1,5 @@
 """
-Logging configuration for the Workout Tracker application.
+Logging configuration for the Liftbook application.
 """
 import logging
 import sys
