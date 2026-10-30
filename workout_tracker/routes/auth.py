@@ -1006,6 +1006,30 @@ def register_auth_routes(app, email_service):
                     flash("Password updated.", "success")
                     return redirect(url_for('account_settings'))
 
+                if form_type == 'delete_account':
+                    # Confirmed with the username typed out and the password (or a
+                    # code sign-in, for someone who forgot it).
+                    _enforce_rate_limit('delete_account', str(user.id), limit=10, window_seconds=600)
+                    if (request.form.get('confirm_username') or '').strip().lower() != (user.username or '').lower():
+                        flash("Type your username exactly as shown to confirm.", "error")
+                        return redirect(url_for('account_settings') + '#delete-account')
+                    if not (otp_login_verified or password_change_verified) and not AuthService.verify_password(
+                            request.form.get('current_password', ''), user.password_hash):
+                        flash("That password isn't right.", "error")
+                        return redirect(url_for('account_settings') + '#delete-account')
+                    photo = getattr(user, 'profile_image', None)
+                    username = user.username
+                    AuthService.delete_account(user.id)
+                    try:
+                        _delete_profile_image(photo)  # in storage, not the database
+                    except Exception as exc:
+                        logger.warning(f"Could not delete the profile photo of a deleted account: {exc}")
+                    logger.info(f"User {username} deleted their own account")
+                    session.clear()
+                    logout_user()
+                    flash("Your account and all your workouts were deleted.", "info")
+                    return redirect(url_for('login'))
+
                 if form_type == 'password_otp_request':
                     _enforce_rate_limit('email_codes', str(user.id), limit=10, window_seconds=600)
                     otp_payload = AuthService.request_password_change_otp(user.id)

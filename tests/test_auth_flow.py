@@ -11,7 +11,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from config import Config
-from models import Base, User
+from models import Base, Lift, User, WorkoutLog
 from workout_tracker import create_app
 
 
@@ -112,6 +112,38 @@ class TestAuthFlow(unittest.TestCase):
         self.assertFalse(self.session.query(User).filter_by(username="bob").one().is_verified)
         self.assertEqual(self._path(self.client.get("/log")), "/login")
         self.assertNotIn(right, page)
+
+    def test_people_can_delete_their_own_account(self):
+        with self.engine.connect() as conn:  # the real database cascades; make this one too
+            conn.exec_driver_sql("PRAGMA foreign_keys=ON")
+        self._sign_up(username="other", email="other@example.com")
+        self.client.get("/logout")
+        self._sign_up()
+        self.client.post("/login", data={"username_or_email": "alice", "password": "secret123"})
+        self.client.post("/log", data={"workout_text": "3/9/26 - Push\n\nBench Press - [2]\n60, 8"})
+        alice = self.session.query(User).filter_by(username="alice").one().id
+        self.assertGreater(self.session.query(WorkoutLog).filter_by(user_id=alice).count(), 0)
+        self.session.remove()
+
+        for data, message in (
+            ({"confirm_username": "someone", "current_password": "secret123"}, "Type your username"),
+            ({"confirm_username": "alice", "current_password": "wrong-pass1"}, "isn&#39;t right"),
+        ):
+            page = self.client.post("/settings", data={"form_type": "delete_account", **data}, follow_redirects=True)
+            self.assertIn(message, page.get_data(as_text=True))
+            self.assertEqual(self.session.query(User).filter_by(username="alice").count(), 1)
+            self.session.remove()
+
+        response = self.client.post("/settings", data={"form_type": "delete_account", "confirm_username": " Alice ",
+                                                       "current_password": "secret123"})
+        self.assertEqual(self._path(response), "/login")
+        self.assertEqual(self.session.query(User).filter_by(username="alice").count(), 0)
+        self.assertEqual(self.session.query(WorkoutLog).filter_by(user_id=alice).count(), 0)
+        self.assertEqual(self.session.query(Lift).filter_by(user_id=alice).count(), 0)
+        self.assertEqual(self.session.query(User).filter_by(username="other").count(), 1)
+        self.assertEqual(self._path(self.client.get("/log")), "/login")
+        page = self.client.post("/login", data={"username_or_email": "alice", "password": "secret123"})
+        self.assertIn("Invalid username/email or password.", page.get_data(as_text=True))
 
     def test_sign_up_problems_are_shown_on_the_form(self):
         self._sign_up()
