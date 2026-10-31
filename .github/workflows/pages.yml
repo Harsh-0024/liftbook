@@ -1,5 +1,5 @@
 # Publishes the public pages in site/ (home and privacy) to GitHub Pages:
-# https://harsh-0024.github.io/workout_logger_/
+# https://harsh-0024.github.io/liftbook/
 name: Pages
 
 on:
