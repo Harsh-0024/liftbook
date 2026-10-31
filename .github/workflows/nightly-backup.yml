@@ -96,7 +96,8 @@ jobs:
       # not a service account. The refresh token was generated manually once and
       # stored as a GitHub secret so this workflow can run without opening a
       # browser or asking anyone to sign in during the nightly run.
-      # The target Google Drive folder ID must be stored in GDRIVE_FOLDER_ID.
+      # Backups go in GDRIVE_FOLDER_ID if this sign-in can reach it, otherwise in a
+      # "Liftbook backups" folder the script creates (see upload_to_drive.py).
       - name: Upload backup dump to Google Drive
         env:
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
