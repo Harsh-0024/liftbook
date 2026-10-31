@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Liftbook Privacy</title>
+<meta name="description" content="What Liftbook keeps about you, where it is kept, who can see it, and how to delete it.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="./"><span class="mark">LB</span>Liftbook</a>
+    <nav><a href="./">← Home</a></nav>
+  </div>
+</header>
+
+<main>
+  <article class="wrap">
+    <p class="eyebrow">Privacy</p>
+    <h1>What Liftbook keeps, and why.</h1>
+    <p class="lede">Liftbook is a free workout log made by one person, Harsh. This page says plainly what it keeps about you, where, who can see it, and how to remove it.</p>
+    <p class="date">Last updated 31 October 2026</p>
+
+    <h2>In short</h2>
+    <ul>
+      <li>Your workouts and settings are kept in your account so you can use them on any device.</li>
+      <li>No ads, no tracking, no analytics. Nothing is sold or shared.</li>
+      <li>You can delete your account and everything in it at any time, from the app.</li>
+    </ul>
+
+    <h2>What your account holds</h2>
+    <ul>
+      <li><strong>Your username and email</strong>, to sign in and to send you sign-in and confirmation codes.</li>
+      <li><strong>Your password</strong>, stored only as a one-way hash; nobody can read it back.</li>
+      <li><strong>Optional details</strong> you choose to add: your name, a profile photo and your bodyweight.</li>
+      <li><strong>Your training</strong>: the workouts you log, your plan, rep ranges, exercise names and the app's settings.</li>
+      <li><strong>Feedback</strong> you send from the app, with your email so it can be answered.</li>
+    </ul>
+
+    <h2>Where it is kept</h2>
+    <ul>
+      <li>The app runs on Render, and your data is kept in a database at Neon.</li>
+      <li>Profile photos are stored with Cloudflare R2.</li>
+      <li>Emails (sign-in codes, confirmations) are sent through Brevo.</li>
+      <li>Once a night, a backup copy of the database is saved to a second database at Supabase and to the developer's own Google Drive. The backup tool, "Liftbook Backup", only writes its own backup files there and never touches your Google account.</li>
+    </ul>
+
+    <h2>The AI coach</h2>
+    <p>If you use the AI coach, the parts of your training it needs to answer your question are sent to the AI service that answers it (Groq or Google Gemini). Nothing is sent unless you ask the coach something.</p>
+
+    <h2>Shared workouts</h2>
+    <p>When you share a workout, anyone with that link can see that one workout and your username. Nothing else in your account is visible to them.</p>
+
+    <h2>Deleting your account</h2>
+    <p>Open Settings, then Account, then "Delete my account". Your account, every workout and your photo are removed from the app straight away. Copies may remain in older nightly backups, which are kept only to restore the app after a failure and are never used for anything else.</p>
+    <p>You can also export your workouts at any time from Settings, then Your data.</p>
+
+    <h2>Contact</h2>
+    <p>Questions or requests: <a href="mailto:harsh242042004@gmail.com">harsh242042004@gmail.com</a>.</p>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Liftbook, made by Harsh</span>
+    <a href="./">Home</a>
+  </div>
+</footer>
+</body>
+</html>
