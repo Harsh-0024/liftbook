@@ -12,7 +12,7 @@ on:
 
 jobs:
   backup-restore-and-upload:
-    name: Backup Neon, restore Supabase, upload to Drive
+    name: Backup Neon, upload to Drive
     runs-on: ubuntu-latest
 
     steps:
@@ -65,22 +65,10 @@ jobs:
 
           echo "DUMP_FILE=$DUMP_FILE" >> "$GITHUB_ENV"
 
-      # Step 4: Restore that same backup file into the Supabase database.
-      # The --clean and --if-exists flags remove existing database objects first,
-      # so the nightly restore replaces yesterday's data instead of failing with
-      # "already exists" errors.
-      - name: Restore backup into Supabase
-        env:
-          SUPABASE_RESTORE_URL: ${{ secrets.SUPABASE_RESTORE_URL }}
-        run: |
-          set -euo pipefail
-          /usr/lib/postgresql/18/bin/pg_restore \
-            --dbname="$SUPABASE_RESTORE_URL" \
-            --no-owner \
-            --no-privileges \
-            --clean \
-            --if-exists \
-            "$DUMP_FILE"
+      # Step 4 (paused): the nightly copy into Supabase stopped on 31 Oct 2026, when
+      # that project was replaced by Liftbook's own Supabase project. Once Liftbook
+      # runs on Supabase, the nightly copy goes the other way: Supabase into Neon.
+      # Never point a --clean restore at Liftbook's live Supabase project.
 
       # Step 5a: Install the official Google Python client libraries.
       # These libraries let the upload script refresh an OAuth token and upload
