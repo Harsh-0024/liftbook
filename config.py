@@ -24,8 +24,8 @@ class Config:
     # show Shortcut URLs for each. Format: "Name=https://host,Name=https://host".
     DEPLOYMENT_URLS = os.environ.get(
         'DEPLOYMENT_URLS',
-        'Railway=https://workoutlogger-production-7f91.up.railway.app,'
-        'Render=https://workout-tracker-62qi.onrender.com',
+        'Liftbook=https://app.liftbook.in,'
+        'Railway=https://liftbook.up.railway.app',
     )
     
     # App Settings
