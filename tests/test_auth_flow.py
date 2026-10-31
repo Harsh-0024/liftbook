@@ -12,7 +12,7 @@ from sqlalchemy.pool import StaticPool
 
 from config import Config
 from models import Base, Lift, User, WorkoutLog
-from workout_tracker import create_app
+from liftbook import create_app
 
 
 class _FlowConfig(Config):
@@ -37,11 +37,11 @@ class TestAuthFlow(unittest.TestCase):
 
         self._patchers = [
             patch("models.Session", self.session),
-            patch("workout_tracker.Session", self.session),
-            patch("workout_tracker.routes.auth.Session", self.session),
-            patch("workout_tracker.routes.workouts.Session", self.session),
-            patch("workout_tracker.routes.stats.Session", self.session),
-            patch("workout_tracker.routes.plans.Session", self.session),
+            patch("liftbook.Session", self.session),
+            patch("liftbook.routes.auth.Session", self.session),
+            patch("liftbook.routes.workouts.Session", self.session),
+            patch("liftbook.routes.stats.Session", self.session),
+            patch("liftbook.routes.plans.Session", self.session),
             patch("services.auth.Session", self.session),
             patch("services.auth.session_factory", factory),
             patch("services.email_service.EmailService.send_otp_email", autospec=True, side_effect=fake_send),
@@ -290,14 +290,14 @@ class TestCodeGuessing(TestAuthFlow):
     """Six-digit codes can't simply be tried in turn."""
 
     def setUp(self):
-        from workout_tracker.routes import auth as auth_routes
+        from liftbook.routes import auth as auth_routes
         auth_routes._RATE_LIMIT_BUCKETS.clear()
         super().setUp()
         self.app = create_app(config_object=_LimitedConfig, init_db=False)
         self.client = self.app.test_client()
 
     def tearDown(self):
-        from workout_tracker.routes import auth as auth_routes
+        from liftbook.routes import auth as auth_routes
         auth_routes._RATE_LIMIT_BUCKETS.clear()
         super().tearDown()
 

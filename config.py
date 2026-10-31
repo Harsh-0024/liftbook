@@ -62,7 +62,7 @@ class Config:
     MAIL_DEFAULT_SENDER = (
         os.environ.get('MAIL_DEFAULT_SENDER')
         or os.environ.get('MAIL_USERNAME')
-        or 'noreply@workouttracker.com'
+        or 'noreply@liftbook.in'
     )
 
     # Brevo Transactional Email API (recommended for Railway)
@@ -109,7 +109,7 @@ class Config:
     # Admin bootstrap (create/update admin user on startup if password is provided)
     ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
     ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
-    ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@workouttracker.local')
+    ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@liftbook.local')
     ADMIN_EMAILS = os.environ.get('ADMIN_EMAILS', '')
     ADMIN_EMAIL_ALLOWLIST = {
         email.strip().lower()

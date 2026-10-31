@@ -6,7 +6,7 @@ import sys
 from typing import Optional
 
 
-def setup_logger(name: str = 'workout_tracker', level: int = logging.INFO) -> logging.Logger:
+def setup_logger(name: str = 'liftbook', level: int = logging.INFO) -> logging.Logger:
     """Set up and configure application logger."""
     logger = logging.getLogger(name)
     logger.setLevel(level)

@@ -13,7 +13,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
-import workout_tracker
+import liftbook
 from config import Config
 from models import (
     Base,
@@ -40,8 +40,8 @@ from services.logging import (
     handle_workout_log,
     resolve_target_sets_for_exercise,
 )
-from workout_tracker import create_app
-from workout_tracker.routes.auth import _infer_bulk_import_dates
+from liftbook import create_app
+from liftbook.routes.auth import _infer_bulk_import_dates
 from utils import profile_images
 
 
@@ -65,11 +65,11 @@ class TestRouteRegressions(unittest.TestCase):
         # Rebind app/session globals used across route modules.
         self._patchers = [
             patch("models.Session", self.session),
-            patch("workout_tracker.Session", self.session),
-            patch("workout_tracker.routes.auth.Session", self.session),
-            patch("workout_tracker.routes.workouts.Session", self.session),
-            patch("workout_tracker.routes.stats.Session", self.session),
-            patch("workout_tracker.routes.plans.Session", self.session),
+            patch("liftbook.Session", self.session),
+            patch("liftbook.routes.auth.Session", self.session),
+            patch("liftbook.routes.workouts.Session", self.session),
+            patch("liftbook.routes.stats.Session", self.session),
+            patch("liftbook.routes.plans.Session", self.session),
         ]
         for p in self._patchers:
             p.start()
@@ -365,7 +365,7 @@ class TestRouteRegressions(unittest.TestCase):
         self.assertIn('id="editRestored" role="status" hidden', edit)
         self.assertIn("sessionStorage.setItem(SENT_KEY, JSON.stringify(", edit)
         workout = self.client.get("/workout/2026-09-20").get_data(as_text=True)
-        self.assertIn("k.startsWith('wt-edit-sent:", workout)
+        self.assertIn("k.startsWith('lb-edit-sent:", workout)
 
     def test_log_draft_is_kept_until_the_save_is_confirmed(self):
         # The draft was cleared as Save was pressed: a save that ended on the sign-in page
@@ -625,7 +625,7 @@ class TestRouteRegressions(unittest.TestCase):
         self.session.commit()
         form = {"form_type": "password", "current_password": "secret123",
                 "new_password": "newsecret1", "confirm_password": "newsecret1"}
-        with patch("workout_tracker.routes.auth.AuthService.set_password", return_value=False):
+        with patch("liftbook.routes.auth.AuthService.set_password", return_value=False):
             page = self.client.post("/settings", data=form, follow_redirects=True).get_data(as_text=True)
         self.assertNotIn("Password updated", page)
         self.assertIn("wasn&#39;t changed", page)
@@ -818,8 +818,8 @@ class TestRouteRegressions(unittest.TestCase):
     def test_unsent_drafts_belong_to_one_account(self):
         # Someone else signing in on the same phone must not see your unsent workout.
         user = self._create_logged_in_user(username="draft_owner")
-        self.assertIn(f"const DRAFT_KEY = 'wt-log-draft:{user.id}';", self.client.get("/log").get_data(as_text=True))
-        self.assertIn(f"const DRAFT_KEY = 'wt-custom-draft:{user.id}';", self.client.get("/retrieve/custom").get_data(as_text=True))
+        self.assertIn(f"const DRAFT_KEY = 'lb-log-draft:{user.id}';", self.client.get("/log").get_data(as_text=True))
+        self.assertIn(f"const DRAFT_KEY = 'lb-custom-draft:{user.id}';", self.client.get("/retrieve/custom").get_data(as_text=True))
 
     def test_log_check_points_out_an_exercise_written_twice(self):
         self._create_logged_in_user(username="twice_user")
@@ -1517,9 +1517,9 @@ class TestRouteRegressions(unittest.TestCase):
         image_bytes.seek(0)
         s3 = Mock()
 
-        with patch("workout_tracker.routes.auth.has_r2_profile_image_storage", return_value=True), \
-             patch("workout_tracker.routes.auth.get_r2_profile_image_client", return_value=s3), \
-             patch("workout_tracker.routes.auth.get_r2_bucket_name", return_value="workout-tracker-avatars"):
+        with patch("liftbook.routes.auth.has_r2_profile_image_storage", return_value=True), \
+             patch("liftbook.routes.auth.get_r2_profile_image_client", return_value=s3), \
+             patch("liftbook.routes.auth.get_r2_bucket_name", return_value="liftbook-avatars"):
             response = self.client.post(
                 "/settings",
                 data={
@@ -1532,7 +1532,7 @@ class TestRouteRegressions(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         s3.put_object.assert_called_once()
         put_kwargs = s3.put_object.call_args.kwargs
-        self.assertEqual(put_kwargs["Bucket"], "workout-tracker-avatars")
+        self.assertEqual(put_kwargs["Bucket"], "liftbook-avatars")
         self.assertRegex(put_kwargs["Key"], rf"^avatars/user_{user.id}_[0-9a-f]{{8}}\.png$")
         self.assertEqual(put_kwargs["ContentType"], "image/png")
         stored_user = self.session.query(User).filter_by(id=user.id).one()
@@ -1546,8 +1546,8 @@ class TestRouteRegressions(unittest.TestCase):
                       profile_image="avatars/user_99_abcd1234.png")
         self.session.add(target)
         self.session.commit()
-        with patch("workout_tracker.routes.admin.delete_profile_image") as delete_photo, \
-             patch("workout_tracker.routes.admin.email_queue"), \
+        with patch("liftbook.routes.admin.delete_profile_image") as delete_photo, \
+             patch("liftbook.routes.admin.email_queue"), \
              patch("services.admin.Session", self.session):
             self.client.post("/admin/delete-user", data={"user_id": target.id, "deletion_reason": "Asked to leave"})
         delete_photo.assert_called_once_with("avatars/user_99_abcd1234.png")
@@ -1573,8 +1573,8 @@ class TestRouteRegressions(unittest.TestCase):
         Image.new("1", (8000, 6000)).save(image_bytes, format="PNG")
         image_bytes.seek(0)
         s3 = Mock()
-        with patch("workout_tracker.routes.auth.has_r2_profile_image_storage", return_value=True), \
-             patch("workout_tracker.routes.auth.get_r2_profile_image_client", return_value=s3):
+        with patch("liftbook.routes.auth.has_r2_profile_image_storage", return_value=True), \
+             patch("liftbook.routes.auth.get_r2_profile_image_client", return_value=s3):
             response = self.client.post("/settings", data={"form_type": "profile_photo",
                                                            "profile_image": (image_bytes, "huge.png")},
                                         content_type="multipart/form-data", follow_redirects=True)
@@ -1596,9 +1596,9 @@ class TestRouteRegressions(unittest.TestCase):
         image_bytes.seek(0)
         s3 = Mock()
 
-        with patch("workout_tracker.routes.auth.has_r2_profile_image_storage", return_value=True), \
-             patch("workout_tracker.routes.auth.get_r2_profile_image_client", return_value=s3), \
-             patch("workout_tracker.routes.auth.get_r2_bucket_name", return_value="workout-tracker-avatars"):
+        with patch("liftbook.routes.auth.has_r2_profile_image_storage", return_value=True), \
+             patch("liftbook.routes.auth.get_r2_profile_image_client", return_value=s3), \
+             patch("liftbook.routes.auth.get_r2_bucket_name", return_value="liftbook-avatars"):
             self.client.post(
                 "/settings",
                 data={
@@ -1611,7 +1611,7 @@ class TestRouteRegressions(unittest.TestCase):
         new_key = s3.put_object.call_args.kwargs["Key"]
         self.assertNotEqual(new_key, f"avatars/user_{user.id}.png")
         s3.delete_object.assert_called_once_with(
-            Bucket="workout-tracker-avatars",
+            Bucket="liftbook-avatars",
             Key=f"avatars/user_{user.id}.png",
         )
 
@@ -1626,7 +1626,7 @@ class TestRouteRegressions(unittest.TestCase):
             {
                 "R2_ACCESS_KEY_ID": "test-access-key",
                 "R2_SECRET_ACCESS_KEY": "test-secret-key",
-                "R2_BUCKET_NAME": "workout-tracker-avatars",
+                "R2_BUCKET_NAME": "liftbook-avatars",
                 "R2_ACCOUNT_ID": "c60933f634439b0fb2e6c7762535ba6c",
             },
         ), patch.dict(sys.modules, {"boto3": boto3}):
@@ -1634,7 +1634,7 @@ class TestRouteRegressions(unittest.TestCase):
             bucket = profile_images.get_r2_bucket_name()
 
         self.assertIs(client, s3)
-        self.assertEqual(bucket, "workout-tracker-avatars")
+        self.assertEqual(bucket, "liftbook-avatars")
         boto3.client.assert_called_once_with(
             "s3",
             endpoint_url="https://c60933f634439b0fb2e6c7762535ba6c.r2.cloudflarestorage.com",
@@ -1659,9 +1659,9 @@ class TestRouteRegressions(unittest.TestCase):
         self.session.commit()
         s3 = Mock()
 
-        with patch("workout_tracker.routes.auth.has_r2_profile_image_storage", return_value=True), \
-             patch("workout_tracker.routes.auth.get_r2_profile_image_client", return_value=s3), \
-             patch("workout_tracker.routes.auth.get_r2_bucket_name", return_value="workout-tracker-avatars"):
+        with patch("liftbook.routes.auth.has_r2_profile_image_storage", return_value=True), \
+             patch("liftbook.routes.auth.get_r2_profile_image_client", return_value=s3), \
+             patch("liftbook.routes.auth.get_r2_bucket_name", return_value="liftbook-avatars"):
             response = self.client.post(
                 "/settings",
                 data={"form_type": "remove_photo"},
@@ -1669,7 +1669,7 @@ class TestRouteRegressions(unittest.TestCase):
 
         self.assertEqual(response.status_code, 302)
         s3.delete_object.assert_called_once_with(
-            Bucket="workout-tracker-avatars",
+            Bucket="liftbook-avatars",
             Key="avatars/remote-only.png",
         )
         updated_user = self.session.query(User).filter_by(id=user.id).one()
@@ -1691,8 +1691,8 @@ class TestRouteRegressions(unittest.TestCase):
     def test_shortcut_urls_page_lists_every_deployment_over_https(self):
         self._create_logged_in_user(username="shortcut_hosts_user")
         self.app.config["DEPLOYMENT_URLS"] = (
-            "Railway=https://workoutlogger-production-7f91.up.railway.app,"
-            "Render=https://workout-logger.onrender.com"
+            "Railway=https://liftbook-production.up.railway.app,"
+            "Render=https://liftbook.onrender.com"
         )
 
         # Behind an HTTPS-terminating proxy, like Railway and Render.
@@ -1700,9 +1700,9 @@ class TestRouteRegressions(unittest.TestCase):
 
         page = response.get_data(as_text=True)
         self.assertIn("https://localhost/shortcut/log/", page)
-        self.assertIn("https://workoutlogger-production-7f91.up.railway.app/shortcut/log/", page)
-        self.assertIn("https://workout-logger.onrender.com/shortcut/log/", page)
-        self.assertIn("https://workout-logger.onrender.com/shortcut/pick/", page)
+        self.assertIn("https://liftbook-production.up.railway.app/shortcut/log/", page)
+        self.assertIn("https://liftbook.onrender.com/shortcut/log/", page)
+        self.assertIn("https://liftbook.onrender.com/shortcut/pick/", page)
         self.assertNotIn("http://localhost/shortcut", page)
         # The site being viewed comes first, then the other deployments.
         self.assertLess(page.index(">Local<"), page.index(">Railway<"))
@@ -1905,7 +1905,7 @@ class TestRouteRegressions(unittest.TestCase):
                 }
             return {"template": template_name}
 
-        with patch("workout_tracker.routes.workouts.render_template", side_effect=_fake_render):
+        with patch("liftbook.routes.workouts.render_template", side_effect=_fake_render):
             response = self.client.get("/workout/2026-01-10")
 
         self.assertEqual(response.status_code, 200)
@@ -2197,7 +2197,7 @@ class TestRouteRegressions(unittest.TestCase):
                 }
             return {"template": template_name}
 
-        with patch("workout_tracker.routes.workouts.render_template", side_effect=_fake_render):
+        with patch("liftbook.routes.workouts.render_template", side_effect=_fake_render):
             response = self.client.get("/workout/2026-01-10")
 
         self.assertEqual(response.status_code, 200)
@@ -2431,7 +2431,7 @@ class TestRouteRegressions(unittest.TestCase):
                 }
             return {"template": template_name}
 
-        with patch("workout_tracker.routes.workouts.render_template", side_effect=_fake_render):
+        with patch("liftbook.routes.workouts.render_template", side_effect=_fake_render):
             response = self.client.get("/workout/2026-01-10")
 
         self.assertEqual(response.status_code, 200)
@@ -2541,7 +2541,7 @@ class TestRouteRegressions(unittest.TestCase):
                 }
             return {"template": template_name}
 
-        with patch("workout_tracker.routes.workouts.render_template", side_effect=_fake_render):
+        with patch("liftbook.routes.workouts.render_template", side_effect=_fake_render):
             response = self.client.get("/workout/2026-01-10")
 
         self.assertEqual(response.status_code, 200)

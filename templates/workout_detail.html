@@ -420,7 +420,7 @@
         {# Edits sent from the Edit page reached the server: nothing to bring back. #}
         <script>
             try {
-                Object.keys(sessionStorage).filter((k) => k.startsWith('wt-edit-sent:{{ current_user.id }}:'))
+                Object.keys(sessionStorage).filter((k) => k.startsWith('lb-edit-sent:{{ current_user.id }}:'))
                     .forEach((k) => sessionStorage.removeItem(k));
             } catch (e) { /* storage off */ }
         </script>
@@ -429,7 +429,7 @@
            still the text that was sent (not a newer one, when coming back here later). #}
         <script>
             try {
-                const draftKey = 'wt-log-draft:{{ current_user.id }}', sentKey = 'wt-log-sent:{{ current_user.id }}';
+                const draftKey = 'lb-log-draft:{{ current_user.id }}', sentKey = 'lb-log-sent:{{ current_user.id }}';
                 const sent = sessionStorage.getItem(sentKey);
                 if (sent !== null) {
                     if (localStorage.getItem(draftKey) === sent) localStorage.removeItem(draftKey);

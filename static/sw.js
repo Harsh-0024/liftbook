@@ -2,9 +2,9 @@ importScripts('/static/offline-workouts.js');
 
 const VERSION = 'v6';
 // Files that are the same for everyone (styles, icons, the offline page).
-const SHARED_CACHE = `workout-tracker-shared-${VERSION}`;
+const SHARED_CACHE = `liftbook-shared-${VERSION}`;
 // The signed-in person's pages and data; emptied when nobody is signed in.
-const USER_CACHE = `workout-tracker-user-${VERSION}`;
+const USER_CACHE = `liftbook-user-${VERSION}`;
 const OFFLINE_URL = '/static/offline.html';
 // Who is signed in, and where '/' sends them so the installed app can open offline.
 const SIGNED_IN_KEY = '/__sw/signed-in';

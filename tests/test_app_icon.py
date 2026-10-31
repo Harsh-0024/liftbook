@@ -11,8 +11,8 @@ from sqlalchemy.pool import StaticPool
 
 from config import Config
 from models import Base, User, UserRole
-from workout_tracker import create_app
-from workout_tracker.app_icons import FILENAMES, prepare_source
+from liftbook import create_app
+from liftbook.app_icons import FILENAMES, prepare_source
 
 
 class _TestConfig(Config):
@@ -41,9 +41,9 @@ class TestAppIcon(unittest.TestCase):
         Base.metadata.create_all(self.engine)
         self._patchers = [
             patch("models.Session", self.session),
-            patch("workout_tracker.Session", self.session),
-            patch("workout_tracker.routes.app_icon.Session", self.session),
-            patch("workout_tracker.routes.app_icon.VERSION_TTL_SECONDS", 0),
+            patch("liftbook.Session", self.session),
+            patch("liftbook.routes.app_icon.Session", self.session),
+            patch("liftbook.routes.app_icon.VERSION_TTL_SECONDS", 0),
         ]
         for p in self._patchers:
             p.start()

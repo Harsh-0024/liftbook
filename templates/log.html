@@ -80,9 +80,9 @@
         const checkList = document.getElementById('checkList');
         const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
         // Per account, so someone else signing in on this phone never sees it.
-        const DRAFT_KEY = 'wt-log-draft:{{ current_user.id }}';
-        const OLD_DRAFT_KEY = 'wt-log-draft';
-        const SENT_KEY = 'wt-log-sent:{{ current_user.id }}';
+        const DRAFT_KEY = 'lb-log-draft:{{ current_user.id }}';
+        const OLD_DRAFT_KEY = 'lb-log-draft';
+        const SENT_KEY = 'lb-log-sent:{{ current_user.id }}';
 
         const LogEditor = window.LogEditor;
         LogEditor.autoGrow(textarea);

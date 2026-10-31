@@ -288,8 +288,8 @@
         const MAX = 30;
         // Per account, so someone else signing in on this phone never sees these picks.
         // A session being edited keeps its own draft, so an unfinished custom pick isn't lost.
-        const DRAFT_KEY = 'wt-custom-draft:{{ current_user.id }}'{% if edit_session %} + {{ (':' ~ edit_session.category ~ ':' ~ edit_session.day)|tojson }}{% endif %};
-        try { localStorage.removeItem('wt-custom-draft'); } catch (e) { /* storage off */ }
+        const DRAFT_KEY = 'lb-custom-draft:{{ current_user.id }}'{% if edit_session %} + {{ (':' ~ edit_session.category ~ ':' ~ edit_session.day)|tojson }}{% endif %};
+        try { localStorage.removeItem('lb-custom-draft'); } catch (e) { /* storage off */ }
         const DRAFT_HOURS = 12;
         const page = document.getElementById('crPage');
         const form = document.getElementById('crForm');
@@ -617,8 +617,8 @@
         wide.addEventListener('change', () => setSheet(false));
 
         // ---- Search opens every group with a match, "Less often" included ----
-        const OPEN_KEY = 'wt-custom-open';
-        const MORE_KEY = 'wt-custom-more';
+        const OPEN_KEY = 'lb-custom-open';
+        const MORE_KEY = 'lb-custom-more';
         const mores = groups.map((g) => g.querySelector('.cr-more'));
         const normalize = (v) => String(v || '').toLowerCase().replace(/[‐‑‒–—−-]+/g, ' ').replace(/[^a-z0-9\s]+/g, ' ').replace(/\s+/g, ' ').trim();
         buttons.forEach((b) => { b._hay = normalize(b.dataset.name); });

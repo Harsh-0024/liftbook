@@ -5,12 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>{% block title %}Liftbook{% endblock %}</title>
     <script>
+        // Keys saved under the app's old names ("workout-tracker-…", "wt-…") move to the
+        // Liftbook names once, before any page code reads them, so no draft or theme is lost.
+        (function () {
+            [window.localStorage, window.sessionStorage].forEach(function (store) {
+                try {
+                    for (var i = store.length - 1; i >= 0; i--) {
+                        var key = store.key(i);
+                        var renamed = key && key.replace(/^workout-tracker-/, 'liftbook-').replace(/^wt-/, 'lb-');
+                        if (!renamed || renamed === key) continue;
+                        if (store.getItem(renamed) === null) store.setItem(renamed, store.getItem(key));
+                        store.removeItem(key);
+                    }
+                } catch (e) { /* storage off */ }
+            });
+        })();
         // The theme before anything is drawn (the full theme code is at the end of the page):
         // otherwise light mode drew dark first and faded to light on every page.
         (function () {
             try {
-                var pref = localStorage.getItem('workout-tracker-theme-preference');
-                var saved = localStorage.getItem('workout-tracker-theme');
+                var pref = localStorage.getItem('liftbook-theme-preference');
+                var saved = localStorage.getItem('liftbook-theme');
                 var system = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
                 document.documentElement.setAttribute('data-theme', pref !== 'system' && saved ? saved : system);
             } catch (e) { /* storage off: the full theme code decides */ }
@@ -3579,8 +3594,8 @@
     <script>
         // Enhanced Theme System with System Preference Support
         (function() {
-            const THEME_KEY = 'workout-tracker-theme';
-            const THEME_PREF_KEY = 'workout-tracker-theme-preference';
+            const THEME_KEY = 'liftbook-theme';
+            const THEME_PREF_KEY = 'liftbook-theme-preference';
             const html = document.documentElement;
             const systemThemeQuery = typeof window.matchMedia === 'function'
                 ? window.matchMedia('(prefers-color-scheme: dark)')

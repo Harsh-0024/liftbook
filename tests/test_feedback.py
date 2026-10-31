@@ -7,7 +7,7 @@ from sqlalchemy.pool import StaticPool
 
 from config import Config
 from models import Base, Feedback, User, UserRole
-from workout_tracker import create_app
+from liftbook import create_app
 
 
 class _TestConfig(Config):
@@ -24,7 +24,7 @@ class TestFeedback(unittest.TestCase):
         Base.metadata.create_all(self.engine)
         self._patchers = [
             patch("models.Session", self.session),
-            patch("workout_tracker.Session", self.session),
+            patch("liftbook.Session", self.session),
             patch("services.feedback.Session", self.session),
             patch("services.admin.Session", self.session),
         ]

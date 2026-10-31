@@ -29,7 +29,7 @@
             // data-editor-keep: what was sent comes back if the save never landed (it ended on the
             // sign-in page); after a real save the page shows that same text, so it's dropped.
             const keepKey = form.hasAttribute('data-editor-keep')
-                ? `wt-editor-sent:{{ current_user.id if current_user.is_authenticated else '' }}:${location.pathname}` : null;
+                ? `lb-editor-sent:{{ current_user.id if current_user.is_authenticated else '' }}:${location.pathname}` : null;
             if (keepKey) {
                 try {
                     const sent = sessionStorage.getItem(keepKey);

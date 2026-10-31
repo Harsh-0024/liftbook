@@ -98,7 +98,7 @@
 
         // What was sent with Save. If the save ended on the sign-in page, the page comes back
         // with the old text; put the edits back. A saved workout's page forgets them.
-        const SENT_KEY = 'wt-edit-sent:{{ current_user.id }}:{{ date }}';
+        const SENT_KEY = 'lb-edit-sent:{{ current_user.id }}:{{ date }}';
         try {
             const sent = JSON.parse(sessionStorage.getItem(SENT_KEY) || 'null');
             sessionStorage.removeItem(SENT_KEY);

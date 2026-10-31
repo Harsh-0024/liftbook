@@ -18,14 +18,14 @@ from config import Config
 
 _EMAIL_DARK_CSS = """
     @media (prefers-color-scheme: dark) {
-        .wt-bg { background: #000000 !important; }
-        .wt-card { background: #111113 !important; border-color: #26262a !important; }
-        .wt-t1 { color: #f5f5f5 !important; }
-        .wt-t2 { color: #a1a1aa !important; }
-        .wt-t3 { color: #71717a !important; }
-        .wt-codebox { background: #1a1608 !important; border-color: #3d3314 !important; }
-        .wt-code { color: #f4d03f !important; }
-        .wt-hair { border-color: #26262a !important; }
+        .lb-bg { background: #000000 !important; }
+        .lb-card { background: #111113 !important; border-color: #26262a !important; }
+        .lb-t1 { color: #f5f5f5 !important; }
+        .lb-t2 { color: #a1a1aa !important; }
+        .lb-t3 { color: #71717a !important; }
+        .lb-codebox { background: #1a1608 !important; border-color: #3d3314 !important; }
+        .lb-code { color: #f4d03f !important; }
+        .lb-hair { border-color: #26262a !important; }
     }
 """
 
@@ -43,21 +43,21 @@ def _email_page(preheader: str, inner_html: str) -> str:
 <title>Liftbook</title>
 <style>{_EMAIL_DARK_CSS}</style>
 </head>
-<body class="wt-bg" style="margin:0;padding:0;background:#f4f2ee;-webkit-text-size-adjust:100%;">
+<body class="lb-bg" style="margin:0;padding:0;background:#f4f2ee;-webkit-text-size-adjust:100%;">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">{html.escape(preheader)}&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;</div>
-<table role="presentation" class="wt-bg" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f2ee;">
+<table role="presentation" class="lb-bg" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f2ee;">
 <tr><td align="center" style="padding:40px 16px 48px;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;">
     <tr><td style="padding:0 4px 22px;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
         <td width="34" height="34" align="center" valign="middle" style="width:34px;height:34px;background:#0b0b0d;border-radius:10px;font-family:{font};font-size:12px;font-weight:700;letter-spacing:0.5px;color:#d4af37;">LB</td>
-        <td class="wt-t1" style="padding-left:12px;font-family:{font};font-size:15px;font-weight:600;color:#1a1a1a;">Liftbook</td>
+        <td class="lb-t1" style="padding-left:12px;font-family:{font};font-size:15px;font-weight:600;color:#1a1a1a;">Liftbook</td>
       </tr></table>
     </td></tr>
-    <tr><td class="wt-card" style="background:#ffffff;border:1px solid #e8e4dc;border-radius:18px;padding:36px 32px 32px;font-family:{font};">
+    <tr><td class="lb-card" style="background:#ffffff;border:1px solid #e8e4dc;border-radius:18px;padding:36px 32px 32px;font-family:{font};">
       {inner_html}
     </td></tr>
-    <tr><td class="wt-t3" align="center" style="padding:22px 16px 0;font-family:{font};font-size:12px;line-height:1.6;color:#9a958a;">
+    <tr><td class="lb-t3" align="center" style="padding:22px 16px 0;font-family:{font};font-size:12px;line-height:1.6;color:#9a958a;">
       Sent by Liftbook. Replies to this address aren't read.
     </td></tr>
   </table>
@@ -69,13 +69,13 @@ def _email_page(preheader: str, inner_html: str) -> str:
 
 def _email_title(text: str) -> str:
     return (
-        f'<h1 class="wt-t1" style="margin:0 0 12px;font-size:22px;line-height:1.3;font-weight:600;color:#111111;">'
+        f'<h1 class="lb-t1" style="margin:0 0 12px;font-size:22px;line-height:1.3;font-weight:600;color:#111111;">'
         f'{text}</h1>'
     )
 
 
 def _email_text(text: str, muted: bool = False, top: int = 0) -> str:
-    color, cls, size = ('#8a8579', 'wt-t3', 13) if muted else ('#55524c', 'wt-t2', 15)
+    color, cls, size = ('#8a8579', 'lb-t3', 13) if muted else ('#55524c', 'lb-t2', 15)
     return (
         f'<p class="{cls}" style="margin:{top}px 0 0;font-size:{size}px;line-height:1.6;color:{color};">{text}</p>'
     )
@@ -86,15 +86,15 @@ def _code_email_html(preheader: str, title: str, intro: str, code: str, expiry: 
     mono = "'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace"
     code_box = f"""
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:26px 0 12px;">
-        <tr><td class="wt-codebox" align="center" style="background:#faf6ea;border:1px solid #ece2c4;border-radius:14px;padding:22px 12px;">
-          <div class="wt-code" style="font-family:{mono};font-size:34px;line-height:1;font-weight:700;letter-spacing:10px;padding-left:10px;color:#1a1a1a;">{html.escape(code)}</div>
+        <tr><td class="lb-codebox" align="center" style="background:#faf6ea;border:1px solid #ece2c4;border-radius:14px;padding:22px 12px;">
+          <div class="lb-code" style="font-family:{mono};font-size:34px;line-height:1;font-weight:700;letter-spacing:10px;padding-left:10px;color:#1a1a1a;">{html.escape(code)}</div>
         </td></tr>
       </table>"""
     parts = [
         _email_title(title),
         _email_text(intro),
         code_box,
-        f'<p class="wt-t3" align="center" style="margin:0;font-size:13px;line-height:1.6;color:#8a8579;text-align:center;">{expiry}</p>',
+        f'<p class="lb-t3" align="center" style="margin:0;font-size:13px;line-height:1.6;color:#8a8579;text-align:center;">{expiry}</p>',
     ]
     for i, note in enumerate(notes):
         parts.append(_email_text(note, muted=(i == len(notes) - 1), top=22 if i == 0 else 10))
@@ -407,9 +407,9 @@ The Liftbook team
             ]) + "\n"
 
             rows = "".join(
-                f"""<tr><td class="wt-hair" style="padding:14px 0;border-top:1px solid #efebe3;">
-                    <div class="wt-t1" style="font-size:15px;font-weight:600;color:#111111;">{name}</div>
-                    <div class="wt-t2" style="font-size:14px;line-height:1.5;color:#6b675e;margin-top:2px;">{text}</div>
+                f"""<tr><td class="lb-hair" style="padding:14px 0;border-top:1px solid #efebe3;">
+                    <div class="lb-t1" style="font-size:15px;font-weight:600;color:#111111;">{name}</div>
+                    <div class="lb-t2" style="font-size:14px;line-height:1.5;color:#6b675e;margin-top:2px;">{text}</div>
                 </td></tr>"""
                 for name, text in features
             )
