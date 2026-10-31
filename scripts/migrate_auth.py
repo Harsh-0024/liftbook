@@ -106,7 +106,7 @@ def migrate_existing_users():
             
             # For automated migration: Set default values and mark as verified
             # In production, you'd want to prompt for email and password
-            default_email = f"{user.username}@workouttracker.local"
+            default_email = f"{user.username}@liftbook.local"
             default_password = "ChangeMe123!"  # Temporary password
             
             user.email = default_email
@@ -136,7 +136,7 @@ def migrate_existing_users():
         for user in users:
             if not hasattr(user, '_migrated'):
                 logger.info(f"Username: {user.username}")
-                logger.info(f"Email: {user.username}@workouttracker.local")
+                logger.info(f"Email: {user.username}@liftbook.local")
                 logger.info(f"Password: ChangeMe123!")
                 logger.info("-" * 60)
         logger.info("\nUsers should change their passwords after first login!")
@@ -169,7 +169,7 @@ def create_admin_user():
         
         # Create admin with default credentials
         admin_username = "admin"
-        admin_email = "admin@workouttracker.local"
+        admin_email = "admin@liftbook.local"
         admin_password = "Admin123!SecurePassword"
         
         # Check if username exists

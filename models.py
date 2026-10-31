@@ -795,7 +795,7 @@ def _bootstrap_admin_user(session):
         return
 
     admin_username = (Config.ADMIN_USERNAME or 'admin').lower()
-    admin_email = (Config.ADMIN_EMAIL or 'admin@workouttracker.local').lower()
+    admin_email = (Config.ADMIN_EMAIL or 'admin@liftbook.local').lower()
 
     try:
         import bcrypt

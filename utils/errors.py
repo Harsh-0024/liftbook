@@ -3,26 +3,26 @@ Custom error classes for the Liftbook application.
 """
 
 
-class WorkoutTrackerError(Exception):
+class LiftbookError(Exception):
     """Base exception for Liftbook."""
     pass
 
 
-class ParsingError(WorkoutTrackerError):
+class ParsingError(LiftbookError):
     """Raised when workout data cannot be parsed."""
     pass
 
 
-class ValidationError(WorkoutTrackerError):
+class ValidationError(LiftbookError):
     """Raised when input validation fails."""
     pass
 
 
-class DatabaseError(WorkoutTrackerError):
+class DatabaseError(LiftbookError):
     """Raised when database operations fail."""
     pass
 
 
-class UserNotFoundError(WorkoutTrackerError):
+class UserNotFoundError(LiftbookError):
     """Raised when a user is not found."""
     pass

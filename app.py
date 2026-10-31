@@ -8,7 +8,7 @@ from config import Config
 from models import initialize_database
 from utils.logger import logger
 from wait_for_db import wait_for_db
-from workout_tracker import create_app
+from liftbook import create_app
 
 
 logger.info("Importing app module (Flask app factory).")

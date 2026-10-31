@@ -13,7 +13,7 @@ from config import Config
 from models import Base, CoachAnswer, RepRange, User, UserApiKey, UserRole, WorkoutLog
 from services import ai_coach, coach_tools
 from utils.dates import utc_now
-from workout_tracker import create_app
+from liftbook import create_app
 
 
 def _log(user, day, exercise, weight, reps, e1rm, name="Workout", sets=3):
@@ -303,7 +303,7 @@ class TestCoachLoop(_CoachDb):
             return {**_reply({"text": "Fine."}), "usageMetadata": {"totalTokenCount": 321}}
 
         with patch.object(ai_coach, "_post", side_effect=fake_post), \
-                self.assertLogs("workout_tracker", level="INFO") as logs:
+                self.assertLogs("liftbook", level="INFO") as logs:
             self.ask("hi")
         line = [l for l in logs.output if "AI coach user=" in l][-1]
         self.assertIn(f"outcome=ai:{_gemini_models()[1]}", line)
@@ -494,11 +494,11 @@ class TestCoachRoutes(_CoachDb):
         super().setUp()
         self._patchers = [
             patch("models.Session", self.db),
-            patch("workout_tracker.Session", self.db),
-            patch("workout_tracker.routes.auth.Session", self.db),
-            patch("workout_tracker.routes.workouts.Session", self.db),
-            patch("workout_tracker.routes.stats.Session", self.db),
-            patch("workout_tracker.routes.plans.Session", self.db),
+            patch("liftbook.Session", self.db),
+            patch("liftbook.routes.auth.Session", self.db),
+            patch("liftbook.routes.workouts.Session", self.db),
+            patch("liftbook.routes.stats.Session", self.db),
+            patch("liftbook.routes.plans.Session", self.db),
         ]
         for p in self._patchers:
             p.start()
