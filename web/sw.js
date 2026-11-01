@@ -6,7 +6,7 @@
 // old one, takes over, and the old copy is removed.
 'use strict';
 
-const VERSION = 'eac7639d1f7c';
+const VERSION = 'bead6735b72a';
 const FILES = [
   './',
   'app/data.js',
@@ -48,6 +48,8 @@ const FILES = [
   'icons/maskable-512.png',
   'index.html',
   'manifest.webmanifest',
+  'shortcuts/Get Workout.shortcut',
+  'shortcuts/Log Workout.shortcut',
   'styles.css'
 ];
 const CACHE = `liftbook-${VERSION}`;
