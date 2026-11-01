@@ -165,7 +165,7 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
   border: 1px solid var(--line); background: var(--surface-2); color: var(--text);
   font: 16px var(--font);
 }
-textarea { font-family: var(--mono); font-size: 15px; line-height: 1.55; min-height: 220px; resize: vertical; }
+textarea { font-family: var(--mono); font-size: 16px; line-height: 1.55; min-height: 220px; resize: vertical; }
 input:focus, select:focus, textarea:focus { outline: 2px solid var(--gold); outline-offset: 1px; border-color: transparent; }
 .check { display: flex; align-items: flex-start; gap: 10px; font-weight: 500; }
 .check input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--gold); flex: none; }
