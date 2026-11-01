@@ -198,6 +198,13 @@ async function boot() {
 }
 
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  // A new version takes over as soon as it has installed; reload once so this page runs it too
+  // (the log draft is kept on the device, so nothing typed is lost). Not on the very first visit.
+  const hadVersion = !!navigator.serviceWorker.controller;
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (hadVersion && !reloaded) { reloaded = true; location.reload(); }
+  });
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').catch((err) => console.warn('offline copy unavailable', err));
   });
