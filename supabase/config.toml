@@ -1,0 +1,11 @@
+# Only what deploying the Edge Functions needs (supabase functions deploy).
+project_id = "qjlmxlnmfowqsunpzvac"
+
+[functions.coach]
+# The function checks the sign-in itself (Auth's /user), which works whichever way the
+# project signs its tokens.
+verify_jwt = false
+
+[functions.shortcut]
+# Apple Shortcuts can't sign in; they send their own Shortcut key.
+verify_jwt = false

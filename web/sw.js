@@ -6,11 +6,12 @@
 // old one, takes over, and the old copy is removed.
 'use strict';
 
-const VERSION = '5e827fc84c97';
+const VERSION = '68a56ef6b3fb';
 const FILES = [
   './',
   'app/data.js',
   'app/main.js',
+  'app/online.js',
   'app/screens/auth.js',
   'app/screens/coach.js',
   'app/screens/home.js',
@@ -25,6 +26,7 @@ const FILES = [
   'app/ui.js',
   'config.js',
   'core/bodyweight.js',
+  'core/coach_tools.js',
   'core/dates.js',
   'core/defaults.js',
   'core/html.js',
@@ -36,6 +38,7 @@ const FILES = [
   'core/py.js',
   'core/renames.js',
   'core/retrieve.js',
+  'core/rich_text.js',
   'core/scoring.js',
   'core/stats.js',
   'icons/favicon-32.png',

@@ -1,7 +1,8 @@
 // Settings: profile, plan and rep ranges, exercises (timed, bodyweight, renames), feedback,
 // sync and the account.
 
-import { h, toast, busy, ago, formatDay, fmtNum } from '../ui.js';
+import { h, toast, busy, ago, formatDay, fmtNum, copyText } from '../ui.js';
+import { Online } from '../online.js';
 import { FEEDBACK_KINDS } from '../data.js';
 import { defaultRepRangesText } from '../../core/plans.js';
 import { DEFAULT_PLAN } from '../../core/plans.js';
@@ -10,6 +11,7 @@ const SECTIONS = [
   ['profile', 'Profile', 'Name, username, bodyweight, photo'],
   ['plan', 'Plan and rep ranges', 'Your training days and targets'],
   ['exercises', 'Exercises', 'Timed, bodyweight, renames'],
+  ['shortcuts', 'Apple Shortcuts', 'Log and get workouts from Notes on your iPhone'],
   ['feedback', 'Feedback', 'Tell us what to improve'],
   ['sync', 'Sync and data', 'Devices, backup file'],
   ['account', 'Account', 'Password, theme, sign out, delete'],
@@ -19,7 +21,7 @@ export function settingsScreen(ctx, section) {
   const found = SECTIONS.find(([k]) => k === section);
   if (!found) return index(ctx);
   const [key, title] = found;
-  const body = { profile, plan, exercises, feedback, sync, account }[key](ctx);
+  const body = { profile, plan, exercises, shortcuts, feedback, sync, account }[key](ctx);
   return h('div', {},
     h('div', { class: 'page-head' }, h('h1', {}, title), h('a', { class: 'btn small', href: '#/settings' }, 'Settings')),
     body);
@@ -239,6 +241,76 @@ function feedback(ctx) {
   return h('div', {},
     h('div', { class: 'card' }, field('What kind?', kind), field('Your feedback', msg), send),
     h('div', { class: 'card' }, h('h2', {}, 'What you sent'), mine));
+}
+
+/* ---------------- Apple Shortcuts ---------------- */
+
+const SHORTCUT_FILES = [
+  ['Log Workout', 'Pick one of your newest workout notes and log it'],
+  ['Get Workout', 'Pick a session and save its targets as a note'],
+];
+
+function shortcuts(ctx) {
+  const online = new Online(ctx.client);
+  const box = h('div', {}, h('div', { class: 'card subtle' }, 'Loading…'));
+
+  const copyRow = (value, label) => h('div', { class: 'row', style: 'flex-wrap:nowrap' },
+    h('input', { type: 'text', value, readonly: true, 'aria-label': label, onclick: (e) => e.target.select() }),
+    h('button', { class: 'btn small', type: 'button', onclick: () => copyText(value) }, 'Copy'));
+
+  async function paint() {
+    let info;
+    try {
+      info = await online.shortcutKey();
+    } catch (err) {
+      box.replaceChildren(h('div', { class: 'card' }, h('p', { class: 'error' }, err.offline ? 'You’re offline. Setting up Shortcuts needs a connection.' : err.message)));
+      return;
+    }
+    // The key itself is only known on the device that made it (the server keeps a hash).
+    const kept = ctx.store.getMeta('shortcut_key');
+    const key = info && kept && kept.endsWith(info.key_hint) ? kept : null;
+    const make = h('button', { class: `btn${info ? '' : ' primary'}`, type: 'button' }, info ? 'Make a new key' : 'Make my Shortcut key');
+    make.addEventListener('click', busy(make, async () => {
+      if (info && !confirm('Your Shortcuts stop working until you paste the new key into them. Make a new key?')) return;
+      const fresh = await online.newShortcutKey();
+      await ctx.store.setMeta('shortcut_key', fresh);
+      toast('New key made. Copy it into your Shortcuts.');
+      await paint();
+    }));
+    const remove = h('button', { class: 'btn small danger', type: 'button' }, 'Switch Shortcuts off');
+    remove.addEventListener('click', busy(remove, async () => {
+      if (!confirm('Your Shortcuts stop working. Switch them off?')) return;
+      await online.removeShortcutKey();
+      await ctx.store.setMeta('shortcut_key', null);
+      await paint();
+    }));
+    const urls = online.shortcutUrls(key || '<your key>');
+    box.replaceChildren(
+      h('div', { class: 'card' },
+        h('h2', {}, '1. Your Shortcut key'),
+        h('p', { class: 'subtle' }, 'Each shortcut asks for it once, when you add it. Keep it private: it can log workouts to your account.'),
+        info ? h('div', { class: 'stack' },
+          key ? copyRow(key, 'Shortcut key') : h('p', {}, `Your key ends in ${info.key_hint}. It was made on another device or before this one signed in, so it can’t be shown here; make a new key if you need it again.`),
+          h('p', { class: 'subtle' }, `Made ${ago(info.created_at)} · ${info.last_used_at ? `last used ${ago(info.last_used_at)}` : 'not used yet'}`),
+          h('div', { class: 'row' }, make, remove)) : make),
+      h('div', { class: 'card' },
+        h('h2', {}, '2. Add the shortcuts'),
+        h('p', { class: 'subtle' }, 'Open this page on your iPhone, tap a shortcut to add it, and paste your key when asked.'),
+        h('ul', { class: 'list' }, SHORTCUT_FILES.map(([name, sub]) => h('li', {},
+          h('a', { class: 'item chev', href: `shortcuts/${encodeURIComponent(name)}.shortcut`, download: `${name}.shortcut` },
+            h('div', {}, h('div', { style: 'font-weight:600' }, name), h('div', { class: 'meta' }, sub))))))),
+      h('div', { class: 'card' },
+        h('h2', {}, '3. Keep your workouts in the Workout Logs folder'),
+        h('p', { class: 'subtle' }, 'The shortcuts use one folder in Apple Notes called Workout Logs, and make it the first time. Get Workout saves every workout there, and Log Workout only offers notes from there.')),
+      h('details', { class: 'card' },
+        h('summary', { class: 'linkish' }, 'Links for your own shortcut'),
+        h('p', { class: 'subtle' }, 'Log: POST the note as workout_text. Get: add ?key= and a session name, or ?list=1 for the sessions.'),
+        h('div', { class: 'field' }, h('label', {}, 'Log URL'), copyRow(urls.log, 'Log URL')),
+        h('div', { class: 'field' }, h('label', {}, 'Get URL'), copyRow(urls.pick, 'Get URL'))),
+    );
+  }
+  paint();
+  return box;
 }
 
 /* ---------------- sync and data ---------------- */

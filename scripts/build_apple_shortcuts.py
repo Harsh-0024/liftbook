@@ -2,6 +2,10 @@
 Build the downloadable Apple Shortcuts (static/shortcuts/*.shortcut).
 
     python scripts/build_apple_shortcuts.py
+    python scripts/build_apple_shortcuts.py --supabase    # the new app's, into web/shortcuts/
+
+--supabase builds them for the new app: every request goes to the Supabase Edge Function
+(supabase/functions/shortcut), and the key comes from the new app's Settings > Apple Shortcuts.
 
 Needs macOS: Shortcuts only imports signed files, and signing is done by the
 `shortcuts sign` command. The files hold no personal data: when someone adds a
@@ -33,9 +37,17 @@ HOSTS = dict(
     for entry in Config.DEPLOYMENT_URLS.split(",")
     if entry.strip()
 )
-PRIMARY, FALLBACK = HOSTS["Railway"].rstrip("/"), HOSTS["Render"].rstrip("/")
-OUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "static", "shortcuts")
-KEY_QUESTION = "Paste your shortcut key. In Liftbook, open Settings → Integrations → Apple Shortcuts and tap Copy."
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SUPABASE = "--supabase" in sys.argv[1:]
+if SUPABASE:
+    # One address: Supabase keeps the function up, so there is no second one to fall back to.
+    PRIMARY, FALLBACK = "https://qjlmxlnmfowqsunpzvac.supabase.co/functions/v1", None
+    OUT_DIR = os.path.join(ROOT, "web", "shortcuts")
+    KEY_QUESTION = "Paste your Shortcut key. In Liftbook, open Settings → Apple Shortcuts and tap Copy."
+else:
+    PRIMARY, FALLBACK = HOSTS["Railway"].rstrip("/"), HOSTS["Render"].rstrip("/")
+    OUT_DIR = os.path.join(ROOT, "static", "shortcuts")
+    KEY_QUESTION = "Paste your shortcut key. In Liftbook, open Settings → Integrations → Apple Shortcuts and tap Copy."
 OBJ = "￼"  # placeholder Shortcuts uses for a variable inside text
 
 NOTES_APP = {"TeamIdentifier": "0000000000", "BundleIdentifier": "com.apple.Notes", "Name": "Notes"}
@@ -132,7 +144,8 @@ class Flow:
         self.set_var("Key", key)
 
     def fetch(self, path, *path_refs, form_text=None):
-        """Railway, then Render if Railway's reply isn't ours; stop with an alert if neither answers."""
+        """Railway, then Render if Railway's reply isn't ours (or the one Supabase address); stop
+        with an alert if nothing answers."""
         def request(base):
             params = {"WFURL": text(f"{base}/shortcut/{path}", var("Key"), *path_refs)}
             if form_text:
@@ -150,11 +163,13 @@ class Flow:
             return self.begin_if(as_text, 999, WFConditionalActionString='"server":')
 
         request(PRIMARY)
+        if FALLBACK:
+            g = if_reply_not_ours()
+            request(FALLBACK)
+            self.end_if(g)
         g = if_reply_not_ours()
-        request(FALLBACK)
-        self.end_if(g)
-        g = if_reply_not_ours()
-        self.stop_with_alert("Neither Railway nor Render answered. Try again in a minute.",
+        self.stop_with_alert("Liftbook didn't answer. Try again in a minute." if not FALLBACK else
+                             "Neither Railway nor Render answered. Try again in a minute.",
                              title="Liftbook is not reachable")
         self.end_if(g)
 

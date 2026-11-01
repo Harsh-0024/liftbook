@@ -295,9 +295,9 @@ grant execute on function public.shared_plan() to authenticated;
 -- --------------------------------------------------------------------------
 -- the person's own AI keys (for the coach)
 -- --------------------------------------------------------------------------
--- People can add keys, see a key's label and last four characters, rename
--- and switch them off - but never read a key back. Only the coach (an Edge
--- Function, using the service key) reads the key itself.
+-- People can add keys, see a key's label and last four characters, rename,
+-- switch off and delete them - but never read a key back. Only the coach (an
+-- Edge Function, using the service key) reads the key itself.
 create table if not exists public.ai_keys (
     id           bigint generated always as identity primary key,
     legacy_id    integer unique,
@@ -305,16 +305,22 @@ create table if not exists public.ai_keys (
     label        text not null default '' check (char_length(label) <= 100),
     api_key      text not null check (char_length(api_key) between 8 and 255),
     key_hint     text generated always as (right(api_key, 4)) stored,
+    -- Groq keys start with gsk_; the coach takes everything else for Gemini.
+    provider     text generated always as (case when btrim(api_key) like 'gsk\_%' then 'groq' else 'gemini' end) stored,
     is_active    boolean not null default true,
     created_at   timestamptz not null default now(),
     last_used_at timestamptz
 );
+-- Added after the first import, so it is also added to a table made before.
+alter table public.ai_keys add column if not exists provider text
+    generated always as (case when btrim(api_key) like 'gsk\_%' then 'groq' else 'gemini' end) stored;
 create index if not exists ai_keys_user on public.ai_keys (user_id);
 alter table public.ai_keys enable row level security;
 revoke all on public.ai_keys from anon, authenticated;
-grant select (id, user_id, label, key_hint, is_active, created_at, last_used_at) on public.ai_keys to authenticated;
+grant select (id, user_id, label, key_hint, provider, is_active, created_at, last_used_at) on public.ai_keys to authenticated;
 grant insert (label, api_key) on public.ai_keys to authenticated;
 grant update (label, is_active) on public.ai_keys to authenticated;
+grant delete on public.ai_keys to authenticated;
 drop policy if exists own_rows on public.ai_keys;
 create policy own_rows on public.ai_keys for all to authenticated
     using (user_id = (select auth.uid()))
@@ -425,6 +431,83 @@ end;
 $$;
 revoke all on function public.admin_set_feedback_status(bigint, text) from public;
 grant execute on function public.admin_set_feedback_status(bigint, text) to authenticated;
+
+-- --------------------------------------------------------------------------
+-- Apple Shortcuts keys
+-- --------------------------------------------------------------------------
+-- A Shortcut logs workouts and gets plan days with a key of its own (it can't
+-- sign in). Only a SHA-256 of the key is kept, so the key is shown once, when
+-- it is made; a new key replaces the old one. The shortcut Edge Function looks
+-- the hash up with the service key. People see when their key was made and
+-- last used, and its last four characters.
+create table if not exists public.shortcut_keys (
+    user_id      uuid primary key references auth.users (id) on delete cascade,
+    key_hash     text not null unique check (key_hash ~ '^[0-9a-f]{64}$'),
+    key_hint     text not null,
+    created_at   timestamptz not null default now(),
+    last_used_at timestamptz
+);
+alter table public.shortcut_keys enable row level security;
+revoke all on public.shortcut_keys from anon, authenticated;
+grant select (user_id, key_hint, created_at, last_used_at) on public.shortcut_keys to authenticated;
+drop policy if exists own_read on public.shortcut_keys;
+create policy own_read on public.shortcut_keys for select to authenticated
+    using (user_id = (select auth.uid()));
+
+-- A new key for the signed-in person ("lbk_" and 64 random hex characters),
+-- replacing any old one. Returned once; only its hash is stored.
+create or replace function public.new_shortcut_key()
+returns text
+language plpgsql
+volatile
+security definer
+set search_path = ''
+as $$
+declare
+    k text;
+begin
+    if (select auth.uid()) is null then
+        raise exception 'not signed in' using errcode = '42501';
+    end if;
+    k := 'lbk_' || replace(gen_random_uuid()::text, '-', '') || replace(gen_random_uuid()::text, '-', '');
+    insert into public.shortcut_keys (user_id, key_hash, key_hint)
+    values ((select auth.uid()), encode(sha256(convert_to(k, 'UTF8')), 'hex'), right(k, 4))
+    on conflict (user_id) do update
+        set key_hash = excluded.key_hash, key_hint = excluded.key_hint, created_at = now(), last_used_at = null;
+    return k;
+end;
+$$;
+revoke all on function public.new_shortcut_key() from public;
+grant execute on function public.new_shortcut_key() to authenticated;
+
+-- Switch Shortcuts off: the key stops working.
+create or replace function public.remove_shortcut_key()
+returns void
+language sql
+volatile
+security definer
+set search_path = ''
+as $$
+    delete from public.shortcut_keys where user_id = (select auth.uid());
+$$;
+revoke all on function public.remove_shortcut_key() from public;
+grant execute on function public.remove_shortcut_key() to authenticated;
+
+-- --------------------------------------------------------------------------
+-- what the Edge Functions may do (with the service key)
+-- --------------------------------------------------------------------------
+-- The service role skips row-level security, but newer projects no longer give
+-- it table rights by default, so the coach and the shortcut functions
+-- (supabase/functions) get exactly what they use: a Shortcut reads and saves
+-- one person's training data, the coach reads AI keys and keeps its answers.
+grant select, insert, update on public.profiles, public.workout_logs, public.user_texts,
+    public.exercise_settings, public.retrieval_events, public.exercise_renames,
+    public.app_settings to service_role;
+grant select on public.admins to service_role;
+grant select, update (last_used_at) on public.ai_keys to service_role;
+grant select, insert on public.coach_answers to service_role;
+grant select, update (last_used_at) on public.shortcut_keys to service_role;
+grant execute on function public.shared_plan() to service_role;
 
 -- --------------------------------------------------------------------------
 -- deleting your own account
