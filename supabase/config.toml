@@ -1,4 +1,7 @@
-# Only what deploying the Edge Functions needs (supabase functions deploy).
+# Only what the Liftbook project needs declared: the Edge Functions (supabase functions deploy)
+# and the sign-in addresses and email templates (supabase config push). `supabase config push`
+# changes only what is written here; everything else stays as set in the dashboard. Preview first:
+#   supabase config diff --project-ref qjlmxlnmfowqsunpzvac
 project_id = "qjlmxlnmfowqsunpzvac"
 
 [functions.coach]
@@ -9,3 +12,32 @@ verify_jwt = false
 [functions.shortcut]
 # Apple Shortcuts can't sign in; they send their own Shortcut key.
 verify_jwt = false
+
+[auth]
+# Where emailed links land when the app doesn't say. At the switch: https://app.liftbook.in (CUTOVER.md).
+site_url = "https://beta.liftbook.in"
+# Every address the app runs at; links back to anywhere else are refused.
+additional_redirect_urls = [
+  "https://beta.liftbook.in/**",
+  "https://app.liftbook.in/**",
+  "http://localhost:8765/**",
+  "http://192.168.29.209:8765/**",
+]
+
+# The emails people get, branded (supabase/templates/README.md). Sending goes through Resend's
+# SMTP, set in the dashboard (the key never goes in this file).
+[auth.email.template.confirmation]
+subject = "Confirm your Liftbook account"
+content_path = "./supabase/templates/confirmation.html"
+
+[auth.email.template.recovery]
+subject = "Reset your Liftbook password"
+content_path = "./supabase/templates/recovery.html"
+
+[auth.email.template.email_change]
+subject = "Confirm your new Liftbook email"
+content_path = "./supabase/templates/email_change.html"
+
+[auth.email.template.magic_link]
+subject = "Your Liftbook sign-in link"
+content_path = "./supabase/templates/magic_link.html"
