@@ -228,6 +228,25 @@ pre.out { white-space: pre-wrap; word-break: break-word; font: 15px/1.55 var(--m
 }
 @media (min-width: 760px) { .toast { bottom: 24px; } }
 
-.coach-empty { text-align: center; padding: 36px 16px; }
-.coach-empty .big { font-size: 2.4rem; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- coach ---------- */
+.chat { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+.msg { max-width: 100%; overflow-wrap: anywhere; }
+.msg.me { align-self: flex-end; max-width: 85%; background: var(--gold-soft); border: 1px solid var(--line-gold); border-radius: var(--radius) var(--radius) 4px var(--radius); padding: 10px 14px; white-space: pre-wrap; }
+.msg.coach { margin-bottom: 0; }
+.msg-foot { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 8px; }
+.btn.on { border-color: var(--gold); background: var(--gold-soft); }
+.answer p { margin: 0 0 8px; }
+.answer ul { margin: 0 0 8px; padding-left: 20px; }
+.answer li + li { margin-top: 4px; }
+.answer strong { color: var(--gold); }
+.steps { list-style: none; margin: 0 0 10px; padding: 0; font-size: 0.82rem; color: var(--subtle); }
+.steps li::before { content: "✓ "; color: var(--good); }
+.steps li.error::before { content: "↻ "; color: var(--subtle); }
+.starters button { text-align: left; }
+textarea.chat-input { min-height: 64px; font-family: var(--font); }
+.key-row { flex-wrap: wrap; }
+.past summary { cursor: pointer; font-weight: 600; }
+.past .list summary { cursor: pointer; font-weight: 500; }
+.past .answer { padding: 0 2px 12px; font-size: 0.95rem; }

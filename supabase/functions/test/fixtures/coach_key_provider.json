@@ -1,0 +1,1 @@
+{"cases":[{"input":"gsk_abc","output":"groq"},{"input":" gsk_x","output":"groq"},{"input":"AIzaSy","output":"gemini"},{"input":"","output":"gemini"},{"input":null,"output":"gemini"},{"input":"GSK_upper","output":"gemini"}]}

@@ -338,3 +338,73 @@ def test_deleting_an_account_removes_everything(databases):
             {"u": uid(1)},
         )
         assert cur.fetchone() == (0, 0, 0, 1)
+
+
+def test_ai_keys_and_shortcut_keys_stay_private(databases):
+    _, target = databases
+    me, other = str(uuid.uuid4()), str(uuid.uuid4())
+    with connect(target) as cur:
+        cur.execute("insert into auth.users (id, email) values (%s, 'me@x'), (%s, 'other@x')", (me, other))
+
+    with signed_in(target, me) as cur:
+        cur.execute("insert into public.ai_keys (label, api_key) values ('groq', 'gsk_abcdefghijkl'), ('gemini', 'AIzaabcdefghijk')")
+        cur.execute("select label, provider, key_hint from public.ai_keys order by id")
+        assert cur.fetchall() == [("groq", "groq", "ijkl"), ("gemini", "gemini", "hijk")]
+        cur.execute("select public.new_shortcut_key()")
+        first = cur.fetchone()[0]
+        cur.execute("select public.new_shortcut_key()")
+        key = cur.fetchone()[0]
+        assert key.startswith("lbk_") and len(key) == 68 and key != first
+        cur.execute("select key_hint from public.shortcut_keys")
+        assert cur.fetchall() == [(key[-4:],)]
+
+    # Only the hash is kept: the one the shortcut function looks up (sha256 of the key, hex).
+    import hashlib
+    with connect(target) as cur:
+        cur.execute("select user_id::text from public.shortcut_keys where key_hash = %s", (hashlib.sha256(key.encode()).hexdigest(),))
+        assert cur.fetchall() == [(me,)]
+
+    with signed_in(target, other) as cur:
+        cur.execute("select count(*) from public.ai_keys")
+        assert cur.fetchone()[0] == 0
+        cur.execute("delete from public.ai_keys")
+        assert cur.rowcount == 0
+        cur.execute("select public.remove_shortcut_key()")
+    with signed_in(target, me) as cur:
+        cur.execute("delete from public.ai_keys where label = 'gemini'")
+        assert cur.rowcount == 1
+        cur.execute("select count(*) from public.shortcut_keys")
+        assert cur.fetchone()[0] == 1
+
+    for statement in ("select key_hash from public.shortcut_keys", "select api_key from public.ai_keys",
+                      "insert into public.shortcut_keys (user_id, key_hash, key_hint) values (auth.uid(), repeat('a', 64), 'aaaa')",
+                      "update public.ai_keys set api_key = 'gsk_stolen_key_123'"):
+        with pytest.raises(errors.InsufficientPrivilege):
+            with signed_in(target, me) as cur:
+                cur.execute(statement)
+
+
+def test_edge_functions_service_role_can_do_what_they_need(databases):
+    _, target = databases
+    me = str(uuid.uuid4())
+    with connect(target) as cur:
+        cur.execute("insert into auth.users (id, email) values (%s, 'fn@x')", (me,))
+    with signed_in(target, me) as cur:
+        cur.execute("insert into public.ai_keys (label, api_key) values ('g', 'AIzaabcdefghijk')")
+        cur.execute("select public.new_shortcut_key()")
+    with connect(target) as cur:
+        cur.execute("set role service_role")
+        cur.execute("select user_id::text from public.shortcut_keys")
+        assert cur.fetchall() == [(me,)]
+        cur.execute("update public.shortcut_keys set last_used_at = now()")
+        cur.execute("select api_key from public.ai_keys")
+        assert cur.fetchall() == [("AIzaabcdefghijk",)]
+        cur.execute("update public.ai_keys set last_used_at = now()")
+        cur.execute("insert into public.coach_answers (user_id, question, answer) values (%s, 'q', 'a')", (me,))
+        cur.execute("insert into public.user_texts (user_id, kind, text) values (%s, 'plan', 'Session 1')", (me,))
+        cur.execute("select count(*) from public.admins")
+        cur.execute("select public.shared_plan()")
+    with pytest.raises(errors.InsufficientPrivilege):
+        with connect(target) as cur:
+            cur.execute("set role service_role")
+            cur.execute("delete from public.shortcut_keys")
