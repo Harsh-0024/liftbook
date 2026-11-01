@@ -11,7 +11,7 @@ import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-const SKIP = new Set(['test', 'tools', 'sw.js', 'README.md', '.DS_Store']);
+const SKIP = new Set(['test', 'tools', 'sw.js', 'README.md', '.DS_Store', '_headers']); // _headers: Cloudflare Pages' own file
 
 function walk(dir) {
   const out = [];

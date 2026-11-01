@@ -36,10 +36,11 @@ What people using the old app must do when they move to the new one:
    `python scripts/build_apple_shortcuts.py --supabase`) and paste the key when asked.
 2. The old "recommend" shortcut address is gone; it now answers with a message to re-add
    Get Workout.
-3. Saved session nicknames for Get Workout (`user_texts` kind `shortcut_keys`) still work, but the
-   new app has no screen to edit them yet.
-4. AI keys move with the import; the coach is now open to everyone (it was admin-only) and has no
-   rule-based answer when no AI answers.
+3. Saved session nicknames for Get Workout (`user_texts` kind `shortcut_keys`) carry over and
+   are edited in Settings > Apple Shortcuts > Session names.
+4. AI keys move with the import; the coach is now open to everyone (it was admin-only). With no
+   key, or when no model answers, the old app's built-in answers (`web/core/history_qa.js`) still
+   answer the questions they know.
 
 What the owner must do:
 
