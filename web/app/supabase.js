@@ -36,7 +36,7 @@ function errorMessage(status, payload) {
   return text || `The server said no (${status}).`;
 }
 
-export function createClient({ url, key, fetchFn = globalThis.fetch.bind(globalThis), storage = globalThis.localStorage }) {
+export function createClient({ url, key, fetchFn = (...args) => globalThis.fetch(...args), storage = globalThis.localStorage }) {
   const base = String(url || '').replace(/\/+$/, '');
   let refreshing = null;
   const listeners = new Set();

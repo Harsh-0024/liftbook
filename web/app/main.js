@@ -135,6 +135,9 @@ function paintPill(st) {
   else pill.textContent = `Synced ${ago(st.last_sync)}`;
 }
 
+// "Synced 3 min ago" keeps counting between syncs.
+setInterval(() => { if (ctx && !pill.hidden) paintPill(ctx.sync.status()); }, 30000);
+
 pill.addEventListener('click', async () => {
   if (!ctx) return;
   const r = await ctx.sync.runOnce();

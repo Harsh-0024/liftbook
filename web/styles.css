@@ -185,6 +185,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--gold); outl
 .pill.new { color: var(--new); border-color: color-mix(in srgb, var(--new) 40%, transparent); }
 .pill.error { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 40%, transparent); }
 
+.table-scroll { overflow-x: auto; }
 table.summary { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
 table.summary th, table.summary td { text-align: left; padding: 8px 6px; border-top: 1px solid var(--line); vertical-align: top; }
 table.summary th { color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; border-top: 0; }

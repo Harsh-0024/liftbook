@@ -24,15 +24,17 @@ function writeDraft(text) {
 
 /** The table shown after saving: each exercise, best before, today, and how it went. */
 export function summaryTable(summary) {
-  return h('table', { class: 'summary' },
+  // Each set ("140 x 5") stays on one line; a narrow screen scrolls the table instead of cutting it off.
+  const keep = (sets) => String(sets ?? '').replace(/ x /g, '\u00a0x\u00a0');
+  return h('div', { class: 'table-scroll' }, h('table', { class: 'summary' },
     h('thead', {}, h('tr', {}, h('th', {}, 'Exercise'), h('th', {}, 'Best before'), h('th', {}, 'Today'), h('th', {}, ''))),
     h('tbody', {}, (summary || []).map((r) => h('tr', {},
       h('td', {}, r.name),
-      h('td', { class: 'mono subtle' }, r.old),
-      h('td', { class: 'mono' }, r.new),
+      h('td', { class: 'mono subtle' }, keep(r.old)),
+      h('td', { class: 'mono' }, keep(r.new)),
       h('td', {}, r.status && r.status !== '-'
         ? h('span', { class: `pill ${r.status === 'ERROR' ? 'error' : r.class}` }, r.status === 'CONSISTENCY' ? 'MORE REPS' : r.status)
-        : (r.performance_label ? h('span', { class: 'subtle' }, r.performance_label) : null))))));
+        : (r.performance_label ? h('span', { class: 'subtle' }, r.performance_label) : null)))))));
 }
 
 export function logScreen(ctx) {
@@ -88,7 +90,7 @@ export function logScreen(ctx) {
       if (confirm(`Is ${name} done for time (seconds) rather than reps?`)) await lb.setExerciseSetting(name, { is_timed: true });
       else await lb.setExerciseSetting(name, { is_timed: false });
     }
-    toast(ctx.sync.status().error === 'offline' ? 'Saved on this device. It syncs when you’re back online.' : 'Workout saved.');
+    toast(!navigator.onLine || ctx.sync.status().error === 'offline' ? 'Saved on this device. It syncs when you’re back online.' : 'Workout saved.');
     ctx.go(`workout/${r.day}`);
   }
   save.addEventListener('click', busy(save, () => doSave(false)));
