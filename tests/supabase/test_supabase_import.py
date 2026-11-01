@@ -270,6 +270,8 @@ def test_people_only_reach_their_own_rows(databases):
         ("update public.feedback set status = 'done'", None),
         ("select * from public.admins", None),
         ("select public.admin_feedback()", None),
+        ("select public.admin_users()", None),
+        ("select public.admin_coach_answers()", None),
     ):
         with pytest.raises((errors.InsufficientPrivilege, errors.RaiseException)):
             with signed_in(target, me) as cur:
@@ -321,6 +323,11 @@ def test_followers_see_the_admins_plan(databases):
     with signed_in(target, uid(1)) as cur:
         cur.execute("select public.is_admin(), json_array_length(public.admin_feedback())")
         assert cur.fetchone() == (True, 1)
+        cur.execute("select public.admin_users(), public.admin_coach_answers(5)")
+        users, coach = cur.fetchone()
+        assert sorted(u["username"] for u in users) == ["friend", "harsh", "noemail"]
+        assert {u["username"]: u["is_admin"] for u in users} == {"harsh": True, "friend": False, "noemail": False}
+        assert set(coach) == {"totals", "answers"}
 
 
 def test_deleting_an_account_removes_everything(databases):

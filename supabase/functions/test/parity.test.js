@@ -7,6 +7,7 @@ import { dirname, join } from 'node:path';
 import { check } from '../../../web/core/test/helpers.js';
 import { runTool, coachData } from '../../../web/core/coach_tools.js';
 import { toPlainText } from '../../../web/core/rich_text.js';
+import { rulesReply } from '../../../web/core/history_qa.js';
 import {
   systemPrompt, cleanHistory, keyProvider, modelOrder, geminiPayload, openaiPayload, parseGemini, parseOpenai,
   plainWords, linksFor,
@@ -30,6 +31,17 @@ test('coach tools match Python', (t) => {
     if (c.output.python_raised) return 'error' in out ? c.output : out;
     return out;
   }, (c) => `${c.input.tool}(${JSON.stringify(c.input.args)}) state ${c.input.state} on ${c.input.today}`);
+});
+
+test('the coach’s built-in answers match Python', (t) => {
+  const states = load('coach_states');
+  check(t, load('coach_rules'), ({ question, context, today, state }) => {
+    const s = states[state];
+    const history = [...s.history].sort((a, b) => a.id - b.id);
+    const out = rulesReply({ history, settings: s.settings, ownRepRanges: s.own_rep_ranges, today }, question, context, 'NOTE');
+    // The new app's addresses start with #/.
+    return out.links ? { ...out, links: out.links.map((l) => ({ ...l, url: l.url.replace(/^#/, '') })) } : out;
+  }, (c) => `${JSON.stringify(c.input.question)} ${JSON.stringify(c.input.context)} state ${c.input.state} on ${c.input.today}`);
 });
 
 test('note text is cleaned as Python cleans it', (t) => {

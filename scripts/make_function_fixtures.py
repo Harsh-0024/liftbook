@@ -5,6 +5,7 @@ JavaScript gives the same.
 - coach tools (services/coach_tools.py) over the generated training histories of
   make_core_fixtures.py, at two "todays": just after the last workout, and months later;
 - the coach's prompt, message clean-up, request bodies and reply parsing (services/ai_coach.py);
+- the coach's built-in answers when no AI can answer (services/history_qa.py via ai_coach._rules_answer);
 - note text from Apple Notes and other apps (utils/rich_text.py).
 
 Run from the repo root:
@@ -20,7 +21,7 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import make_core_fixtures as core  # noqa: E402  (sets up a throwaway environment first)
 
-from services import ai_coach, coach_tools  # noqa: E402
+from services import ai_coach, coach_tools, history_qa  # noqa: E402
 from utils.rich_text import to_plain_text  # noqa: E402
 
 OUT = core.ROOT / "supabase" / "functions" / "test" / "fixtures"
@@ -79,6 +80,44 @@ def tool_cases(final):
                                   "output": core.plain(out)})
             finally:
                 coach_tools._today, coach_tools.get_effective_plan_text, coach_tools.get_effective_rep_ranges_text = saved
+    return cases
+
+
+def rules_questions(names, last):
+    """Questions the built-in answers know (and a few they don't), about this history."""
+    picks = names[:4] + ["Nothing Like This"]
+    qs = []
+    for n in picks:
+        low = n.lower()
+        qs += [(f"When did I last hit 60kg {low}?", {}), (f"last hit 100 kg {low}", {}), (f"last hit 1000kg {n}?", {}),
+               (f"When did I last do {low}?", {}), (f"when did i last train {n}", {}),
+               (f"What was my best day in {low} relative to previous?", {}), (f"best jump for {low} vs previous", {}),
+               ("Why did the graph go down here?", {"exercise": n, "date": last.isoformat()}),
+               ("Why is it low?", {"exercise": n, "metric": "weight", "date": (last - timedelta(days=3)).isoformat()})]
+    for kind in ("pull", "push", "legs", "upper", "lower"):
+        qs += [(f"What was my best {kind} day in the last 30 days?", {}), (f"best {kind} day in the last 365 days", {})]
+    qs += [("best pull day last 7 days", {}), ("best legs day in the last 999 days", {}),
+           (f"Why did my graph drop on {last.isoformat()}?", {}), (f"graph went down on {last.day} {last.strftime('%b').lower()}", {}),
+           (f"graph down {last.day} {last.strftime('%B')}?", {"exercise": names[0]}), ("graph drop on 31 feb", {}),
+           ("Why the dip?", {"date": last.isoformat()}), ("How is my bench?", {}), ("", {}), ("hello", {"date": "bad"})]
+    return qs
+
+
+def rules_cases(final):
+    cases = []
+    last = max(datetime.fromisoformat(l["date"]).date() for l in final["logs"])
+    names = sorted({l["exercise"] for l in final["logs"]})
+    for today in (last + timedelta(days=2), last + timedelta(days=150)):
+        with core.State(final) as s:
+            saved = history_qa.utc_now
+            history_qa.utc_now = FixedClock(today)
+            try:
+                for question, ctx in rules_questions(names, last):
+                    out = ai_coach._rules_answer(s.db, s.user, question, ctx, note="NOTE")
+                    cases.append({"input": {"question": question, "context": ctx, "today": today.isoformat(), "state": final},
+                                  "output": core.plain(out)})
+            finally:
+                history_qa.utc_now = saved
     return cases
 
 
@@ -222,12 +261,16 @@ def main():
         finals.append(final)
     states = []
     tools = []
+    rules = []
     for final in finals:
         states.append(core.js_state(final))
         for case in tool_cases(final):
             case["input"]["state"] = len(states) - 1
             tools.append(case)
-    fixtures = {"coach_states": states, "coach_tools": tools, "rich_text": [{"input": t, "output": to_plain_text(t)} for t in RICH_TEXTS]}
+        for case in rules_cases(final):
+            case["input"]["state"] = len(states) - 1
+            rules.append(case)
+    fixtures = {"coach_states": states, "coach_tools": tools, "coach_rules": rules, "rich_text": [{"input": t, "output": to_plain_text(t)} for t in RICH_TEXTS]}
     fixtures["rich_text"].append({"input": {"bytes": list("Curl – 20x10".encode("cp1252"))},
                                   "output": to_plain_text("Curl – 20x10".encode("cp1252"))})
     fixtures["rich_text"].append({"input": {"bytes": list("Curl – 20x10".encode("utf-8"))},

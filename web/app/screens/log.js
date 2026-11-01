@@ -3,7 +3,7 @@
 
 import { h, formatDay, busy, toast } from '../ui.js';
 
-const DRAFT_KEY = 'liftbook-log-draft';
+export const DRAFT_KEY = 'liftbook-log-draft';
 
 function readDraft() {
   try {

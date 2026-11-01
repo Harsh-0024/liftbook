@@ -5,9 +5,11 @@
 // asks for what it needs, and writes its answer from the results. Models are tried best first and
 // any of them can take a question over mid-way, on any of the person's keys.
 //
-// Unlike the old app there is no rule-based fallback: with no working key the person is told why.
+// As in the old app, when no key is set up or no model can answer, questions the built-in
+// answers know (web/core/history_qa.js) still get answered; anything else says why not.
 
 import { TOOLS, coachData, functionDeclarations, runTool } from '../../../web/core/coach_tools.js';
+import { rulesReply } from '../../../web/core/history_qa.js';
 import { formatG } from '../../../web/core/py.js';
 
 export const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta';
@@ -462,9 +464,17 @@ export async function answer({
   if (!turns.length || turns[turns.length - 1].role !== 'user') return { ok: false, error: 'Please enter a question.', usage };
   usage.question = turns[turns.length - 1].text;
 
+  const question = usage.question;
+  // Built-in answer when the AI can't give one; the reason why stays if it doesn't know either.
+  const rules = (note, failure) => {
+    const r = rulesReply({ ...data, today }, question, cleanContext(context), note);
+    return r.ok ? r : failure;
+  };
+
   const keys = usableKeys(keyRows);
   if (!keys.length) {
-    return { ok: false, error: 'Add a Gemini or Groq key first: the coach answers with your own key.', no_key: true, usage };
+    const noKey = { ok: false, error: 'Add a Gemini or Groq key first: the coach answers with your own key.', no_key: true };
+    return { ...rules('No AI key is set up, so only built-in questions work. Add a Gemini or Groq key below.', noKey), no_key: true, usage };
   }
 
   const tools = coachData({ ...data, today });
@@ -511,6 +521,9 @@ export async function answer({
     throw new CoachUnavailable('too many tool rounds');
   } catch (err) {
     if (!(err instanceof CoachUnavailable)) console.error('coach failed', err);
-    return done({ ok: false, error: err instanceof CoachUnavailable ? unavailableMessage(transport, keys) : 'The coach hit an error. Try again.' });
+    if (err instanceof CoachUnavailable) {
+      return done(rules('The AI is unavailable right now, so this is the built-in answer.', { ok: false, error: unavailableMessage(transport, keys) }));
+    }
+    return done(rules('The AI hit an error, so this is the built-in answer.', { ok: false, error: 'The coach hit an error. Try again.' }));
   }
 }

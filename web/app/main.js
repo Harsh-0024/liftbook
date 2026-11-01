@@ -9,7 +9,7 @@ import { Liftbook } from './data.js';
 import { h, toast, ago } from './ui.js';
 import { authScreens, welcomeScreen, resetScreen } from './screens/auth.js';
 import { homeScreen, workoutScreen, editScreen } from './screens/home.js';
-import { logScreen } from './screens/log.js';
+import { logScreen, DRAFT_KEY } from './screens/log.js';
 import { retrieveScreen, retrieveDayScreen, retrieveCustomScreen } from './screens/retrieve.js';
 import { statsScreen } from './screens/stats.js';
 import { settingsScreen } from './screens/settings.js';
@@ -160,8 +160,13 @@ async function signOut({ force = false } = {}) {
   ctx = null;
   pill.hidden = true;
   await client.auth.signOut();
-  // This device keeps nothing of the account once signed out.
+  // This device keeps nothing of the account once signed out, the half-typed workout included.
   await deleteDatabase(dbName(uid)).catch(() => {});
+  try {
+    localStorage.removeItem(DRAFT_KEY);
+  } catch {
+    // storage blocked: nothing was kept
+  }
   location.hash = '#/signin';
   render();
 }
@@ -174,12 +179,16 @@ async function boot() {
       h('p', { class: 'muted' }, 'Put the Supabase project’s anon key in web/config.js.')), '');
     return;
   }
-  // Back from an emailed link: confirming the account, or resetting the password.
-  if (/access_token=|error_description=/.test(location.hash)) {
+  // Back from an emailed link: confirming the account or a new email, or resetting the password.
+  if (/access_token=|error_description=|message=/.test(location.hash)) {
     try {
+      // A new email confirmed from the old address only: Supabase asks for the other link too.
+      const message = new URLSearchParams(location.hash.replace(/^#/, '')).get('message');
       const link = await client.auth.fromLink(location.hash);
-      history.replaceState(null, '', location.pathname + (link && link.type === 'recovery' ? '#/reset' : '#/'));
-      if (link && link.type !== 'recovery') toast('Email confirmed. Welcome to Liftbook.');
+      history.replaceState(null, '', location.pathname + (link && link.type === 'recovery' ? '#/reset' : link ? '#/' : '#/settings/account'));
+      if (link?.type === 'email_change') toast('Your email has been changed.', 5000);
+      else if (link && link.type !== 'recovery') toast('Email confirmed. Welcome to Liftbook.');
+      else if (!link && message) toast(`${message}.`.replace(/\.\.$/, '.'), 8000);
     } catch (err) {
       history.replaceState(null, '', `${location.pathname}#/signin`);
       toast(err.message || 'That link has expired. Ask for a new one.', 6000);

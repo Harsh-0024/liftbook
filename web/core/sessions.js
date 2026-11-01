@@ -1,8 +1,8 @@
 // Which plan day a Shortcut asks for ("Session 2", "push 1", "2", or the person's own word for it),
 // as the old app's /shortcut/pick worked it out (liftbook/routes/workouts.py).
 
-import { getWorkoutDays } from '../../../web/core/plans.js';
-import { unescapeHtml } from '../../../web/core/html.js';
+import { getWorkoutDays } from './plans.js';
+import { unescapeHtml } from './html.js';
 
 export function normalizeKey(value) {
   let text = unescapeHtml(String(value ?? '')).trim().toLowerCase();
@@ -164,4 +164,27 @@ export function resolveDay(planText, rawKey, customText = '') {
   if (partly) return partly;
   const sample = [...new Set(days.map((d) => d.label))].sort(pyLess).slice(0, 8).join(', ');
   return { error: `No workout day matched '${rawKey}'. Try one of: ${sample}` };
+}
+
+/**
+ * The person's words for days, from the Session names screen ({token: word}), checked as the old
+ * app's /shortcut/mapping did: only days in the plan, empty boxes dropped, each word used once.
+ * Returns {text} (to save as user_texts "shortcut_keys") or {error}.
+ */
+export function nicknamesText(planText, words) {
+  const allowed = new Set(planDays(planText).map((d) => d.token));
+  const mapping = {};
+  const seen = new Map();
+  for (const [token, raw] of Object.entries(words || {})) {
+    const tok = String(token ?? '').trim();
+    if (!tok || !allowed.has(tok)) continue;
+    const val = String(raw ?? '').trim().slice(0, 120);
+    const norm = normalizeKey(val);
+    if (!val || !norm) continue;
+    const prev = seen.get(norm);
+    if (prev && prev !== tok) return { error: 'Each name can only be used for one session.' };
+    seen.set(norm, tok);
+    mapping[tok] = val;
+  }
+  return { text: JSON.stringify(mapping) };
 }

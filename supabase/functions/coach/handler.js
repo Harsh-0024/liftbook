@@ -52,8 +52,8 @@ async function serve(req, env, { fetchFn = (...a) => globalThis.fetch(...a), now
     return json({ ok: false, error: "You're asking a lot! Give it a few minutes and try again." }, 429);
   }
 
-  const keys = await service.get(`ai_keys?select=id,api_key&${mine}&is_active=eq.true&order=created_at.desc,id.desc`);
-  if (!keys?.length) return json({ ok: false, no_key: true, error: 'Add a Gemini or Groq key first: the coach answers with your own key.' }, 400);
+  // With no key the built-in answers still work (answer() says so).
+  const keys = (await service.get(`ai_keys?select=id,api_key&${mine}&is_active=eq.true&order=created_at.desc,id.desc`)) || [];
 
   const { lb } = await loadLiftbook(sb.asUser(token), user.id);
   const today = localToday(tzOffset(body.tz_offset_minutes), now());
@@ -61,7 +61,10 @@ async function serve(req, env, { fetchFn = (...a) => globalThis.fetch(...a), now
     messages: body.messages, context: body.context, keys, today, fetchFn, now,
     models: modelOrder({ order: env.AI_MODEL_ORDER, preferred: env.GEMINI_COACH_MODEL }),
     profile: lb.profile() || {},
-    data: { history: lb.history(), settings: lb.exerciseSettings(), planText: lb.planText(), repRangesText: lb.repRangesText() },
+    data: {
+      history: lb.history(), settings: lb.exerciseSettings(), planText: lb.planText(), repRangesText: lb.repRangesText(),
+      ownRepRanges: lb.text('rep_ranges'),
+    },
   };
 
   const finish = async (result) => {
@@ -70,7 +73,8 @@ async function serve(req, env, { fetchFn = (...a) => globalThis.fetch(...a), now
       // Kept so answers can be rated and models compared; never at the cost of the answer.
       try {
         const [row] = await service.insert('coach_answers', [{
-          user_id: user.id, question: usage.question, answer: reply.answer, source: 'ai', model: String(reply.model).slice(0, 80),
+          user_id: user.id, question: usage.question, answer: reply.answer, source: reply.source === 'rules' ? 'rules' : 'ai',
+          model: reply.model ? String(reply.model).slice(0, 80) : null,
           steps: usage.steps.map((s) => ({ tool: s.tool, args: s.args, ok: s.ok })),
           calls: usage.calls, tokens: usage.tokens, ms: usage.ms, failed: usage.failed.slice(0, 300) || null,
         }], 'id');

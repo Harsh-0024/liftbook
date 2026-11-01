@@ -432,6 +432,74 @@ $$;
 revoke all on function public.admin_set_feedback_status(bigint, text) from public;
 grant execute on function public.admin_set_feedback_status(bigint, text) to authenticated;
 
+-- Admin pages: everyone's accounts with how much they log, and the coach's
+-- recent answers with their ratings (the old app's /admin and /admin/coach).
+-- Read only; admins see emails here and nowhere else.
+create or replace function public.admin_users()
+returns json
+language plpgsql
+stable
+security definer
+set search_path = ''
+as $$
+begin
+    if not public.is_admin() then
+        raise exception 'admins only' using errcode = '42501';
+    end if;
+    return (
+        select coalesce(json_agg(t order by t.last_workout desc nulls last, t.created_at desc), '[]'::json)
+        from (
+            select u.id as user_id, u.email, u.created_at, u.last_sign_in_at,
+                   u.email_confirmed_at is not null as confirmed,
+                   coalesce(p.username, '')  as username,
+                   coalesce(p.full_name, '') as full_name,
+                   p.avatar_path is not null as has_photo,
+                   exists (select 1 from public.admins a where a.user_id = u.id) as is_admin,
+                   (select count(distinct w.date::date) from public.workout_logs w
+                     where w.user_id = u.id and w.deleted_at is null) as workouts,
+                   (select max(w.date) from public.workout_logs w
+                     where w.user_id = u.id and w.deleted_at is null) as last_workout
+            from auth.users u
+            left join public.profiles p on p.user_id = u.id
+        ) t
+    );
+end;
+$$;
+revoke all on function public.admin_users() from public;
+grant execute on function public.admin_users() to authenticated;
+
+create or replace function public.admin_coach_answers(max_rows integer default 100)
+returns json
+language plpgsql
+stable
+security definer
+set search_path = ''
+as $$
+begin
+    if not public.is_admin() then
+        raise exception 'admins only' using errcode = '42501';
+    end if;
+    return json_build_object(
+        'totals', (select json_build_object(
+                       'answers', count(*),
+                       'helpful', count(*) filter (where rating = 1),
+                       'not_helpful', count(*) filter (where rating = -1),
+                       'built_in', count(*) filter (where source = 'rules'))
+                   from public.coach_answers),
+        'answers', (select coalesce(json_agg(t order by t.created_at desc), '[]'::json)
+                    from (select c.id, c.question, c.answer, c.source, c.model, c.rating, c.comment,
+                                 c.ms, c.tokens, c.failed, c.created_at,
+                                 coalesce(p.username, '') as username
+                          from public.coach_answers c
+                          left join public.profiles p on p.user_id = c.user_id
+                          order by c.created_at desc
+                          limit greatest(1, least(coalesce(max_rows, 100), 500))) t)
+    );
+end;
+$$;
+revoke all on function public.admin_coach_answers(integer) from public;
+grant execute on function public.admin_coach_answers(integer) to authenticated;
+
 -- --------------------------------------------------------------------------
 -- Apple Shortcuts keys
 -- --------------------------------------------------------------------------

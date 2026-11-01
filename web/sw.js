@@ -6,7 +6,7 @@
 // old one, takes over, and the old copy is removed.
 'use strict';
 
-const VERSION = 'bead6735b72a';
+const VERSION = 'e2eb18824e98';
 const FILES = [
   './',
   'app/data.js',
@@ -29,6 +29,7 @@ const FILES = [
   'core/coach_tools.js',
   'core/dates.js',
   'core/defaults.js',
+  'core/history_qa.js',
   'core/html.js',
   'core/html_entities.js',
   'core/logging.js',
@@ -40,6 +41,7 @@ const FILES = [
   'core/retrieve.js',
   'core/rich_text.js',
   'core/scoring.js',
+  'core/sessions.js',
   'core/stats.js',
   'icons/favicon-32.png',
   'icons/icon-180.png',

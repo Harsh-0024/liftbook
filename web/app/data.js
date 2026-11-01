@@ -3,7 +3,8 @@
 // them); nothing here waits for the network except the shared plan and feedback.
 
 import { workoutParser } from '../core/parser.js';
-import { handleWorkoutLog, formatSetsDisplay } from '../core/logging.js';
+import { handleWorkoutLog, formatSetsDisplay, resolveTimedStatus, hasTimeHint } from '../core/logging.js';
+import { makeSettings } from '../core/bodyweight.js';
 import { effectivePlanText, effectiveRepRangesText, getWorkoutDays, ownPlanText } from '../core/plans.js';
 import { retrieveDay, retrieveCustom, describeRetrieveOutput } from '../core/retrieve.js';
 import {
@@ -433,6 +434,38 @@ export class Liftbook {
     await this.store.remove('exercise_renames', r._k);
   }
 
+  /**
+   * Every exercise logged, newest day first, as a spreadsheet (the old app's /export_csv columns).
+   * from/to: "YYYY-MM-DD" or "" for no limit.
+   */
+  csv({ from = '', to = '' } = {}) {
+    const history = this.history();
+    const settings = makeSettings(this.exerciseSettings());
+    const timed = new Map();
+    const isTimed = (l) => {
+      if (hasTimeHint(l.exercise_string || '')) return true;
+      if (!timed.has(l.exercise)) timed.set(l.exercise, resolveTimedStatus({ exerciseName: l.exercise, settings, history }).is_timed);
+      return timed.get(l.exercise);
+    };
+    const cell = (v) => {
+      const t = v === null || v === undefined ? '' : String(v);
+      return /[",\r\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
+    };
+    const list = (xs) => (Array.isArray(xs) ? xs.filter((x) => x !== null && x !== undefined).join(',') : '');
+    const rows = [['Date', 'Workout Name', 'Exercise', 'Exercise String', 'Weights', 'Reps', 'Sets JSON', 'Top Weight (kg)',
+      'Top Reps', 'Estimated 1RM (kg)', 'Uses Bodyweight', 'Bodyweight (kg)', 'Timed']];
+    const logs = history.filter((l) => (!from || dayOf(l.date) >= from) && (!to || dayOf(l.date) <= to))
+      .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0)); // a day's exercises stay in logged order
+    for (const l of logs) {
+      const sets = l.sets && typeof l.sets === 'object' ? l.sets : {};
+      rows.push([String(l.date || '').replace(' ', 'T'), l.workout_name || '', l.exercise || '', l.exercise_string || '',
+        list(sets.weights), list(sets.reps), l.sets ? JSON.stringify(l.sets) : '', l.top_weight ?? '', l.top_reps ?? '',
+        l.estimated_1rm === null || l.estimated_1rm === undefined ? '' : Number(l.estimated_1rm).toFixed(2),
+        l.uses_bodyweight ? 'yes' : l.uses_bodyweight === false ? 'no' : '', l.bodyweight ?? '', isTimed(l) ? 'yes' : 'no']);
+    }
+    return { count: logs.length, text: rows.map((r) => r.map(cell).join(',')).join('\r\n') + '\r\n' };
+  }
+
   /* ---------------- online-only ---------------- */
 
   async sendFeedback(kind, message, page = '') {
@@ -445,6 +478,25 @@ export class Liftbook {
 
   async myFeedback() {
     return this.client.db.select('feedback?select=id,kind,message,status,created_at&order=created_at.desc&limit=50');
+  }
+
+  /* Admins only (the database refuses anyone else). */
+
+  async adminFeedback() {
+    return (await this.client.db.rpc('admin_feedback', {})) || [];
+  }
+
+  async setFeedbackStatus(id, status) {
+    if (!['new', 'seen', 'done'].includes(status)) throw new Error('Unknown status.');
+    await this.client.db.rpc('admin_set_feedback_status', { feedback_id: id, new_status: status });
+  }
+
+  async adminUsers() {
+    return (await this.client.db.rpc('admin_users', {})) || [];
+  }
+
+  async adminCoach(maxRows = 100) {
+    return (await this.client.db.rpc('admin_coach_answers', { max_rows: maxRows })) || { totals: {}, answers: [] };
   }
 
   async usernameAvailable(name) {

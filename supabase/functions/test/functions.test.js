@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { fakeSupabase, logRow, ENV } from './fake_supabase.js';
 import { handle as coach, RATE_LIMIT } from '../coach/handler.js';
 import { handle as shortcut, sha256Hex, KEY_INVALID, KEY_MISSING, DAY_TAKEN } from '../shortcut/handler.js';
-import { resolveDay, sessionLabels, normalizeKey } from '../shortcut/sessions.js';
+import { resolveDay, sessionLabels, normalizeKey, nicknamesText, customKeys } from '../../../web/core/sessions.js';
 import { localNow } from '../_shared/liftbook.js';
 
 const ME = '11111111-1111-4111-8111-111111111111';
@@ -164,6 +164,7 @@ test('the coach needs a sign-in and a key of the person’s own', async () => {
   const res = await ask(sb, token, { messages: [{ role: 'user', text: 'How is my bench?' }] });
   const body = await res.json();
   assert.equal(body.no_key, true);
+  assert.equal(body.ok, false, 'the built-in answers don’t know this one');
   assert.equal(sb.ai.seen.length, 0, 'no model was asked');
 });
 
@@ -222,6 +223,34 @@ test('a refused or busy key hands the question to the next model or key', async 
   assert.match(refused.error, /^Your AI keys were refused/);
 });
 
+test('with no key or no working AI, the built-in answers still answer what they know', async () => {
+  const sb = world();
+  const token = sb.signIn(ME);
+  const built = await (await ask(sb, token, { messages: [{ role: 'user', text: 'When did I last hit 60kg flat barbell press?' }] })).json();
+  assert.equal(built.ok, true, JSON.stringify(built));
+  assert.equal(built.no_key, true);
+  assert.equal(built.source, 'rules');
+  assert.match(built.answer, /^Last time you hit 60kg\+ on flat barbell press was 2026-10-28\. \(Top set: 60\.0 x 8\)/);
+  assert.match(built.note, /No AI key is set up/);
+  assert.deepEqual(built.links, [{ label: 'Open workout', url: '#/workout/2026-10-28' }]);
+  assert.equal(sb.tables.coach_answers[0].source, 'rules');
+  assert.equal(sb.tables.coach_answers[0].model, null);
+  assert.equal(sb.ai.seen.length, 0);
+
+  sb.seed('ai_keys', { user_id: ME, api_key: 'gsk_busy_groq_key_0000000000', is_active: true, created_at: '2026-10-01T00:00:00Z' });
+  for (let i = 0; i < 6; i++) sb.ai.replies.push(() => ({ status: 503, json: {} }));
+  const busy = await (await ask(sb, token, { messages: [{ role: 'user', text: 'When did I last do squat?' }] })).json();
+  // Someone else's squat isn't theirs: the built-in answer doesn't know, so the real reason shows.
+  assert.equal(busy.ok, false);
+  assert.match(busy.error, /unavailable|limit|refused/);
+  for (let i = 0; i < 6; i++) sb.ai.replies.push(() => ({ status: 503, json: {} }));
+  const fell = await (await ask(sb, token, { messages: [{ role: 'user', text: 'When did I last do barbell curl?' }] })).json();
+  assert.equal(fell.ok, true, JSON.stringify(fell));
+  assert.equal(fell.source, 'rules');
+  assert.equal(fell.note, 'The AI is unavailable right now, so this is the built-in answer.');
+  assert.match(fell.answer, /^Last time you logged barbell curl was 2026-10-28\./);
+});
+
 test('the coach streams each lookup, then the answer', async () => {
   const sb = world();
   const token = sb.signIn(ME);
@@ -245,4 +274,14 @@ test('the coach stops someone asking too much', async () => {
   const res = await ask(sb, token, { messages: [{ role: 'user', text: 'Again?' }] });
   assert.equal(res.status, 429);
   assert.equal(sb.ai.seen.length, 0);
+});
+
+test('session names are checked as the old app checked them, and Get Workout uses them', () => {
+  const r = nicknamesText(PLAN, { 'session:1': '  Push ', 'session:2': '', 'legs:1': 'Leg day', 'nope:9': 'x' });
+  assert.deepEqual(JSON.parse(r.text), { 'session:1': 'Push', 'legs:1': 'Leg day' });
+  assert.equal(resolveDay(PLAN, 'push', r.text).day.label, 'Session 1 - Chest & Biceps');
+  assert.equal(resolveDay(PLAN, 'LEG-DAY', r.text).day.label, 'Legs 1');
+  assert.deepEqual(customKeys(r.text), { 'session:1': 'Push', 'legs:1': 'Leg day' });
+  assert.match(nicknamesText(PLAN, { 'session:1': 'Push!', 'session:2': 'push' }).error, /only be used for one/);
+  assert.equal(nicknamesText(PLAN, { 'session:1': '!!!' }).text, '{}');
 });

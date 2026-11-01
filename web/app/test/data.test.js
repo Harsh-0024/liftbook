@@ -127,3 +127,20 @@ test('settings are one JSON row; plan texts are rows by kind', async () => {
   await lb.setSetting('follow_shared_plan', false);
   assert.doesNotMatch(lb.planText(), /^Session 1\nDeadlift$/);
 });
+
+test('the spreadsheet has the old app’s columns, newest first, and dates can limit it', async () => {
+  const lb = await app();
+  await lb.log(DAY1);
+  await lb.log('1/11/26 Core\n\nPlank\n60, 45');
+  const all = lb.csv();
+  const lines = all.text.trimEnd().split('\r\n');
+  assert.equal(all.count, 3);
+  assert.equal(lines[0], 'Date,Workout Name,Exercise,Exercise String,Weights,Reps,Sets JSON,Top Weight (kg),Top Reps,Estimated 1RM (kg),Uses Bodyweight,Bodyweight (kg),Timed');
+  assert.match(lines[1], /^2026-11-01T[\d:]+,Core,Plank,/);
+  assert.match(lines[1], /,yes$/, 'plank is timed');
+  assert.match(lines[2], /^2026-10-31T[\d:]+,Session 1,Squat,"Squat\n100 x 5, 5, 5","100,100,100","5,5,5","{""weights"":\[100,100,100\],""reps"":\[5,5,5\]}",100,5,/);
+  assert.match(lines[2], /,no$/);
+  assert.equal(lb.csv({ from: '2026-11-01' }).count, 1);
+  assert.equal(lb.csv({ to: '2026-10-31' }).count, 2);
+  assert.equal(lb.csv({ from: '2027-01-01' }).count, 0);
+});

@@ -2,6 +2,7 @@
 // the Log page (or a notes app) at the gym.
 
 import { h, copyText, busy, toast } from '../ui.js';
+import { DRAFT_KEY } from './log.js';
 
 function dayLabel(plans, category, dayName) {
   const id = dayName.slice(category.length).trim();
@@ -37,7 +38,7 @@ export function retrieveScreen(ctx) {
 function output(ctx, result, back) {
   const logIt = () => {
     try {
-      localStorage.setItem('liftbook-log-draft', result.text);
+      localStorage.setItem(DRAFT_KEY, result.text);
     } catch {
       // nothing kept; the copy button still works
     }

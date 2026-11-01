@@ -18,7 +18,7 @@ import { toPlainText } from '../../../web/core/rich_text.js';
 import { workoutParser } from '../../../web/core/parser.js';
 import { normalizeExerciseName } from '../../../web/core/names.js';
 import { hasBodyweightToken } from '../../../web/core/bodyweight.js';
-import { resolveDay, sessionLabels } from './sessions.js';
+import { resolveDay, sessionLabels } from '../../../web/core/sessions.js';
 
 export const SERVER = 'Supabase';
 export const KEY_HELP = 'Copy your Shortcut key again from Liftbook > Settings > Apple Shortcuts. '

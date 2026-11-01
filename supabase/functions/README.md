@@ -11,7 +11,7 @@ Two Supabase Edge Functions (Deno) for project `qjlmxlnmfowqsunpzvac`:
   Shortcut key from Settings > Apple Shortcuts (only its SHA-256 is stored, in `shortcut_keys`).
   Changes are written the way a device syncs them, so they show up in the app on the next sync.
 
-The logic lives in plain JS (`handler.js`, `coach.js`, `sessions.js`) and reuses `web/core` and
+The logic lives in plain JS (`handler.js`, `coach.js`; Get Workout's day matching is `web/core/sessions.js`) and reuses `web/core` and
 `web/app`. `index.ts` only hands requests to it.
 
 ```

@@ -1,10 +1,12 @@
 // The AI coach: ask about your training and get answers from your own history. It runs as a
 // Supabase Edge Function (supabase/functions/coach) with the person's own Gemini or Groq key,
-// so it needs a connection; the keys are managed here too. The chat stays while the app is open.
+// so it needs a connection; the keys are managed here too. Offline, the built-in answers
+// (web/core/history_qa.js) still answer the questions they know. The chat stays while the app is open.
 
 import { h, toast, busy, ago, formatDay } from '../ui.js';
 import { Online, KEY_LINKS } from '../online.js';
 import { coachData, suggestions } from '../../core/coach_tools.js';
+import { rulesReply } from '../../core/history_qa.js';
 
 const chat = { messages: [] }; // [{role: user|assistant, text, steps?, links?, answer_id?, model?, rating?, error?}]
 
@@ -73,6 +75,9 @@ export function coachScreen(ctx) {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
   const days = new Set(lb.workouts().map((w) => w.day));
+  const builtIn = (question, note) => rulesReply({
+    history: lb.history(), settings: lb.exerciseSettings(), ownRepRanges: lb.text('rep_ranges'), today: todayLocal(),
+  }, question, { page: 'coach' }, note);
 
   function paintStarters() {
     if (chat.messages.length) {
@@ -96,6 +101,7 @@ export function coachScreen(ctx) {
         `${s.label}${Object.values(s.args || {}).length ? ` · ${Object.values(s.args).join(', ')}` : ''}`))));
     }
     if (m.error) body.push(h('p', { class: 'error' }, m.error));
+    if (m.note) body.push(h('p', { class: 'subtle' }, m.note));
     if (m.text) body.push(formatAnswer(m.text, (d) => days.has(d)));
     if (m.answer_id) {
       const rate = (value) => async () => {
@@ -110,7 +116,7 @@ export function coachScreen(ctx) {
         }
       };
       body.push(h('div', { class: 'row spread msg-foot' },
-        h('span', { class: 'subtle' }, m.model || ''),
+        h('span', { class: 'subtle' }, m.model || (m.source === 'rules' ? 'Built-in answer' : '')),
         h('div', { class: 'row' },
           h('button', { class: `btn small${m.rating === 1 ? ' on' : ''}`, type: 'button', 'aria-label': 'Helpful', 'aria-pressed': String(m.rating === 1), onclick: rate(1) }, '👍'),
           h('button', { class: `btn small${m.rating === -1 ? ' on' : ''}`, type: 'button', 'aria-label': 'Not helpful', 'aria-pressed': String(m.rating === -1), onclick: rate(-1) }, '👎'))));
@@ -128,7 +134,15 @@ export function coachScreen(ctx) {
     const q = String(question || '').trim();
     if (!q || working) return;
     if (!navigator.onLine) {
-      toast('The coach needs a connection. Try again when you’re online.', 4000);
+      const local = builtIn(q, 'You’re offline, so this is the built-in answer.');
+      if (!local.ok) {
+        toast('The coach needs a connection for that. Try again when you’re online.', 4000);
+        return;
+      }
+      input.value = '';
+      chat.messages.push({ role: 'user', text: q }, { role: 'assistant', text: local.answer, note: local.note, source: 'rules' });
+      paintThread();
+      thread.lastElementChild?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       return;
     }
     working = true;
@@ -149,18 +163,21 @@ export function coachScreen(ctx) {
           paintThread();
         },
       });
-      if (r.ok) Object.assign(reply, { text: r.answer, steps: r.steps || reply.steps, answer_id: r.answer_id, model: r.model });
-      else {
-        reply.error = r.error || 'The coach couldn’t answer.';
-        if (r.no_key) {
-          keys = [];
-          paintKeys();
-        }
+      if (r.ok) {
+        Object.assign(reply, { text: r.answer, steps: r.steps || reply.steps, answer_id: r.answer_id, model: r.model, note: r.note, source: r.source });
+      }
+      else reply.error = r.error || 'The coach couldn’t answer.';
+      if (r.no_key) {
+        keys = [];
+        paintKeys();
       }
       // The coach marks keys used (or refused): show that in the key list.
       if (!r.no_key) loadKeys();
     } catch (err) {
-      reply.error = err.message || 'The coach couldn’t answer.';
+      // Lost the connection on the way: answer here if the built-in answers know this one.
+      const local = err.offline ? builtIn(q, 'No connection, so this is the built-in answer.') : null;
+      if (local?.ok) Object.assign(reply, { text: local.answer, note: local.note, source: 'rules' });
+      else reply.error = err.message || 'The coach couldn’t answer.';
     } finally {
       reply.pending = false;
       working = false;

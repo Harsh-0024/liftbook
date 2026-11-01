@@ -146,6 +146,13 @@ export function createClient({ url, key, fetchFn = (...args) => globalThis.fetch
       if (!token) throw new ApiError(401, 'Sign in again first.');
       await request('PUT', '/auth/v1/user', { password }, { token });
     },
+    /** Asks Supabase to move the account to a new email; it changes once the emailed link is opened. */
+    async updateEmail(email, redirectTo = null) {
+      const token = await accessToken();
+      if (!token) throw new ApiError(401, 'Sign in again first.');
+      const q = redirectTo ? `?redirect_to=${encodeURIComponent(redirectTo)}` : '';
+      return request('PUT', `/auth/v1/user${q}`, { email }, { token });
+    },
     /**
      * The sign-in an emailed link carries (confirming an account, or resetting a password):
      * "#access_token=...&refresh_token=...&type=recovery". Returns {type} or null.
