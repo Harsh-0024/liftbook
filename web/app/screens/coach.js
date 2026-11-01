@@ -157,6 +157,8 @@ export function coachScreen(ctx) {
           paintKeys();
         }
       }
+      // The coach marks keys used (or refused): show that in the key list.
+      if (!r.no_key) loadKeys();
     } catch (err) {
       reply.error = err.message || 'The coach couldn’t answer.';
     } finally {
