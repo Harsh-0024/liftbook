@@ -1,0 +1,29 @@
+{
+  "name": "liftbook",
+  "private": true,
+  "type": "module",
+  "description": "Liftbook: the web app in web/ and its Android app (Capacitor, android/).",
+  "scripts": {
+    "test": "node --test web/app/test/*.test.js web/core/test/*.test.js",
+    "android:www": "node web/tools/build_app.js",
+    "android:sync": "node web/tools/build_app.js && cap sync android",
+    "android:debug": "node web/tools/build_app.js && cap sync android && cd android && ./gradlew assembleDebug",
+    "android:release": "node web/tools/build_app.js && cap sync android && cd android && ./gradlew bundleRelease",
+    "android:open": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/camera": "^8.2.6",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/filesystem": "^8.1.5",
+    "@capacitor/keyboard": "^8.0.6",
+    "@capacitor/network": "^8.0.1",
+    "@capacitor/share": "^8.0.3",
+    "@capacitor/splash-screen": "^8.0.2"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "^8.6.0"
+  }
+}

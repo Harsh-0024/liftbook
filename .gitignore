@@ -89,3 +89,7 @@ Thumbs.db
 *.tmp
 *.bak
 supabase/.temp/
+
+# Android app (Capacitor)
+/node_modules/
+/build/

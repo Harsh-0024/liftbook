@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The app's page colour (the page background in web/styles.css): light theme here, dark in values-night. -->
+    <color name="app_background">#F5F3F0</color>
+</resources>

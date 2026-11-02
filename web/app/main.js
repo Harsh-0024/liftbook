@@ -14,6 +14,7 @@ import { retrieveScreen, retrieveDayScreen, retrieveCustomScreen } from './scree
 import { statsScreen } from './screens/stats.js';
 import { settingsScreen } from './screens/settings.js';
 import { coachScreen } from './screens/coach.js';
+import { isNative, startNative, wantsApp, appHandOff } from './native.js';
 
 const main = document.getElementById('app');
 const pill = document.getElementById('sync-pill');
@@ -181,6 +182,11 @@ async function boot() {
   }
   // Back from an emailed link: confirming the account or a new email, or resetting the password.
   if (/access_token=|error_description=|message=/.test(location.hash)) {
+    // Asked for in the Android app: hand it on to the app, unless the person carries on here.
+    if (wantsApp()) {
+      const carriedOn = await new Promise((resolve) => show(appHandOff(h, location.hash, () => resolve(true)), ''));
+      if (carriedOn) history.replaceState(null, '', location.pathname + location.hash);
+    }
     try {
       // A new email confirmed from the old address only: Supabase asks for the other link too.
       const message = new URLSearchParams(location.hash.replace(/^#/, '')).get('message');
@@ -205,11 +211,35 @@ async function boot() {
     toast('Your sign-in has expired. Sign in again.', 5000);
     render();
   });
+  startNative({
+    // An emailed link opened the app: start again from it, the way the website does.
+    onLink(url) {
+      const hash = String(url).includes('#') ? `#${String(url).split('#')[1]}` : '';
+      try {
+        if (!hash || sessionStorage.getItem('liftbook-link') === url) return;
+        sessionStorage.setItem('liftbook-link', url);
+      } catch {
+        // storage blocked: the link is still opened once
+      }
+      history.replaceState(null, '', location.pathname + hash);
+      location.reload();
+    },
+    onResume: () => ctx?.sync.runOnce(),
+    onOnline: () => ctx?.sync.runOnce(),
+    // Android's back button: back a screen, or out of the app from the home screen.
+    onBack(canGoBack) {
+      if (!path()) return false;
+      if (canGoBack) history.back();
+      else go('');
+      return true;
+    },
+  });
   if (client.auth.session()) await start();
   else render();
 }
 
-if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+// The offline copy is for the website; the Android app already carries every file.
+if ('serviceWorker' in navigator && location.protocol !== 'file:' && !isNative) {
   // A new version takes over as soon as it has installed; reload once so this page runs it too
   // (the log draft is kept on the device, so nothing typed is lost). Not on the very first visit.
   const hadVersion = !!navigator.serviceWorker.controller;

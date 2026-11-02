@@ -1,0 +1,20 @@
+{
+  "appId": "in.liftbook.app",
+  "appName": "Liftbook",
+  "webDir": "build/www",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#000000"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 600,
+      "launchAutoHide": true,
+      "backgroundColor": "#000000",
+      "showSpinner": false
+    },
+    "SystemBars": {
+      "insetsHandling": "css"
+    }
+  }
+}

@@ -7,6 +7,7 @@ import { FEEDBACK_KINDS } from '../data.js';
 import { defaultRepRangesText } from '../../core/plans.js';
 import { DEFAULT_PLAN } from '../../core/plans.js';
 import { planDays, customKeys, nicknamesText } from '../../core/sessions.js';
+import { isNative, pickPhoto, saveFile, linkBackUrl } from '../native.js';
 
 const SECTIONS = [
   ['profile', 'Profile', 'Name, username, bodyweight, photo'],
@@ -66,13 +67,17 @@ function profile(ctx) {
     if (url) avatar.replaceWith(h('img', { class: 'avatar', src: url, alt: 'Profile photo' }));
   });
   const file = h('input', { type: 'file', accept: 'image/png,image/jpeg,image/webp', hidden: true });
-  const photoBtn = h('button', { class: 'btn small', type: 'button', onclick: () => file.click() }, 'Change photo');
-  file.addEventListener('change', busy(photoBtn, async () => {
-    if (!file.files[0]) return;
-    await lb.uploadAvatar(file.files[0]);
+  const photoBtn = h('button', { class: 'btn small', type: 'button' }, 'Change photo');
+  const upload = async (photo) => {
+    if (!photo) return;
+    await lb.uploadAvatar(photo);
     toast('Photo saved.');
     ctx.refresh();
-  }));
+  };
+  // In the Android app: the camera or the gallery.
+  if (isNative) photoBtn.addEventListener('click', busy(photoBtn, async () => upload(await pickPhoto())));
+  else photoBtn.addEventListener('click', () => file.click());
+  file.addEventListener('change', busy(photoBtn, () => upload(file.files[0])));
 
   const save = h('button', { class: 'btn primary', type: 'button' }, 'Save');
   save.addEventListener('click', busy(save, async () => {
@@ -453,10 +458,7 @@ function sync(ctx) {
   now.addEventListener('click', busy(now, () => ctx.sync.runOnce()));
   const backup = () => {
     const blob = new Blob([JSON.stringify({ app: 'liftbook', exported_at: new Date().toISOString(), ...store.snapshot() }, null, 1)], { type: 'application/json' });
-    const a = h('a', { href: URL.createObjectURL(blob), download: `liftbook-${lb.profile()?.username || 'backup'}-${new Date().toISOString().slice(0, 10)}.json` });
-    document.body.append(a);
-    a.click();
-    a.remove();
+    saveFile(`liftbook-${lb.profile()?.username || 'backup'}-${new Date().toISOString().slice(0, 10)}.json`, blob).catch((err) => toast(err.message || String(err)));
   };
   const from = h('input', { id: 'csv-from', type: 'date' });
   const to = h('input', { id: 'csv-to', type: 'date' });
@@ -465,10 +467,7 @@ function sync(ctx) {
     const { count, text } = lb.csv({ from: from.value, to: to.value });
     if (!count) return toast('No workouts in those dates.');
     const range = from.value || to.value ? `${(from.value || 'start').replaceAll('-', '')}_${(to.value || 'today').replaceAll('-', '')}` : new Date().toISOString().slice(0, 10).replaceAll('-', '');
-    const a = h('a', { href: URL.createObjectURL(new Blob([text], { type: 'text/csv' })), download: `workout_history_${lb.profile()?.username || 'liftbook'}_${range}.csv` });
-    document.body.append(a);
-    a.click();
-    a.remove();
+    saveFile(`workout_history_${lb.profile()?.username || 'liftbook'}_${range}.csv`, new Blob([text], { type: 'text/csv' })).catch((err) => toast(err.message || String(err)));
   };
   const counts = lb.overview();
   return h('div', {},
@@ -493,7 +492,7 @@ function account(ctx) {
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(next)) throw new Error('Type the new email address.');
     if (next === String(ctx.user.email || '').toLowerCase()) throw new Error('That’s already your email.');
     try {
-      await ctx.client.auth.updateEmail(next, location.href.split('#')[0]);
+      await ctx.client.auth.updateEmail(next, linkBackUrl());
     } catch (err) {
       if (err.status === 0) throw new Error('Changing your email needs the internet.');
       throw err;

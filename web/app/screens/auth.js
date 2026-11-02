@@ -1,12 +1,11 @@
 // Signing in, creating an account, resetting a password, and choosing a username.
 
 import { h, toast, busy } from '../ui.js';
+import { linkBackUrl } from '../native.js';
 
 const USERNAME_RE = /^[A-Za-z0-9_.-]{3,50}$/;
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const PASSWORD_MIN = 8;
-
-const appUrl = () => `${location.origin}${location.pathname}`;
 
 function shell(title, sub, ...body) {
   return h('div', { class: 'auth' },
@@ -90,7 +89,7 @@ function signUp(client, onSignedIn) {
         err.textContent = 'That username is taken. Choose another.';
         return;
       }
-      const session = await client.auth.signUp(email.value.trim(), password.value, { username: u, full_name: name.value.trim() }, appUrl());
+      const session = await client.auth.signUp(email.value.trim(), password.value, { username: u, full_name: name.value.trim() }, linkBackUrl());
       if (session) {
         await onSignedIn();
         return;
@@ -119,7 +118,7 @@ function forgot(client) {
       return;
     }
     try {
-      await client.auth.sendPasswordReset(email.value.trim(), appUrl());
+      await client.auth.sendPasswordReset(email.value.trim(), linkBackUrl());
     } catch (e) {
       err.textContent = e.message;
       return;
