@@ -19,6 +19,7 @@ site_url = "https://beta.liftbook.in"
 # Every address the app runs at; links back to anywhere else are refused.
 additional_redirect_urls = [
   "https://beta.liftbook.in/**",
+  "https://liftbook-beta.pages.dev/**",
   "https://app.liftbook.in/**",
   "http://localhost:8765/**",
   "http://192.168.29.209:8765/**",
