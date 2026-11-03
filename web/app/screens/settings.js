@@ -193,8 +193,8 @@ function plan(ctx) {
   const s = lb.settings();
   const admin = lb.isAdmin();
   const shared = lb.sharedPlan();
-  const followPlan = h('input', { type: 'checkbox', checked: Boolean(s.follow_shared_plan) });
-  const followReps = h('input', { type: 'checkbox', checked: Boolean(s.follow_shared_exercises) });
+  const followPlan = h('input', { type: 'checkbox', class: 'switch', role: 'switch', checked: Boolean(s.follow_shared_plan), 'aria-label': 'Follow the shared plan' });
+  const followReps = h('input', { type: 'checkbox', class: 'switch', role: 'switch', checked: Boolean(s.follow_shared_exercises), 'aria-label': 'Follow the shared rep ranges' });
   followPlan.addEventListener('change', async () => {
     await lb.setSetting('follow_shared_plan', followPlan.checked);
     toast(followPlan.checked ? 'Following the shared plan.' : 'Using your own plan.');
@@ -204,40 +204,51 @@ function plan(ctx) {
     toast(followReps.checked ? 'Following the shared rep ranges.' : 'Using your own rep ranges.');
   });
 
-  const planText = h('textarea', { id: 'plan', spellcheck: 'false', placeholder: DEFAULT_PLAN.slice(0, 400) }, lb.text('plan'));
-  const repText = h('textarea', { id: 'rep_ranges', spellcheck: 'false', placeholder: defaultRepRangesText().slice(0, 300) }, lb.text('rep_ranges'));
-  const savePlan = h('button', { class: 'btn primary', type: 'button' }, 'Save plan');
-  savePlan.addEventListener('click', busy(savePlan, async () => {
-    await lb.setText('plan', planText.value);
-    toast('Plan saved.');
-  }));
-  const saveReps = h('button', { class: 'btn primary', type: 'button' }, 'Save rep ranges');
-  saveReps.addEventListener('click', busy(saveReps, async () => {
-    await lb.setText('rep_ranges', repText.value);
-    toast('Rep ranges saved.');
-  }));
+  const planText = h('textarea', { id: 'plan', class: 'editor mono', spellcheck: 'false', 'aria-label': 'Your plan', placeholder: DEFAULT_PLAN }, lb.text('plan'));
+  const repText = h('textarea', { id: 'rep_ranges', class: 'editor mono', spellcheck: 'false', 'aria-label': 'Your rep ranges', placeholder: defaultRepRangesText() }, lb.text('rep_ranges'));
+  // Each editor says whether what's in it is saved, as the old plan page did.
+  const editorGroup = (area, kind, label, done) => {
+    const meta = h('span', { class: 'editor-meta' });
+    const btn = h('button', { class: 'btn primary small', type: 'button' }, label);
+    const mark = () => {
+      const saved = area.value === lb.text(kind);
+      meta.textContent = saved ? (area.value.trim() ? 'Saved' : 'Using the built-in one') : 'Not saved yet';
+      btn.disabled = saved;
+    };
+    area.addEventListener('input', mark);
+    btn.addEventListener('click', busy(btn, async () => {
+      await lb.setText(kind, area.value);
+      toast(done);
+      mark();
+    }));
+    mark();
+    return h('div', { class: 'group' }, area, h('div', { class: 'editor-bar' }, meta, btn));
+  };
   const refresh = h('button', { class: 'btn small', type: 'button' }, 'Check for updates');
   refresh.addEventListener('click', busy(refresh, async () => {
     toast((await lb.refreshShared()) ? 'Shared plan is up to date.' : 'Couldn’t reach the server.');
   }));
 
   return h('div', {},
-    admin ? h('div', { class: 'card gold' }, h('p', { style: 'margin:0' }, 'You’re an admin: your plan and rep ranges are the shared ones others can follow.')) :
-      h('div', { class: 'card' },
-        h('h2', {}, 'Shared plan'),
-        h('label', { class: 'check' }, followPlan, h('span', {}, 'Follow the shared plan', h('div', { class: 'hint' }, 'Retrieve uses it instead of yours.'))),
-        h('label', { class: 'check', style: 'margin-top:10px' }, followReps, h('span', {}, 'Follow the shared rep ranges')),
-        h('div', { class: 'row spread', style: 'margin-top:12px' },
-          h('span', { class: 'subtle' }, shared.updated_at ? `Shared plan updated ${formatDay(shared.updated_at)}` : 'Shared plan not downloaded yet'),
-          refresh)),
-    h('div', { class: 'card' },
-      h('h2', {}, 'Your plan'),
-      h('p', { class: 'subtle' }, 'A day header ("Session 1 - Legs"), then one exercise per line, with targets like "Squat - [3, 5-8]". Leave empty for the built-in plan.'),
-      planText, h('div', { class: 'row', style: 'margin-top:12px' }, savePlan)),
-    h('div', { class: 'card' },
-      h('h2', {}, 'Rep ranges'),
-      h('p', { class: 'subtle' }, 'One exercise per line: "Squat: 3, 5-8" (sets, then reps) or "Plank: 30-60s". Leave empty for the built-in ranges.'),
-      repText, h('div', { class: 'row', style: 'margin-top:12px' }, saveReps)));
+    admin ? h('div', { class: 'notice' }, icon('shield'), h('span', {}, 'You’re an admin: your plan and rep ranges are the shared ones others can follow.')) :
+      h('section', { class: 'section' },
+        h('div', { class: 'label' }, 'Shared plan'),
+        h('div', { class: 'group' },
+          h('label', { class: 'rowi' }, h('span', { class: 'ico' }, icon('person')),
+            h('span', { class: 'main' }, h('span', { class: 'title' }, 'Follow the shared plan'), h('span', { class: 'desc' }, 'Retrieve uses it instead of yours')), followPlan),
+          h('label', { class: 'rowi' }, h('span', { class: 'ico' }, icon('sliders')),
+            h('span', { class: 'main' }, h('span', { class: 'title' }, 'Follow the shared rep ranges'), h('span', { class: 'desc' }, 'Targets come from the shared plan')), followReps),
+          h('div', { class: 'rowi' }, h('span', { class: 'ico' }, icon('sync')),
+            h('span', { class: 'main' }, h('span', { class: 'title' }, 'Shared plan'),
+              h('span', { class: 'desc' }, shared.updated_at ? `Updated ${formatDay(shared.updated_at)}` : 'Not downloaded yet')), refresh))),
+    h('section', { class: 'section' },
+      h('div', { class: 'label' }, 'Plan'),
+      editorGroup(planText, 'plan', 'Save plan', 'Plan saved.'),
+      h('p', { class: 'foot' }, 'A day header ("Session 1 - Legs"), then one exercise per line, with targets like "Squat - [3, 5-8]". Leave it empty for the built-in plan.')),
+    h('section', { class: 'section' },
+      h('div', { class: 'label' }, 'Rep ranges'),
+      editorGroup(repText, 'rep_ranges', 'Save rep ranges', 'Rep ranges saved.'),
+      h('p', { class: 'foot' }, 'One exercise per line: "Squat: 3, 5-8" (sets, then reps) or "Plank: 30-60s". Leave it empty for the built-in ranges.')));
 }
 
 /* ---------------- exercises ---------------- */

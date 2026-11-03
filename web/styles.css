@@ -622,3 +622,43 @@ textarea.chat-input { min-height: 64px; font-family: var(--font); line-height: 1
 .past summary { cursor: pointer; font-weight: 600; }
 .past .list summary { cursor: pointer; font-weight: 500; padding: 10px 0; }
 .past .answer { padding: 0 2px 12px; font-size: 0.95rem; }
+
+/* ---------- switch (a checkbox drawn as a toggle) ---------- */
+input.switch {
+  appearance: none; -webkit-appearance: none; flex: none; position: relative; cursor: pointer;
+  width: 44px; height: 26px; margin: 0; border-radius: 999px; padding: 0 !important;
+  background: color-mix(in srgb, var(--text) 22%, transparent) !important; border: 0 !important; box-shadow: none !important;
+  transition: background 0.2s ease;
+}
+input.switch::after {
+  content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.35); transition: transform 0.2s ease;
+}
+input.switch:checked { background: var(--gold) !important; }
+input.switch:checked::after { transform: translateX(18px); }
+input.switch:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+label.rowi { cursor: pointer; }
+.editor.mono { font-size: 0.86rem; line-height: 1.6; }
+
+/* ---------- custom workout: muscle groups on the left, the picked list on the right ---------- */
+.split { display: grid; gap: 22px; }
+@media (min-width: 760px) { .split { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: start; } .split-side { position: sticky; top: 92px; } }
+.split-side > .label { margin-top: 2px; }
+.split-side .field { margin-bottom: 10px; }
+.split-side .group { margin-bottom: 10px; }
+.split-side .editor-bar { position: static; }
+.pick-group + .pick-group { border-top: 1px solid var(--hair); }
+.pick-group > .rowi { width: 100%; }
+.pick-group > .rowi.open .chev-i { transform: rotate(90deg); }
+.pick-group .chev-i { transition: transform 0.18s ease; }
+.pick-list { padding: 0 20px 8px; }
+.pick { display: flex; gap: 12px; align-items: center; padding: 10px 0; margin: 0; border-top: 1px solid var(--hair); font-weight: 500; font-size: 0.92rem; color: var(--text); cursor: pointer; }
+.pick:first-child { border-top: 0; }
+.pick input { width: 20px; height: 20px; margin: 0; accent-color: var(--gold); flex: none; }
+.pick .subtle { margin-left: auto; font-size: 0.8rem; }
+.picker-groups > .pick { padding: 12px 20px; }
+.picked .rowi { padding-top: 10px; padding-bottom: 10px; }
+.pick-bar { position: sticky; bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 10px); margin-top: 10px; z-index: 5; box-shadow: 0 8px 28px rgba(0,0,0,0.25); }
+.pick-bar .editor-bar { position: static; border-top: 0; }
+@media (min-width: 760px) { .pick-bar { display: none; } }
+@media (max-width: 759.98px) { .side-bar { display: none; } }

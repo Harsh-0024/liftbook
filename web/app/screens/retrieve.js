@@ -3,6 +3,7 @@
 
 import { h, icon, rowItem, pageHead, copyText, busy, toast } from '../ui.js';
 import { DRAFT_KEY } from './log.js';
+import { muscleGroup } from '../../core/coach_tools.js';
 
 function dayLabel(plans, category, dayName) {
   const id = dayName.slice(category.length).trim();
@@ -93,33 +94,63 @@ export function retrieveDayScreen(ctx, category, id) {
   return output(ctx, result, '#/retrieve');
 }
 
+const GROUPS = ['Chest', 'Back', 'Shoulders', 'Biceps', 'Triceps', 'Forearms', 'Legs', 'Abs', 'Other'];
+
 export function retrieveCustomScreen(ctx) {
   const { lb } = ctx;
-  const catalog = lb.exerciseCatalog();
+  const catalog = lb.exerciseCatalog().map((c) => ({ ...c, group: muscleGroup(c.name) }));
   const title = h('input', { id: 'title', type: 'text', placeholder: 'Custom Workout', maxlength: 80 });
-  const search = h('input', { id: 'search', type: 'search', placeholder: 'Search exercises', autocapitalize: 'off' });
-  const chosen = new Set();
-  const picker = h('div', { class: 'picker' });
-  const count = h('span', { class: 'subtle' }, 'None picked');
+  const search = h('input', { id: 'search', type: 'search', placeholder: 'Search exercises', autocapitalize: 'off', 'aria-label': 'Search exercises' });
+  const chosen = [];
+  const open = new Set();
+  const picker = h('div', { class: 'group picker-groups' });
+  const picked = h('div', { class: 'group picked' });
+  // Two bars with the same button: beside the picked list on wide screens, under the list on phones.
+  const counts = [h('span', { class: 'editor-meta' }), h('span', { class: 'editor-meta' })];
+  const gos = [h('button', { class: 'btn primary small', type: 'button' }, 'Get targets'), h('button', { class: 'btn primary small', type: 'button' }, 'Get targets')];
+  const holder = h('div', {});
+
+  const toggle = (name) => {
+    const i = chosen.indexOf(name);
+    if (i >= 0) chosen.splice(i, 1);
+    else chosen.push(name);
+    paint();
+  };
+  const option = (c) => h('label', { class: 'pick' },
+    h('input', { type: 'checkbox', checked: chosen.includes(c.name), onchange: () => toggle(c.name) }),
+    h('span', {}, c.name), c.count ? h('span', { class: 'subtle' }, `${c.count}×`) : null);
+
   const paint = () => {
     const q = search.value.trim().toLowerCase();
-    picker.replaceChildren(...catalog.filter((c) => !q || c.name.toLowerCase().includes(q)).slice(0, 200).map((c) => {
-      const box = h('input', { type: 'checkbox', checked: chosen.has(c.name) });
-      box.addEventListener('change', () => {
-        if (box.checked) chosen.add(c.name);
-        else chosen.delete(c.name);
-        count.textContent = chosen.size ? `${chosen.size} picked` : 'None picked';
-      });
-      return h('label', {}, box, h('span', {}, c.name), c.count ? h('span', { class: 'subtle', style: 'margin-left:auto' }, `${c.count}×`) : null);
-    }));
+    if (q) {
+      const hits = catalog.filter((c) => c.name.toLowerCase().includes(q)).slice(0, 200);
+      picker.replaceChildren(...(hits.length ? hits.map(option) : [h('p', { class: 'subtle', style: 'padding:16px 20px;margin:0' }, 'No exercise by that name.')]));
+    } else {
+      // By muscle group, as the old page had it; a tap opens the group.
+      picker.replaceChildren(...GROUPS.map((g) => {
+        const items = catalog.filter((c) => c.group === g);
+        if (!items.length) return null;
+        const n = items.filter((c) => chosen.includes(c.name)).length;
+        const head = h('button', { type: 'button', class: `rowi${open.has(g) ? ' open' : ''}`, 'aria-expanded': String(open.has(g)),
+          onclick: () => { if (open.has(g)) open.delete(g); else open.add(g); paint(); } },
+        h('span', { class: 'main' }, h('span', { class: 'title' }, g)),
+        h('span', { class: 'value' }, n ? `${n} picked` : `${items.length}`),
+        h('span', { class: 'chev-i' }, icon('chev')));
+        return h('div', { class: 'pick-group' }, head, open.has(g) ? h('div', { class: 'pick-list' }, items.map(option)) : null);
+      }).filter(Boolean));
+    }
+    picked.replaceChildren(...(chosen.length ? chosen.map((n, i) => h('div', { class: 'rowi' },
+      h('span', { class: 'main' }, h('span', { class: 'title' }, `${i + 1}. ${n}`)),
+      h('button', { class: 'icon-btn', type: 'button', 'aria-label': `Remove ${n}`, onclick: () => toggle(n) }, icon('trash'))))
+      : [h('p', { class: 'subtle', style: 'padding:18px 20px;margin:0;text-align:center' }, 'Nothing picked yet.')]));
+    for (const c of counts) c.textContent = chosen.length ? `${chosen.length} picked` : 'Pick exercises from the list';
+    for (const g of gos) g.disabled = !chosen.length;
   };
   search.addEventListener('input', paint);
   paint();
 
-  const go = h('button', { class: 'btn primary', type: 'button' }, 'Get targets');
-  const holder = h('div', {});
-  go.addEventListener('click', busy(go, async () => {
-    if (!chosen.size) {
+  for (const go of gos) go.addEventListener('click', busy(go, async () => {
+    if (!chosen.length) {
       toast('Pick at least one exercise.');
       return;
     }
@@ -130,12 +161,15 @@ export function retrieveCustomScreen(ctx) {
     holder.scrollIntoView({ behavior: 'smooth' });
   }));
 
-  return h('div', {},
-    pageHead('Custom workout', 'Pick any exercises; each comes with your best recent sets.', { back: '#/retrieve' }),
-    h('div', { class: 'card' },
-      h('div', { class: 'field' }, h('label', { for: 'title' }, 'Title'), title),
-      h('div', { class: 'field' }, h('label', { for: 'search' }, 'Exercises'), search),
-      picker,
-      h('div', { class: 'row spread', style: 'margin-top:12px' }, count, go)),
+  return h('div', { dataset: { wide: '1' } },
+    pageHead('Custom workout', 'Each exercise comes with your best numbers.', { back: '#/retrieve' }),
+    h('div', { class: 'split' },
+      h('div', {}, h('div', { class: 'search' }, icon('search'), search), picker,
+        h('div', { class: 'group pick-bar' }, h('div', { class: 'editor-bar' }, counts[1], gos[1]))),
+      h('div', { class: 'split-side' },
+        h('div', { class: 'label' }, 'Your workout'),
+        h('div', { class: 'field' }, title),
+        picked,
+        h('div', { class: 'group side-bar' }, h('div', { class: 'editor-bar' }, counts[0], gos[0])))),
     holder);
 }
