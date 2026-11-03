@@ -30,6 +30,8 @@
 # Markdown and text notes stay local, except the ones the project needs.
 *.md
 !README.md
+!/IMPROVEMENTS.md
+!/web/fonts/LICENSE-*.md
 *.txt
 !requirements.txt
 
