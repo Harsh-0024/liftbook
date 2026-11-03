@@ -198,6 +198,13 @@ svg.i { width: 1.1em; height: 1.1em; flex: none; fill: none; stroke: currentColo
 .sync-pill.warn { color: var(--gold-text); border-color: var(--line-gold); }
 .sync-pill.warn::before { background: var(--warn); }
 @keyframes pulse { 50% { opacity: 0.3; } }
+/* Phones: the sync status is a quiet dot in a circle, with words only when it needs you. */
+@media (max-width: 759.98px) {
+  .sync-pill:not(.warn) { width: 40px; height: 40px; padding: 0; justify-content: center; font-size: 0; letter-spacing: 0; border-color: var(--line-gold); background: var(--gold-soft); }
+  .sync-pill:not(.warn)::before { width: 9px; height: 9px; }
+  .sync-pill.warn { max-width: 150px; overflow: hidden; text-overflow: ellipsis; padding: 7px 10px; }
+}
+@media (max-width: 380px) { .brand-sub { display: none; } }
 
 .tabbar {
   position: fixed; inset: auto 0 0 0; z-index: 20;
@@ -480,7 +487,7 @@ pre.out { white-space: pre-wrap; word-break: break-word; font: 14px/1.75 var(--m
 }
 .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .avatar.small { width: 46px; height: 46px; font-size: 1.25rem; }
-.avatar.big { width: 92px; height: 92px; font-size: 2.3rem; box-shadow: 0 0 0 6px var(--gold-soft); text-decoration: none !important; transition: box-shadow var(--base); }
+.avatar.big { margin: 0 auto; width: 92px; height: 92px; font-size: 2.3rem; box-shadow: 0 0 0 6px var(--gold-soft); text-decoration: none !important; transition: box-shadow var(--base); }
 a.avatar.big:hover { box-shadow: 0 0 0 9px var(--gold-soft); }
 
 /* ---------- home ---------- */

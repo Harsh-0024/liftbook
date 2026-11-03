@@ -169,8 +169,9 @@ let gradientId = 0;
 /** A line chart: soft gold area, values up the side, first and last dates along the bottom.
  *  base: a value drawn as a dashed "start" line; tag: label the last point (e.g. "+14%"). */
 export function lineChart(labels, values, { unit = '', base = null, tag = null, height = 240, format = null } = {}) {
-  const W = 640;
-  const H = height;
+  // Drawn at about the width it shows at, so the labels stay readable on a phone.
+  const W = Math.round(Math.max(300, Math.min(640, (globalThis.innerWidth || 640) - 72)));
+  const H = W < 480 ? Math.round(height * 0.85) : height;
   const pad = { l: 46, r: tag ? 54 : 14, t: 16, b: 28 };
   const pts = values.map((v, i) => [i, v]).filter(([, v]) => v !== null && v !== undefined && Number.isFinite(Number(v)));
   const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, class: 'chart', role: 'img', 'aria-label': 'Progress chart', style: `height:${H}px` });
