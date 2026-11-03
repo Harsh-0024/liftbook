@@ -12,10 +12,10 @@ import { isNative, pickPhoto, saveFile, linkBackUrl } from '../native.js';
 
 const SECTIONS = [
   ['profile', 'Profile', 'Name, username, bodyweight, photo'],
-  ['plan', 'Plan and rep ranges', 'Your training days and targets'],
+  ['plan', 'Workout plan', 'Your cycles, sessions and exercises, written as plain text, and the rep ranges for each.'],
   ['exercises', 'Exercises', 'Timed, bodyweight, renames'],
   ['shortcuts', 'Apple Shortcuts', 'Log and get workouts from Notes on your iPhone'],
-  ['feedback', 'Feedback', 'Tell us what to improve'],
+  ['feedback', 'Feedback', 'Tell the developer what works for you, what doesn’t, and what you’d like next.'],
   ['sync', 'Sync and data', 'Devices, backup file'],
   ['account', 'Account', 'Password, theme, sign out, delete'],
 ];
@@ -321,25 +321,37 @@ function exercises(ctx) {
 
 function feedback(ctx) {
   const { lb } = ctx;
-  const labels = { like: 'Something I like', dislike: 'Something I dislike', improve: 'Something to improve', idea: 'An idea' };
-  const kind = h('select', { id: 'kind' }, FEEDBACK_KINDS.map((k) => h('option', { value: k }, labels[k])));
-  const msg = h('textarea', { id: 'message', maxlength: 2000, style: 'min-height:120px;font-family:var(--font)' });
-  const send = h('button', { class: 'btn primary', type: 'button' }, 'Send');
-  const mine = h('div', {}, h('p', { class: 'subtle' }, 'Loading what you sent…'));
+  const labels = { like: 'Something I like', dislike: 'Something I don’t like', improve: 'Could be better', idea: 'A feature idea' };
+  const icons = { like: 'heart', dislike: 'thumbdown', improve: 'wrench', idea: 'bulb' };
+  const prompts = { like: 'What do you like about it?', dislike: 'What gets in your way?', improve: 'What could work better, and how?', idea: 'What would you like the app to do?' };
+  let kind = 'idea';
+  const msg = h('textarea', { id: 'message', class: 'editor', maxlength: 2000, 'aria-label': 'Your feedback', style: 'min-height:140px;font-family:var(--font)' });
+  const tiles = FEEDBACK_KINDS.map((k) => h('button', { type: 'button', class: 'kind', dataset: { kind: k }, 'aria-pressed': 'false',
+    onclick: () => pick(k) }, icon(icons[k]), h('span', {}, labels[k])));
+  const pick = (k) => {
+    kind = k;
+    for (const t of tiles) t.setAttribute('aria-pressed', String(t.dataset.kind === k));
+    msg.placeholder = prompts[k];
+  };
+  pick(kind);
+  const send = h('button', { class: 'btn primary small', type: 'button' }, icon('send'), 'Send');
+  const mine = h('div', {}, h('p', { class: 'subtle', style: 'padding:16px 20px;margin:0' }, 'Loading what you sent…'));
   const load = async () => {
     try {
       const rows = await lb.myFeedback();
-      mine.replaceChildren(rows.length ? h('ul', { class: 'list' }, rows.map((r) => h('li', {}, h('div', { class: 'item', style: 'align-items:flex-start' },
-        h('div', {}, h('div', {}, r.message), h('div', { class: 'meta' }, `${labels[r.kind]} · ${formatDay(r.created_at)}`)),
-        h('span', { class: `pill ${r.status === 'done' ? 'improved' : r.status === 'seen' ? 'new' : ''}` }, r.status === 'new' ? 'sent' : r.status))))) :
-        h('p', { class: 'subtle' }, 'Nothing sent yet.'));
+      mine.replaceChildren(rows.length ? h('div', { class: 'group' }, rows.map((r) => h('div', { class: 'rowi', style: 'align-items:flex-start' },
+        h('span', { class: 'ico' }, icon(icons[r.kind] || 'chat')),
+        h('span', { class: 'main' }, h('span', { class: 'title', style: 'font-weight:500;white-space:pre-wrap' }, r.message),
+          h('span', { class: 'desc' }, `${labels[r.kind] || r.kind} · ${formatDay(r.created_at)}`)),
+        h('span', { class: `pill ${r.status === 'done' ? 'improved' : r.status === 'seen' ? 'new' : ''}` }, r.status === 'new' ? 'sent' : r.status)))) :
+        h('div', { class: 'group' }, h('p', { class: 'subtle', style: 'padding:16px 20px;margin:0' }, 'Nothing sent yet.')));
     } catch {
-      mine.replaceChildren(h('p', { class: 'subtle' }, 'Connect to the internet to see what you sent.'));
+      mine.replaceChildren(h('div', { class: 'group' }, h('p', { class: 'subtle', style: 'padding:16px 20px;margin:0' }, 'Connect to the internet to see what you sent.')));
     }
   };
   send.addEventListener('click', busy(send, async () => {
     try {
-      await lb.sendFeedback(kind.value, msg.value, location.hash);
+      await lb.sendFeedback(kind, msg.value, location.hash);
     } catch (err) {
       if (err.status === 0) throw new Error('No connection. Feedback needs the internet; try again when online.');
       throw err;
@@ -350,8 +362,12 @@ function feedback(ctx) {
   }));
   load();
   return h('div', {},
-    h('div', { class: 'card' }, field('What kind?', kind), field('Your feedback', msg), send),
-    h('div', { class: 'card' }, h('h2', {}, 'What you sent'), mine));
+    h('section', { class: 'section' },
+      h('div', { class: 'label' }, 'What is it about?'),
+      h('div', { class: 'kinds' }, tiles),
+      h('div', { class: 'group' }, msg, h('div', { class: 'editor-bar' }, h('span', { class: 'editor-meta' }, 'Every note is read'), send)),
+      h('p', { class: 'foot', style: 'margin-top:10px' }, 'Sent with your name and email, so the developer can follow up if needed.')),
+    h('section', { class: 'section' }, h('div', { class: 'label' }, 'What you sent'), mine));
 }
 
 /* ---------------- admin ---------------- */
@@ -621,6 +637,5 @@ function account(ctx) {
       field('New email', email, 'We email a link to confirm it. Your sign-in changes once you open it.'), moveEmail),
     h('div', { class: 'card' }, h('h2', {}, 'Password'), field('New password', pw, 'At least 8 characters.'), change),
     h('div', { class: 'card' }, h('h2', {}, 'Appearance'), themeSeg()),
-    h('div', { class: 'card' }, h('div', { class: 'row' }, out, del)),
-    h('p', { class: 'subtle' }, `Bodyweight on file: ${fmtNum(ctx.lb.profile()?.bodyweight)}`));
+    h('div', { class: 'card' }, h('div', { class: 'row' }, out, del)));
 }

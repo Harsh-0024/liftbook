@@ -662,3 +662,15 @@ label.rowi { cursor: pointer; }
 .pick-bar .editor-bar { position: static; border-top: 0; }
 @media (min-width: 760px) { .pick-bar { display: none; } }
 @media (max-width: 759.98px) { .side-bar { display: none; } }
+
+/* ---------- feedback kinds ---------- */
+.kinds { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.kind {
+  display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 14px; text-align: left;
+  background: var(--surface); border: 1px solid var(--line); color: var(--text); font: inherit; font-weight: 600; font-size: 0.88rem; cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.kind svg.i { color: var(--subtle); flex: none; }
+.kind:hover { border-color: color-mix(in srgb, var(--gold) 40%, var(--line)); }
+.kind[aria-pressed="true"] { border-color: var(--gold); background: var(--gold-soft); }
+.kind[aria-pressed="true"] svg.i { color: var(--gold-text); }
