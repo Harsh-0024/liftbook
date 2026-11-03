@@ -40,11 +40,11 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
   [docs/design-compare/](docs/design-compare/README.md).
 - **Checked:** `npm test` (50 pass), desktop Chrome, iPhone 18 Pro simulator (light mode),
   `npm run android:sync` and a debug build (`./gradlew assembleDebug` with Java 21; the APK builds).
+  Dark mode checked on the iPhone too ([picture](docs/design-compare/iphone/dark-mode-new.jpg)).
   Not installed on the Android emulator, because that one is waiting for you to sign in for Phase 6.
 
 ## Ideas queued (next ones first)
 
-- Dark mode check on the iPhone for every screen.
 - Signed-out public home page, like the old app's, for people who aren't signed in yet.
 - "Format" button on the plan page that tidies the plan text, as the old one had.
 - Copy the shared plan into your own ("Copy and edit"), as the old plan page had.

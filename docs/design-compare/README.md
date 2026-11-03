@@ -42,6 +42,11 @@ local stand-in for Supabase. Neither touched the live site or real accounts.
 | Sign in | [desktop](desktop/signin.jpg) | – | Same single card with the logo, show / hide password, and "Forgot password?" beside the label. |
 | Create account | [desktop](desktop/signup.jpg) | – | Same card, fewer fields: no "confirm password" (the eye button shows what you typed). |
 
+## Dark mode on iPhone
+
+[iphone/dark-mode-new.jpg](iphone/dark-mode-new.jpg): ten screens of the new app in dark mode (Home, Log,
+Retrieve, Stats, Workout, Settings, plan, Feedback, Coach, custom workout).
+
 ## Still different on purpose
 
 - The old phone header had a **Log out** button; the new one has a sync dot, Coach and Settings.
