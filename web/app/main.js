@@ -8,7 +8,7 @@ import { createSync, startAutoSync } from './sync.js';
 import { Liftbook } from './data.js';
 import { h, toast, ago } from './ui.js';
 import { authScreens, welcomeScreen, resetScreen } from './screens/auth.js';
-import { homeScreen, workoutScreen, editScreen } from './screens/home.js';
+import { homeScreen, historyScreen, workoutScreen, editScreen } from './screens/home.js';
 import { logScreen, DRAFT_KEY } from './screens/log.js';
 import { retrieveScreen, retrieveDayScreen, retrieveCustomScreen } from './screens/retrieve.js';
 import { statsScreen } from './screens/stats.js';
@@ -17,6 +17,7 @@ import { coachScreen } from './screens/coach.js';
 import { isNative, startNative, wantsApp, appHandOff } from './native.js';
 
 const main = document.getElementById('app');
+document.getElementById('year').textContent = String(new Date().getFullYear());
 const pill = document.getElementById('sync-pill');
 const client = createClient({ url: SUPABASE_URL, key: SUPABASE_ANON_KEY });
 const dbName = (uid) => `liftbook-${uid}`;
@@ -30,6 +31,7 @@ let current = null; // the screen on show: {name, live}
 const ROUTES = [
   [/^$/, 'home', homeScreen, true],
   [/^log$/, 'log', logScreen],
+  [/^history$/, 'home', historyScreen, true],
   [/^workout\/(\d{4}-\d{2}-\d{2})$/, 'home', workoutScreen, true],
   [/^workout\/(\d{4}-\d{2}-\d{2})\/edit$/, 'home', editScreen],
   [/^retrieve$/, 'retrieve', retrieveScreen, true],
@@ -68,6 +70,8 @@ async function render() {
 }
 
 function show(el, nav) {
+  el.classList?.add('screen');
+  main.classList.toggle('wide', Boolean(el.dataset?.wide));
   main.replaceChildren(el);
   for (const a of document.querySelectorAll('[data-nav]')) a.classList.toggle('active', a.dataset.nav === nav);
   if (!show.keepScroll) window.scrollTo(0, 0);
@@ -123,8 +127,11 @@ async function start() {
 function paintPill(st) {
   if (!ctx) return;
   pill.hidden = false;
-  pill.classList.remove('warn');
-  if (st.running) pill.textContent = 'Syncing…';
+  pill.classList.remove('warn', 'busy');
+  if (st.running) {
+    pill.textContent = 'Syncing';
+    pill.classList.add('busy');
+  }
   else if (st.error === 'offline') {
     pill.textContent = st.pending ? `Offline · ${st.pending} to sync` : 'Offline';
     pill.classList.add('warn');

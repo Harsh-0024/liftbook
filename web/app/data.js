@@ -142,6 +142,33 @@ export class Liftbook {
     return this.workouts().find((w) => w.day === day) || null;
   }
 
+  /**
+   * Each exercise of a day's workout against its session before and its best before (estimated
+   * max; total reps when there is none, as for bodyweight or timed sets). Percentages, or null
+   * the first time an exercise is done.
+   */
+  compareWorkout(day) {
+    const w = this.workout(day);
+    if (!w) return [];
+    const keyOf = (l) => normalizeExerciseName(l.exercise);
+    const reps = (l) => (Array.isArray(l.sets?.reps) ? l.sets.reps.reduce((a, b) => a + (Number(b) || 0), 0) : 0);
+    const byMax = (l) => Number(l.estimated_1rm) > 0;
+    const before = this.history().filter((l) => dayOf(l.date) < day);
+    const pct = (a, b) => (a > 0 && b > 0 ? ((a - b) / b) * 100 : null);
+    return w.logs.map((log) => {
+      const score = byMax(log) ? (l) => (byMax(l) ? Number(l.estimated_1rm) : 0) : reps;
+      const k = keyOf(log);
+      const prev = before.filter((l) => keyOf(l) === k && score(l) > 0);
+      const now = score(log);
+      const recent = prev.reduce((a, b) => (!a || dayOf(b.date) >= dayOf(a.date) ? b : a), null);
+      const best = prev.length ? Math.max(...prev.map(score)) : 0;
+      const vsRecent = recent ? pct(now, score(recent)) : null;
+      const vsBest = best ? pct(now, best) : null;
+      const status = !prev.length ? 'first' : vsBest > 0.05 ? 'best' : vsRecent > 0.5 ? 'up' : vsRecent < -0.5 ? 'down' : 'steady';
+      return { log, byMax: byMax(log), vsRecent, vsBest, status };
+    });
+  }
+
   /** The workout as text again, as it would be typed (editing, copying). */
   workoutText(workout) {
     const p = parseDate(workout.date);
