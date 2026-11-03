@@ -1,7 +1,7 @@
 // Retrieve: the next workout's targets from the plan and the last sets, as text to copy into
 // the Log page (or a notes app) at the gym.
 
-import { h, copyText, busy, toast } from '../ui.js';
+import { h, icon, rowItem, pageHead, copyText, busy, toast } from '../ui.js';
 import { DRAFT_KEY } from './log.js';
 
 function dayLabel(plans, category, dayName) {
@@ -10,29 +10,60 @@ function dayLabel(plans, category, dayName) {
   return { id, label: title ? `${dayName} · ${title}` : dayName };
 }
 
+/** The session after the last one logged ("Session 3 - Back" → 4), wrapping round; null if unknown. */
+function nextSession(lb, ids) {
+  for (const w of lb.workouts().slice(0, 10)) {
+    const m = /\bsession\s*(\d+)/i.exec(w.title);
+    if (m && ids.includes(Number(m[1]))) return ids[(ids.indexOf(Number(m[1])) + 1) % ids.length];
+  }
+  return null;
+}
+
 export function retrieveScreen(ctx) {
   const { lb } = ctx;
   const plans = lb.planDays();
   const cats = Object.entries(plans.workout || {});
   const following = lb.settings().follow_shared_plan && !lb.isAdmin();
+  const sessions = plans.workout?.Session || {};
+  const ids = Object.keys(sessions).map((n) => Number(n.slice('Session'.length).trim())).filter(Number.isFinite);
+  const next = nextSession(lb, ids);
 
-  const sections = cats.map(([category, days]) => h('div', { class: 'card' },
-    h('h2', {}, category),
-    h('ul', { class: 'list' }, Object.keys(days).map((dayName) => {
-      const { id, label } = dayLabel(plans, category, dayName);
-      return h('li', {}, h('a', { class: 'item chev', href: `#/retrieve/day/${encodeURIComponent(category)}/${id}` },
-        h('div', {}, h('div', { style: 'font-weight:600' }, label),
-          h('div', { class: 'meta' }, `${days[dayName].length} exercise${days[dayName].length === 1 ? '' : 's'}`))));
-    }))));
+  const cell = (category, dayName) => {
+    const { id } = dayLabel(plans, category, dayName);
+    const title = category === 'Session' ? plans.session_titles?.[id] : null;
+    return h('a', { href: `#/retrieve/day/${encodeURIComponent(category)}/${id}`, class: category === 'Session' && Number(id) === next ? 'next' : null,
+      title: `${dayName}${title ? ` · ${title}` : ''} (${sessions[dayName]?.length ?? (plans.workout[category][dayName] || []).length} exercises)` },
+    h('small', {}, category === 'Session' && Number(id) === next ? `Next · ${dayName}` : dayName),
+    h('b', {}, title || `${(plans.workout[category][dayName] || []).length} exercises`));
+  };
 
-  return h('div', {},
-    h('div', { class: 'page-head' },
-      h('div', {}, h('h1', {}, 'Retrieve'),
-        h('p', { class: 'muted', style: 'margin:0' }, following ? 'From the shared plan you follow.' : 'From your plan.')),
-      h('a', { class: 'btn', href: '#/retrieve/custom' }, 'Pick exercises')),
-    sections.length ? sections : h('div', { class: 'card' }, h('p', { class: 'muted' }, 'Your plan has no days yet.'),
-      h('a', { class: 'btn', href: '#/settings/plan' }, 'Write your plan')),
-    h('p', { class: 'subtle' }, 'Change the plan in ', h('a', { href: '#/settings/plan' }, 'Settings › Plan'), '.'));
+  const groups = [];
+  // Sessions grouped by the plan's headings (Cycle 1, Cycle 2, ...), four to a row as before.
+  const seen = new Set();
+  for (const heading of plans.headings || []) {
+    const nums = (plans.heading_sessions?.[heading] || []).filter((n) => sessions[`Session ${n}`]);
+    if (!nums.length) continue;
+    nums.forEach((n) => seen.add(`Session ${n}`));
+    groups.push(h('section', { class: 'section' }, h('div', { class: 'label' }, heading),
+      h('div', { class: 'group cycle', style: `--n:${Math.min(4, nums.length)}` }, nums.map((n) => cell('Session', `Session ${n}`)))));
+  }
+  for (const [category, days] of cats) {
+    const rest = Object.keys(days).filter((d) => !seen.has(d));
+    if (!rest.length) continue;
+    for (let k = 0; k < rest.length; k += 4) {
+      const chunk = rest.slice(k, k + 4);
+      groups.push(h('section', { class: 'section' }, k === 0 ? h('div', { class: 'label' }, category === 'Session' ? 'Sessions' : category) : null,
+        h('div', { class: 'group cycle', style: `--n:${chunk.length}` }, chunk.map((d) => cell(category, d)))));
+    }
+  }
+
+  return h('div', { dataset: { wide: '1' }, class: 'retrieve' },
+    pageHead('Retrieve', following ? 'Each session from the shared plan you follow, with your best numbers.' : 'Each plan comes with your best numbers.'),
+    groups.length ? groups : h('div', { class: 'group empty' }, icon('plan'), h('p', {}, 'Your plan has no days yet.'),
+      h('a', { class: 'btn primary', href: '#/settings/plan' }, 'Write your plan')),
+    h('div', { class: 'group', style: 'margin-top:28px' },
+      rowItem({ href: '#/retrieve/custom', ico: 'sliders', title: 'Custom workout', desc: 'Pick any exercises from your plan and history' }),
+      rowItem({ href: '#/settings/plan', ico: 'plan', title: 'Change the plan', desc: 'Your days and the exercises in them' })));
 }
 
 function output(ctx, result, back) {
@@ -45,15 +76,16 @@ function output(ctx, result, back) {
     ctx.go('log');
   };
   return h('div', {},
-    h('div', { class: 'page-head' },
-      h('div', {}, h('h1', {}, result.described.header.replace(/^\S+\s+-\s+/, '') || 'Targets'),
-        h('p', { class: 'muted', style: 'margin:0' }, `${result.exercises} exercise${result.exercises === 1 ? '' : 's'}, ${result.sets} set${result.sets === 1 ? '' : 's'}`)),
-      h('a', { class: 'btn small', href: back }, 'Back')),
-    h('div', { class: 'card' }, h('pre', { class: 'out' }, result.text)),
-    h('div', { class: 'row' },
-      h('button', { class: 'btn primary', type: 'button', onclick: () => copyText(result.text) }, 'Copy'),
-      h('button', { class: 'btn', type: 'button', onclick: logIt }, 'Log from this')),
-    h('p', { class: 'subtle', style: 'margin-top:12px' }, 'Each exercise shows your best recent sets as the starting point. Change the numbers to what you actually lift.'));
+    pageHead(result.described.header.replace(/^\S+\s+-\s+/, '') || 'Targets',
+      `${result.exercises} exercise${result.exercises === 1 ? '' : 's'} · ${result.sets} set${result.sets === 1 ? '' : 's'}`, { back }),
+    h('div', { class: 'group' },
+      h('pre', { class: 'out', style: 'padding:18px 20px' }, result.text),
+      h('div', { class: 'editor-bar' },
+        h('span', { class: 'editor-meta' }, 'Your best recent sets as the starting point'),
+        h('div', { class: 'row' },
+          h('button', { class: 'btn small', type: 'button', onclick: logIt }, icon('log'), 'Log from this'),
+          h('button', { class: 'btn primary small', type: 'button', onclick: () => copyText(result.text) }, icon('copy'), 'Copy')))),
+    h('p', { class: 'foot', style: 'margin-top:10px' }, 'Change the numbers to what you actually lift, then save it on the Log page.'));
 }
 
 export function retrieveDayScreen(ctx, category, id) {
@@ -99,7 +131,7 @@ export function retrieveCustomScreen(ctx) {
   }));
 
   return h('div', {},
-    h('div', { class: 'page-head' }, h('h1', {}, 'Pick exercises'), h('a', { class: 'btn small', href: '#/retrieve' }, 'Back')),
+    pageHead('Custom workout', 'Pick any exercises; each comes with your best recent sets.', { back: '#/retrieve' }),
     h('div', { class: 'card' },
       h('div', { class: 'field' }, h('label', { for: 'title' }, 'Title'), title),
       h('div', { class: 'field' }, h('label', { for: 'search' }, 'Exercises'), search),

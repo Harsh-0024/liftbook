@@ -1,7 +1,8 @@
 // Settings: profile, plan and rep ranges, exercises (timed, bodyweight, renames), feedback,
 // sync and the account.
 
-import { h, toast, busy, ago, formatDay, fmtNum, copyText } from '../ui.js';
+import { h, icon, rowItem, pageHead, toast, busy, ago, formatDay, fmtNum, copyText } from '../ui.js';
+import { avatar } from './home.js';
 import { Online } from '../online.js';
 import { FEEDBACK_KINDS } from '../data.js';
 import { defaultRepRangesText } from '../../core/plans.js';
@@ -27,27 +28,109 @@ export function settingsScreen(ctx, section) {
   if (sub) {
     const [key, title, back] = sub;
     return h('div', {},
-      h('div', { class: 'page-head' }, h('h1', {}, title), h('a', { class: 'btn small', href: back ? `#/settings/${back}` : '#/settings' }, back ? 'Back' : 'Settings')),
+      pageHead(title, '', { back: back ? `#/settings/${back}` : '#/settings' }),
       { 'session-names': sessionNames, admin }[key](ctx));
   }
   const found = SECTIONS.find(([k]) => k === section);
   if (!found) return index(ctx);
   const [key, title] = found;
   const body = { profile, plan, exercises, shortcuts, feedback, sync, account }[key](ctx);
-  return h('div', {},
-    h('div', { class: 'page-head' }, h('h1', {}, title), h('a', { class: 'btn small', href: '#/settings' }, 'Settings')),
-    body);
+  return h('div', {}, pageHead(title, found[2], { back: '#/settings' }), body);
+}
+
+/** The theme picked here (auto follows the device), kept on this device. */
+export function themeChoice() {
+  try {
+    return localStorage.getItem('liftbook-theme') || 'auto';
+  } catch {
+    return 'auto';
+  }
+}
+
+export function setTheme(value) {
+  try {
+    if (value === 'auto') localStorage.removeItem('liftbook-theme');
+    else localStorage.setItem('liftbook-theme', value);
+  } catch {
+    // only this visit
+  }
+  if (value === 'auto') delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = value;
+}
+
+function themeSeg() {
+  const seg = h('div', { class: 'seg', role: 'radiogroup', 'aria-label': 'Appearance' });
+  const paint = () => {
+    const now = themeChoice();
+    seg.replaceChildren(...[['dark', 'Dark', 'moon'], ['light', 'Light', 'sun'], ['auto', 'Auto', 'monitor']].map(([v, l, ic]) =>
+      h('button', { type: 'button', role: 'radio', 'aria-checked': String(now === v), class: now === v ? 'on' : '', onclick: () => {
+        setTheme(v);
+        paint();
+      } }, icon(ic), l)));
+  };
+  paint();
+  return seg;
+}
+
+function bodyweightInput(ctx) {
+  const { lb } = ctx;
+  const bw = h('input', { id: 'bw-inline', type: 'number', step: '0.1', min: '1', max: '500', inputmode: 'decimal',
+    value: lb.profile()?.bodyweight ?? '', placeholder: '—', 'aria-label': 'Bodyweight in kg', class: 'inline-num' });
+  bw.addEventListener('change', async () => {
+    const v = bw.value.trim() === '' ? null : Number(bw.value);
+    if (v !== null && !(v >= 1 && v <= 500)) {
+      toast('Bodyweight should be between 1 and 500.');
+      bw.value = lb.profile()?.bodyweight ?? '';
+      return;
+    }
+    await lb.saveProfile({ bodyweight: v });
+    toast(v === null ? 'Bodyweight cleared.' : `Bodyweight saved: ${fmtNum(v)} kg.`);
+  });
+  return h('span', { class: 'value inline-unit' }, bw, h('small', {}, 'kg'));
 }
 
 function index(ctx) {
-  const p = ctx.lb.profile();
+  const p = ctx.lb.profile() || {};
+  const st = ctx.sync.status();
   return h('div', {},
-    h('div', { class: 'page-head' }, h('div', {}, h('h1', {}, 'Settings'),
-      h('p', { class: 'muted', style: 'margin:0' }, p ? `Signed in as ${p.username} (${ctx.user.email})` : ctx.user.email))),
-    h('div', { class: 'card' }, h('ul', { class: 'list' }, [...SECTIONS, ...(ctx.lb.isAdmin() ? [['admin', 'Admin', 'Feedback, people, coach answers']] : [])]
-      .map(([k, t, sub]) => h('li', {},
-        h('a', { class: 'item chev', href: `#/settings/${k}` }, h('div', {}, h('div', { style: 'font-weight:600' }, t), h('div', { class: 'meta' }, sub))))))),
-    h('a', { class: 'btn block', href: '#/coach' }, 'AI coach'));
+    pageHead('Settings', '', { back: '#/' }),
+    h('a', { class: 'group rowi profile-row', href: '#/settings/profile' },
+      avatar(ctx, 'small'),
+      h('span', { class: 'main' }, h('span', { class: 'title' }, p.full_name || p.username || 'Your profile'),
+        h('span', { class: 'desc' }, p.username ? `@${p.username}` : ''), h('span', { class: 'desc' }, ctx.user.email)),
+      h('span', { class: 'value', style: 'color:var(--gold-text);font-weight:600' }, 'Edit'), h('span', { class: 'chev-i' }, icon('chev'))),
+
+    h('section', { class: 'section' }, h('div', { class: 'label' }, 'Preferences'),
+      h('div', { class: 'group' },
+        h('div', { class: 'rowi' }, h('span', { class: 'ico' }, icon('scale')),
+          h('label', { class: 'main', for: 'bw-inline', style: 'margin:0;color:inherit' }, h('span', { class: 'title' }, 'Bodyweight'), h('span', { class: 'desc' }, 'Used for bodyweight exercises')),
+          bodyweightInput(ctx)),
+        h('div', { class: 'blk' },
+          h('div', { class: 'row', style: 'gap:14px;margin-bottom:12px' }, h('span', { class: 'ico', style: 'color:var(--gold-text)' }, icon('moon')), h('b', { style: 'font-size:.95rem' }, 'Appearance')),
+          themeSeg()))),
+
+    h('section', { class: 'section' }, h('div', { class: 'label' }, 'Training'),
+      h('div', { class: 'group' },
+        rowItem({ href: '#/settings/plan', ico: 'plan', title: 'Workout plan and rep ranges', desc: 'Your days, the exercises in them, target reps' }),
+        rowItem({ href: '#/settings/exercises', ico: 'dumbbell', title: 'Exercises', desc: 'Timed, bodyweight, renames' }),
+        rowItem({ href: '#/coach', ico: 'coach', title: 'AI coach', desc: 'Ask about your training' }))),
+
+    h('section', { class: 'section' }, h('div', { class: 'label' }, 'Data and connections'),
+      h('div', { class: 'group' },
+        rowItem({ href: '#/settings/sync', ico: 'sync', title: 'Sync and data', desc: 'Devices, backup file, export',
+          value: st.pending ? `${st.pending} to sync` : st.last_sync ? `Synced ${ago(st.last_sync)}` : '' }),
+        rowItem({ href: '#/settings/shortcuts', ico: 'phone', title: 'Apple Shortcuts', desc: 'Log and get workouts from Notes on your iPhone' }))),
+
+    h('section', { class: 'section' }, h('div', { class: 'label' }, 'Account'),
+      h('div', { class: 'group' },
+        rowItem({ href: '#/settings/account', ico: 'lock', title: 'Account', desc: 'Email, password, sign out, delete' }),
+        ctx.lb.isAdmin() ? rowItem({ href: '#/settings/admin', ico: 'shield', title: 'Admin', desc: 'Feedback, people, coach answers' }) : null)),
+
+    h('section', { class: 'section' }, h('div', { class: 'label' }, 'Help make it better'),
+      h('div', { class: 'group' }, rowItem({ href: '#/settings/feedback', ico: 'chat', title: 'Send feedback', desc: 'What you like, what you don’t, ideas' }))),
+
+    h('div', { class: 'group', style: 'margin-top:30px' },
+      rowItem({ onclick: (e) => busy(e.currentTarget, () => ctx.signOut())(e), ico: 'logout', title: 'Sign out of this device', chev: false })));
 }
 
 function field(label, input, hint) {
@@ -509,24 +592,6 @@ function account(ctx) {
     toast('Password changed.');
   }));
 
-  let theme = 'auto';
-  try {
-    theme = localStorage.getItem('liftbook-theme') || 'auto';
-  } catch {
-    // default
-  }
-  const themeSel = h('select', { id: 'theme' }, [['auto', 'Match this device'], ['dark', 'Dark'], ['light', 'Light']].map(([v, l]) => h('option', { value: v, selected: v === theme }, l)));
-  themeSel.addEventListener('change', () => {
-    try {
-      if (themeSel.value === 'auto') localStorage.removeItem('liftbook-theme');
-      else localStorage.setItem('liftbook-theme', themeSel.value);
-    } catch {
-      // only this visit
-    }
-    if (themeSel.value === 'auto') delete document.documentElement.dataset.theme;
-    else document.documentElement.dataset.theme = themeSel.value;
-  });
-
   const out = h('button', { class: 'btn', type: 'button' }, 'Sign out of this device');
   out.addEventListener('click', busy(out, () => ctx.signOut()));
   const del = h('button', { class: 'btn danger', type: 'button' }, 'Delete my account');
@@ -544,7 +609,7 @@ function account(ctx) {
     h('div', { class: 'card' }, h('h2', {}, 'Email'), h('p', { class: 'muted' }, ctx.user.email),
       field('New email', email, 'We email a link to confirm it. Your sign-in changes once you open it.'), moveEmail),
     h('div', { class: 'card' }, h('h2', {}, 'Password'), field('New password', pw, 'At least 8 characters.'), change),
-    h('div', { class: 'card' }, h('h2', {}, 'Theme'), themeSel),
+    h('div', { class: 'card' }, h('h2', {}, 'Appearance'), themeSeg()),
     h('div', { class: 'card' }, h('div', { class: 'row' }, out, del)),
     h('p', { class: 'subtle' }, `Bodyweight on file: ${fmtNum(ctx.lb.profile()?.bodyweight)}`));
 }

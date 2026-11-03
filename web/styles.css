@@ -309,6 +309,13 @@ button.rowi { width: 100%; border: 0; text-align: left; font: inherit; cursor: p
 .rowi .chev svg.i, .chev-i svg.i { width: 15px; height: 15px; }
 .blk { padding: 16px 18px 18px; }
 
+a.group.rowi { display: flex; }
+.profile-row { padding: 16px 18px; gap: 16px; }
+.profile-row .desc + .desc { margin-top: 0; }
+.inline-unit { display: inline-flex; align-items: center; gap: 6px; }
+.inline-unit small { color: var(--muted); font-size: 0.8rem; }
+input.inline-num { width: 84px; padding: 7px 10px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; border-radius: 10px; }
+
 /* the older list markup, restyled to match */
 .list { list-style: none; margin: 0; padding: 0; }
 .list > li + li { border-top: 1px solid var(--hair); }
@@ -405,7 +412,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--g
 .notice svg.i { color: var(--gold-text); margin-top: 3px; }
 
 /* the editor that fills its group (Log, Edit, Plan) */
-.editor { display: block; width: 100%; min-height: 46vh; border: 0 !important; border-radius: 0 !important; background: transparent !important; padding: 18px 20px; box-shadow: none !important; }
+.editor { display: block; width: 100%; min-height: 34vh; border: 0 !important; border-radius: 0 !important; background: transparent !important; padding: 18px 20px; box-shadow: none !important; }
 .editor:focus { background: var(--hover) !important; }
 .editor-bar {
   display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
@@ -550,12 +557,24 @@ a.avatar.big:hover { box-shadow: 0 0 0 9px var(--gold-soft); }
 .card-head h2 { margin: 0; }
 .card-head .tabs { margin: 0; }
 
-.auth { max-width: 420px; margin: 5vh auto 0; }
-.auth .logo { display: block; margin: 0 auto 18px; border-radius: 22px; box-shadow: var(--shadow-gold); }
-.auth h1 { text-align: center; font-size: 2.5rem; }
-.auth .sub { text-align: center; color: var(--muted); margin-bottom: 26px; }
-.auth .card { padding: 24px; }
-.auth .alt { text-align: center; margin-top: 18px; font-size: 0.92rem; color: var(--muted); }
+.auth { max-width: 420px; margin: 6vh auto 0; }
+.auth .card { padding: 32px 28px 28px; border-radius: 22px; box-shadow: var(--shadow); }
+.auth-brand { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 22px; }
+.auth-brand .logo { border-radius: 16px; box-shadow: 0 0 0 5px var(--gold-soft); }
+.auth-brand span { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); }
+.auth h1 { text-align: center; font-size: 2.3rem; margin-bottom: 6px; }
+.auth .sub { text-align: center; color: var(--muted); margin-bottom: 26px; font-size: 0.95rem; }
+.auth .btn.primary { width: 100%; min-height: 50px; margin-top: 4px; }
+.auth .alt { text-align: center; margin-top: 22px; font-size: 0.92rem; color: var(--muted); }
+.auth .alt a { font-weight: 600; }
+.label-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.small-link { font-size: 0.8rem; font-weight: 600; margin-bottom: 7px; }
+.pw { position: relative; }
+.pw input { padding-right: 46px; }
+.pw .eye { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border: 0; background: none; color: var(--subtle); cursor: pointer; display: grid; place-items: center; border-radius: 10px; }
+.pw .eye:hover { color: var(--gold-text); }
+body.signed-out .topbar { display: none; }
+body.signed-out main { padding-top: calc(16px + var(--safe-top)); }
 
 .toast {
   position: fixed; left: 50%; transform: translateX(-50%); z-index: 30;
