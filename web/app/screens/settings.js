@@ -204,8 +204,8 @@ function plan(ctx) {
     toast(followReps.checked ? 'Following the shared rep ranges.' : 'Using your own rep ranges.');
   });
 
-  const planText = h('textarea', { id: 'plan', class: 'editor mono', spellcheck: 'false', 'aria-label': 'Your plan', placeholder: DEFAULT_PLAN }, lb.text('plan'));
-  const repText = h('textarea', { id: 'rep_ranges', class: 'editor mono', spellcheck: 'false', 'aria-label': 'Your rep ranges', placeholder: defaultRepRangesText() }, lb.text('rep_ranges'));
+  const planText = h('textarea', { id: 'plan', class: 'editor mono', spellcheck: 'false', 'aria-label': 'Your plan', placeholder: DEFAULT_PLAN.trim() }, lb.text('plan'));
+  const repText = h('textarea', { id: 'rep_ranges', class: 'editor mono', spellcheck: 'false', 'aria-label': 'Your rep ranges', placeholder: defaultRepRangesText().trim() }, lb.text('rep_ranges'));
   // Each editor says whether what's in it is saved, as the old plan page did.
   const editorGroup = (area, kind, label, done) => {
     const meta = h('span', { class: 'editor-meta' });
