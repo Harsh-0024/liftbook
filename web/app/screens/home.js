@@ -413,11 +413,45 @@ export function editScreen(ctx, day) {
   const { lb } = ctx;
   const w = lb.workout(day);
   if (!w) return workoutScreen(ctx, day);
-  const ta = h('textarea', { id: 'workout_text', class: 'editor', spellcheck: 'false', autocapitalize: 'off', 'aria-label': 'The workout as text' }, lb.workoutText(w));
+  // Title and date in their own fields, as the old page had; the box holds the exercises.
+  const lines = lb.workoutText(w).split('\n');
+  const title = h('input', { id: 'edit_title', type: 'text', value: w.title, autocomplete: 'off', 'aria-label': 'Title' });
+  const date = h('input', { id: 'edit_date', type: 'date', value: day, required: true, 'aria-label': 'Date' });
+  const ta = h('textarea', { id: 'workout_text', class: 'editor', spellcheck: 'false', autocapitalize: 'off', 'aria-label': 'The exercises and their sets' },
+    lines.slice(1).join('\n').trim());
+  const text = () => {
+    const [y, m, d] = (date.value || day).split('-').map(Number);
+    return `${d}/${m}/${String(y % 100).padStart(2, '0')} ${title.value.trim() || 'Workout'}\n\n${ta.value.trim()}`;
+  };
+  const meta = h('span', { class: 'editor-meta', 'aria-live': 'polite' });
+  const checkList = h('div', { class: 'group' });
+  const checkBox = h('section', { class: 'section', 'aria-label': 'Check before saving' }, h('div', { class: 'label' }, 'Check'), checkList);
   const err = h('div', { role: 'alert' });
+  const check = () => {
+    const c = lb.check(text());
+    const exercises = c.parsed?.exercises || [];
+    meta.replaceChildren(h('span', { class: c.errors.length ? 'error' : 'ok' },
+      `${c.exercise_count || 0} exercise${c.exercise_count === 1 ? '' : 's'} · ${c.set_count || 0} set${c.set_count === 1 ? '' : 's'}`));
+    checkBox.hidden = !exercises.length;
+    checkList.replaceChildren(...exercises.map((e) => {
+      const bad = e.valid === false || e.missing_name;
+      const sets = (e.reps || []).map((r, k) => `${e.weights?.[k] ?? ''}${e.weights?.[k] !== undefined && e.weights?.[k] !== null ? '×' : ''}${r}`);
+      return h('div', { class: 'rowi' },
+        h('span', { class: 'ico', style: bad ? 'color:var(--bad)' : '' }, icon(bad ? 'info' : 'check')),
+        h('span', { class: 'main' }, h('span', { class: 'title' }, e.name),
+          h('span', { class: 'desc mono' }, bad ? 'Couldn’t read these sets' : sets.join('  ·  '))));
+    }));
+  };
+  let timer = null;
+  for (const el of [title, date, ta]) el.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(check, 200); });
+  check();
   const btn = h('button', { class: 'btn primary small', type: 'button' }, 'Save');
   btn.addEventListener('click', busy(btn, async () => {
-    const r = await lb.log(ta.value, { replaceDay: day });
+    if (!date.value) {
+      err.replaceChildren(h('p', { class: 'errors' }, 'Pick a date.'));
+      return;
+    }
+    const r = await lb.log(text(), { replaceDay: day });
     if (r.existing) {
       err.replaceChildren(h('p', { class: 'errors' }, `There is already a workout on ${formatDay(r.existing.day)}. Change the date or edit that one.`));
       return;
@@ -430,11 +464,13 @@ export function editScreen(ctx, day) {
     ctx.go(`workout/${r.day}`);
   }));
   return h('div', {},
-    pageHead('Edit workout', 'The first line is the date and title. Change the date to move the workout.', { back: `#/workout/${day}` }),
+    pageHead('Edit workout', 'Fix names or numbers. Change the date to move the workout.', { back: `#/workout/${day}` }),
+    h('div', { class: 'edit-fields' },
+      h('label', { class: 'field' }, h('span', {}, 'Title'), title),
+      h('label', { class: 'field date' }, h('span', {}, 'Date'), date)),
     h('div', { class: 'group' },
       ta,
-      h('div', { class: 'editor-bar' },
-        h('span', { class: 'editor-meta' }, w.title),
+      h('div', { class: 'editor-bar' }, meta,
         h('div', { class: 'row' }, h('a', { class: 'btn small', href: `#/workout/${day}` }, 'Cancel'), btn))),
-    err);
+    err, checkBox);
 }
