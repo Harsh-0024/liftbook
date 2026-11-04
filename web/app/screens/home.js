@@ -4,6 +4,7 @@
 import { h, icon, rowItem, pageHead, softDay, formatDay, copyText, toast, busy, fmtNum } from '../ui.js';
 import { formatSetsDisplay } from '../../core/logging.js';
 import { summaryTable } from './log.js';
+import { attachSuggestions } from '../suggest.js';
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -198,6 +199,7 @@ export function editScreen(ctx, day) {
   const w = lb.workout(day);
   if (!w) return workoutScreen(ctx, day);
   const ta = h('textarea', { id: 'workout_text', class: 'editor', spellcheck: 'false', autocapitalize: 'off', 'aria-label': 'The workout as text' }, lb.workoutText(w));
+  const suggest = attachSuggestions(ta, () => lb.exerciseCatalog().map((e) => e.name));
   const err = h('div', { role: 'alert' });
   const btn = h('button', { class: 'btn primary small', type: 'button' }, 'Save');
   btn.addEventListener('click', busy(btn, async () => {
@@ -216,8 +218,9 @@ export function editScreen(ctx, day) {
   }));
   return h('div', {},
     pageHead('Edit workout', 'The first line is the date and title. Change the date to move the workout.', { back: `#/workout/${day}` }),
-    h('div', { class: 'group' },
+    h('div', { class: 'group editor-wrap' },
       ta,
+      suggest,
       h('div', { class: 'editor-bar' },
         h('span', { class: 'editor-meta' }, w.title),
         h('div', { class: 'row' }, h('a', { class: 'btn small', href: `#/workout/${day}` }, 'Cancel'), btn))),
