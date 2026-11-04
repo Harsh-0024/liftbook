@@ -3,6 +3,54 @@
 import { h, icon, pageHead, lineChart, fmtNum, formatDay } from '../ui.js';
 import { normalizeExerciseName } from '../../core/names.js';
 import { overallView } from '../../core/overall_view.js';
+import { consistencyYears, yearWindow, consistencyHero, consistencyTiles, yearGrid } from '../../core/consistency.js';
+
+const VIEW_KEY = 'liftbook-stats-view';
+const YEAR_KEY = 'liftbook-stats-year';
+const remembered = (key) => { try { return localStorage.getItem(key); } catch { return null; } };
+const remember = (key, v) => { try { localStorage.setItem(key, String(v)); } catch { /* private browsing */ } };
+
+/** One year of days as squares (Monday first), as the original Stats page drew it. */
+function calendar(grid, onPick) {
+  const W = Math.max(280, Math.min(1040, (globalThis.innerWidth || 640) - 88));
+  const weeks = grid.weeks.length;
+  const gap = 3;
+  const daysW = 30;
+  const fit = Math.floor((W - daysW - (weeks - 1) * gap) / weeks);
+  const slides = fit < 10;
+  const cell = slides ? 12 : Math.min(fit, 17);
+  const cells = h('div', { class: 'cal-grid' });
+  let picked = null;
+  for (const week of grid.weeks) {
+    for (const d of week) {
+      const el = h('span', { class: `cal-cell${d.out ? ' out' : ''}${d.future ? ' future' : ''}${d.on ? ' on' : ''}${d.today ? ' today' : ''}`, dataset: d.on ? { l: String(d.level) } : {} });
+      if (!d.out && !d.future) {
+        el.tabIndex = -1;
+        el.addEventListener('click', () => {
+          picked?.classList.remove('hot');
+          el.classList.add('hot');
+          picked = el;
+          onPick(d);
+        });
+      }
+      cells.append(el);
+    }
+  }
+  const months = h('div', { class: 'cal-months', 'aria-hidden': 'true', style: `width:${weeks * cell + (weeks - 1) * gap}px` },
+    grid.months.map((m) => h('span', { style: `left:${m.col * (cell + gap)}px` }, m.name)));
+  const scroll = h('div', { class: 'cal-scroll' }, months, cells);
+  const box = h('div', { class: 'cal', style: `--cal-cell:${cell}px;--cal-gap:${gap}px;--cal-days-w:${daysW}px` },
+    h('div', { class: 'cal-body' },
+      h('div', { class: 'cal-days', 'aria-hidden': 'true' }, ['Mon', '', 'Wed', '', 'Fri', '', ''].map((t) => h('span', {}, t))),
+      scroll),
+    h('div', { class: 'cal-legend', 'aria-hidden': 'true' }, h('span', {}, 'Less'), [0, 1, 2, 3, 4].map((l) => h('i', { dataset: { l: String(l) } })), h('span', {}, 'More')));
+  if (slides) {
+    // A phone can't fit the year: open on the latest weeks.
+    const col = Math.max(0, grid.weeks.findIndex((w) => w.some((d) => d.today)));
+    setTimeout(() => { scroll.scrollLeft = Math.max(0, (col + 1) * (cell + gap) - scroll.clientWidth + cell * 2); }, 0);
+  }
+  return box;
+}
 
 const RANGES = [['30', '1M'], ['90', '3M'], ['180', '6M'], ['365', '1Y'], ['all', 'All']];
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -40,7 +88,8 @@ export function statsScreen(ctx) {
   let range = prefs.stats_range && RANGES.some(([v]) => v === String(prefs.stats_range)) ? String(prefs.stats_range) : '90';
   let sort = prefs.stats_sort || 'recent';
   let metric = 'data';
-  let mode = 'index';
+  let mode = remembered(VIEW_KEY) === 'consistency' ? 'consistency' : 'index';
+  let year = Number(remembered(YEAR_KEY)) || null;
   let exercise = null;
   let wanted = new URLSearchParams(location.hash.split('?')[1] || '').get('exercise');
 
@@ -58,7 +107,7 @@ export function statsScreen(ctx) {
 
   function paint() {
     const from = since(range);
-    const overall = lb.overall(mode);
+    const overall = lb.overall(mode === 'rate' ? 'rate' : 'index');
     const [oLabels, oValues] = clip(overall.labels, overall.data, from);
     const warnings = lb.bodyweightWarnings();
     const rangeTabs = tabs(RANGES, range, (v) => {
@@ -92,6 +141,47 @@ export function statsScreen(ctx) {
       chart = lineChart(oLabels.map(short), oValues, { unit: overall.unit === 'percent' && mode === 'rate' ? '%' : '' });
     }
 
+    let yearTabs = null;
+    let foot = mode === 'index'
+      ? 'All your lifts together, against where they were at the start. Exercises you stopped fade out after two months.'
+      : 'How fast your lifts are improving, on average.';
+    if (mode === 'consistency') {
+      // Consistency: the days you trained, one calendar year at a time.
+      const dayList = [...(overall.workout_days || [])].sort();
+      const years = consistencyYears(dayList);
+      if (!years.includes(year)) year = years[years.length - 1];
+      const win = yearWindow(year);
+      foot = 'A square for every day of the year. Gold days are days you trained; the deeper the gold, the more sets you did.';
+      if (!dayList.length) {
+        hero = null;
+        tiles = null;
+        chart = h('div', { class: 'empty' }, icon('calendar'), 'Log a few workouts to see the days you trained.');
+      } else {
+        const c = consistencyHero(dayList, win);
+        hero = h('div', { class: 'hero' }, h('b', {}, c.value), h('span', {}, c.caption),
+          c.change ? h('small', { class: `hero-change ${c.change.direction}` },
+            c.change.amount ? h('strong', {}, `${c.change.direction === 'down' ? '↓' : '↑'} ${c.change.amount}`) : '', c.change.text) : '');
+        yearTabs = tabs(years.map((y) => [y, String(y)]), year, (y) => {
+          year = y;
+          remember(YEAR_KEY, y);
+          paint();
+        });
+        const tip = h('p', { class: 'cal-tip', 'aria-live': 'polite' }, 'Tap a day to see it.');
+        const g = yearGrid(win, dayList, { titles: overall.day_titles || {}, daySets: overall.day_sets || {} });
+        chart = h('div', {}, calendar(g, (d) => {
+          const when = formatDay(d.iso);
+          tip.replaceChildren(...(d.on
+            ? [h('b', {}, d.title), ` · ${when}${d.sets ? ` · ${d.sets} set${d.sets === 1 ? '' : 's'}` : ''} `, h('a', { href: `#/workout/${d.iso}` }, 'Open')]
+            : [`${when} · Rest day`]));
+        }), tip);
+        const narrow = (globalThis.innerWidth || 640) < 480;
+        const t = consistencyTiles(dayList, win, { short: narrow });
+        tiles = h('div', { class: 'grid-3', style: 'margin-top:14px' },
+          tile('Workouts', t.workouts.value, t.workouts.sub, 'gold'),
+          tile('Busiest month', t.month.value, t.month.sub),
+          tile('Favourite day', t.day.value, t.day.sub));
+      }
+    }
     const opts = options();
     if (!exercise && wanted) {
       // Opened from a workout's "Full progress": that exercise, and its chart in view.
@@ -140,18 +230,19 @@ export function statsScreen(ctx) {
       warnings.length ? h('div', { class: 'notice' }, icon('info'), h('div', {},
         'Set your bodyweight in ', h('a', { href: '#/settings/profile' }, 'Settings'), ` so ${warnings.slice(0, 3).join(', ')}${warnings.length > 3 ? '…' : ''} count your bodyweight.`)) : null,
       h('div', { class: 'card' },
-        h('div', { class: 'card-head' }, h('h2', {}, mode === 'index' ? 'Overall strength' : 'Improvement rate'),
-          tabs([['index', 'Strength'], ['rate', 'Rate']], mode, (v) => {
+        h('div', { class: 'card-head' }, h('h2', {}, mode === 'index' ? 'Overall strength' : mode === 'rate' ? 'Improvement rate' : 'Consistency'),
+          tabs([['index', 'Strength'], ['rate', 'Rate'], ['consistency', 'Consistency']], mode, (v) => {
             mode = v;
+            if (v !== 'rate') remember(VIEW_KEY, v === 'consistency' ? 'consistency' : 'strength');
             paint();
           })),
         hero,
-        h('div', { class: 'card-head', style: 'justify-content:flex-end;margin:4px 0 0' }, rangeTabs),
+        mode === 'consistency'
+          ? (yearTabs ? h('div', { class: 'card-head', style: 'justify-content:flex-end;margin:4px 0 0' }, yearTabs) : '')
+          : h('div', { class: 'card-head', style: 'justify-content:flex-end;margin:4px 0 0' }, rangeTabs),
         chart,
-        tiles,
-        h('p', { class: 'foot', style: 'margin:12px 2px 0' }, mode === 'index'
-          ? 'All your lifts together, against where they were at the start. Exercises you stopped fade out after two months.'
-          : 'How fast your lifts are improving, on average.')),
+        tiles || '',
+        h('p', { class: 'foot', style: 'margin:12px 2px 0' }, foot)),
       h('div', { class: 'card' },
         h('div', { class: 'card-head', style: 'margin-bottom:12px' }, h('h2', {}, 'Exercise'), sortSel),
         opts.length ? h('div', { class: 'field' }, select) : null,

@@ -6,7 +6,7 @@
 // old one, takes over, and the old copy is removed.
 'use strict';
 
-const VERSION = '0c637849ba35';
+const VERSION = '5ec3ce1e8533';
 const FILES = [
   './',
   'app/data.js',
@@ -28,6 +28,7 @@ const FILES = [
   'config.js',
   'core/bodyweight.js',
   'core/coach_tools.js',
+  'core/consistency.js',
   'core/dates.js',
   'core/defaults.js',
   'core/history_qa.js',
