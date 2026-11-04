@@ -4,7 +4,7 @@
 
 import { workoutParser } from '../core/parser.js';
 import { handleWorkoutLog, formatSetsDisplay, resolveTimedStatus, hasTimeHint } from '../core/logging.js';
-import { makeSettings } from '../core/bodyweight.js';
+import { makeSettings, isBodyweightEnabled } from '../core/bodyweight.js';
 import { effectivePlanText, effectiveRepRangesText, getWorkoutDays, ownPlanText } from '../core/plans.js';
 import { retrieveDay, retrieveCustom, describeRetrieveOutput } from '../core/retrieve.js';
 import {
@@ -272,6 +272,11 @@ export class Liftbook {
     if (!key) return null;
     const before = this.store.get('exercise_settings', key, { deleted: true }) || {};
     return this.store.change('exercise_settings', { ...before, exercise_key: key, exercise_name: before.exercise_name || name, ...fields });
+  }
+
+  /** Whether an exercise counts bodyweight: your choice, or the built-in list (pull-ups, dips…). */
+  bodyweightOn(name) {
+    return isBodyweightEnabled(makeSettings(this.exerciseSettings()), name, '');
   }
 
   exerciseSetting(name) {

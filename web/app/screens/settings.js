@@ -266,11 +266,13 @@ function exercises(ctx) {
   const search = h('input', { id: 'ex-search', type: 'search', placeholder: 'Search your exercises', autocapitalize: 'off', 'aria-label': 'Search your exercises' });
   const group = h('div', { class: 'group pick-group' });
   const kind = (s) => [s.is_timed ? 'Timed' : null, s.is_bodyweight ? 'Bodyweight added' : null].filter(Boolean).join(' · ') || 'Weight and reps';
+  // The switch shows what the app does now, built-in bodyweight exercises included.
+  const state = (n) => ({ ...(lb.exerciseSetting(n) || {}), is_bodyweight: lb.bodyweightOn(n) });
   let open = null;
 
   // One row per exercise; tap it to set timed or bodyweight, or rename it, in place.
   const row = (n) => {
-    const s = lb.exerciseSetting(n) || {};
+    const s = state(n);
     const desc = h('span', { class: 'desc' }, kind(s));
     const head = h('button', { class: `rowi${open === n ? ' open' : ''}`, type: 'button', 'aria-expanded': String(open === n) },
       h('span', { class: 'ico' }, icon('dumbbell')),
