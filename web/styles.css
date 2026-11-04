@@ -935,3 +935,6 @@ label.rowi { cursor: pointer; }
   .cr .cr-mine .cr-row { background: var(--surface); padding-right: 4px; }
 }
 .cr-picked.sorting .cr-row:not(.dragging) { transition: transform 0.18s var(--ease); }
+.hero .hero-change { flex-basis: 100%; margin-top: 2px; color: var(--text-2); font-size: 0.88rem; }
+.hero .hero-change strong { font-weight: 600; color: var(--gold-text); }
+.hero .hero-change.down strong { color: var(--bad); }

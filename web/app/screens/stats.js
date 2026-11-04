@@ -2,8 +2,9 @@
 
 import { h, icon, pageHead, lineChart, fmtNum, formatDay } from '../ui.js';
 import { normalizeExerciseName } from '../../core/names.js';
+import { overallView } from '../../core/overall_view.js';
 
-const RANGES = [['30', '1M'], ['90', '3M'], ['182', '6M'], ['365', '1Y'], ['all', 'All']];
+const RANGES = [['30', '1M'], ['90', '3M'], ['180', '6M'], ['365', '1Y'], ['all', 'All']];
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const METRICS = [['data', 'Estimated max'], ['weight', 'Top weight'], ['volume', 'Volume']];
 
@@ -23,35 +24,6 @@ const pctText = (v, digits = 1) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${fmtNum(
 
 /** New bests in the range (a session beating every earlier one of that exercise), and the most
  *  improved main lift (the heavier half, three sessions or more in the range). */
-function highlights(history, from) {
-  const byEx = new Map();
-  for (const l of history) {
-    const v = Number(l.estimated_1rm);
-    if (!(v > 0)) continue;
-    const k = normalizeExerciseName(l.exercise);
-    if (!byEx.has(k)) byEx.set(k, { name: l.exercise, logs: [] });
-    byEx.get(k).logs.push({ day: String(l.date).slice(0, 10), v });
-  }
-  let newBests = 0;
-  const moves = [];
-  for (const { name, logs } of byEx.values()) {
-    logs.sort((a, b) => (a.day < b.day ? -1 : a.day > b.day ? 1 : 0));
-    let best = null;
-    const inRange = [];
-    for (const x of logs) {
-      const shown = !from || x.day >= from;
-      if (shown && best !== null && x.v > best * 1.001) newBests += 1;
-      if (shown) inRange.push(x);
-      best = best === null ? x.v : Math.max(best, x.v);
-    }
-    if (inRange.length >= 3) moves.push({ name, pct: ((inRange[inRange.length - 1].v - inRange[0].v) / inRange[0].v) * 100, top: Math.max(...inRange.map((x) => x.v)) });
-  }
-  moves.sort((a, b) => b.top - a.top);
-  const main = moves.slice(0, Math.max(1, Math.ceil(moves.length / 2)));
-  const top = main.sort((a, b) => b.pct - a.pct)[0];
-  return { newBests, top: top && top.pct > 0 ? top : null };
-}
-
 function tile(label, value, sub, cls = '') {
   return h('div', { class: 'stat' }, h('span', {}, label), h('b', { class: cls }, value), sub ? h('small', {}, sub) : null);
 }
@@ -64,6 +36,7 @@ function tabs(options, value, onPick) {
 export function statsScreen(ctx) {
   const { lb } = ctx;
   const prefs = lb.settings();
+  if (String(prefs.stats_range) === '182') prefs.stats_range = '180'; // 6M was 182 days for a while
   let range = prefs.stats_range && RANGES.some(([v]) => v === String(prefs.stats_range)) ? String(prefs.stats_range) : '90';
   let sort = prefs.stats_sort || 'recent';
   let metric = 'data';
@@ -94,26 +67,27 @@ export function statsScreen(ctx) {
       paint();
     });
 
-    // Overall: the Strength Index as "% stronger" since the first day shown, as the original app.
-    const nums = oValues.map(Number).filter(Number.isFinite);
+    // Overall: the Strength Index against your start (100), as the original page showed it
+    // (core/overall_view.js): the headline is the 14-day average and doesn't change with the
+    // range; the range changes the line under it, the chart and the tiles.
     let hero = null;
     let tiles = null;
     let chart;
-    if (mode === 'index' && nums.length) {
-      const first = nums[0];
-      const asPct = oValues.map((v) => (Number.isFinite(Number(v)) && first ? (Number(v) / first - 1) * 100 : null));
-      const last = asPct.filter((v) => v !== null).pop() ?? 0;
-      const [fy, fm] = String(oLabels[oValues.findIndex((v) => Number.isFinite(Number(v)))]).split('-').map(Number);
-      hero = h('div', { class: 'hero' }, h('b', { class: last < 0 ? 'down' : '' }, pctText(last, Math.abs(last) < 10 ? 1 : 0)),
-        h('span', {}, `${last >= 0 ? 'stronger' : 'weaker'} since ${MONTHS[fm - 1]} ${fy}`));
-      chart = lineChart(oLabels.map(short), asPct, { base: 0, tag: pctText(last), format: (v) => (Math.abs(v) < 0.5 ? 'Start' : pctText(v, 0)) });
-      let bestIdx = 0;
-      asPct.forEach((v, k) => { if (v !== null && v > (asPct[bestIdx] ?? -Infinity)) bestIdx = k; });
-      const hl = highlights(lb.history(), from);
+    const view = mode === 'index' ? overallView(overall, range) : null;
+    if (view) {
+      const [fy, fm] = String(view.firstLabel).split('-').map(Number);
+      const sinceText = view.direction === 'up' ? `stronger since ${MONTHS[fm - 1]} ${fy}`
+        : view.direction === 'down' ? `below your ${MONTHS[fm - 1]} ${fy} start` : `level with your ${MONTHS[fm - 1]} ${fy} start`;
+      hero = h('div', { class: 'hero' },
+        h('b', { class: view.direction === 'down' ? 'down' : '' }, view.headline),
+        h('span', {}, sinceText),
+        view.change ? h('small', { class: `hero-change ${view.change.direction}` },
+          view.change.amount ? h('strong', {}, `${view.change.direction === 'down' ? '↓' : '↑'} ${view.change.amount}`) : '', view.change.text) : '');
+      chart = lineChart(view.labels.map(short), view.line, { base: 0, tag: view.headline, format: (v) => (Math.abs(v) < 0.5 ? 'Start' : pctText(v, 0)) });
       tiles = h('div', { class: 'grid-3', style: 'margin-top:14px' },
-        tile('Best', pctText(asPct[bestIdx] ?? 0, Math.abs(asPct[bestIdx] ?? 0) < 10 ? 1 : 0), formatDay(oLabels[bestIdx], { weekday: false, year: false })),
-        tile('New bests', String(hl.newBests), range === 'all' ? 'all time' : `in ${RANGES.find(([v]) => v === range)[1]}`, 'gold'),
-        hl.top ? tile('Most improved', pctText(hl.top.pct, 0), hl.top.name) : tile('Most improved', '–', 'nothing yet'));
+        view.best ? tile('Best', view.best.text, formatDay(view.best.day, { weekday: false, year: false })) : tile('Best', '–', ''),
+        tile('New bests', String(view.newBests), view.rangeText, 'gold'),
+        view.top ? tile('Most improved', view.top.text, view.top.name) : tile('Most improved', '–', 'nothing yet'));
     } else {
       chart = lineChart(oLabels.map(short), oValues, { unit: overall.unit === 'percent' && mode === 'rate' ? '%' : '' });
     }
@@ -162,7 +136,7 @@ export function statsScreen(ctx) {
           c.labels.length ? ` · last ${formatDay(c.labels[c.labels.length - 1])}` : ''));
     }
 
-    body.replaceChildren(
+    body.replaceChildren(...[
       warnings.length ? h('div', { class: 'notice' }, icon('info'), h('div', {},
         'Set your bodyweight in ', h('a', { href: '#/settings/profile' }, 'Settings'), ` so ${warnings.slice(0, 3).join(', ')}${warnings.length > 3 ? '…' : ''} count your bodyweight.`)) : null,
       h('div', { class: 'card' },
@@ -181,7 +155,7 @@ export function statsScreen(ctx) {
       h('div', { class: 'card' },
         h('div', { class: 'card-head', style: 'margin-bottom:12px' }, h('h2', {}, 'Exercise'), sortSel),
         opts.length ? h('div', { class: 'field' }, select) : null,
-        exerciseCard));
+        exerciseCard)].filter(Boolean)); // replaceChildren would print a null as the word "null"
   }
   paint();
   return root;
