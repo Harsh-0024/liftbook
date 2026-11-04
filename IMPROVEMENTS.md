@@ -156,6 +156,16 @@ On the iPhone simulator in dark mode: Exercises (an open row with its switches),
 "Turning off Pull Ups" question, and Bulk import. Text, borders, the picked answer and the dimmed
 Import button all read clearly; nothing needed changing.
 
+### Faster pages with a long history
+- **Branch:** `design/aesthetic-overhaul`, commit 64ab6e2 (also merged into `improve/history-select`)
+- **What:** each page asked for the whole sorted history 3 to 5 times, and with 3,000 logs each
+  ask cost about 15 ms. The app now keeps the sorted history and the list of workouts until a log
+  changes, here or from another device. On the 600-workout stand-in: a workout opens in 28 ms
+  (was 83), Retrieve 19 (41), All workouts 19 (40), Coach 16 (56). Stats stays near 100 ms: most of
+  that is working out overall strength, which is needed each time.
+- **Checked:** `npm test` (51 pass on design, 52 on history-select; a new test checks the kept list
+  follows changes made here, synced in, and deletes) and the iPhone simulator (a workout page).
+
 ### Fix on the design branch: a synced change no longer clears your search
 - **Branch:** `design/aesthetic-overhaul`, commits 61b52f1, 7a9ce68; and `improve/history-select`,
   commit c6940eb
@@ -210,7 +220,7 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
-- Look over Retrieve and the Workout page with a long history (many sessions, long plans).
+- Log page: suggest exercise names you've used while you type a new one (check what the old app did first).
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you

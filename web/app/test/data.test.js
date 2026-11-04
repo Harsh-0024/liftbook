@@ -159,13 +159,14 @@ test('a deleted workout can be brought back', async () => {
 test('history is kept between calls but follows every change, here or synced', async () => {
   const lb = await app();
   await lb.log(DAY1);
-  const first = lb.history();
-  first.reverse();
-  assert.equal(lb.history()[0].exercise, 'Squat', 'a caller’s copy can’t change the kept list');
+  const order = lb.history().map((l) => l.id);
+  lb.history().reverse();
+  assert.deepEqual(lb.history().map((l) => l.id), order, 'a caller’s copy can’t change the kept list');
   await lb.log('1/11/26 Session 1\n\nSquat\n105 x 5');
   assert.equal(lb.history().length, 3);
   assert.equal(lb.workouts().length, 2);
-  await lb.store.applyRemote('workout_logs', [{ ...lb.history()[2], workout_name: 'From phone', updated_at: '2099-01-01T00:00:00Z' }]);
+  const nov1 = lb.history().find((l) => l.date.startsWith('2026-11-01'));
+  await lb.store.applyRemote('workout_logs', [{ ...nov1, workout_name: 'From phone', updated_at: '2099-01-01T00:00:00Z' }]);
   assert.equal(lb.workout('2026-11-01').title, 'From phone');
   await lb.deleteWorkout('2026-11-01');
   assert.equal(lb.workouts().length, 1);
