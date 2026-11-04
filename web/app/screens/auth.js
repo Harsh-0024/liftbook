@@ -23,7 +23,52 @@ function field(label, input, hint, aside = null) {
   const control = input.type === 'password' ? withEye(input) : input;
   return h('div', { class: 'field' },
     aside ? h('div', { class: 'label-row' }, h('label', { for: input.id }, label), aside) : h('label', { for: input.id }, label),
-    control, hint ? h('div', { class: 'hint' }, hint) : null);
+    control, input.type === 'email' ? domains(input) : null,
+    hint ? (typeof hint === 'string' ? h('div', { class: 'hint' }, hint) : hint) : null);
+}
+
+/**
+ * Quiet "@gmail.com" buttons under an email box, as the original app had: shown once you've typed
+ * the part before the @, filtered by what follows it, gone once the address is complete.
+ */
+function domains(input) {
+  const box = h('div', { class: 'domains', hidden: true });
+  const buttons = ['gmail.com', 'icloud.com', 'outlook.com', 'yahoo.com'].map((d) => {
+    const b = h('button', { type: 'button', tabindex: '-1' }, `@${d}`);
+    b.addEventListener('mousedown', (e) => e.preventDefault()); // keep the keyboard up
+    b.addEventListener('click', () => {
+      const local = input.value.trim().split('@')[0];
+      if (!local) return input.focus();
+      input.value = `${local}@${d}`;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.focus();
+    });
+    return [d, b];
+  });
+  const update = () => {
+    const v = input.value.trim();
+    const at = v.indexOf('@');
+    const local = at === -1 ? v : v.slice(0, at);
+    const typed = at === -1 ? '' : v.slice(at + 1).toLowerCase();
+    let shown = 0;
+    for (const [d, b] of buttons) {
+      b.hidden = !(local && shown < 3 && d.startsWith(typed) && d !== typed);
+      if (!b.hidden) shown += 1;
+    }
+    box.hidden = shown === 0;
+  };
+  box.append(...buttons.map(([, b]) => b));
+  input.addEventListener('input', update);
+  return box;
+}
+
+/** The password rule under a new password, turning green once it's met. */
+function passwordRule(input) {
+  const rule = h('span', {}, icon('check'), `At least ${PASSWORD_MIN} characters`);
+  const paint = () => rule.classList.toggle('met', input.value.length >= PASSWORD_MIN);
+  input.addEventListener('input', paint);
+  paint();
+  return h('div', { class: 'hint pw-rule' }, rule);
 }
 
 /** A password box with a button to show what was typed. */
@@ -91,7 +136,7 @@ function signUp(client, onSignedIn) {
     field('Your name', name),
     field('Username', username, 'Letters, numbers, dots, dashes and underscores; 3 or more.'),
     field('Email', email),
-    field('Password', password, `At least ${PASSWORD_MIN} characters.`),
+    field('Password', password, passwordRule(password)),
     err, btn);
   form.addEventListener('submit', busy(btn, async () => {
     err.textContent = '';

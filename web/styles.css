@@ -419,6 +419,15 @@ label { display: block; font-weight: 600; font-size: 0.82rem; color: var(--muted
 .edit-fields input[type="date"]::-webkit-date-and-time-value { text-align: left; }
 @media (max-width: 420px) { .edit-fields { grid-template-columns: minmax(0, 1fr) 150px; gap: 10px; } }
 .hint { font-size: 0.8rem; color: var(--subtle); line-height: 1.45; margin-top: 7px; }
+/* Sign-in pages: "@gmail.com" buttons under an email box, and the password rule ticking green. */
+.domains { display: flex; flex-wrap: wrap; gap: 2px 14px; margin-top: 6px; }
+.domains[hidden], .domains button[hidden] { display: none; }
+.domains button { min-height: 32px; padding: 0 2px; border: 0; background: none; color: var(--gold-text); font: inherit; font-size: 0.84rem; font-weight: 500; cursor: pointer; }
+.domains button:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pw-rule span { display: inline-flex; align-items: center; gap: 6px; transition: color .2s ease; }
+.pw-rule svg { width: 13px; height: 13px; opacity: .45; transition: opacity .2s ease; }
+.pw-rule .met { color: var(--good); }
+.pw-rule .met svg { opacity: 1; }
 input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="date"], input[type="search"], select, textarea {
   width: 100%; padding: 11px 14px; border-radius: 12px;
   border: 1px solid var(--line); background: var(--input); color: var(--text);
