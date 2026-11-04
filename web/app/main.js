@@ -299,7 +299,7 @@ async function boot() {
       return true;
     },
   });
-  installShortcuts({ signedIn: () => Boolean(ctx), go });
+  installShortcuts({ signedIn: () => Boolean(ctx), isAdmin: () => Boolean(ctx?.lb.isAdmin()), go });
   if (client.auth.session()) await start();
   else render();
 }
