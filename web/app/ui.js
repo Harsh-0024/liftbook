@@ -260,7 +260,7 @@ export function busy(button, fn) {
   return async (event) => {
     event?.preventDefault?.();
     if (button.disabled) return;
-    const label = button.textContent;
+    const label = [...button.childNodes]; // icon and text, put back as they were
     button.disabled = true;
     button.textContent = 'Working…';
     try {
@@ -270,7 +270,7 @@ export function busy(button, fn) {
     } finally {
       if (button.isConnected) {
         button.disabled = false;
-        button.textContent = label;
+        button.replaceChildren(...label);
       }
     }
   };
