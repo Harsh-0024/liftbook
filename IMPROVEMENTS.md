@@ -85,4 +85,9 @@ The old app never had one: its `/` sent signed-out people to sign in, which the 
 does. The empty branch `improve/public-home` is left as it is (branches are never deleted).
 
 ## Ideas queued (next ones first)
-- "Keep me signed in" choice on sign-in, as the old one had (decide if the offline app needs it).
+- "Select" on All workouts to pick several and delete or copy them together, as the old list had.
+- Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
+
+## Open questions for you
+- "Keep me signed in" (old sign-in page): the offline app always stays signed in on that device,
+  so I left it out. Say if you want it back, for shared computers.
