@@ -69,18 +69,23 @@ export function homeScreen(ctx) {
 }
 
 /** Every workout, a month at a time, with a search. */
+// What All workouts had open, so a synced redraw keeps it (pages shown, Select mode, ticks).
+let keptHistory = null;
+
 export function historyScreen(ctx) {
   const { lb } = ctx;
   let workouts = lb.workouts();
   const search = h('input', { type: 'search', placeholder: 'Search workouts or exercises', 'aria-label': 'Search workouts', autocomplete: 'off' });
   const body = h('div', {});
   // Picking several to delete at once, as the old list had: Select, tap rows, Delete.
+  const prev = ctx.redrawing ? keptHistory : null;
   let selecting = false;
   const picked = new Set();
   let shownDays = [];
   // A long history is drawn a page at a time; "Show more" adds the next page.
   const PAGE = 60;
-  let limit = PAGE;
+  let limit = prev?.limit || PAGE;
+  keptHistory = { get limit() { return limit; }, get selecting() { return selecting; }, picked };
   const selectBtn = h('button', { class: 'btn small', type: 'button' }, 'Select');
   const count = h('span', { class: 'editor-meta', 'aria-live': 'polite' });
   const allBtn = h('button', { class: 'btn small', type: 'button' }, 'Select all');
@@ -180,13 +185,18 @@ export function historyScreen(ctx) {
     if (e.key === 'Escape' && selecting) setSelecting(false);
   };
   document.addEventListener('keydown', onKey);
-  search.addEventListener('input', () => {
-    limit = PAGE;
+  search.addEventListener('input', (e) => {
+    // A new search starts from the first page; the app putting back your search after a redraw doesn't.
+    if (e.isTrusted) limit = PAGE;
     paint();
   });
   sub();
-  if (fromSettings && workouts.length) setSelecting(true);
-  else paint();
+  if (prev ? prev.selecting : fromSettings && workouts.length) {
+    setSelecting(true);
+    const days = new Set(workouts.map((w) => w.day));
+    for (const d of prev?.picked || []) if (days.has(d)) picked.add(d);
+    paint();
+  } else paint();
   return h('div', {}, head, h('div', { class: 'search' }, icon('search'), search), body, bar);
 }
 

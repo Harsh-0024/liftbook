@@ -59,6 +59,8 @@ async function render() {
     const m = re.exec(p);
     if (!m) continue;
     current = { nav, live: Boolean(live) };
+    // True when this draws the page already on show again (a synced change), not a new visit.
+    ctx.redrawing = shownPath === p;
     try {
       return show(await screen(ctx, ...m.slice(1)), nav);
     } catch (err) {
