@@ -891,13 +891,14 @@ label.rowi { cursor: pointer; }
   .cr.sheet-open .cr-mine { transform: translate(-50%, 0); opacity: 1; visibility: visible; transition: transform 0.22s var(--ease), opacity 0.22s var(--ease); }
   .cr.sheet-open .cr-bar-chev { transform: rotate(90deg); }
   .cr.sheet-open .cr-backdrop { display: block; position: fixed; inset: 0; z-index: 23; background: rgba(0, 0, 0, 0.25); animation: fade-in 0.2s var(--ease); }
-  .cr .pick-bar { z-index: 25; }
+  .cr.sheet-open .pick-bar { z-index: 25; }
   .cr:not(.has-picks) .pick-bar .cr-bar-chev { visibility: hidden; }
 }
 @media (prefers-reduced-motion: reduce) { .cr .cr-mine, .pick-tick, .cr-bar-chev { transition: none !important; } }
 .picked .rowi { padding-top: 10px; padding-bottom: 10px; }
 .pick-bar { position: sticky; bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 10px); margin-top: 10px; z-index: 5; box-shadow: 0 8px 28px rgba(0,0,0,0.25); }
 .pick-bar .editor-bar { position: static; border-top: 0; }
+.cr-out:not(:empty) { margin-top: 36px; }
 @media (min-width: 760px) { .pick-bar { display: none; } }
 @media (max-width: 759.98px) { .side-bar { display: none; } }
 

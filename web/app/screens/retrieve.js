@@ -261,7 +261,7 @@ export function retrieveCustomScreen(ctx) {
     return { el: h('div', { class: 'editor-bar' }, infoEl, go), count, sets, go };
   };
   const bars = [mkBar(false), mkBar(true)];
-  const holder = h('div', {});
+  const holder = h('div', { class: 'cr-out' });
 
   const has = (name) => picks.some((p) => p.name === name);
   const toggle = (name) => {
@@ -417,7 +417,9 @@ export function retrieveCustomScreen(ctx) {
     await lb.recordRetrievals(names);
     setSheet(false);
     holder.replaceChildren(output(ctx, result, null, { kicker: prefill?.kicker || 'Custom workout', number, name, fallback: number ? '' : 'Custom Workout' }));
-    holder.scrollIntoView({ behavior: 'smooth' });
+    // Land the workout just below the app header, not under it.
+    const head = document.querySelector('.topbar')?.offsetHeight || 0;
+    window.scrollTo({ top: holder.getBoundingClientRect().top + window.scrollY - head - 12, behavior: 'smooth' });
   }
 
   // Opened from Edit: the groups holding the picks start open.
