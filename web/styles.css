@@ -118,6 +118,9 @@ p { margin: 0 0 12px; }
 .tabbar a.active { color: var(--gold); }
 body.signed-out .tabbar, body.signed-out .topnav, body.signed-out .sync-pill { display: none !important; }
 body.signed-out { padding-bottom: 0; }
+/* The Android app, while the keyboard is up (web/app/native.js). */
+body.keyboard-open .tabbar { display: none; }
+body.keyboard-open { padding-bottom: 0; }
 @media (min-width: 760px) {
   .topnav { display: flex; }
   .tabbar { display: none; }

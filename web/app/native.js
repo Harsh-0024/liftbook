@@ -56,13 +56,21 @@ export function startNative({ onLink, onResume, onOnline, onBack }) {
   App?.addListener('backButton', ({ canGoBack }) => {
     if (!onBack(canGoBack)) App.minimizeApp();
   });
-  Network?.addListener('networkStatusChange', (s) => s.connected && onOnline());
+  // Only when the connection comes back: Android can repeat "connected" every few seconds, and a
+  // sync for each would keep the running one from ever finishing.
+  let connected = navigator.onLine;
+  Network?.addListener('networkStatusChange', (s) => {
+    if (s.connected && !connected) onOnline();
+    connected = s.connected;
+  });
 
-  // The log box stays in sight above the keyboard.
+  // The log box stays in sight above the keyboard, and the tab bar steps aside while typing.
   Keyboard?.addListener('keyboardDidShow', () => {
+    document.body.classList.add('keyboard-open');
     const el = document.activeElement;
     if (el && /^(TEXTAREA|INPUT|SELECT)$/.test(el.tagName)) el.scrollIntoView({ block: 'center', behavior: 'smooth' });
   });
+  Keyboard?.addListener('keyboardDidHide', () => document.body.classList.remove('keyboard-open'));
 
   // Status bar icons light on the dark theme and dark on the light one (the app draws behind the bar).
   if (SystemBars) {
