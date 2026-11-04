@@ -543,6 +543,15 @@ export class Liftbook {
     return path;
   }
 
+  /** Take the profile photo away: the profile forgets it first, then the file goes. */
+  async removeAvatar() {
+    const old = this.profile()?.avatar_path;
+    if (!old) return;
+    await this.saveProfile({ avatar_path: null });
+    await this.store.setMeta('avatar_url', null);
+    if (!old.startsWith('http')) this.client.storage.remove('avatars', [old]).catch(() => {});
+  }
+
   async avatarUrl() {
     const path = this.profile()?.avatar_path;
     if (!path || path.startsWith('http')) return path || null;

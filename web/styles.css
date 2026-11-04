@@ -685,3 +685,5 @@ label.rowi { cursor: pointer; }
 .editor-bar.static { position: static; }
 .profile-photo .avatar { flex: none; }
 @media (max-width: 479.98px) { .pick-group > .rowi.sub, .pick-group > .blk.sub { padding-left: 18px; } }
+.photo-btns { flex: none; gap: 8px; flex-wrap: nowrap; }
+@media (max-width: 479.98px) { .profile-photo { flex-wrap: wrap; } .profile-photo .photo-btns { width: 100%; padding-left: 78px; margin-top: -4px; } }
