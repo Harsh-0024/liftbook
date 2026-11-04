@@ -247,8 +247,12 @@ and JSON export with dates (the backup file keeps everything).
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
-- Public share links for a workout (the old `share_workout` page): the new app shares a workout as
-  text through the phone's share sheet. A link anyone can open needs a new Supabase table and
-  access rules, which I won't add to the live project without you. Say if you want it.
-- "Keep me signed in" (old sign-in page): the offline app always stays signed in on that device,
-  so I left it out. Say if you want it back, for shared computers.
+- Public share links for a workout (the old `share_workout` page): you said yes. The Supabase part
+  is on branch `improve/share-links` (table `share_links`, functions `share_day`,
+  `stop_sharing_day`, `shared_workout`, tested on a local Postgres). Waiting for you to run it in
+  the live project's SQL editor; the app's Share link button and the page that shows a link come
+  after that.
+
+## Decided
+- "Keep me signed in" (old sign-in page): stays out (you agreed). The offline app always stays
+  signed in on that device.
