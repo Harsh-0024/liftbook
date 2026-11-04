@@ -97,4 +97,3 @@ self.addEventListener('fetch', (event) => {
     return fetch(req);
   })());
 });
-// test 1793784571
