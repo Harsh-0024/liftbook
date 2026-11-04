@@ -202,6 +202,7 @@ function plan(ctx) {
   });
   followReps.addEventListener('change', async () => {
     await lb.setSetting('follow_shared_exercises', followReps.checked);
+    showReps();
     toast(followReps.checked ? 'Following the shared rep ranges.' : 'Using your own rep ranges.');
   });
 
@@ -242,6 +243,23 @@ function plan(ctx) {
     toast('Copied. The plan is yours to change.');
     planText.focus();
   }));
+  // The same for rep ranges, as the old exercises page had.
+  const copyReps = h('button', { class: 'btn small', type: 'button' }, 'Copy');
+  copyReps.addEventListener('click', busy(copyReps, async () => {
+    const source = (shared.rep_ranges || defaultRepRangesText()).trim();
+    const own = lb.text('rep_ranges').trim();
+    if (own && own !== source && !confirm('Replace your rep ranges? Yours will be replaced by a copy of the shared ones.')) return;
+    await lb.setText('rep_ranges', source);
+    repText.value = source;
+    repText.dispatchEvent(new Event('input'));
+    if (followReps.checked) {
+      followReps.checked = false;
+      await lb.setSetting('follow_shared_exercises', false);
+    }
+    showReps();
+    toast('Copied. The rep ranges are yours to change.');
+    repText.focus();
+  }));
   const refresh = h('button', { class: 'btn small', type: 'button' }, 'Check for updates');
   refresh.addEventListener('click', busy(refresh, async () => {
     toast((await lb.refreshShared()) ? 'Shared plan is up to date.' : 'Couldn’t reach the server.');
@@ -264,6 +282,18 @@ function plan(ctx) {
     followingNote.hidden = !following;
   };
   showPlan();
+  const repEditor = editorGroup(repText, 'rep_ranges', 'Save rep ranges', 'Rep ranges saved.');
+  const repHelp = h('p', { class: 'foot' }, 'One exercise per line: "Squat: 3, 5-8" (sets, then reps) or "Plank: 30-60s". Leave it empty for the built-in ranges.');
+  const repNote = h('div', { class: 'group empty' }, icon('sliders'),
+    h('p', {}, 'You’re using the shared rep ranges.', h('br'), 'Turn the switch off, or copy them, to write your own.'));
+  const repSection = h('section', { class: 'section' }, h('div', { class: 'label' }, 'Rep ranges'), repEditor, repHelp, repNote);
+  const showReps = () => {
+    const following = followReps.checked && !admin;
+    repEditor.hidden = following;
+    repHelp.hidden = following;
+    repNote.hidden = !following;
+  };
+  showReps();
 
   return h('div', {},
     admin ? h('div', { class: 'notice' }, icon('shield'), h('span', {}, 'You’re an admin: your plan and rep ranges are the shared ones others can follow.')) :
@@ -272,18 +302,17 @@ function plan(ctx) {
         h('div', { class: 'group' },
           h('label', { class: 'rowi' }, h('span', { class: 'ico' }, icon('person')),
             h('span', { class: 'main' }, h('span', { class: 'title' }, 'Follow the shared plan'), h('span', { class: 'desc' }, 'Retrieve uses it instead of yours')), followPlan),
+          h('div', { class: 'rowi' }, h('span', { class: 'ico' }, icon('copy')),
+            h('span', { class: 'main' }, h('span', { class: 'title' }, 'Copy and edit the plan'), h('span', { class: 'desc' }, 'Make the shared plan your own to change')), copy),
           h('label', { class: 'rowi' }, h('span', { class: 'ico' }, icon('sliders')),
             h('span', { class: 'main' }, h('span', { class: 'title' }, 'Follow the shared rep ranges'), h('span', { class: 'desc' }, 'Targets come from the shared plan')), followReps),
           h('div', { class: 'rowi' }, h('span', { class: 'ico' }, icon('copy')),
-            h('span', { class: 'main' }, h('span', { class: 'title' }, 'Copy and edit'), h('span', { class: 'desc' }, 'Make the shared plan your own to change')), copy),
+            h('span', { class: 'main' }, h('span', { class: 'title' }, 'Copy and edit the rep ranges'), h('span', { class: 'desc' }, 'Make the shared rep ranges your own to change')), copyReps),
           h('div', { class: 'rowi' }, h('span', { class: 'ico' }, icon('sync')),
             h('span', { class: 'main' }, h('span', { class: 'title' }, 'Shared plan'),
               h('span', { class: 'desc' }, shared.updated_at ? `Updated ${formatDay(shared.updated_at)}` : 'Not downloaded yet')), refresh))),
     planSection,
-    h('section', { class: 'section' },
-      h('div', { class: 'label' }, 'Rep ranges'),
-      editorGroup(repText, 'rep_ranges', 'Save rep ranges', 'Rep ranges saved.'),
-      h('p', { class: 'foot' }, 'One exercise per line: "Squat: 3, 5-8" (sets, then reps) or "Plank: 30-60s". Leave it empty for the built-in ranges.')));
+    repSection);
 }
 
 /* ---------------- exercises ---------------- */
