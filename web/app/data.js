@@ -2,7 +2,7 @@
 // store through the workout logic in web/core/. Changes are written to the store (which syncs
 // them); nothing here waits for the network except the shared plan and feedback.
 
-import { workoutParser, parsePlanExerciseLine } from '../core/parser.js';
+import { workoutParser, parsePlanExerciseLine, isTimeOnlyExercise } from '../core/parser.js';
 import {
   handleWorkoutLog, formatSetsDisplay, resolveTimedStatus, hasTimeHint, classifyPerformance, getBestLog, comparisonSetCount,
 } from '../core/logging.js';
@@ -277,6 +277,22 @@ export class Liftbook {
     if (parsed.invalid_date_text) errors.push(`\u201c${parsed.invalid_date_text}\u201d isn\u2019t a date this app can read.`);
     const invalid = exercises.filter((e) => e.valid === false || e.missing_name);
     for (const e of invalid.filter((x) => x.valid === false)) errors.push(`“${e.name}”: couldn’t read its sets (“${String(e.exercise_string || '').split('\n').slice(1).join(' ')}”).`);
+    // Each exercise's sets as the old check wrote them: "BW+20×6" for bodyweight, "60×1s" or "45s"
+    // for timed (your answer, the known timed list, or a time written in the text).
+    const settings = makeSettings(this.exerciseSettings());
+    const num = (v) => fmtG(Number(v) || 0);
+    for (const e of exercises) {
+      if (e.valid === false || e.missing_name) continue;
+      const str = String(e.exercise_string || '');
+      const bw = Boolean(isBodyweightEnabled(settings, e.name, str) || isTimeOnlyExercise(str, e.source_name || e.name));
+      const secs = Boolean(resolveTimedStatus({ exerciseName: e.name, exerciseString: str, settings }).is_timed);
+      e.sets_label = (e.reps || []).map((r, k) => {
+        const w = Number(e.weights?.[k]) || 0;
+        if (bw) return `${w ? `BW${w > 0 ? '+' : '−'}${num(Math.abs(w))}` : 'BW'}×${r}${secs ? 's' : ''}`;
+        if (secs && !w) return `${r}s`;
+        return `${num(w)}×${r}${secs ? 's' : ''}`;
+      }).join(' · ');
+    }
     const day = dayOf(parsed.date);
     const existing = this.workout(day);
     return {

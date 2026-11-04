@@ -77,11 +77,10 @@ export function logScreen(ctx) {
     checkBox.hidden = !exercises.length;
     checkList.replaceChildren(...exercises.map((e) => {
       const bad = e.valid === false || e.missing_name;
-      const sets = (e.reps || []).map((r, k) => `${e.weights?.[k] ?? ''}${e.weights?.[k] !== undefined && e.weights?.[k] !== null ? '×' : ''}${r}`);
       return h('div', { class: 'rowi' },
         h('span', { class: 'ico', style: bad ? 'color:var(--bad)' : '' }, icon(bad ? 'info' : 'check')),
         h('span', { class: 'main' }, h('span', { class: 'title' }, e.name),
-          h('span', { class: 'desc mono' }, bad ? 'Couldn’t read these sets' : sets.join('  ·  '))));
+          h('span', { class: 'desc mono' }, bad ? 'Couldn’t read these sets' : e.sets_label)));
     }));
     problems.replaceChildren(c.errors.length ? h('ul', { class: 'errors' }, c.errors.map((e) => h('li', {}, e))) : '');
     if (c.existing) checkHead.textContent += ` · adds to ${c.existing.title} if you choose`;
