@@ -700,3 +700,8 @@ label.rowi { cursor: pointer; }
 .suggest button { display: block; width: 100%; padding: 10px 12px; border: 0; border-radius: 8px; background: transparent;
   text-align: left; font: inherit; font-size: .92rem; font-weight: 500; color: var(--muted); cursor: pointer; }
 .suggest button.active, .suggest button:hover { background: var(--gold-soft); color: var(--text); }
+
+/* Log check: a name you haven't used, a close misspelling or a repeat. */
+.name-note { font-size: .82rem; color: var(--muted); }
+.name-note.is-suggest, .name-note.is-twice, .name-note.is-dup { color: var(--warn); font-weight: 600; }
+.rowi.warn .ico { color: var(--warn); }

@@ -2,7 +2,8 @@
 // store through the workout logic in web/core/. Changes are written to the store (which syncs
 // them); nothing here waits for the network except the shared plan and feedback.
 
-import { workoutParser } from '../core/parser.js';
+import { KnownNames, nameNotes } from '../core/name_check.js';
+import { workoutParser, parsePlanExerciseLine } from '../core/parser.js';
 import { handleWorkoutLog, formatSetsDisplay, resolveTimedStatus, hasTimeHint } from '../core/logging.js';
 import { makeSettings, isBodyweightEnabled } from '../core/bodyweight.js';
 import { effectivePlanText, effectiveRepRangesText, getWorkoutDays, ownPlanText } from '../core/plans.js';
@@ -212,7 +213,12 @@ export class Liftbook {
     for (const e of invalid.filter((x) => x.valid === false)) errors.push(`“${e.name}”: couldn’t read its sets (“${String(e.exercise_string || '').split('\n').slice(1).join(' ')}”).`);
     const day = dayOf(parsed.date);
     const existing = this.workout(day);
+    const notes = nameNotes(exercises, this.knownNames(), {
+      lines: clean.split('\n'),
+      dayNames: existing ? new Set(existing.logs.map((l) => normalizeExerciseName(l.exercise))) : null,
+    });
     return {
+      notes,
       // Sets without a name and unreadable dates stop the save; an unreadable exercise is
       // shown as an error in the summary and the rest is saved.
       ok: exercises.length > 0 && invalid.length < exercises.length && !parsed.invalid_date_text
@@ -315,6 +321,19 @@ export class Liftbook {
   retrieveCustom(exerciseLines, title) {
     const [text, exercises, sets] = retrieveCustom(exerciseLines, { title, ...this.retrieveContext() });
     return { text, exercises, sets, described: describeRetrieveOutput(text) };
+  }
+
+  /** The names you've logged and the plan's, for "is this new?" and "did you mean?". Kept until either changes. */
+  knownNames() {
+    const v = `${this.store.version.workout_logs}\n${this.planText()}`;
+    if (this._known?.v !== v) {
+      const plan = [];
+      for (const cat of Object.values(this.planDays().workout || {})) {
+        for (const lines of Object.values(cat)) for (const line of lines) plan.push(parsePlanExerciseLine(line).name);
+      }
+      this._known = { v, value: new KnownNames(this.history().map((l) => l.exercise), plan.filter(Boolean)) };
+    }
+    return this._known.value;
   }
 
   /** Every exercise ever logged or in the plan, for picking by hand; most retrieved first. */

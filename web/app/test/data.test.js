@@ -160,3 +160,19 @@ test('history is kept between calls but follows every change, here or synced', a
   await lb.deleteWorkout('2026-11-01');
   assert.equal(lb.workouts().length, 1);
 });
+
+test('the check says which names are new, and suggests the one you meant', async () => {
+  const lb = await app();
+  await lb.log('1/9/26 Push\n\nFlat Barbell Press - [3]\n50, 8\n\nZercher Squat\n100, 5');
+  // The old app's own cases: a typo, and a superset label in front of a known name.
+  const c = lb.check('1/9/26 Push\n\nFlat Barbel Pres - [3]\n52.5 50, 8\n\nFlat Barbell Press - [3]\n50, 8\n\nA1 Zercher Squat\n100, 5\n\nCable Crunch\n30, 12\n\nFlat barbell press\n50, 8');
+  assert.deepEqual(c.notes.map((n) => n.state), ['suggest', 'dup', 'suggest', 'new', 'dup']);
+  assert.equal(c.notes[0].suggestion, 'Flat Barbell Press');
+  assert.equal(c.notes[0].fixLine, 'Flat Barbell Press - [3]');
+  assert.equal(c.parsed.exercises[0].line, 3);
+  assert.equal(c.notes[2].fixLine, 'Zercher Squat');
+  const other = lb.check('2/9/26 Arms\n\nBarbell Curl\n20, 10\n\nBarbell Curl\n20, 8\n\nIncline Dumbell Press\n30, 8');
+  assert.deepEqual(other.notes.map((n) => n.state), ['ok', 'twice', 'suggest'], 'the built-in plan’s names are known');
+  assert.equal(other.notes[2].suggestion, 'Incline Dumbbell Press');
+  assert.match(other.notes[1].note, /Also at no\. 1/);
+});

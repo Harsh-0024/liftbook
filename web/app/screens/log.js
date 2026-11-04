@@ -77,16 +77,34 @@ export function logScreen(ctx) {
       : 'Nothing to check yet');
     checkHead.textContent = c.parsed ? `${formatDay(c.day)} · ${c.parsed.workout_name || 'Workout'}` : '';
     checkBox.hidden = !exercises.length;
-    checkList.replaceChildren(...exercises.map((e) => {
+    checkList.replaceChildren(...exercises.map((e, i) => {
       const bad = e.valid === false || e.missing_name;
       const sets = (e.reps || []).map((r, k) => `${e.weights?.[k] ?? ''}${e.weights?.[k] !== undefined && e.weights?.[k] !== null ? '×' : ''}${r}`);
-      return h('div', { class: 'rowi' },
+      // Names you haven't used, close misspellings ("Use it" puts the known name on that line), repeats.
+      const n = c.notes?.[i];
+      const flagged = n && n.state !== 'ok';
+      const fix = n?.state === 'suggest' && n.fixLine !== null
+        ? h('button', { class: 'btn small', type: 'button', 'aria-label': `Use it: ${n.suggestion} on line ${e.line}`, onclick: () => useLine(e.line, n.fixLine) }, 'Use it')
+        : null;
+      return h('div', { class: `rowi${flagged && n.state !== 'new' ? ' warn' : ''}` },
         h('span', { class: 'ico', style: bad ? 'color:var(--bad)' : '' }, icon(bad ? 'info' : 'check')),
         h('span', { class: 'main' }, h('span', { class: 'title' }, e.name),
-          h('span', { class: 'desc mono' }, bad ? 'Couldn’t read these sets' : sets.join('  ·  '))));
+          h('span', { class: 'desc mono' }, bad ? 'Couldn’t read these sets' : sets.join('  ·  ')),
+          flagged ? h('span', { class: `desc name-note is-${n.state}` }, n.note) : null),
+        fix);
     }));
     problems.replaceChildren(c.errors.length ? h('ul', { class: 'errors' }, c.errors.map((e) => h('li', {}, e))) : '');
     if (c.existing) checkHead.textContent += ` · adds to ${c.existing.title} if you choose`;
+  };
+  const useLine = (lineNo, text) => {
+    const lines = ta.value.split('\n');
+    // The check reads the text trimmed, so its line 1 is the first line that isn't blank.
+    const blankAbove = (ta.value.match(/^\s*/)[0].match(/\n/g) || []).length;
+    const k = lineNo - 1 + blankAbove;
+    if (k < 0 || k >= lines.length) return;
+    lines[k] = text;
+    ta.value = lines.join('\n');
+    check();
   };
   ta.addEventListener('input', () => {
     clearTimeout(timer);
