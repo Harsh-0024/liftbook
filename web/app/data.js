@@ -2,20 +2,21 @@
 // store through the workout logic in web/core/. Changes are written to the store (which syncs
 // them); nothing here waits for the network except the shared plan and feedback.
 
-import { workoutParser } from '../core/parser.js';
+import { workoutParser, parsePlanExerciseLine } from '../core/parser.js';
 import {
   handleWorkoutLog, formatSetsDisplay, resolveTimedStatus, hasTimeHint, classifyPerformance, getBestLog, comparisonSetCount,
 } from '../core/logging.js';
 import { makeSettings, isBodyweightEnabled, inferLogUsesBodyweight, effectiveSetsForLog } from '../core/bodyweight.js';
 import {
   effectivePlanText, effectiveRepRangesText, getWorkoutDays, ownPlanText, parseRepTargetSets, parsePlanTargetSets, resolveTargetSets,
+  parseRepRangesText, lookupRepTarget,
 } from '../core/plans.js';
 import {
   SPARKLINE_SESSIONS, MEDAL_KEYS, rankedSets, sessionScore, displaySets, trend, bestSummary, compareColumns, sparkline,
   shortDate, longDate, formatSetsLine,
 } from '../core/insights.js';
 import { formatG as fmtG } from '../core/py.js';
-import { retrieveDay, retrieveCustom, describeRetrieveOutput } from '../core/retrieve.js';
+import { retrieveDay, retrieveCustom, describeRetrieveOutput, picksForPlanLines, oftenTrainedKeys } from '../core/retrieve.js';
 import {
   getChartData, getOverallProgressData, statsExerciseOptions, getAllExercisesSummary, bodyweightWarningExercises,
 } from '../core/stats.js';
@@ -382,33 +383,68 @@ export class Liftbook {
     return { text, exercises, sets, described: describeRetrieveOutput(text) };
   }
 
-  retrieveCustom(exerciseLines, title) {
-    const [text, exercises, sets] = retrieveCustom(exerciseLines, { title, ...this.retrieveContext() });
+  retrieveCustom(exerciseLines, title, setOverrides = null) {
+    const [text, exercises, sets] = retrieveCustom(exerciseLines, { title, setOverrides, ...this.retrieveContext() });
     return { text, exercises, sets, described: describeRetrieveOutput(text) };
   }
 
   /** Every exercise ever logged or in the plan, for picking by hand; most retrieved first. */
+  /**
+   * Every exercise in the plan or the history, for picking by hand, as the old picker had it:
+   * the sets and reps a plan retrieve would give it, and whether it's trained often (in the
+   * plan you follow, or part of your routine) or goes under "Less often". Most retrieved first.
+   */
   exerciseCatalog() {
     const counts = new Map();
     for (const e of this.store.all('retrieval_events')) counts.set(e.exercise_key, (counts.get(e.exercise_key) || 0) + 1);
-    const names = new Map();
+    const items = new Map();
     const days = this.planDays().workout || {};
     for (const cat of Object.values(days)) {
       for (const lines of Object.values(cat)) {
         for (const line of lines) {
-          const name = String(line).replace(/\s*-\s*\[.*$/, '').trim();
+          const parsed = parsePlanExerciseLine(String(line));
+          const name = String(parsed.name || line).trim();
           const key = normalizeExerciseName(name);
-          if (key && !names.has(key)) names.set(key, name);
+          if (key && !items.has(key)) items.set(key, { key, name, line: String(line), inPlan: true });
         }
       }
     }
+    const byDay = new Map();
     for (const log of this.history()) {
       const key = normalizeExerciseName(log.exercise);
-      if (key && !names.has(key)) names.set(key, log.exercise);
+      if (!key) continue;
+      if (!items.has(key)) items.set(key, { key, name: log.exercise, line: log.exercise, inPlan: false });
+      const day = String(log.date || '').slice(0, 10);
+      if (day) (byDay.get(day) || byDay.set(day, new Set()).get(day)).add(key);
     }
-    return [...names.entries()]
-      .map(([key, name]) => ({ key, name, count: counts.get(key) || 0 }))
+    // null: too little history to tell, so nothing folds away.
+    const often = oftenTrainedKeys([...byDay].sort(), [...items.values()].filter((i) => i.inPlan).map((i) => i.key));
+    const repText = this.repRangesText();
+    const [ranges, setsBy] = parseRepRangesText(repText);
+    return [...items.values()]
+      .map((it) => {
+        const [, sets] = picksForPlanLines([it.line], repText)[0] || [null, 3];
+        const range = lookupRepTarget(it.name, ranges, setsBy)[0] || parsePlanExerciseLine(it.line).inline_range || '';
+        return { key: it.key, name: it.name, count: counts.get(it.key) || 0, sets, reps: String(range),
+          often: often === null || often.has(it.key) };
+      })
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  }
+
+  /** The exercises of a plan day with their sets ([[name, sets]]), for Edit. */
+  planDayPicks(category, dayId) {
+    const lines = this.planDays().workout?.[category]?.[`${category} ${dayId}`] || [];
+    const byKey = new Map(picksForPlanLines(lines, this.repRangesText()));
+    const out = [];
+    for (const line of lines) {
+      const name = String(parsePlanExerciseLine(String(line)).name || line).trim();
+      const key = normalizeExerciseName(name);
+      if (byKey.has(key)) {
+        out.push([name, byKey.get(key)]);
+        byKey.delete(key);
+      }
+    }
+    return out;
   }
 
   async recordRetrievals(names) {

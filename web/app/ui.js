@@ -25,10 +25,19 @@ function append(el, children) {
 }
 
 let toastTimer = null;
-export function toast(message, ms = 3200) {
+/** A short message near the bottom. toast('Saved'), or with a button: toast('Cleared', { action: 'Undo', onAction }). */
+export function toast(message, opts = 3200) {
   const el = document.getElementById('toast');
   if (!el) return;
-  el.textContent = message;
+  const { ms = opts?.action ? 6000 : 3200, action = null, onAction = null } = typeof opts === 'number' ? { ms: opts } : (opts || {});
+  el.replaceChildren(message);
+  if (action) {
+    el.append(h('button', { type: 'button', class: 'toast-act', onclick: () => {
+      el.hidden = true;
+      clearTimeout(toastTimer);
+      onAction?.();
+    } }, action));
+  }
   el.hidden = false;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
