@@ -80,6 +80,8 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
   first. Cancel or Escape leaves without changes.
 - **Also (commit 3963caa):** a "Delete several workouts" row in Settings, under Data and connections,
   opens the list ready to pick, with Back going to Settings. On phones the bar stays on one line.
+- **Also (commit a8b5569):** after deleting one workout or several, the message at the bottom has
+  an Undo button for 8 seconds; it brings the same workouts back on every device.
 - **Try it:** as above, with `origin/improve/history-select`, then Home, See all workouts, or
   Settings, Delete several workouts.
 - **Checked:** `npm test` (50 pass); desktop Chrome (pick, search plus select all, clear, delete)
@@ -127,6 +129,11 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
   Exercises page, though the app counts them. The switch and the line under the name now say what
   the app really does.
 
+### Fix on the design branch: messages at the bottom sat off-centre
+- **Branch:** `design/aesthetic-overhaul`, commit 6eab8d0
+- The short messages ("Workout saved.") started at the middle of the screen and ran to the right,
+  wrapping early on phones: their slide-in animation cancelled the centring. They're centred now.
+
 ### Fix on the design branch: iPhone zoomed in when you tapped a text box
 - **Branch:** `design/aesthetic-overhaul`, commit c81a927
 - Log, plan, feedback and other big boxes used 15px text, so iPhone Safari zoomed the page in on
@@ -168,5 +175,8 @@ and JSON export with dates (the backup file keeps everything).
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
+- Public share links for a workout (the old `share_workout` page): the new app shares a workout as
+  text through the phone's share sheet. A link anyone can open needs a new Supabase table and
+  access rules, which I won't add to the live project without you. Say if you want it.
 - "Keep me signed in" (old sign-in page): the offline app always stays signed in on that device,
   so I left it out. Say if you want it back, for shared computers.
