@@ -184,6 +184,7 @@ async function boot() {
   if (/access_token=|error_description=|message=/.test(location.hash)) {
     // Asked for in the Android app: hand it on to the app, unless the person carries on here.
     if (wantsApp()) {
+      document.body.classList.add('signed-out'); // no menus on the hand-off page
       const carriedOn = await new Promise((resolve) => show(appHandOff(h, location.hash, () => resolve(true)), ''));
       if (carriedOn) history.replaceState(null, '', location.pathname + location.hash);
     }
