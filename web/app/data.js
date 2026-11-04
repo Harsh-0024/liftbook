@@ -261,7 +261,10 @@ export class Liftbook {
     if (!clean) return { ok: false, errors: ['Type your workout first.'], parsed: null };
     let parsed;
     try {
-      parsed = workoutParser(clean, { bodyweight: this.profile()?.bodyweight ?? null, now });
+      // As the Python log route: bodyweight sets stay as offsets ("BW+20" is 20), flagged as
+      // bodyweight; stats add the bodyweight once. Without this they were stored as 98 and
+      // counted 78 kg twice.
+      parsed = workoutParser(clean, { bodyweight: this.profile()?.bodyweight ?? null, preserveBodyweightOffsets: true, now });
     } catch (err) {
       return { ok: false, errors: [`Couldn’t read this: ${err.message}`], parsed: null };
     }
