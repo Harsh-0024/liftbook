@@ -632,10 +632,10 @@ function bulkImport(ctx) {
     meta.textContent = !ta.value.trim() ? 'Nothing is saved yet'
       : days.length ? `${days.length} day${days.length === 1 ? '' : 's'} found · nothing saved yet` : 'No days found: start each day with a date like 03/02';
     if (!days.length) return result.replaceChildren();
-    const dated = days.map((d) => d.date).filter(Boolean).sort();
+    const dated = days.filter((d) => d.status !== 'failed').map((d) => d.date).sort();
     result.replaceChildren(
       h('section', { class: 'section' },
-        h('div', { class: 'label' }, 'Check', dated.length ? h('span', {}, `${formatDay(dated[0])} – ${formatDay(dated[dated.length - 1])}`) : null),
+        h('div', { class: 'label' }, 'Check', dated.length ? h('span', {}, dated[0] === dated[dated.length - 1] ? formatDay(dated[0]) : `${formatDay(dated[0])} – ${formatDay(dated[dated.length - 1])}`) : null),
         h('div', { class: 'grid-3' },
           h('div', { class: 'stat' }, h('span', {}, 'Ready'), h('b', { class: 'gold' }, ready)),
           h('div', { class: 'stat' }, h('span', {}, 'Already in'), h('b', {}, n('skipped'))),
@@ -648,7 +648,7 @@ function bulkImport(ctx) {
         return h('div', { class: `rowi bulk-${d.status}` },
           h('span', { class: 'ico' }, icon(ico)),
           h('span', { class: 'main' },
-            h('span', { class: 'title' }, d.date ? `${formatDay(d.date)} · ${c?.parsed?.workout_name || 'Workout'}` : d.text.split('\n')[0]),
+            h('span', { class: 'title' }, c?.parsed ? `${formatDay(d.date)} · ${c.parsed.workout_name || 'Workout'}` : d.text.split('\n')[0]),
             h('span', { class: 'desc' }, notes)),
           h('span', { class: 'value' }, word));
       }))));
