@@ -78,7 +78,10 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
 - **What:** a "Select" button on All workouts, as the old list had. Tap workouts to tick them; a
   bar shows how many, "Select all" (or "Clear") for what the search shows, and Delete, which asks
   first. Cancel or Escape leaves without changes.
-- **Try it:** as above, with `origin/improve/history-select`, then Home, See all workouts.
+- **Also (commit 3963caa):** a "Delete several workouts" row in Settings, under Data and connections,
+  opens the list ready to pick, with Back going to Settings. On phones the bar stays on one line.
+- **Try it:** as above, with `origin/improve/history-select`, then Home, See all workouts, or
+  Settings, Delete several workouts.
 - **Checked:** `npm test` (50 pass); desktop Chrome (pick, search plus select all, clear, delete)
   and the iPhone simulator (select, tick, bar above the tab bar, cancel).
 
@@ -111,7 +114,6 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
-- A "Delete several workouts" row in Settings that opens All workouts ready to select, as before.
 - Exercises and Profile pages in grouped rows, like the rest of Settings.
 - "Remove photo" on the profile.
 - Bulk import: paste many workout days at once.
