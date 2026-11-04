@@ -111,6 +111,22 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
 - **Checked:** `npm test` (54 pass, 4 new); desktop Chrome against the local stand-in (check, import,
   the workout opens) and the iPhone simulator (typing, the check list).
 
+### 8. Turning bodyweight off asks about old logs
+- **Branch:** `improve/bodyweight-off` (from `design/aesthetic-overhaul`), commit cb02ab4
+- **What:** as on the old page, turning Bodyweight off for an exercise that has logs counting it
+  opens a question in place: "Only from now on", "Keep old logs as BW + number" or "Read old logs
+  as plain weight", with Apply and Cancel. The logs' best-set numbers are worked out again.
+- **Try it:** as above, with `origin/improve/bodyweight-off`, then Settings, Exercises, Pull Ups.
+- **Checked:** `npm test` (51 pass, 1 new covering all three answers); desktop Chrome against the
+  local stand-in (cancel, then "plain weight": all 12 Pull Ups logs changed and synced) and the
+  iPhone simulator (the question).
+
+### Fix on the design branch: Pull Ups showed "Weight and reps"
+- **Branch:** `design/aesthetic-overhaul`, commit f97c1cc
+- Built-in bodyweight exercises (pull-ups, dips…) showed the Bodyweight switch off on the
+  Exercises page, though the app counts them. The switch and the line under the name now say what
+  the app really does.
+
 ### Fix on the design branch: iPhone zoomed in when you tapped a text box
 - **Branch:** `design/aesthetic-overhaul`, commit c81a927
 - Log, plan, feedback and other big boxes used 15px text, so iPhone Safari zoomed the page in on
@@ -149,7 +165,6 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
-- Ask how to read old logs when bodyweight is turned off for an exercise.
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
