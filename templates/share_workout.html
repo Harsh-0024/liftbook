@@ -42,7 +42,7 @@
         --sw-surface: rgba(255, 255, 255, 0.7);
         --sw-surface-2: #ffffff;
         --sw-line: rgba(0, 0, 0, 0.07);
-        --sw-gold: #8a6512;
+        --sw-gold: var(--gold-text);
         --sw-gold-bg: rgba(201, 169, 97, 0.14);
         --sw-gold-line: rgba(166, 139, 91, 0.42);
         --sw-glow: rgba(201, 169, 97, 0.18);
@@ -156,7 +156,7 @@
         font-size: 0.8rem; font-weight: 600;
         transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
     }
-    .sw-copy:hover { color: var(--gold-primary); border-color: var(--border-gold); background: var(--gold-subtle); }
+    .sw-copy:hover { color: var(--gold-text); border-color: var(--border-gold); background: var(--gold-subtle); }
     .sw-copy.is-done { color: #4ade80; border-color: rgba(74, 222, 128, 0.35); }
     [data-theme="light"] .sw-copy.is-done { color: #15803d; }
 
@@ -229,7 +229,7 @@
         border-radius: 9px;
         border: 1px solid var(--border-gold);
         background: var(--gold-subtle);
-        color: var(--gold-primary);
+        color: var(--gold-text);
         font-size: 0.7rem; font-weight: 800;
     }
     .sw-cta h2 { font-size: clamp(1.6rem, 5.5vw, 2.1rem); line-height: 1.15; margin: 18px 0 10px; text-wrap: balance; }
@@ -242,7 +242,7 @@
         border-radius: 10px;
         background: var(--gold-subtle);
         border: 1px solid var(--sw-line);
-        color: var(--gold-primary);
+        color: var(--gold-text);
         font-size: 1rem;
     }
     .sw-features b { display: block; font-size: 0.9rem; font-weight: 600; color: var(--text-primary); }
@@ -264,7 +264,7 @@
     }
     .sw-btn.primary:hover { transform: translateY(-1px); box-shadow: 0 12px 30px var(--gold-glow); color: #1a1405; }
     .sw-btn.ghost { color: var(--text-secondary); border: 1px solid var(--sw-line); }
-    .sw-btn.ghost:hover { color: var(--gold-primary); border-color: var(--border-gold); }
+    .sw-btn.ghost:hover { color: var(--gold-text); border-color: var(--border-gold); }
 
 
     /* ---- Expired link ---- */
@@ -275,7 +275,7 @@
         border-radius: 20px;
         border: 1px solid var(--border-gold);
         background: var(--gold-subtle);
-        color: var(--gold-primary);
+        color: var(--gold-text);
         font-size: 1.6rem;
     }
     .sw-missing h1 { font-size: clamp(1.6rem, 6vw, 2rem); margin: 0 0 10px; }

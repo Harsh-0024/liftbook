@@ -121,14 +121,14 @@
 
 <style>
     .stats-page {
-        --stats-up: var(--gold-primary, #D4AF37);
+        --stats-up: var(--gold-text, #D4AF37);
         --stats-down: #EF4444;
         --stats-surface: rgba(255, 255, 255, 0.02);
         --stats-seg-bg: rgba(255, 255, 255, 0.04);
     }
 
     [data-theme="light"] .stats-page {
-        --stats-up: #A8841F;
+        --stats-up: var(--gold-text);
         --stats-down: #DC2626;
         --stats-surface: #fffaf1;
         --stats-seg-bg: rgba(148, 126, 86, 0.08);
@@ -339,7 +339,7 @@
     }
 
     .stats-info-btn[aria-expanded="true"] {
-        color: var(--gold-primary);
+        color: var(--gold-text);
     }
 
     .stats-hero-info {
@@ -564,7 +564,7 @@
 
     .stats-empty i {
         font-size: 1.6rem;
-        color: var(--gold-primary);
+        color: var(--gold-text);
         opacity: 0.6;
     }
 
@@ -585,7 +585,7 @@
     .chart-tip[hidden] { display: none; }
     .chart-tip.is-touch { pointer-events: auto; cursor: pointer; }
     [data-theme="light"] .chart-tip { background: rgba(255, 251, 242, 0.98); border-color: rgba(166, 139, 91, 0.55); }
-    .chart-tip-date { font-size: 0.74rem; font-weight: 600; color: var(--gold-primary); }
+    .chart-tip-date { font-size: 0.74rem; font-weight: 600; color: var(--gold-text); }
     .chart-tip-title { font-size: 0.74rem; color: var(--text-muted); }
     .chart-tip-title:empty, .chart-tip-set:empty { display: none; }
     .chart-tip-value { margin-top: 3px; font-size: 0.95rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
@@ -759,7 +759,7 @@
     /* Hover colours only on devices with a real pointer; phones keep :hover stuck after a tap. */
     @media (hover: hover) {
         .stats-search-clear:hover {
-            color: var(--gold-primary);
+            color: var(--gold-text);
             background: var(--gold-subtle);
         }
 
@@ -767,7 +767,7 @@
         .suggestion-sort button:not(.active):hover,
         .stats-range button:not(.active):hover,
         .stats-segmented button:not(.active):hover {
-            color: var(--gold-primary);
+            color: var(--gold-text);
         }
     }
 

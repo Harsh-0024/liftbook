@@ -84,6 +84,10 @@
             --gold-dark: #B5922E;               /* Darker Gold */
             --gold-glow: rgba(212, 175, 55, 0.3);
             --gold-subtle: rgba(212, 175, 55, 0.1);
+            /* Gold for words and icons (links, tabs, labels): fills and borders keep the
+               colours above. Same as --gold-primary here; deeper in light mode to stay readable. */
+            --gold-text: var(--gold-primary);
+            --gold-text-hover: var(--gold-bright);
             
             /* Platinum & Silver Accents */
             --platinum: #E5E4E2;
@@ -125,6 +129,16 @@
             --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        html[data-theme] {
+            --bs-link-color-rgb: 212, 175, 55;
+            --bs-link-hover-color-rgb: 244, 208, 63;
+            --bs-code-color: var(--gold-text);
+        }
+        html[data-theme="light"] {
+            --bs-link-color-rgb: 132, 96, 16;
+            --bs-link-hover-color-rgb: 111, 80, 12;
+        }
+
         /* --- LUXURY HOTEL INSPIRED LIGHT MODE --- */
         [data-theme="light"] {
             color-scheme: light;
@@ -142,6 +156,9 @@
             --gold-dark: #A68B5B;               /* Muted Gold */
             --gold-glow: rgba(201, 169, 97, 0.2);
             --gold-subtle: rgba(201, 169, 97, 0.06);
+            /* Readable gold: 4.5:1 or more on every light surface (the gold above is ~2:1). */
+            --gold-text: #846010;
+            --gold-text-hover: #6F500C;
             
             /* Elegant Neutrals */
             --platinum: #3A3A3A;                /* Deep Charcoal */
@@ -150,8 +167,8 @@
             /* Sophisticated Text Hierarchy */
             --text-primary: #1A1A1A;            /* Rich Black */
             --text-secondary: #2D2D2D;          /* Charcoal */
-            --text-muted: #707070;              /* Medium Gray */
-            --text-subtle: #757575;             /* Light Gray, ~4.5:1 on cards (was #9A9A9A, ~2.7:1) */
+            --text-muted: #666666;              /* Medium Gray, 4.7:1+ on every light surface */
+            --text-subtle: #696969;             /* Light Gray, 4.5:1+ on every light surface (was #757575, ~3.8:1 on stone) */
             
             /* Refined Borders */
             --border-primary: rgba(201, 169, 97, 0.3);
@@ -169,7 +186,7 @@
         /* Light Mode Buttons - Luxury Hotel Inspired */
         [data-theme="light"] .btn-gold-solid {
             background: linear-gradient(135deg, #C9A961 0%, #D4AF37 100%);
-            color: #FFFFFF;
+            color: #1A1A1A;
             border: 1px solid #C9A961;
             box-shadow: 0 4px 12px rgba(201, 169, 97, 0.3);
             font-weight: 600;
@@ -178,7 +195,7 @@
 
         [data-theme="light"] .btn-gold-solid:hover {
             background: linear-gradient(135deg, #D4AF37 0%, #C9A961 100%);
-            color: #FFFFFF;
+            color: #1A1A1A;
             border-color: #D4AF37;
             box-shadow: 0 6px 20px rgba(201, 169, 97, 0.4);
             transform: translateY(-1px);
@@ -187,7 +204,7 @@
         [data-theme="light"] .btn-gold-outline {
             background: rgba(201, 169, 97, 0.05);
             border: 1.5px solid rgba(201, 169, 97, 0.35);
-            color: #A68B5B;
+            color: var(--gold-text);
             font-weight: 600;
             letter-spacing: 0.5px;
         }
@@ -195,7 +212,7 @@
         [data-theme="light"] .btn-gold-outline:hover {
             background: rgba(201, 169, 97, 0.1);
             border-color: #C9A961;
-            color: #A68B5B;
+            color: var(--gold-text);
             box-shadow: 0 4px 12px rgba(201, 169, 97, 0.2);
         }
 
@@ -213,7 +230,7 @@
         /* Light Mode Badges - Elegant & Consistent */
         [data-theme="light"] .bg-primary {
             background: linear-gradient(135deg, #C9A961 0%, #D4AF37 100%) !important;
-            color: #FFFFFF !important;
+            color: #1A1A1A !important;
             border: none !important;
             font-weight: 600;
         }
@@ -221,7 +238,7 @@
         /* Replace Dark Badges with Elegant Light Alternatives */
         [data-theme="light"] .bg-dark {
             background: rgba(201, 169, 97, 0.12) !important;
-            color: #A68B5B !important;
+            color: var(--gold-text) !important;
             border: 1px solid rgba(201, 169, 97, 0.3) !important;
         }
 
@@ -239,7 +256,7 @@
 
         [data-theme="light"] .step-badge.bg-primary {
             background: linear-gradient(135deg, #C9A961 0%, #D4AF37 100%) !important;
-            color: #FFFFFF !important;
+            color: #1A1A1A !important;
             border: none !important;
             opacity: 1 !important;
         }
@@ -258,7 +275,7 @@
 
         [data-theme="dark"] .step-badge.bg-primary {
             background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-bright) 100%) !important;
-            color: #FFFFFF !important;
+            color: #000000 !important;
             border: none !important;
             opacity: 1 !important;
         }
@@ -269,12 +286,12 @@
 
         /* Light Mode Text Gold */
         [data-theme="light"] .text-gold {
-            color: #C9A961 !important;
+            color: var(--gold-text) !important;
         }
 
         /* Light Mode Stat Values */
         [data-theme="light"] .stat-value {
-            background: linear-gradient(135deg, #C9A961 0%, #D4AF37 100%);
+            background: linear-gradient(135deg, #846010 0%, #6F500C 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -283,7 +300,7 @@
 
         /* Light Mode Hover Effects */
         [data-theme="light"] .hover-gold:hover {
-            color: #C9A961 !important;
+            color: var(--gold-text) !important;
         }
 
         /* Light Mode Recent Workout Items */
@@ -311,7 +328,7 @@
         [data-theme="light"] .shortcut-key {
             background: rgba(201, 169, 97, 0.08);
             border: 1px solid rgba(201, 169, 97, 0.3);
-            color: #A68B5B;
+            color: var(--gold-text);
             font-weight: 600;
         }
 
@@ -338,12 +355,12 @@
         [data-theme="light"] .mobile-header-btn {
             background: rgba(201, 169, 97, 0.08);
             border: 1px solid rgba(201, 169, 97, 0.3);
-            color: #A68B5B;
+            color: var(--gold-text);
             font-weight: 600;
         }
 
         [data-theme="light"] .brand-mark {
-            color: #C9A961;
+            color: var(--gold-text);
             background: rgba(201, 169, 97, 0.08);
             border: 1px solid rgba(201, 169, 97, 0.3);
             font-weight: 600;
@@ -374,14 +391,14 @@
         [data-theme="light"] .bi-person-circle,
         [data-theme="light"] .retrieve-icon {
             opacity: 0.75 !important;
-            color: #C9A961 !important;
+            color: var(--gold-text) !important;
         }
 
         /* Light Mode Admin File Button */
         [data-theme="light"] .admin-file-button {
             background: linear-gradient(135deg, rgba(201, 169, 97, 0.12), rgba(201, 169, 97, 0.06));
             border: 1px solid rgba(201, 169, 97, 0.35);
-            color: #A68B5B;
+            color: var(--gold-text);
             font-weight: 600;
         }
 
@@ -402,13 +419,13 @@
         }
 
         /* Light Mode Link Underlines */
-        [data-theme="light"] a {
-            color: #A68B5B;
+        :where([data-theme="light"]) a {
+            color: var(--gold-text);
             font-weight: 500;
         }
 
-        [data-theme="light"] a:hover {
-            color: #C9A961;
+        :where([data-theme="light"]) a:hover {
+            color: var(--gold-text-hover);
         }
 
         /* Light Mode Exercise Cards - Elegant Design */
@@ -523,7 +540,7 @@
         }
         
         .text-gold {
-            color: var(--gold-primary) !important;
+            color: var(--gold-text) !important;
         }
         
         .text-platinum {
@@ -624,7 +641,7 @@
         .btn-gold-outline {
             background: rgba(212, 175, 55, 0.05);
             border: 2px solid var(--border-gold);
-            color: var(--gold-primary);
+            color: var(--gold-text);
             backdrop-filter: blur(10px);
             position: relative;
             z-index: 1;
@@ -633,7 +650,7 @@
         .btn-gold-outline:hover {
             background: rgba(212, 175, 55, 0.15);
             border-color: var(--gold-primary);
-            color: var(--gold-bright);
+            color: var(--gold-text-hover);
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(212, 175, 55, 0.2);
         }
@@ -866,7 +883,7 @@
 
         .bg-primary {
             background: rgba(212, 175, 55, 0.15) !important;
-            color: var(--gold-primary) !important;
+            color: var(--gold-text) !important;
             border-color: var(--border-gold) !important;
         }
 
@@ -952,7 +969,7 @@
         }
 
         .nav-link:hover, .nav-link.active {
-            color: var(--gold-primary) !important;
+            color: var(--gold-text) !important;
             background: rgba(212, 175, 55, 0.05);
         }
 
@@ -1020,7 +1037,7 @@
 
         .offline-status__item--fix,
         .offline-status__item--fix:hover {
-            color: var(--gold-bright);
+            color: var(--gold-text-hover);
         }
 
         .offline-fix {
@@ -1272,7 +1289,7 @@
         .admin-file-button {
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.32), rgba(212, 175, 55, 0.1));
             border: 1px solid rgba(212, 175, 55, 0.6);
-            color: var(--gold-primary);
+            color: var(--gold-text);
             padding: 6px 14px;
             border-radius: 10px;
             font-weight: 600;
@@ -1592,7 +1609,7 @@
         }
 
         .hover-gold:hover {
-            color: var(--gold-primary) !important;
+            color: var(--gold-text) !important;
         }
 
         .tracking-wide {
@@ -1616,7 +1633,7 @@
             letter-spacing: 0.08em;
             background: rgba(212, 175, 55, 0.12);
             border: 1px solid rgba(212, 175, 55, 0.4);
-            color: var(--gold-primary);
+            color: var(--gold-text);
             font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
         }
 
@@ -1746,7 +1763,7 @@
                 justify-content: center;
                 font-weight: 700;
                 font-size: 0.75rem;
-                color: var(--gold-primary);
+                color: var(--gold-text);
                 background: rgba(212, 175, 55, 0.12);
                 border: 1px solid rgba(212, 175, 55, 0.35);
             }
@@ -1791,7 +1808,7 @@
                 letter-spacing: 0.9px;
                 background: rgba(212, 175, 55, 0.08);
                 border: 1px solid rgba(212, 175, 55, 0.25);
-                color: var(--gold-primary);
+                color: var(--gold-text);
                 border-radius: 999px;
             }
 
@@ -1854,8 +1871,16 @@
 
             .mobile-nav-item:hover,
             .mobile-nav-item:active {
-                color: var(--gold-primary);
+                color: var(--gold-text);
                 background: rgba(212, 175, 55, 0.1);
+            }
+
+            /* The page you're on */
+            .mobile-nav-item.active {
+                color: var(--gold-text);
+            }
+            .mobile-nav-item.active span {
+                font-weight: 700;
             }
 
             /* Mobile Stat Cards - Reduced Size */
@@ -2331,24 +2356,27 @@
         </div>
     </div>
 
+    {#- Which tab is "you are here" (both navigation bars mark it). -#}
+    {%- set _path = request.path -%}
+    {%- set nav_section = 'home' if request.endpoint in ('index', 'user_dashboard') else 'log' if _path.startswith('/log') else 'retrieve' if _path.startswith('/retrieve') else 'stats' if _path.startswith('/stats') else 'admin' if _path.startswith('/admin') else 'settings' if _path.startswith('/settings') else '' -%}
     <!-- Desktop Navigation -->
     <nav class="navbar navbar-expand d-none d-sm-block">
         <div class="container">
             <div class="navbar-nav mx-auto gap-2 gap-md-4">
                 {% if current_user.is_authenticated %}{# Signed out, these only lead to the sign-in page. #}
-                <a class="nav-link" href="/">
+                <a class="nav-link{{ ' active' if nav_section == 'home' }}" href="/"{{ ' aria-current=page' if nav_section == 'home' }}>
                     <i class="bi bi-house-door"></i>
                     <span class="d-none d-sm-inline ms-2">Home</span>
                 </a>
-                <a class="nav-link" href="/log">
+                <a class="nav-link{{ ' active' if nav_section == 'log' }}" href="/log"{{ ' aria-current=page' if nav_section == 'log' }}>
                     <i class="bi bi-plus-circle"></i>
                     <span class="d-none d-sm-inline ms-2">Log</span>
                 </a>
-                <a class="nav-link" href="/retrieve/categories">
+                <a class="nav-link{{ ' active' if nav_section == 'retrieve' }}" href="/retrieve/categories"{{ ' aria-current=page' if nav_section == 'retrieve' }}>
                     <i class="bi bi-list-ul"></i>
                     <span class="d-none d-sm-inline ms-2">Retrieve</span>
                 </a>
-                <a class="nav-link" href="/stats">
+                <a class="nav-link{{ ' active' if nav_section == 'stats' }}" href="/stats"{{ ' aria-current=page' if nav_section == 'stats' }}>
                     <i class="bi bi-graph-up-arrow"></i>
                     <span class="d-none d-sm-inline ms-2">Stats</span>
                 </a>
@@ -2357,7 +2385,7 @@
             <div class="navbar-nav ms-auto gap-2">
                 {% if current_user.is_authenticated %}
                     {% if current_user.is_admin() %}
-                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                        <a class="nav-link{{ ' active' if nav_section == 'admin' }}" href="{{ url_for('admin_dashboard') }}"{{ ' aria-current=page' if nav_section == 'admin' }}>
                             <i class="bi bi-shield-lock"></i>
                             <span class="d-none d-sm-inline ms-2">Admin</span>
                         </a>
@@ -2368,7 +2396,7 @@
                             <span class="d-none d-sm-inline ms-2">AI</span>
                         </button>
                     {% endif %}
-                    <a class="nav-link" href="{{ url_for('user_settings') }}">
+                    <a class="nav-link{{ ' active' if nav_section == 'settings' }}" href="{{ url_for('user_settings') }}"{{ ' aria-current=page' if nav_section == 'settings' }}>
                         <i class="bi bi-gear"></i>
                         <span class="d-none d-sm-inline ms-2">Settings</span>
                     </a>
@@ -2395,19 +2423,19 @@
     <nav class="mobile-bottom-nav d-sm-none">
         <div class="container">
             <div class="d-flex justify-content-around align-items-center">
-                <a class="mobile-nav-item" href="/">
+                <a class="mobile-nav-item{{ ' active' if nav_section == 'home' }}" href="/"{{ ' aria-current=page' if nav_section == 'home' }}>
                     <i class="bi bi-house-door"></i>
                     <span>Home</span>
                 </a>
-                <a class="mobile-nav-item" href="/log">
+                <a class="mobile-nav-item{{ ' active' if nav_section == 'log' }}" href="/log"{{ ' aria-current=page' if nav_section == 'log' }}>
                     <i class="bi bi-plus-circle"></i>
                     <span>Log</span>
                 </a>
-                <a class="mobile-nav-item" href="/retrieve/categories">
+                <a class="mobile-nav-item{{ ' active' if nav_section == 'retrieve' }}" href="/retrieve/categories"{{ ' aria-current=page' if nav_section == 'retrieve' }}>
                     <i class="bi bi-list-ul"></i>
                     <span>Retrieve</span>
                 </a>
-                <a class="mobile-nav-item" href="/stats">
+                <a class="mobile-nav-item{{ ' active' if nav_section == 'stats' }}" href="/stats"{{ ' aria-current=page' if nav_section == 'stats' }}>
                     <i class="bi bi-graph-up-arrow"></i>
                     <span>Stats</span>
                 </a>
@@ -2528,8 +2556,8 @@
             #aiAssistantModal .coach-head { display: flex; align-items: center; gap: 0.25rem; padding: 0.95rem 0.9rem 0.85rem 1.4rem; border-bottom: 1px solid var(--border-subtle); flex: none; }
             #aiAssistantModal .coach-head-main { flex: 1; min-width: 0; }
             #aiAssistantModal .coach-title { margin: 0; display: flex; align-items: center; gap: 0.5rem; font-family: 'Cormorant Garamond', 'Playfair Display', serif; font-size: 1.45rem; font-weight: 600; letter-spacing: 0.01em; color: var(--text-primary); }
-            #aiAssistantModal .coach-title .bi { color: var(--gold-primary); font-size: 1.05rem; }
-            #aiAssistantModal .coach-beta { font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-primary); opacity: 0.85; margin-left: 0.15rem; transform: translateY(1px); }
+            #aiAssistantModal .coach-title .bi { color: var(--gold-text); font-size: 1.05rem; }
+            #aiAssistantModal .coach-beta { font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-text); opacity: 0.85; margin-left: 0.15rem; transform: translateY(1px); }
             #aiAssistantModal .coach-context { font-size: var(--fs-xs); color: var(--text-muted); margin-top: 0.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             #aiAssistantModal .coach-head-btn { flex: none; width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 12px; background: transparent; color: var(--text-muted); font-size: 1.05rem; }
             #aiAssistantModal .coach-head-btn:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--gold-primary); }
@@ -2544,7 +2572,7 @@
             #aiAssistantModal .coach-bubble p { margin: 0 0 0.6rem; }
             #aiAssistantModal .coach-bubble ul { margin: 0 0 0.6rem; padding-left: 1.15rem; }
             #aiAssistantModal .coach-bubble li { margin-bottom: 0.3rem; padding-left: 0.1rem; }
-            #aiAssistantModal .coach-bubble li::marker { color: var(--gold-primary); }
+            #aiAssistantModal .coach-bubble li::marker { color: var(--gold-text); }
             #aiAssistantModal .coach-bubble p:last-child, #aiAssistantModal .coach-bubble ul:last-child { margin-bottom: 0; }
             #aiAssistantModal .coach-bubble strong { font-weight: 600; }
             /* Dates link to that day's workout; quiet in the text, gold when pointed at. */
@@ -2558,14 +2586,14 @@
             #aiAssistantModal .coach-note { font-size: var(--fs-xs); color: var(--text-muted); margin-top: 0.5rem; font-style: italic; }
             #aiAssistantModal .coach-rate { display: flex; gap: 0.1rem; margin-left: auto; flex: none; }
             #aiAssistantModal .coach-rate button { border: 0; background: transparent; color: var(--text-muted); opacity: 0.6; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; border-radius: 10px; }
-            #aiAssistantModal .coach-rate button.is-on { opacity: 1; color: var(--gold-primary); }
+            #aiAssistantModal .coach-rate button.is-on { opacity: 1; color: var(--gold-text); }
             #aiAssistantModal .coach-rate button:focus-visible { opacity: 1; outline: none; box-shadow: 0 0 0 2px var(--gold-primary); }
             #aiAssistantModal .coach-why { margin-top: 0.5rem; max-width: 420px; margin-left: auto; }
             #aiAssistantModal .coach-why input { width: 100%; border: 1px solid var(--border-subtle); background: transparent; color: inherit; border-radius: 12px; padding: 0.5rem 0.8rem; font-size: var(--fs-sm); font-family: inherit; }
             #aiAssistantModal .coach-why input:focus { outline: none; border-color: var(--gold-primary); }
 
             #aiAssistantModal .coach-empty { margin: auto 0; text-align: center; padding: 0.5rem 0 1rem; color: var(--text-muted); }
-            #aiAssistantModal .coach-empty .bi-stars { font-size: 1.7rem; color: var(--gold-primary); }
+            #aiAssistantModal .coach-empty .bi-stars { font-size: 1.7rem; color: var(--gold-text); }
             #aiAssistantModal .coach-empty-title { font-family: 'Cormorant Garamond', 'Playfair Display', serif; font-size: 1.6rem; font-weight: 600; color: var(--text-primary); margin: 0.4rem 0 0.35rem; }
             #aiAssistantModal .coach-empty-sub { font-size: var(--fs-sm); max-width: 400px; margin: 0 auto 1.4rem; line-height: 1.55; }
             #aiAssistantModal .coach-chips { display: flex; flex-direction: column; gap: 0.5rem; max-width: 440px; margin: 0 auto; }
@@ -2593,8 +2621,8 @@
             @media (hover: hover) {
                 #aiAssistantModal .coach-head-btn:hover { background: rgba(127,127,127,0.1); color: var(--text-primary); }
                 #aiAssistantModal .coach-chip:hover { border-color: var(--gold-primary); }
-                #aiAssistantModal .coach-bubble a:hover { color: var(--gold-primary); border-bottom-color: var(--gold-primary); }
-                #aiAssistantModal .coach-chip:hover .bi { color: var(--gold-primary); }
+                #aiAssistantModal .coach-bubble a:hover { color: var(--gold-text); border-bottom-color: var(--gold-primary); }
+                #aiAssistantModal .coach-chip:hover .bi { color: var(--gold-text); }
                 #aiAssistantModal .coach-rate button:hover { opacity: 1; background: rgba(127,127,127,0.1); }
                 #aiAssistantModal .coach-send:not(:disabled):hover { transform: translateY(-1px); }
             }

@@ -17,7 +17,7 @@
         --st-row-hover: rgba(255, 255, 255, 0.03);
         --st-input-bg: rgba(255, 255, 255, 0.03);
         --st-track: rgba(255, 255, 255, 0.14);
-        --st-accent: var(--gold-primary);
+        --st-accent: var(--gold-text);
         --st-accent-fill: linear-gradient(135deg, #d4af37, #e9c75a);
         --st-on-accent: #0b0b0c;
         --st-up: #4ade80;
@@ -38,9 +38,9 @@
         --st-row-hover: rgba(0, 0, 0, 0.025);
         --st-input-bg: #ffffff;
         --st-track: rgba(0, 0, 0, 0.14);
-        --st-accent: #8a6512;
+        --st-accent: var(--gold-text);
         --st-accent-fill: linear-gradient(135deg, #b08a3e, #c9a961);
-        --st-on-accent: #ffffff;
+        --st-on-accent: #1a1a1a;
         --st-up: #15803d;
         --st-down: #b91c1c;
         --st-down-bg: rgba(220, 38, 38, 0.07);
@@ -197,7 +197,7 @@
         transition: background var(--transition-fast), color var(--transition-fast);
     }
     .st-seg > button { flex: 1; min-width: 0; }
-    .st-seg-opt > span small { font-weight: 500; opacity: 0.75; font-size: 0.76rem; }
+    .st-seg-opt > span small { font-weight: 500; color: var(--text-muted); font-size: 0.76rem; }
     .st-seg-opt > input:checked + span, .st-seg > button.is-active, .st-seg > button.active {
         background: var(--card-bg-solid);
         color: var(--st-accent);
@@ -252,7 +252,7 @@
     .st-num span { display: block; margin-top: 5px; font-size: 0.64rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .st-num.is-good b { color: var(--st-up); }
     .st-num.is-bad b { color: var(--st-down); }
-    .st-num.is-zero b { color: var(--text-subtle); opacity: 0.55; }
+    .st-num.is-zero b { color: var(--text-subtle); opacity: 0.8; }  /* quieter than a real count, still 3:1+ */
 
     /* ---- Small bits ---- */
     .st-empty { padding: 30px 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }

@@ -39,10 +39,10 @@
         --wd-down: #b91c1c;
         --wd-down-bg: rgba(220, 38, 38, 0.08);
         --wd-down-line: rgba(220, 38, 38, 0.24);
-        --wd-flat: #6b7280;
+        --wd-flat: var(--text-muted);
         --wd-flat-bg: rgba(107, 114, 128, 0.08);
         --wd-flat-line: rgba(107, 114, 128, 0.22);
-        --wd-gold: #8a6512;
+        --wd-gold: var(--gold-text);
         --wd-gold-bg: rgba(201, 169, 97, 0.14);
         --wd-gold-line: rgba(166, 139, 91, 0.42);
         --wd-silver: #4b5563;
@@ -70,7 +70,7 @@
         text-decoration: none;
         transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
     }
-    .wd-tool:hover { color: var(--gold-primary); border-color: var(--border-gold); background: var(--gold-subtle); }
+    .wd-tool:hover { color: var(--gold-text); border-color: var(--border-gold); background: var(--gold-subtle); }
     .wd-tool.is-done { color: var(--wd-up); border-color: var(--wd-up-line); }
     .wd-title {
         font-size: clamp(1.7rem, 6.5vw, 2.2rem);
@@ -98,10 +98,10 @@
     .wd-stat.up .wd-stat-num { color: var(--wd-up); }
     .wd-stat.down .wd-stat-num { color: var(--wd-down); }
     .wd-stat.steady .wd-stat-num { color: var(--wd-flat); }
-    .wd-stat.is-zero .wd-stat-num { color: var(--text-subtle); opacity: 0.5; }
+    .wd-stat.is-zero .wd-stat-num { color: var(--text-subtle); opacity: 0.8; }  /* quieter, still 3:1+ */
 
     .wd-note { font-size: 0.78rem; color: var(--text-muted); margin: -6px 0 14px; }
-    .wd-note a { color: var(--gold-primary); }
+    .wd-note a { color: var(--gold-text); }
 
     /* ---- Exercise list: Exercise | Vs recent | Vs best, separated by hairlines ---- */
     .wd { --wd-col: 120px; --wd-row-x: 10px; --wd-sticky-top: 0px; }
@@ -152,7 +152,7 @@
         .wd-ex > summary:hover { background: var(--wd-surface-open); }
         .wd-ex > summary:hover .wd-chev { opacity: 1; }
     }
-    .wd-ex[open] .wd-name { color: var(--gold-primary); }
+    .wd-ex[open] .wd-name { color: var(--gold-text); }
     .wd-name { grid-area: name; align-self: center; font-size: 1rem; font-weight: 600; color: var(--text-primary); line-height: 1.3; min-width: 0; transition: color var(--transition-fast); }
 
     /* Sets stacked strongest first, inside the Exercise column. */
@@ -195,7 +195,7 @@
     .wd-chip.down { color: var(--wd-down); }
     .wd-chip.steady { color: var(--wd-flat); }
     .wd-chip.below, .wd-chip.none, .wd-chip.match { color: var(--text-muted); font-weight: 400; }
-    .wd-chip.first { color: var(--gold-primary); }
+    .wd-chip.first { color: var(--gold-text); }
     .wd-chip.medal { height: 24px; padding: 0 8px; border: 1px solid; border-radius: 999px; font-size: 0.82rem; }
     .wd-chip.medal-gold { color: var(--wd-gold); background: var(--wd-gold-bg); border-color: var(--wd-gold-line); }
     .wd-chip.medal-silver { color: var(--wd-silver); background: var(--wd-silver-bg); border-color: var(--wd-silver-line); }
@@ -217,7 +217,7 @@
         -webkit-tap-highlight-color: transparent;
     }
     .wd-info > summary::-webkit-details-marker { display: none; }
-    .wd-info > summary:hover, .wd-info[open] > summary { color: var(--gold-primary); background: var(--gold-subtle); }
+    .wd-info > summary:hover, .wd-info[open] > summary { color: var(--gold-text); background: var(--gold-subtle); }
     .wd-info > summary:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--gold-glow); }
     .wd-info-pop {
         position: absolute; top: calc(100% + 6px); left: 0; z-index: 20;
@@ -259,7 +259,7 @@
         pointer-events: none;
     }
     .wd-tip[hidden] { display: none; }
-    .wd-tip-date { font-size: 0.74rem; font-weight: 600; color: var(--gold-primary); }
+    .wd-tip-date { font-size: 0.74rem; font-weight: 600; color: var(--gold-text); }
     .wd-tip-sets { margin-top: 4px; font-size: 0.84rem; color: var(--text-primary); font-variant-numeric: tabular-nums; white-space: normal; }
     /* Touch: the card is tappable and opens that session (mouse users click the chart). */
     .wd-tip.is-touch { pointer-events: auto; cursor: pointer; }
@@ -283,7 +283,7 @@
         color: var(--text-subtle); text-align: left; padding: 0 8px 8px 0; vertical-align: bottom;
     }
     .wd-table th a { color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor; }
-    .wd-table th a:hover { color: var(--gold-primary); }
+    .wd-table th a:hover { color: var(--gold-text); }
     .wd-table th .date { display: block; font-weight: 500; letter-spacing: 0; text-transform: none; font-size: 0.72rem; margin-top: 2px; }
     .wd-table td { padding: 9px 8px 9px 0; border-top: 1px solid var(--wd-hairline); vertical-align: top; font-size: 0.88rem; }
     .wd-table .rank { width: 13%; color: var(--text-subtle); font-size: 0.78rem; padding-top: 11px; }
@@ -295,8 +295,8 @@
     .wd-table .delta.steady { color: var(--wd-flat); font-weight: 500; }
 
     .wd-foot { display: flex; justify-content: flex-end; margin-top: 12px; }
-    .wd-link { font-size: 0.85rem; font-weight: 600; color: var(--gold-primary); text-decoration: none; white-space: nowrap; }
-    .wd-link:hover { color: var(--gold-bright); }
+    .wd-link { font-size: 0.85rem; font-weight: 600; color: var(--gold-text); text-decoration: none; white-space: nowrap; }
+    .wd-link:hover { color: var(--gold-text-hover); }
 
     /* ---- Notes under the title: just saved, needs a fix ---- */
     .wd-callout {
@@ -312,7 +312,7 @@
     .wd-callout-main { flex: 1; min-width: 0; }
     .wd-callout strong { color: var(--text-primary); font-weight: 600; }
     .wd-callout p { margin: 4px 0 0; }
-    .wd-callout a { color: var(--gold-primary); font-weight: 600; text-decoration: none; }
+    .wd-callout a { color: var(--gold-text); font-weight: 600; text-decoration: none; }
     .wd-callout.saved > i { color: var(--wd-up); }
     .wd-callout.warn { border-color: var(--wd-down-line); background: var(--wd-down-bg); }
     .wd-callout.warn > i { color: var(--wd-down); }
@@ -323,7 +323,7 @@
         border-radius: 9px; border: 1px solid var(--border-subtle);
         font-size: 0.8rem; font-weight: 600; color: var(--text-primary) !important;
     }
-    .wd-ask-btn:hover { border-color: var(--border-gold); color: var(--gold-primary) !important; }
+    .wd-ask-btn:hover { border-color: var(--border-gold); color: var(--gold-text) !important; }
     .wd-ex.is-missing .wd-name { color: var(--wd-down); }
     .wd-ex.is-missing .wd-name i { margin-right: 6px; }
 
