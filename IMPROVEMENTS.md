@@ -90,6 +90,14 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
 - "Since first" showed "+45.8%" cut off on an iPhone. Percentages from 10% up are now whole
   numbers ("+46%", as the big number above already was), and tile numbers shrink a little on phones.
 
+### 6. Remove your profile photo
+- **Branch:** `improve/profile-photo` (from `design/aesthetic-overhaul`), commit 279e584
+- **What:** a "Remove" button beside "Change photo", shown only when you have a photo, as the old
+  Account page had. It asks first, takes the photo off your profile, then deletes the file.
+- **Try it:** as above, with `origin/improve/profile-photo`, then Settings, your name at the top.
+- **Checked:** `npm test` (50 pass); desktop Chrome against the local stand-in (upload, remove: the
+  file is gone from storage and the letter comes back) and the iPhone simulator (both buttons).
+
 ### Exercises and Profile pages in grouped rows
 - **Branch:** `design/aesthetic-overhaul`, commit 026f5cf
 - **What:** these two pages were still plain cards. Exercises now lists one row per exercise with
@@ -123,7 +131,6 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
-- "Remove photo" on the profile.
 - Bulk import: paste many workout days at once.
 - Ask how to read old logs when bodyweight is turned off for an exercise.
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
