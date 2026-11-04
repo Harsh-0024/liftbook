@@ -144,3 +144,20 @@ test('the spreadsheet has the old app’s columns, newest first, and dates can l
   assert.equal(lb.csv({ to: '2026-10-31' }).count, 2);
   assert.equal(lb.csv({ from: '2027-01-01' }).count, 0);
 });
+
+test('bulk import reads many days, skips logged ones, saves the rest', async () => {
+  const lb = await app();
+  await lb.log(DAY1);
+  const text = '29/10/26 Pull\n\nRow\n60 x 8, 8\n\n31/10 Again\n\nCurl\n20 x 10\n\n1/11 Legs\n\nSquat\n105 x 5\n\n2/11 Bad\n\nnothing here';
+  const days = lb.bulkCheck(text, { now: new Date(2026, 10, 4) });
+  assert.deepEqual(days.map((d) => [d.date, d.status]), [
+    ['2026-10-29', 'ready'], ['2026-10-31', 'skipped'], ['2026-11-01', 'ready'], ['2026-11-02', 'failed']]);
+  assert.equal(days[2].guessed, true);
+  const later = lb.bulkCheck('1/11/26 Legs\n\nSquat\n105 x 5\n\n3/10 Back\n\nRow\n60 x 8', { now: new Date(2026, 10, 4) });
+  assert.deepEqual(later.map((d) => [d.date, d.status]), [['2026-11-01', 'ready'], ['2027-10-03', 'failed']]);
+  const r = await lb.bulkImport(text, { now: new Date(2026, 10, 4) });
+  assert.equal(r.saved, 2);
+  assert.equal(lb.workout('2026-11-01').title, 'Legs');
+  assert.equal(lb.workout('2026-10-31').title, 'Session 1');
+  assert.equal(lb.workouts().length, 3);
+});

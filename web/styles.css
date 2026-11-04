@@ -685,3 +685,6 @@ label.rowi { cursor: pointer; }
 .editor-bar.static { position: static; }
 .profile-photo .avatar { flex: none; }
 @media (max-width: 479.98px) { .pick-group > .rowi.sub, .pick-group > .blk.sub { padding-left: 18px; } }
+.bulk-failed .ico { color: var(--bad); }
+.bulk-skipped .ico { color: var(--subtle); }
+.bulk-failed .value { color: var(--bad); }

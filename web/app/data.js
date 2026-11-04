@@ -3,6 +3,7 @@
 // them); nothing here waits for the network except the shared plan and feedback.
 
 import { workoutParser } from '../core/parser.js';
+import { splitDays, inferDates } from '../core/bulk.js';
 import { handleWorkoutLog, formatSetsDisplay, resolveTimedStatus, hasTimeHint } from '../core/logging.js';
 import { makeSettings } from '../core/bodyweight.js';
 import { effectivePlanText, effectiveRepRangesText, getWorkoutDays, ownPlanText } from '../core/plans.js';
@@ -181,7 +182,7 @@ export class Liftbook {
   }
 
   /** Read typed text without saving: what would be saved, and what's wrong with it. */
-  check(text, { now = new Date() } = {}) {
+  check(text, { now = new Date(), date = null } = {}) {
     const clean = String(text || '').replace(/\r\n?/g, '\n').trim();
     if (!clean) return { ok: false, errors: ['Type your workout first.'], parsed: null };
     let parsed;
@@ -189,6 +190,11 @@ export class Liftbook {
       parsed = workoutParser(clean, { bodyweight: this.profile()?.bodyweight ?? null, now });
     } catch (err) {
       return { ok: false, errors: [`Couldn’t read this: ${err.message}`], parsed: null };
+    }
+    // Bulk import works out each day's date itself (a missing year follows the day before).
+    if (date) {
+      parsed.date = `${date}T00:00:00`;
+      parsed.invalid_date_text = null;
     }
     const exercises = parsed.exercises || [];
     const errors = [];
@@ -217,8 +223,8 @@ export class Liftbook {
    * Save typed text as a workout. append: add to the day's workout that is already there.
    * Returns {summary, day, appended} or {error}, or {existing} when the day already has one.
    */
-  async log(text, { append = false, replaceDay = null, now = new Date() } = {}) {
-    const check = this.check(text, { now });
+  async log(text, { append = false, replaceDay = null, now = new Date(), date = null } = {}) {
+    const check = this.check(text, { now, date });
     if (!check.ok) return { error: check.errors[0] || 'Nothing to save.', errors: check.errors };
     const parsed = check.parsed;
     const existing = check.existing && check.existing.day !== replaceDay ? this.workout(check.day) : null;
@@ -528,6 +534,40 @@ export class Liftbook {
 
   async usernameAvailable(name) {
     return Boolean(await this.client.db.rpc('username_available', { name }));
+  }
+
+  /**
+   * Many days pasted at once, each starting with a date line, as the old Bulk import read them.
+   * Each day: {text, start, end, date, guessed, status: 'ready'|'skipped'|'failed', reason, check}.
+   */
+  bulkCheck(text, { now = new Date() } = {}) {
+    const blocks = splitDays(text);
+    const dates = inferDates(blocks.map((b) => b.header), now);
+    const seen = new Set();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    return blocks.map((b, i) => {
+      const date = dates[i];
+      const day = { ...b, date, guessed: b.header.year === null || b.header.year === undefined };
+      if (!date) return { ...day, status: 'failed', reason: 'Not a real date' };
+      // Unlike the old page: a guessed year can roll past today, and a future day is surely wrong.
+      if (date > today) return { ...day, status: 'failed', reason: day.guessed ? 'Lands in the future: write its year' : 'In the future' };
+      const c = this.check(b.text, { now, date });
+      if (!c.ok) return { ...day, status: 'failed', reason: c.errors[0] || 'Nothing to save', check: c };
+      if (c.existing || seen.has(date)) return { ...day, status: 'skipped', reason: c.existing ? `${c.existing.title} is already logged` : 'Pasted twice', check: c };
+      seen.add(date);
+      return { ...day, status: 'ready', check: c };
+    });
+  }
+
+  /** Save the ready days from bulkCheck, oldest first; returns how many were saved. */
+  async bulkImport(text, { now = new Date() } = {}) {
+    const ready = this.bulkCheck(text, { now }).filter((d) => d.status === 'ready').sort((a, b) => a.date.localeCompare(b.date));
+    let saved = 0;
+    for (const d of ready) {
+      const r = await this.log(d.text, { date: d.date, now });
+      if (!r.error && !r.existing) saved += 1;
+    }
+    return { saved, days: ready.map((d) => d.date) };
   }
 
   /** A new profile photo: into the private avatars bucket, under the person's own folder. */
