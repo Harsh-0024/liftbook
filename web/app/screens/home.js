@@ -5,6 +5,7 @@ import { h, icon, rowItem, pageHead, softDay, formatDay, copyText, toast, busy, 
 import { formatSetsDisplay } from '../../core/logging.js';
 import { summaryTable } from './log.js';
 import { attachSuggestions } from '../suggest.js';
+import { attachPasteTidy } from '../paste.js';
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -200,6 +201,7 @@ export function editScreen(ctx, day) {
   if (!w) return workoutScreen(ctx, day);
   const ta = h('textarea', { id: 'workout_text', class: 'editor', spellcheck: 'false', autocapitalize: 'off', 'aria-label': 'The workout as text' }, lb.workoutText(w));
   const suggest = attachSuggestions(ta, () => lb.exerciseCatalog().map((e) => e.name));
+  attachPasteTidy(ta);
   const err = h('div', { role: 'alert' });
   const btn = h('button', { class: 'btn primary small', type: 'button' }, 'Save');
   btn.addEventListener('click', busy(btn, async () => {

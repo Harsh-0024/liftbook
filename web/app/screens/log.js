@@ -3,6 +3,7 @@
 
 import { h, icon, pageHead, formatDay, busy, toast } from '../ui.js';
 import { attachSuggestions } from '../suggest.js';
+import { attachPasteTidy, tidyPaste, showFromTop } from '../paste.js';
 
 export const DRAFT_KEY = 'liftbook-log-draft';
 
@@ -47,6 +48,7 @@ export function logScreen(ctx) {
     placeholder: `${today} - Session 1 - Chest & Biceps\n\nFlat Barbell Press - [5-8]\n32.5 27.5 25, 6 7 8\n\nBarbell Curl - [6-10]\n20 17.5, 8 10`,
   }, readDraft());
   const suggest = attachSuggestions(ta, () => lb.exerciseCatalog().map((e) => e.name));
+  attachPasteTidy(ta);
   const preview = h('span', { class: 'editor-meta', 'aria-live': 'polite' }, 'Nothing to check yet');
   const checkHead = h('span', {});
   const checkList = h('div', { class: 'group' });
@@ -120,8 +122,9 @@ export function logScreen(ctx) {
     try {
       const text = await navigator.clipboard.readText();
       if (text) {
-        ta.value = text;
+        ta.value = tidyPaste(text);
         check();
+        showFromTop(ta);
       } else toast('Nothing to paste.');
     } catch {
       ta.focus();
