@@ -96,9 +96,26 @@ on purpose.
 The old app never had one: its `/` sent signed-out people to sign in, which the new app already
 does. The empty branch `improve/public-home` is left as it is (branches are never deleted).
 
+### Checked: old Settings rows against the new Settings
+Every row of the old Settings, Account, Data, Integrations and bodyweight pages. Already in the new
+app: profile, bodyweight, appearance, plan, rep ranges, bodyweight and timed exercises, renames,
+spreadsheet export with dates, a backup file, AI keys (on Coach), Apple Shortcuts, feedback, admin,
+email, password, sign out, delete account. Still missing, now queued below:
+- "Delete several workouts" (old Data page).
+- "Bulk import: paste many workout days at once" (old Data page).
+- "Remove photo" on the profile (the new app can only change it).
+- When you turn bodyweight off for an exercise that already has logs, the old app asked how to read
+  the old numbers; the new one doesn't ask.
+- The Exercises and Profile pages still use the plain cards, not the grouped rows.
+Left out on purpose: "current password" to change the password (Supabase signs you in already)
+and JSON export with dates (the backup file keeps everything).
+
 ## Ideas queued (next ones first)
-- Go through every old Settings row and list anything the new Settings still lacks.
 - A "Delete several workouts" row in Settings that opens All workouts ready to select, as before.
+- Exercises and Profile pages in grouped rows, like the rest of Settings.
+- "Remove photo" on the profile.
+- Bulk import: paste many workout days at once.
+- Ask how to read old logs when bodyweight is turned off for an exercise.
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
