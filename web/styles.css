@@ -407,6 +407,8 @@ select {
 }
 select option { background: var(--surface); color: var(--text); }
 textarea { font: 15px/1.75 var(--mono); min-height: 220px; resize: vertical; }
+/* iPhone zooms the page into any box under 16px when it's tapped; at 16px it stays put. */
+@media (max-width: 759.98px) { textarea { font-size: 16px; } }
 input::placeholder, textarea::placeholder { color: var(--subtle); opacity: 0.8; }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
 .check { display: flex; align-items: flex-start; gap: 10px; font-weight: 500; color: var(--text); font-size: 0.92rem; }
@@ -584,7 +586,8 @@ body.signed-out .topbar { display: none; }
 body.signed-out main { padding-top: calc(16px + var(--safe-top)); }
 
 .toast {
-  position: fixed; left: 50%; transform: translateX(-50%); z-index: 30;
+  /* Centred with margins, not a transform: the rise animation ends on transform: none. */
+  position: fixed; left: 0; right: 0; margin: 0 auto; width: max-content; z-index: 30;
   bottom: calc(var(--tabbar-h) + 16px + var(--safe-bottom));
   background: var(--surface); color: var(--text); border: 1px solid var(--line-gold);
   padding: 12px 18px; border-radius: 14px; box-shadow: var(--shadow), 0 0 0 4px var(--gold-soft);
@@ -693,3 +696,13 @@ label.rowi { cursor: pointer; }
 .toast { display: flex; align-items: center; gap: 14px; }
 .toast[hidden] { display: none; }
 .toast-action { flex: none; background: none; border: 0; padding: 4px 2px; margin: -4px 0; color: var(--gold-text); font: 700 0.85rem var(--font); letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; }
+
+/* Exercises: a row opens in place with its switches and rename */
+.pick-group > .rowi.sub { padding-left: 58px; background: var(--hover); margin: 0; font-weight: inherit; }
+.pick-group > .blk.sub { padding-left: 58px; background: var(--hover); border-top: 1px solid var(--hair); }
+.sub-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+.rename-row { flex-wrap: nowrap; gap: 8px; }
+.rename-row input { flex: 1; min-width: 0; height: 40px; }
+.editor-bar.static { position: static; }
+.profile-photo .avatar { flex: none; }
+@media (max-width: 479.98px) { .pick-group > .rowi.sub, .pick-group > .blk.sub { padding-left: 18px; } }

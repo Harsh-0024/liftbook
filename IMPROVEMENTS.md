@@ -50,8 +50,11 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
   stops following, asking first if it would replace a plan you wrote. A "Format" link beside the
   Plan label opens a short guide on how to write the plan. While you follow the shared plan, the
   editor is replaced by a note saying so.
+- **Also (commit 6d374ca):** the same "Copy and edit" for rep ranges, and a note in place of the
+  rep ranges box while you follow the shared ones. Each Copy row sits under its own switch.
 - **Try it:** as above, with `origin/improve/plan-extras`, then Settings, Workout plan.
-- **Checked:** `npm test` (50 pass); desktop Chrome and the iPhone simulator (switch, copy, format).
+- **Checked:** `npm test` (50 pass); desktop Chrome and the iPhone simulator (switch, copy, format,
+  rep ranges copy).
 
 ### 3. Small polish
 - **Branch:** `improve/polish` (from `design/aesthetic-overhaul`), commit af2fa73
@@ -70,10 +73,73 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
 - **Checked:** desktop Chrome (full name, part of a name, unknown name) and the iPhone simulator
   (typed "row", return, Barbell Row opened).
 
+### 5. Select several workouts to delete
+- **Branch:** `improve/history-select` (from `design/aesthetic-overhaul`), commit a9995e1
+- **What:** a "Select" button on All workouts, as the old list had. Tap workouts to tick them; a
+  bar shows how many, "Select all" (or "Clear") for what the search shows, and Delete, which asks
+  first. Cancel or Escape leaves without changes.
+- **Also (commit 3963caa):** a "Delete several workouts" row in Settings, under Data and connections,
+  opens the list ready to pick, with Back going to Settings. On phones the bar stays on one line.
+- **Try it:** as above, with `origin/improve/history-select`, then Home, See all workouts, or
+  Settings, Delete several workouts.
+- **Checked:** `npm test` (50 pass); desktop Chrome (pick, search plus select all, clear, delete)
+  and the iPhone simulator (select, tick, bar above the tab bar, cancel).
+
 ### Fix on the design branch: Stats tiles cut off on phones
 - **Branch:** `design/aesthetic-overhaul`, commit 23ecfcd
 - "Since first" showed "+45.8%" cut off on an iPhone. Percentages from 10% up are now whole
   numbers ("+46%", as the big number above already was), and tile numbers shrink a little on phones.
+
+### 6. Remove your profile photo
+- **Branch:** `improve/profile-photo` (from `design/aesthetic-overhaul`), commit 279e584
+- **What:** a "Remove" button beside "Change photo", shown only when you have a photo, as the old
+  Account page had. It asks first, takes the photo off your profile, then deletes the file.
+- **Try it:** as above, with `origin/improve/profile-photo`, then Settings, your name at the top.
+- **Checked:** `npm test` (50 pass); desktop Chrome against the local stand-in (upload, remove: the
+  file is gone from storage and the letter comes back) and the iPhone simulator (both buttons).
+
+### 7. Bulk import: paste many workout days at once
+- **Branch:** `improve/bulk-import` (from `design/aesthetic-overhaul`), commits 7e29a5c, b8aef70
+- **What:** Settings, Bulk import, as the old Data page had. Paste days that each start with a date
+  ("03/02 Back", "Monday 28/9 Push", "2025-02-03 Legs"). A check under the box shows each day as
+  Ready, Already in or Failed, with how many exercises and sets, and "year guessed" where you didn't
+  write one; "Import N days" saves the ready ones. A missing year is worked out the way the old page
+  did (`web/core/bulk.js`, checked against the old Python code on the same inputs).
+- **Decided:** one change from the old page: a day that would land in the future (for example
+  "1/9" after "6/9/26" rolls to next year) is marked Failed instead of imported.
+- **Try it:** as above, with `origin/improve/bulk-import`, then Settings, Bulk import.
+- **Checked:** `npm test` (54 pass, 4 new); desktop Chrome against the local stand-in (check, import,
+  the workout opens) and the iPhone simulator (typing, the check list).
+
+### 8. Turning bodyweight off asks about old logs
+- **Branch:** `improve/bodyweight-off` (from `design/aesthetic-overhaul`), commit cb02ab4
+- **What:** as on the old page, turning Bodyweight off for an exercise that has logs counting it
+  opens a question in place: "Only from now on", "Keep old logs as BW + number" or "Read old logs
+  as plain weight", with Apply and Cancel. The logs' best-set numbers are worked out again.
+- **Try it:** as above, with `origin/improve/bodyweight-off`, then Settings, Exercises, Pull Ups.
+- **Checked:** `npm test` (51 pass, 1 new covering all three answers); desktop Chrome against the
+  local stand-in (cancel, then "plain weight": all 12 Pull Ups logs changed and synced) and the
+  iPhone simulator (the question).
+
+### Fix on the design branch: Pull Ups showed "Weight and reps"
+- **Branch:** `design/aesthetic-overhaul`, commit f97c1cc
+- Built-in bodyweight exercises (pull-ups, dips…) showed the Bodyweight switch off on the
+  Exercises page, though the app counts them. The switch and the line under the name now say what
+  the app really does.
+
+### Fix on the design branch: iPhone zoomed in when you tapped a text box
+- **Branch:** `design/aesthetic-overhaul`, commit c81a927
+- Log, plan, feedback and other big boxes used 15px text, so iPhone Safari zoomed the page in on
+  tap. On phones they're 16px now and the page stays put.
+
+### Exercises and Profile pages in grouped rows
+- **Branch:** `design/aesthetic-overhaul`, commit 026f5cf
+- **What:** these two pages were still plain cards. Exercises now lists one row per exercise with
+  its kind ("Weight and reps", "Timed", "Bodyweight added") and how often it's logged; tap a row to
+  open its Timed and Bodyweight switches and a rename box in place. Renames show as a list with
+  Undo. Profile has a photo row and an "About you" group with a Save bar.
+- **Checked:** `npm test` (50 pass); desktop Chrome (open a row, switch on and back off, save the
+  profile) and the iPhone simulator (both pages).
 
 ### Checked: Android
 Stats in the Pixel 8 emulator's Chrome looks right. Its header leaves out the "Workout log" line
@@ -84,8 +150,21 @@ on purpose.
 The old app never had one: its `/` sent signed-out people to sign in, which the new app already
 does. The empty branch `improve/public-home` is left as it is (branches are never deleted).
 
+### Checked: old Settings rows against the new Settings
+Every row of the old Settings, Account, Data, Integrations and bodyweight pages. Already in the new
+app: profile, bodyweight, appearance, plan, rep ranges, bodyweight and timed exercises, renames,
+spreadsheet export with dates, a backup file, AI keys (on Coach), Apple Shortcuts, feedback, admin,
+email, password, sign out, delete account. Still missing, now queued below:
+- "Delete several workouts" (old Data page).
+- "Bulk import: paste many workout days at once" (old Data page).
+- "Remove photo" on the profile (the new app can only change it).
+- When you turn bodyweight off for an exercise that already has logs, the old app asked how to read
+  the old numbers; the new one doesn't ask.
+- The Exercises and Profile pages still use the plain cards, not the grouped rows.
+Left out on purpose: "current password" to change the password (Supabase signs you in already)
+and JSON export with dates (the backup file keeps everything).
+
 ## Ideas queued (next ones first)
-- "Select" on All workouts to pick several and delete or copy them together, as the old list had.
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
