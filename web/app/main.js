@@ -299,12 +299,25 @@ async function boot() {
 
 // The offline copy is for the website; the Android app already carries every file.
 if ('serviceWorker' in navigator && location.protocol !== 'file:' && !isNative) {
-  // A new version takes over as soon as it has installed; reload once so this page runs it too
-  // (the log draft is kept on the device, so nothing typed is lost). Not on the very first visit.
+  // A new version takes over as soon as it has installed; this page reloads once to run it too.
+  // Not on the very first visit, and never under someone's finger: if they've started using the
+  // page, the reload waits until the app goes to the background (a switch to another app, a
+  // locked phone), so it's ready next time they look. Nothing typed is lost either way (the log
+  // draft is kept on the device).
   const hadVersion = !!navigator.serviceWorker.controller;
   let reloaded = false;
+  let used = false;
+  const markUsed = () => { used = true; };
+  for (const type of ['pointerdown', 'keydown', 'scroll']) addEventListener(type, markUsed, { once: true, capture: true, passive: true });
+  const reload = () => {
+    if (reloaded) return;
+    reloaded = true;
+    location.reload();
+  };
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (hadVersion && !reloaded) { reloaded = true; location.reload(); }
+    if (!hadVersion) return;
+    if (!used) return reload();
+    document.addEventListener('visibilitychange', () => { if (document.hidden) reload(); });
   });
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').catch((err) => console.warn('offline copy unavailable', err));

@@ -6,7 +6,7 @@
 // old one, takes over, and the old copy is removed.
 'use strict';
 
-const VERSION = 'f2951d8c8ade';
+const VERSION = 'c6a920d6ba04';
 const FILES = [
   './',
   'app/data.js',
@@ -97,3 +97,4 @@ self.addEventListener('fetch', (event) => {
     return fetch(req);
   })());
 });
+// test 1793784571
