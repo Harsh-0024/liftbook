@@ -70,6 +70,15 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
 - **Checked:** desktop Chrome (full name, part of a name, unknown name) and the iPhone simulator
   (typed "row", return, Barbell Row opened).
 
+### 5. Select several workouts to delete
+- **Branch:** `improve/history-select` (from `design/aesthetic-overhaul`), commit a9995e1
+- **What:** a "Select" button on All workouts, as the old list had. Tap workouts to tick them; a
+  bar shows how many, "Select all" (or "Clear") for what the search shows, and Delete, which asks
+  first. Cancel or Escape leaves without changes.
+- **Try it:** as above, with `origin/improve/history-select`, then Home, See all workouts.
+- **Checked:** `npm test` (50 pass); desktop Chrome (pick, search plus select all, clear, delete)
+  and the iPhone simulator (select, tick, bar above the tab bar, cancel).
+
 ### Fix on the design branch: Stats tiles cut off on phones
 - **Branch:** `design/aesthetic-overhaul`, commit 23ecfcd
 - "Since first" showed "+45.8%" cut off on an iPhone. Percentages from 10% up are now whole
@@ -85,7 +94,6 @@ The old app never had one: its `/` sent signed-out people to sign in, which the 
 does. The empty branch `improve/public-home` is left as it is (branches are never deleted).
 
 ## Ideas queued (next ones first)
-- "Select" on All workouts to pick several and delete or copy them together, as the old list had.
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
