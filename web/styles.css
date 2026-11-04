@@ -690,3 +690,6 @@ label.rowi { cursor: pointer; }
 @media (max-width: 759.98px) { .select-bar { bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 10px); } }
 .select-bar .editor-bar { flex-wrap: nowrap; } .select-bar .editor-meta { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .select-bar .row { flex-wrap: nowrap; flex: none; gap: 8px; }
+.toast { display: flex; align-items: center; gap: 14px; }
+.toast[hidden] { display: none; }
+.toast-action { flex: none; background: none; border: 0; padding: 4px 2px; margin: -4px 0; color: var(--gold-text); font: 700 0.85rem var(--font); letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; }

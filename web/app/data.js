@@ -260,9 +260,17 @@ export class Liftbook {
     return { summary: result.summary, day: dayOf(parsed.date), appended: Boolean(existing), timedPrompts, skipped: check.errors };
   }
 
+  /** Soft-deletes the day's logs; returns their ids so restoreLogs() can bring them back. */
   async deleteWorkout(day) {
     const w = this.workout(day);
-    if (w) await this.store.remove('workout_logs', w.logs.map((l) => l._k));
+    if (!w) return [];
+    await this.store.remove('workout_logs', w.logs.map((l) => l._k));
+    return w.logs.map((l) => l.id);
+  }
+
+  /** Undo a delete: the same rows come back, everywhere, at the next sync. */
+  async restoreLogs(ids) {
+    if (ids?.length) await this.store.change('workout_logs', ids.map((id) => ({ id, deleted_at: null })));
   }
 
   /* ---------------- exercise settings ---------------- */

@@ -153,9 +153,14 @@ export function historyScreen(ctx) {
   delBtn.addEventListener('click', busy(delBtn, async () => {
     const n = picked.size;
     if (!n || !confirm(`Delete ${n} workout${n === 1 ? '' : 's'}? This removes ${n === 1 ? 'it' : 'them'} from all your devices.`)) return;
-    for (const day of [...picked]) await lb.deleteWorkout(day);
+    const ids = [];
+    for (const day of [...picked]) ids.push(...await lb.deleteWorkout(day));
     workouts = lb.workouts();
-    toast(`${n} workout${n === 1 ? '' : 's'} deleted.`);
+    toast(`${n} workout${n === 1 ? '' : 's'} deleted.`, 8000, { label: 'Undo', run: async () => {
+      await lb.restoreLogs(ids);
+      toast(`${n} workout${n === 1 ? '' : 's'} back.`);
+      ctx.refresh();
+    } });
     sub();
     if (!workouts.length) selectBtn.remove();
     setSelecting(false);
@@ -206,8 +211,12 @@ export function workoutScreen(ctx, day) {
   const del = h('button', { class: 'btn danger', type: 'button' }, icon('trash'), 'Delete');
   del.addEventListener('click', busy(del, async () => {
     if (!confirm(`Delete ${w.title} on ${formatDay(day)}? This removes it from all your devices.`)) return;
-    await lb.deleteWorkout(day);
-    toast('Workout deleted.');
+    const ids = await lb.deleteWorkout(day);
+    toast('Workout deleted.', 8000, { label: 'Undo', run: async () => {
+      await lb.restoreLogs(ids);
+      toast('Workout back.');
+      ctx.go(`workout/${day}`);
+    } });
     ctx.go('history');
   }));
   const share = async () => {

@@ -25,10 +25,19 @@ function append(el, children) {
 }
 
 let toastTimer = null;
-export function toast(message, ms = 3200) {
+/** A short message at the bottom; action {label, run} adds a button to it, such as Undo. */
+export function toast(message, ms = 3200, action = null) {
   const el = document.getElementById('toast');
   if (!el) return;
-  el.textContent = message;
+  el.replaceChildren(message);
+  if (action) {
+    const b = h('button', { class: 'toast-action', type: 'button' }, action.label);
+    b.addEventListener('click', async () => {
+      el.hidden = true;
+      await action.run();
+    }, { once: true });
+    el.append(b);
+  }
   el.hidden = false;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {

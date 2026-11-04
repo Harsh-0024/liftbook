@@ -144,3 +144,14 @@ test('the spreadsheet has the old app’s columns, newest first, and dates can l
   assert.equal(lb.csv({ to: '2026-10-31' }).count, 2);
   assert.equal(lb.csv({ from: '2027-01-01' }).count, 0);
 });
+
+test('a deleted workout can be brought back', async () => {
+  const lb = await app();
+  await lb.log(DAY1);
+  const ids = await lb.deleteWorkout('2026-10-31');
+  assert.equal(ids.length, 2);
+  assert.equal(lb.workouts().length, 0);
+  await lb.restoreLogs(ids);
+  assert.equal(lb.workout('2026-10-31').logs.length, 2);
+  assert.equal(lb.store.pending('workout_logs').length, 2);
+});
