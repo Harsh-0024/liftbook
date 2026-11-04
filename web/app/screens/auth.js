@@ -85,13 +85,17 @@ function signUp(client, onSignedIn) {
   const username = h('input', { id: 'username', type: 'text', autocomplete: 'username', autocapitalize: 'off', maxlength: 50 });
   const email = h('input', { id: 'email', type: 'email', autocomplete: 'email', autocapitalize: 'off' });
   const password = h('input', { id: 'password', type: 'password', autocomplete: 'new-password' });
+  // Ticks as you type, like the old sign-up page; only the rule the server keeps.
+  const longEnough = h('span', { class: 'check-pill' }, h('span', { class: 'dot' }), `${PASSWORD_MIN}+ characters`);
+  const checks = h('span', { class: 'checks', 'aria-live': 'polite' }, longEnough);
+  password.addEventListener('input', () => longEnough.classList.toggle('ok', password.value.length >= PASSWORD_MIN));
   const err = h('p', { class: 'error', role: 'alert' });
   const btn = h('button', { class: 'btn primary block', type: 'submit' }, 'Create account');
   const form = h('form', { novalidate: true },
     field('Your name', name),
     field('Username', username, 'Letters, numbers, dots, dashes and underscores; 3 or more.'),
     field('Email', email),
-    field('Password', password, `At least ${PASSWORD_MIN} characters.`),
+    field('Password', password, checks),
     err, btn);
   form.addEventListener('submit', busy(btn, async () => {
     err.textContent = '';

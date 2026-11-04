@@ -16,7 +16,7 @@ const SECTIONS = [
   ['exercises', 'Exercises', 'Timed, bodyweight, renames'],
   ['shortcuts', 'Apple Shortcuts', 'Log and get workouts from Notes on your iPhone'],
   ['feedback', 'Feedback', 'Tell the developer what works for you, what doesn’t, and what you’d like next.'],
-  ['sync', 'Sync and data', 'Devices, backup file'],
+  ['sync', 'Sync and data', 'Sync between devices, a backup file and a spreadsheet of everything you logged.'],
   ['account', 'Account', 'Password, theme, sign out, delete'],
 ];
 
@@ -556,11 +556,11 @@ function sessionNames(ctx) {
 
 function sync(ctx) {
   const { lb, store } = ctx;
-  const status = h('div', {});
+  const status = h('span', { class: 'sync-lines' });
   const paint = (st) => {
     status.replaceChildren(
-      h('p', {}, st.running ? 'Syncing now…' : st.error === 'offline' ? 'Offline. Changes are kept on this device.' : st.error ? `Problem: ${st.error}` : 'Up to date.'),
-      h('p', { class: 'subtle' }, `Last synced ${ago(st.last_sync)} · ${st.pending} change${st.pending === 1 ? '' : 's'} waiting to upload`));
+      h('span', { class: 'title' }, st.running ? 'Syncing now…' : st.error === 'offline' ? 'Offline. Changes are kept on this device.' : st.error ? `Problem: ${st.error}` : 'Up to date'),
+      h('span', { class: 'desc' }, `Last synced ${ago(st.last_sync)} · ${st.pending} change${st.pending === 1 ? '' : 's'} waiting to upload`));
   };
   paint(ctx.sync.status());
   const off = ctx.sync.onStatus((st) => (status.isConnected ? paint(st) : off()));
@@ -580,16 +580,21 @@ function sync(ctx) {
     saveFile(`workout_history_${lb.profile()?.username || 'liftbook'}_${range}.csv`, new Blob([text], { type: 'text/csv' })).catch((err) => toast(err.message || String(err)));
   };
   const counts = lb.overview();
+  const row = (ico, title, desc, aside) => h('div', { class: 'rowi' }, h('span', { class: 'ico' }, icon(ico)),
+    h('span', { class: 'main' }, h('span', { class: 'title' }, title), desc ? h('span', { class: 'desc' }, desc) : null), aside);
+  now.className = 'btn primary small';
   return h('div', {},
-    h('div', { class: 'card' }, h('h2', {}, 'Sync'), status, now,
-      h('p', { class: 'subtle', style: 'margin-top:12px' }, 'Everything is kept on this device and works offline. Changes go to your account when you’re online, and your other devices pick them up when they open or come back online.')),
-    h('div', { class: 'card' }, h('h2', {}, 'Your data'),
-      h('p', {}, `${counts.total} workouts, ${lb.history().length} exercise logs, ${counts.exercises} exercises.`),
-      h('button', { class: 'btn', type: 'button', onclick: backup }, 'Download a backup file')),
-    h('div', { class: 'card' }, h('h2', {}, 'Spreadsheet'),
-      h('p', { class: 'subtle' }, 'Every exercise you logged, one row each, for Excel, Numbers or Google Sheets. Leave the dates empty for all of it.'),
-      h('div', { class: 'row' }, field('From', from), field('To', to)),
-      h('button', { class: 'btn', type: 'button', onclick: spreadsheet }, 'Download a CSV file')));
+    h('section', { class: 'section' }, h('div', { class: 'label' }, 'Sync'),
+      h('div', { class: 'group' }, h('div', { class: 'rowi' }, h('span', { class: 'ico' }, icon('sync')), h('span', { class: 'main sync-status' }, status), now)),
+      h('p', { class: 'foot', style: 'margin-top:10px' }, 'Everything is kept on this device and works offline. Changes go to your account when you’re online, and your other devices pick them up when they open or come back online.')),
+    h('section', { class: 'section' }, h('div', { class: 'label' }, 'Your data'),
+      h('div', { class: 'group' },
+        row('download', 'Backup file', `${counts.total} workouts, ${lb.history().length} exercise logs, ${counts.exercises} exercises`,
+          h('button', { class: 'btn small', type: 'button', onclick: backup }, 'Download')),
+        row('clipboard', 'Spreadsheet', 'Every exercise you logged, one row each, for Excel, Numbers or Google Sheets',
+          h('button', { class: 'btn small', type: 'button', onclick: spreadsheet }, 'Download')),
+        h('div', { class: 'blk' }, h('div', { class: 'row' }, field('From', from), field('To', to)),
+          h('div', { class: 'hint' }, 'Leave the dates empty for all of it.')))));
 }
 
 /* ---------------- account ---------------- */

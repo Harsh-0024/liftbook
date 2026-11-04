@@ -674,3 +674,13 @@ label.rowi { cursor: pointer; }
 .kind:hover { border-color: color-mix(in srgb, var(--gold) 40%, var(--line)); }
 .kind[aria-pressed="true"] { border-color: var(--gold); background: var(--gold-soft); }
 .kind[aria-pressed="true"] svg.i { color: var(--gold-text); }
+
+/* ---------- small polish: sign-up password check, sync rows ---------- */
+.checks { display: inline-flex; flex-wrap: wrap; gap: 12px; margin-top: 2px; }
+.check-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--subtle); transition: color 0.15s ease; }
+.check-pill .dot { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid currentColor; display: inline-block; transition: all 0.15s ease; }
+.check-pill.ok { color: var(--gold-text); }
+.check-pill.ok .dot { background: var(--gold); border-color: var(--gold); box-shadow: inset 0 0 0 2px var(--surface); }
+.sync-lines { display: flex; flex-direction: column; gap: 2px; }
+.rowi .blk, .group > .blk .row { gap: 12px; }
+.group > .blk .field { flex: 1 1 140px; margin: 0; }
