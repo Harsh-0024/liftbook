@@ -49,7 +49,8 @@ export function logScreen(ctx) {
   }, readDraft());
   const suggest = attachSuggestions(ta, () => lb.exerciseCatalog().map((e) => e.name));
   attachPasteTidy(ta);
-  const preview = h('span', { class: 'editor-meta', 'aria-live': 'polite' }, 'Nothing to check yet');
+  // The count under the box: tapping it goes to the check list, as on the old page.
+  const preview = h('button', { type: 'button', class: 'editor-meta meta-btn', 'aria-live': 'polite' }, 'Nothing to check yet');
   const checkHead = h('span', {});
   const checkList = h('div', { class: 'group' });
   const checkBox = h('section', { class: 'section', hidden: true, 'aria-label': 'Check before saving' },
@@ -112,10 +113,32 @@ export function logScreen(ctx) {
     clearTimeout(timer);
     timer = setTimeout(check, 250);
   });
+  let cleared = null;
+  const undo = h('button', { class: 'btn small', type: 'button', hidden: true }, 'Undo');
+  undo.addEventListener('click', () => {
+    ta.value = cleared;
+    cleared = null;
+    undo.hidden = true;
+    check();
+    ta.scrollTop = 0;
+  });
+  ta.addEventListener('input', () => {
+    if (cleared !== null && ta.value.trim()) {
+      cleared = null;
+      undo.hidden = true;
+    }
+  });
+  preview.addEventListener('click', () => {
+    if (!checkBox.hidden) checkBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
   paste.addEventListener('click', async () => {
     if (ta.value.trim()) {
+      // Clear everything at once; Undo, beside the count, brings it back until new text arrives.
+      cleared = ta.value;
       ta.value = '';
       check();
+      preview.textContent = 'Cleared';
+      undo.hidden = false;
       ta.focus();
       return;
     }
@@ -159,6 +182,13 @@ export function logScreen(ctx) {
     ctx.go(`workout/${r.day}`);
   }
   save.addEventListener('click', busy(save, () => doSave(false)));
+  // Cmd+Enter (Ctrl+Enter elsewhere) saves from the box.
+  ta.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault();
+      save.click();
+    }
+  });
 
   paintPaste();
   if (ta.value) queueMicrotask(check);
@@ -168,7 +198,7 @@ export function logScreen(ctx) {
       h('label', { for: 'workout_text', class: 'sr' }, 'Workout'),
       ta,
       suggest,
-      h('div', { class: 'editor-bar' }, preview, h('div', { class: 'row' }, paste, save))),
+      h('div', { class: 'editor-bar' }, preview, h('div', { class: 'row' }, undo, paste, save))),
     problems,
     checkBox,
     h('details', { class: 'card', style: 'margin-top:14px' },

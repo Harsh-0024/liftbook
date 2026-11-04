@@ -430,6 +430,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--g
 }
 .editor-meta { flex: 1 1 160px; min-width: 0; font-size: 0.8rem; color: var(--subtle); font-variant-numeric: tabular-nums; }
 .editor-meta .ok { font-weight: 600; }
+.meta-btn { background: none; border: 0; padding: 0; text-align: left; font-family: inherit; cursor: pointer; }
 @media (max-width: 759.98px) { .editor-bar { bottom: calc(var(--tabbar-h) + var(--safe-bottom)); } }
 
 /* ---------- small pieces ---------- */
