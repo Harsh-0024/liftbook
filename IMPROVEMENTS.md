@@ -90,6 +90,15 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
 - "Since first" showed "+45.8%" cut off on an iPhone. Percentages from 10% up are now whole
   numbers ("+46%", as the big number above already was), and tile numbers shrink a little on phones.
 
+### Exercises and Profile pages in grouped rows
+- **Branch:** `design/aesthetic-overhaul`, commit 026f5cf
+- **What:** these two pages were still plain cards. Exercises now lists one row per exercise with
+  its kind ("Weight and reps", "Timed", "Bodyweight added") and how often it's logged; tap a row to
+  open its Timed and Bodyweight switches and a rename box in place. Renames show as a list with
+  Undo. Profile has a photo row and an "About you" group with a Save bar.
+- **Checked:** `npm test` (50 pass); desktop Chrome (open a row, switch on and back off, save the
+  profile) and the iPhone simulator (both pages).
+
 ### Checked: Android
 Stats in the Pixel 8 emulator's Chrome looks right. Its header leaves out the "Workout log" line
 because the emulator's display size makes the screen 360 points wide; under 380 the app hides it
@@ -114,7 +123,6 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
-- Exercises and Profile pages in grouped rows, like the rest of Settings.
 - "Remove photo" on the profile.
 - Bulk import: paste many workout days at once.
 - Ask how to read old logs when bodyweight is turned off for an exercise.
