@@ -287,19 +287,30 @@ export function ask(message, { title = 'Are you sure?', yes = 'Confirm', no = 'C
     const yesBtn = h('button', { class: `btn ${danger ? 'danger solid' : 'primary'}`, type: 'button' }, yes);
     const dlg = h('dialog', { class: 'ask-dialog', 'aria-labelledby': 'ask-title', 'aria-describedby': 'ask-text' },
       h('h2', { id: 'ask-title' }, title), h('p', { id: 'ask-text' }, message), h('div', { class: 'ask-actions' }, noBtn, yesBtn));
+    // Android's Back (and the browser's) cancels, as it did the browser pop-up, instead of changing
+    // the page under an open question: a same-address history entry is added while it's open.
+    // The router only follows the hash, so popping that entry changes nothing else.
     let answered = false;
-    const done = (v) => {
+    const marker = { liftbookAsk: Date.now() };
+    const onPop = () => done(false, true);
+    const done = (v, popped = false) => {
       if (answered) return;
       answered = true;
+      window.removeEventListener('popstate', onPop);
       dlg.close();
       dlg.remove();
-      resolve(v);
+      if (popped || history.state?.liftbookAsk !== marker.liftbookAsk) { resolve(v); return; }
+      // Take the entry off before answering, so a page change after "yes" isn't undone by it.
+      window.addEventListener('popstate', () => resolve(v), { once: true });
+      history.back();
     };
     noBtn.addEventListener('click', () => done(false));
     yesBtn.addEventListener('click', () => done(true));
     dlg.addEventListener('cancel', (e) => { e.preventDefault(); done(false); });
     dlg.addEventListener('click', (e) => { if (e.target === dlg) done(false); });
     document.body.append(dlg);
+    history.pushState(marker, '');
+    window.addEventListener('popstate', onPop);
     dlg.showModal();
     noBtn.focus();
   });
