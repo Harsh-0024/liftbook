@@ -675,3 +675,17 @@ label.rowi { cursor: pointer; }
 .kind[aria-pressed="true"] { border-color: var(--gold); background: var(--gold-soft); }
 .kind[aria-pressed="true"] svg.i { color: var(--gold-text); }
 @media (max-width: 479.98px) { .grid-3 { gap: 8px; } .stat { padding: 14px 12px; } }
+
+/* ---------- All workouts: picking several ---------- */
+.group.selecting .rowi { width: 100%; text-align: left; }
+.rowi .tick {
+  flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
+  border: 1.5px solid color-mix(in srgb, var(--text) 30%, transparent); color: transparent; transition: all 0.15s ease;
+}
+.rowi .tick svg.i { width: 14px; height: 14px; }
+.rowi.picked .tick { background: var(--gold); border-color: var(--gold); color: var(--on-gold); }
+.rowi.picked { background: var(--gold-soft); }
+.select-bar { position: sticky; bottom: 16px; margin-top: 16px; z-index: 5; box-shadow: 0 8px 28px rgba(0,0,0,0.25); }
+.select-bar .editor-bar { position: static; border-top: 0; }
+@media (max-width: 759.98px) { .select-bar { bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 10px); } }
+.select-bar .editor-bar { flex-wrap: nowrap; } .select-bar .editor-meta { flex: 1 1 auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

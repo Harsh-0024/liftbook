@@ -71,14 +71,44 @@ export function homeScreen(ctx) {
 /** Every workout, a month at a time, with a search. */
 export function historyScreen(ctx) {
   const { lb } = ctx;
-  const workouts = lb.workouts();
+  let workouts = lb.workouts();
   const search = h('input', { type: 'search', placeholder: 'Search workouts or exercises', 'aria-label': 'Search workouts', autocomplete: 'off' });
   const body = h('div', {});
+  // Picking several to delete at once, as the old list had: Select, tap rows, Delete.
+  let selecting = false;
+  const picked = new Set();
+  let shownDays = [];
+  const selectBtn = h('button', { class: 'btn small', type: 'button' }, 'Select');
+  const count = h('span', { class: 'editor-meta', 'aria-live': 'polite' });
+  const allBtn = h('button', { class: 'btn small', type: 'button' }, 'Select all');
+  const delBtn = h('button', { class: 'btn danger small', type: 'button' }, icon('trash'), 'Delete');
+  const bar = h('div', { class: 'group select-bar', role: 'region', 'aria-label': 'Selected workouts', hidden: true },
+    h('div', { class: 'editor-bar' }, count, h('div', { class: 'row' }, allBtn, delBtn)));
+  const head = pageHead('All workouts', '', { back: '#/', aside: workouts.length ? selectBtn : null });
+  const sub = () => {
+    const p = head.querySelector('p') || head.firstChild.appendChild(h('p', {}));
+    p.textContent = `${workouts.length} workout${workouts.length === 1 ? '' : 's'} logged.`;
+  };
+
+  const setSelecting = (on) => {
+    selecting = on;
+    picked.clear();
+    selectBtn.textContent = on ? 'Cancel' : 'Select';
+    bar.hidden = !on;
+    paint();
+  };
+  const markBar = () => {
+    count.textContent = picked.size ? `${picked.size} selected` : 'Tap workouts to select them';
+    delBtn.disabled = !picked.size;
+    allBtn.textContent = shownDays.length && shownDays.every((d) => picked.has(d)) ? 'Clear' : 'Select all';
+  };
+
   const paint = () => {
     const q = search.value.trim().toLowerCase();
     const shown = q
       ? workouts.filter((w) => w.title.toLowerCase().includes(q) || w.logs.some((l) => String(l.exercise).toLowerCase().includes(q)) || w.day.includes(q))
       : workouts;
+    shownDays = shown.map((w) => w.day);
     const months = new Map();
     for (const w of shown) {
       const k = w.day.slice(0, 7);
@@ -89,22 +119,54 @@ export function historyScreen(ctx) {
       const [y, m] = k.split('-').map(Number);
       return h('section', { class: 'section' },
         h('div', { class: 'label' }, `${MONTHS[m - 1]} ${y}`, h('span', {}, `${ws.length} workout${ws.length === 1 ? '' : 's'}`)),
-        h('div', { class: 'group' }, ws.map((w) => {
+        h('div', { class: `group${selecting ? ' selecting' : ''}` }, ws.map((w) => {
           const [yy, mm, dd] = w.day.split('-').map(Number);
-          return h('a', { class: 'rowi', href: `#/workout/${w.day}` },
+          const inner = [
             h('span', { class: 'datebox' }, h('b', {}, dd), h('small', {}, WD[new Date(Date.UTC(yy, mm - 1, dd)).getUTCDay()])),
             h('span', { class: 'main' }, h('span', { class: 'title' }, w.title),
-              h('span', { class: 'desc ellipsis' }, w.logs.map((l) => l.exercise).join(' · '))),
-            h('span', { class: 'chev-i' }, icon('chev')));
+              h('span', { class: 'desc ellipsis' }, w.logs.map((l) => l.exercise).join(' · ')))];
+          if (!selecting) return h('a', { class: 'rowi', href: `#/workout/${w.day}` }, ...inner, h('span', { class: 'chev-i' }, icon('chev')));
+          const on = picked.has(w.day);
+          const row = h('button', { class: `rowi${on ? ' picked' : ''}`, type: 'button', 'aria-pressed': String(on) },
+            h('span', { class: 'tick' }, icon('check')), ...inner);
+          row.addEventListener('click', () => {
+            if (picked.has(w.day)) picked.delete(w.day);
+            else picked.add(w.day);
+            row.classList.toggle('picked', picked.has(w.day));
+            row.setAttribute('aria-pressed', String(picked.has(w.day)));
+            markBar();
+          });
+          return row;
         })));
     }) : [h('div', { class: 'group empty' }, icon('search'), q ? `Nothing matches “${search.value.trim()}”.` : 'No workouts yet.')]));
+    markBar();
   };
+
+  selectBtn.addEventListener('click', () => setSelecting(!selecting));
+  allBtn.addEventListener('click', () => {
+    const all = shownDays.every((d) => picked.has(d));
+    for (const d of shownDays) (all ? picked.delete(d) : picked.add(d));
+    paint();
+  });
+  delBtn.addEventListener('click', busy(delBtn, async () => {
+    const n = picked.size;
+    if (!n || !confirm(`Delete ${n} workout${n === 1 ? '' : 's'}? This removes ${n === 1 ? 'it' : 'them'} from all your devices.`)) return;
+    for (const day of [...picked]) await lb.deleteWorkout(day);
+    workouts = lb.workouts();
+    toast(`${n} workout${n === 1 ? '' : 's'} deleted.`);
+    sub();
+    if (!workouts.length) selectBtn.remove();
+    setSelecting(false);
+  }));
+  const onKey = (e) => {
+    if (!body.isConnected) return document.removeEventListener('keydown', onKey);
+    if (e.key === 'Escape' && selecting) setSelecting(false);
+  };
+  document.addEventListener('keydown', onKey);
   search.addEventListener('input', paint);
+  sub();
   paint();
-  return h('div', {},
-    pageHead('All workouts', `${workouts.length} workout${workouts.length === 1 ? '' : 's'} logged.`, { back: '#/' }),
-    h('div', { class: 'search' }, icon('search'), search),
-    body);
+  return h('div', {}, head, h('div', { class: 'search' }, icon('search'), search), body, bar);
 }
 
 const signed = (v, digits = 1) => (v === null || v === undefined ? '' : `${v > 0 ? '+' : v < 0 ? '−' : '±'}${fmtNum(Math.abs(v), digits)}%`);
