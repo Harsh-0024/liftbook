@@ -3,7 +3,7 @@
 // so it needs a connection; the keys are managed here too. Offline, the built-in answers
 // (web/core/history_qa.js) still answer the questions they know. The chat stays while the app is open.
 
-import { h, toast, busy, ago, formatDay } from '../ui.js';
+import { h, toast, busy, ago, formatDay, ask } from '../ui.js';
 import { Online, KEY_LINKS } from '../online.js';
 import { coachData, suggestions } from '../../core/coach_tools.js';
 import { rulesReply } from '../../core/history_qa.js';
@@ -223,7 +223,7 @@ export function coachScreen(ctx) {
     }));
     const del = h('button', { class: 'btn small danger', type: 'button' }, 'Delete');
     del.addEventListener('click', busy(del, async () => {
-      if (!confirm(`Delete the ${PROVIDERS[k.provider] || ''} key ending ${k.key_hint}?`)) return;
+      if (!(await ask('The coach stops using it. You can add it again any time.', { title: `Delete the ${PROVIDERS[k.provider] || ''} key ending ${k.key_hint}?`, yes: 'Delete', danger: true }))) return;
       await online.deleteKey(k.id);
       toast('Key deleted.');
       await loadKeys();

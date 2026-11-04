@@ -1,7 +1,7 @@
 // Settings: profile, plan and rep ranges, exercises (timed, bodyweight, renames), feedback,
 // sync and the account.
 
-import { h, icon, rowItem, pageHead, toast, busy, ago, formatDay, fmtNum, copyText } from '../ui.js';
+import { h, icon, rowItem, pageHead, toast, busy, ago, formatDay, fmtNum, copyText, ask } from '../ui.js';
 import { avatar } from './home.js';
 import { Online } from '../online.js';
 import { FEEDBACK_KINDS } from '../data.js';
@@ -324,7 +324,7 @@ function exercises(ctx) {
       h('div', { class: 'group' }, renames.map((r) => {
         const undo = h('button', { class: 'btn small', type: 'button' }, 'Undo');
         undo.addEventListener('click', busy(undo, async () => {
-          if (!confirm(`Put ${r.new_name} back to ${r.old_name}?`)) return;
+          if (!(await ask(`Its logged workouts move back to ${r.old_name}.`, { title: `Put ${r.new_name} back to ${r.old_name}?`, yes: 'Undo rename' }))) return;
           await lb.undoRename(r.id);
           toast('Rename undone.');
           ctx.refresh();
@@ -494,7 +494,7 @@ function shortcuts(ctx) {
     const key = info && kept && kept.endsWith(info.key_hint) ? kept : null;
     const make = h('button', { class: `btn${info ? '' : ' primary'}`, type: 'button' }, info ? 'Make a new key' : 'Make my Shortcut key');
     make.addEventListener('click', busy(make, async () => {
-      if (info && !confirm('Your Shortcuts stop working until you paste the new key into them. Make a new key?')) return;
+      if (info && !(await ask('Your Shortcuts stop working until you paste the new key into them.', { title: 'Make a new key?', yes: 'Make a new key', danger: true }))) return;
       const fresh = await online.newShortcutKey();
       await ctx.store.setMeta('shortcut_key', fresh);
       toast('New key made. Copy it into your Shortcuts.');
@@ -502,7 +502,7 @@ function shortcuts(ctx) {
     }));
     const remove = h('button', { class: 'btn small danger', type: 'button' }, 'Switch Shortcuts off');
     remove.addEventListener('click', busy(remove, async () => {
-      if (!confirm('Your Shortcuts stop working. Switch them off?')) return;
+      if (!(await ask('Your Shortcuts stop working until you make a new key.', { title: 'Switch Shortcuts off?', yes: 'Switch off', danger: true }))) return;
       await online.removeShortcutKey();
       await ctx.store.setMeta('shortcut_key', null);
       await paint();

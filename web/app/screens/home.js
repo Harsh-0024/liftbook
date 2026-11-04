@@ -1,7 +1,7 @@
 // Home (a welcome: you, two ways in, the last few workouts), every workout, one workout, and
 // editing it. The layout follows the original app's.
 
-import { h, icon, rowItem, pageHead, softDay, formatDay, copyText, toast, busy, fmtNum } from '../ui.js';
+import { h, icon, rowItem, pageHead, softDay, formatDay, copyText, toast, busy, fmtNum, ask } from '../ui.js';
 import { formatSetsDisplay } from '../../core/logging.js';
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -149,7 +149,7 @@ export function historyScreen(ctx) {
     const days = [...pick.days];
     if (!days.length) return;
     const what = days.length === 1 ? `${lb.workout(days[0])?.title || 'this workout'} on ${formatDay(days[0])}` : `${days.length} workouts`;
-    if (!confirm(`Delete ${what}? This removes ${days.length === 1 ? 'it' : 'them'} from all your devices.`)) return;
+    if (!(await ask(`This removes ${days.length === 1 ? 'it' : 'them'} from all your devices.`, { title: `Delete ${what}?`, yes: 'Delete', danger: true }))) return;
     await lb.deleteWorkouts(days);
     pick.on = false;
     pick.days.clear();
@@ -362,7 +362,7 @@ export function workoutScreen(ctx, day) {
 
   const del = h('button', { class: 'btn danger', type: 'button' }, icon('trash'), 'Delete');
   del.addEventListener('click', busy(del, async () => {
-    if (!confirm(`Delete ${w.title} on ${formatDay(day)}? This removes it from all your devices.`)) return;
+    if (!(await ask('This removes it from all your devices.', { title: `Delete ${w.title} on ${formatDay(day)}?`, yes: 'Delete', danger: true }))) return;
     await lb.deleteWorkout(day);
     toast('Workout deleted.');
     ctx.go('history');

@@ -275,3 +275,32 @@ export function busy(button, fn) {
     }
   };
 }
+
+/**
+ * Ask before something that can't be undone, on the page rather than in a browser pop-up (as the
+ * original app's "Confirm" dialog). Resolves true for yes; Cancel, Escape or a tap outside is no.
+ * The safe answer has the focus, so Enter never deletes by accident.
+ */
+export function ask(message, { title = 'Are you sure?', yes = 'Confirm', no = 'Cancel', danger = false } = {}) {
+  return new Promise((resolve) => {
+    const noBtn = h('button', { class: 'btn', type: 'button' }, no);
+    const yesBtn = h('button', { class: `btn ${danger ? 'danger solid' : 'primary'}`, type: 'button' }, yes);
+    const dlg = h('dialog', { class: 'ask-dialog', 'aria-labelledby': 'ask-title', 'aria-describedby': 'ask-text' },
+      h('h2', { id: 'ask-title' }, title), h('p', { id: 'ask-text' }, message), h('div', { class: 'ask-actions' }, noBtn, yesBtn));
+    let answered = false;
+    const done = (v) => {
+      if (answered) return;
+      answered = true;
+      dlg.close();
+      dlg.remove();
+      resolve(v);
+    };
+    noBtn.addEventListener('click', () => done(false));
+    yesBtn.addEventListener('click', () => done(true));
+    dlg.addEventListener('cancel', (e) => { e.preventDefault(); done(false); });
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) done(false); });
+    document.body.append(dlg);
+    dlg.showModal();
+    noBtn.focus();
+  });
+}

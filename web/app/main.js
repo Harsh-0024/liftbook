@@ -6,7 +6,7 @@ import { createClient } from './supabase.js';
 import { Store, idbBackend, deleteDatabase } from './store.js';
 import { createSync, startAutoSync } from './sync.js';
 import { Liftbook } from './data.js';
-import { h, toast, ago } from './ui.js';
+import { h, toast, ago, ask } from './ui.js';
 import { authScreens, welcomeScreen, resetScreen } from './screens/auth.js';
 import { homeScreen, historyScreen, workoutScreen, editScreen } from './screens/home.js';
 import { logScreen, DRAFT_KEY } from './screens/log.js';
@@ -213,7 +213,7 @@ async function signOut({ force = false } = {}) {
   if (!force) {
     await ctx.sync.runOnce();
     const pending = ctx.store.pendingCount();
-    if (pending && !confirm(`${pending} change${pending === 1 ? ' hasn’t' : 's haven’t'} reached the server yet (you’re offline?). Sign out anyway and lose ${pending === 1 ? 'it' : 'them'}?`)) return;
+    if (pending && !(await ask(`${pending} change${pending === 1 ? ' hasn’t' : 's haven’t'} reached the server yet (you’re offline?). If you sign out now, ${pending === 1 ? 'it is' : 'they are'} lost.`, { title: 'Sign out anyway?', yes: 'Sign out', danger: true }))) return;
   }
   const uid = ctx.user.id;
   stopSync?.();
