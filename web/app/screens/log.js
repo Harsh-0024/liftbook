@@ -1,7 +1,7 @@
 // Log: type (or paste) a workout, see what it reads as, save it. Works offline: the save is
 // on this device at once and syncs later. An unsaved draft is kept if the app closes.
 
-import { h, icon, pageHead, formatDay, busy, toast } from '../ui.js';
+import { h, icon, pageHead, formatDay, busy, toast, autoGrow } from '../ui.js';
 import { attachSuggestions } from '../suggest.js';
 import { attachPasteTidy, tidyPaste, showFromTop } from '../paste.js';
 
@@ -47,6 +47,7 @@ export function logScreen(ctx) {
     id: 'workout_text', class: 'editor', spellcheck: 'false', autocapitalize: 'sentences', autocomplete: 'off',
     placeholder: `${today} - Session 1 - Chest & Biceps\n\nFlat Barbell Press - [5-8]\n32.5 27.5 25, 6 7 8\n\nBarbell Curl - [6-10]\n20 17.5, 8 10`,
   }, readDraft());
+  const fit = autoGrow(ta);
   const suggest = attachSuggestions(ta, () => lb.exerciseCatalog().map((e) => e.name));
   attachPasteTidy(ta);
   // The count under the box: tapping it goes to the check list, as on the old page.
@@ -67,6 +68,7 @@ export function logScreen(ctx) {
     const text = ta.value;
     writeDraft(text);
     paintPaste();
+    fit();
     if (!text.trim()) {
       preview.textContent = 'Nothing to check yet';
       problems.replaceChildren();
@@ -194,13 +196,17 @@ export function logScreen(ctx) {
   if (ta.value) queueMicrotask(check);
   return h('div', {},
     pageHead('Log workout', 'Paste your workout from Notes, or type it: the date and title first, then each exercise with its sets underneath.'),
-    h('div', { class: 'group editor-wrap' },
-      h('label', { for: 'workout_text', class: 'sr' }, 'Workout'),
-      ta,
-      suggest,
-      h('div', { class: 'editor-bar' }, preview, h('div', { class: 'row' }, undo, paste, save))),
-    problems,
-    checkBox,
+    // The count and Save float at the bottom of the screen while the text and the check list
+    // scroll under them (as on the old Log page), so Save is always one tap away.
+    h('div', { class: 'log-flow' },
+      h('div', { class: 'group editor-wrap' },
+        h('label', { for: 'workout_text', class: 'sr' }, 'Workout'),
+        ta,
+        suggest),
+      problems,
+      checkBox,
+      h('div', { class: 'group log-bar' },
+        h('div', { class: 'editor-bar' }, preview, h('div', { class: 'row' }, undo, paste, save)))),
     h('details', { class: 'card', style: 'margin-top:14px' },
       h('summary', {}, 'How to write sets'),
       h('div', { class: 'stack muted', style: 'margin-top:12px;font-size:.9rem' },

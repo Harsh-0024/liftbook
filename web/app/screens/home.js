@@ -1,7 +1,7 @@
 // Home (a welcome: you, two ways in, the last few workouts), every workout, one workout, and
 // editing it. The layout follows the original app's.
 
-import { h, icon, rowItem, pageHead, softDay, formatDay, copyText, toast, busy, fmtNum } from '../ui.js';
+import { h, icon, rowItem, pageHead, softDay, formatDay, copyText, toast, busy, fmtNum, autoGrow } from '../ui.js';
 import { formatSetsDisplay } from '../../core/logging.js';
 import { summaryTable } from './log.js';
 import { attachSuggestions } from '../suggest.js';
@@ -200,6 +200,7 @@ export function editScreen(ctx, day) {
   const w = lb.workout(day);
   if (!w) return workoutScreen(ctx, day);
   const ta = h('textarea', { id: 'workout_text', class: 'editor', spellcheck: 'false', autocapitalize: 'off', 'aria-label': 'The workout as text' }, lb.workoutText(w));
+  autoGrow(ta);
   const suggest = attachSuggestions(ta, () => lb.exerciseCatalog().map((e) => e.name));
   attachPasteTidy(ta);
   const err = h('div', { role: 'alert' });

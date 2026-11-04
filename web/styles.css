@@ -708,3 +708,11 @@ label.rowi { cursor: pointer; }
 .name-note { font-size: .82rem; color: var(--muted); }
 .name-note.is-suggest, .name-note.is-twice, .name-note.is-dup { color: var(--warn); font-weight: 600; }
 .rowi.warn .ico { color: var(--warn); }
+
+/* A box that grows with its text (autoGrow in ui.js): no scrolling inside it. */
+.editor.grows { overflow: hidden; resize: none; }
+/* Log: the count and Save float above the tab bar while everything scrolls under them. */
+.log-bar { position: sticky; bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 10px); margin-top: 14px; z-index: 5; box-shadow: 0 8px 28px rgba(0,0,0,0.18); }
+.log-bar .editor-bar { position: static; border-top: 0; }
+@media (min-width: 760px) { .log-bar { bottom: 16px; } }
+.log-flow > .section:first-of-type, .log-flow > [role=alert] { margin-top: 0; }

@@ -266,3 +266,23 @@ export function busy(button, fn) {
     }
   };
 }
+
+/**
+ * A textarea that grows with its text (as the old Log box did), so a long workout scrolls with
+ * the page instead of inside a box. Returns fit(), to call after changing the text from code.
+ */
+export function autoGrow(ta) {
+  const fit = () => {
+    if (!ta.isConnected) return;
+    const keep = window.scrollY;
+    ta.style.height = 'auto';
+    ta.style.height = `${ta.scrollHeight + 2}px`;
+    window.scrollTo(window.scrollX, keep); // shrinking to 'auto' for a moment mustn't move the page
+  };
+  ta.classList.add('grows');
+  ta.addEventListener('input', fit);
+  addEventListener('resize', fit);
+  requestAnimationFrame(fit);
+  setTimeout(fit, 0);
+  return fit;
+}
