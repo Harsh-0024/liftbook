@@ -67,31 +67,120 @@ export function retrieveScreen(ctx) {
       rowItem({ href: '#/settings/plan', ico: 'plan', title: 'Change the plan', desc: 'Your days and the exercises in them' })));
 }
 
-function output(ctx, result, back) {
+/**
+ * The workout to copy, as the old page had it: each exercise with your best numbers under it and
+ * its target beside it, the title editable (the copied text follows), the text itself one tap away,
+ * and Copy (Share where the phone has it) always in reach.
+ */
+function output(ctx, result, back, { kicker = '', number = '', name = '', fallback = '', edit = null } = {}) {
+  const d = result.described;
+  let text = result.text;
+  const date = String(text.split('\n', 1)[0]).split(' - ', 1)[0];
+  const pre = h('pre', { class: 'out' }, text);
+  const title = h('input', { type: 'text', class: 'rp-title', maxlength: 80, autocomplete: 'off', value: name,
+    placeholder: fallback || number || 'Workout', 'aria-label': 'Workout title' });
+  title.addEventListener('input', () => {
+    const lines = text.split('\n');
+    lines[0] = [date, number, title.value.replace(/\s+/g, ' ').trim() || fallback].filter(Boolean).join(' - ');
+    text = lines.join('\n');
+    pre.textContent = text;
+  });
+  title.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); title.blur(); } });
+
+  const copyBtn = h('button', { class: 'btn primary small', type: 'button' }, icon('copy'), 'Copy');
+  let doneTimer = null;
+  const copy = async () => {
+    await copyText(text, { quiet: true });
+    copyBtn.replaceChildren(icon('check'), 'Copied');
+    copyBtn.classList.add('done');
+    clearTimeout(doneTimer);
+    doneTimer = setTimeout(() => { copyBtn.replaceChildren(icon('copy'), 'Copy'); copyBtn.classList.remove('done'); }, 1800);
+  };
+  copyBtn.addEventListener('click', copy);
+  const share = navigator.share ? h('button', { class: 'btn small', type: 'button', onclick: async () => {
+    try { await navigator.share({ text }); } catch { /* closed */ }
+  }, 'aria-label': 'Share' }, icon('share'), h('span', { class: 'lbl' }, 'Share')) : null;
   const logIt = () => {
     try {
-      localStorage.setItem(DRAFT_KEY, result.text);
+      localStorage.setItem(DRAFT_KEY, text);
     } catch {
       // nothing kept; the copy button still works
     }
     ctx.go('log');
   };
-  return h('div', {},
-    pageHead(result.described.header.replace(/^\S+\s+-\s+/, '') || 'Targets',
-      `${result.exercises} exercise${result.exercises === 1 ? '' : 's'} · ${result.sets} set${result.sets === 1 ? '' : 's'}`, { back }),
-    h('div', { class: 'group' },
-      h('pre', { class: 'out', style: 'padding:18px 20px' }, result.text),
-      h('div', { class: 'editor-bar' },
-        h('span', { class: 'editor-meta' }, 'Your best recent sets as the starting point'),
-        h('div', { class: 'row' },
-          h('button', { class: 'btn small', type: 'button', onclick: logIt }, icon('log'), 'Log from this'),
-          h('button', { class: 'btn primary small', type: 'button', onclick: () => copyText(result.text) }, icon('copy'), 'Copy')))),
-    h('p', { class: 'foot', style: 'margin-top:10px' }, 'Change the numbers to what you actually lift, then save it on the Log page.'));
+  // ⌘C / Ctrl+C copies the workout when nothing is selected and the title isn't being typed in.
+  const onKey = (e) => {
+    if (!(e.metaKey || e.ctrlKey) || (e.key || '').toLowerCase() !== 'c') return;
+    if (!document.body.contains(pre)) { document.removeEventListener('keydown', onKey); return; }
+    if (document.activeElement === title || String(window.getSelection() || '').length) return;
+    e.preventDefault();
+    copy();
+  };
+  document.addEventListener('keydown', onKey);
+
+  const dock = h('div', { class: 'rp-dock' }, h('div', { class: `rp-bar${share && edit ? ' many' : ''}` },
+      edit ? h('button', { class: 'btn ghost small', type: 'button', onclick: () => edit(title.value.replace(/\s+/g, ' ').trim()) }, icon('edit'), 'Edit') : h('span', { class: 'rp-bar-meta' }, 'Ready for Notes'),
+      h('div', { class: 'row' },
+        share,
+        h('button', { class: 'btn small', type: 'button', onclick: logIt, title: 'Open on the Log page to fill in what you lift', 'aria-label': 'Log from this' }, icon('log'), h('span', { class: 'lbl' }, 'Log')),
+        copyBtn)));
+  // The dock fades the page out beneath it only while it floats; resting at the end it stays clear.
+  const dockEnd = h('div', { 'aria-hidden': 'true' });
+  if ('IntersectionObserver' in window) {
+    setTimeout(() => {
+      const offset = parseFloat(getComputedStyle(dock).bottom) || 0;
+      new IntersectionObserver(([entry]) => dock.classList.toggle('floating', !entry.isIntersecting),
+        { rootMargin: `0px 0px -${offset}px 0px` }).observe(dockEnd);
+    }, 0);
+  }
+  const ex = d.exercises || [];
+  const meta = `${result.exercises} exercise${result.exercises === 1 ? '' : 's'} · ${result.sets} set${result.sets === 1 ? '' : 's'}${d.bodyweight ? ` · Bodyweight ${d.bodyweight}` : ''}`;
+  return h('div', { class: 'rp' },
+    h('header', { class: 'page-head' }, h('div', {},
+      back ? h('a', { class: 'back', href: back, 'aria-label': 'Back' }, icon('back')) : null,
+      kicker ? h('p', { class: 'rp-kicker' }, kicker) : null,
+      h('h1', { class: 'sr' }, name || fallback || number || 'Workout'),
+      title,
+      h('p', {}, meta))),
+    h('section', { 'aria-label': 'Plan, with your best numbers under each exercise' },
+      h('div', { class: 'group' }, ex.length ? ex.map((e) => h('div', { class: 'rp-row' },
+        h('div', { class: 'rp-main' },
+          h('span', { class: 'rp-name' }, e.name),
+          h('span', { class: `rp-sets${e.fresh ? ' fresh' : ''}` }, e.fresh ? 'No history yet' : e.sets_label)),
+        e.target ? h('span', { class: 'rp-target' }, e.target) : null))
+        : h('pre', { class: 'out', style: 'padding:18px 20px' }, text)),
+      h('details', { class: 'rp-text' },
+        h('summary', {}, 'View as text', h('span', { class: 'ex-chev' }, icon('chev'))),
+        h('div', { class: 'group' }, pre))),
+    dock, dockEnd);
+}
+
+/** ("Session 4 · Cycle 1", "Legs") as the old page header had it. */
+function sessionPlace(plans, category, id) {
+  if (String(category).trim().toLowerCase() === 'session') {
+    let kicker = `Session ${id}`;
+    for (const [heading, ids] of Object.entries(plans.heading_sessions || {})) {
+      if ((ids || []).map(Number).includes(Number(id))) {
+        kicker += ` · ${heading}`;
+        break;
+      }
+    }
+    return { kicker, number: `Session ${id}`, name: plans.session_titles?.[id] || '' };
+  }
+  return { kicker: `Day ${id}`, number: '', name: category };
 }
 
 export function retrieveDayScreen(ctx, category, id) {
-  const result = ctx.lb.retrieveDay(decodeURIComponent(category), Number(id));
-  return output(ctx, result, '#/retrieve');
+  const cat = decodeURIComponent(category);
+  const result = ctx.lb.retrieveDay(cat, Number(id));
+  const place = sessionPlace(ctx.lb.planDays(), cat, id);
+  const names = (result.described.exercises || []).map((e) => e.name);
+  // Edit: the same exercises on the Custom page, to add or drop some for today.
+  const edit = names.length ? (name) => {
+    ctx.customPrefill = { names, number: place.number, kicker: place.kicker, title: name };
+    ctx.go('retrieve/custom');
+  } : null;
+  return output(ctx, result, '#/retrieve', { ...place, edit });
 }
 
 const GROUPS = ['Chest', 'Back', 'Shoulders', 'Biceps', 'Triceps', 'Forearms', 'Legs', 'Abs', 'Other'];
@@ -101,7 +190,11 @@ export function retrieveCustomScreen(ctx) {
   const catalog = lb.exerciseCatalog().map((c) => ({ ...c, group: muscleGroup(c.name) }));
   const title = h('input', { id: 'title', type: 'text', placeholder: 'Custom Workout', maxlength: 80 });
   const search = h('input', { id: 'search', type: 'search', placeholder: 'Search exercises', autocapitalize: 'off', 'aria-label': 'Search exercises' });
-  const chosen = [];
+  const catalogNames = new Map(catalog.map((c) => [c.name.toLowerCase(), c.name]));
+  const prefill = ctx.customPrefill;
+  ctx.customPrefill = null;
+  const chosen = prefill ? prefill.names.map((n) => catalogNames.get(n.toLowerCase()) || n) : [];
+  if (prefill?.title) title.value = prefill.title;
   const open = new Set();
   const picker = h('div', { class: 'group picker-groups' });
   const picked = h('div', { class: 'group picked' });
@@ -155,9 +248,12 @@ export function retrieveCustomScreen(ctx) {
       return;
     }
     const names = [...chosen];
-    const result = lb.retrieveCustom(names, title.value);
+    const name = title.value.replace(/\s+/g, ' ').trim();
+    // Edited from a plan session: it keeps its number in the copied title ("Session 4 - Legs").
+    const number = prefill?.number || '';
+    const result = lb.retrieveCustom(names, number ? [number, name].filter(Boolean).join(' - ') : title.value);
     await lb.recordRetrievals(names);
-    holder.replaceChildren(output(ctx, result, '#/retrieve/custom'));
+    holder.replaceChildren(output(ctx, result, null, { kicker: prefill?.kicker || 'Custom workout', number, name, fallback: number ? '' : 'Custom Workout' }));
     holder.scrollIntoView({ behavior: 'smooth' });
   }));
 

@@ -36,17 +36,17 @@ export function toast(message, ms = 3200) {
   }, ms);
 }
 
-export async function copyText(text) {
+export async function copyText(text, { quiet = false } = {}) {
   try {
     await navigator.clipboard.writeText(text);
-    toast('Copied');
+    if (!quiet) toast('Copied');
   } catch {
     const ta = h('textarea', { style: 'position:fixed;opacity:0' }, text);
     document.body.append(ta);
     ta.select();
     document.execCommand('copy');
     ta.remove();
-    toast('Copied');
+    if (!quiet) toast('Copied');
   }
 }
 
