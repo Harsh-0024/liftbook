@@ -67,15 +67,36 @@ export function homeScreen(ctx) {
       h('a', { class: 'see-all', href: '#/history' }, 'See all workouts')) : null);
 }
 
-/** Every workout, a month at a time, with a search. */
+/** Every workout, a month at a time, with a search, and Select to delete several at once. */
 export function historyScreen(ctx) {
   const { lb } = ctx;
   const workouts = lb.workouts();
+  // Selecting survives a synced redraw of this page, not a visit to another one.
+  const pick = ctx.redrawing && ctx.historyPick ? ctx.historyPick : { on: false, days: new Set() };
+  ctx.historyPick = pick;
+  for (const d of [...pick.days]) if (!lb.workout(d)) pick.days.delete(d);
   const search = h('input', { type: 'search', placeholder: 'Search workouts or exercises', 'aria-label': 'Search workouts', autocomplete: 'off' });
   const body = h('div', {});
+  const toggle = h('button', { class: 'btn small ghost', type: 'button' });
+  const count = h('span', { class: 'count', 'aria-live': 'polite' });
+  const all = h('button', { class: 'btn small ghost', type: 'button' }, 'Select all');
+  const del = h('button', { class: 'btn small danger', type: 'button' }, icon('trash'), 'Delete');
+  const bar = h('div', { class: 'pick-dock', role: 'region', 'aria-label': 'Selected workouts' }, count, h('span', { class: 'row' }, all, del));
+  let shown = workouts;
+
+  const paintBar = () => {
+    toggle.textContent = pick.on ? 'Cancel' : 'Select';
+    toggle.hidden = !workouts.length;
+    bar.classList.toggle('on', pick.on);
+    body.classList.toggle('picking-pad', pick.on); // room for the bar under the last row
+    count.textContent = pick.days.size ? `${pick.days.size} selected` : 'Select workouts';
+    del.disabled = !pick.days.size;
+    const everyShown = shown.length && shown.every((w) => pick.days.has(w.day));
+    all.textContent = everyShown ? 'Select none' : 'Select all';
+  };
   const paint = () => {
     const q = search.value.trim().toLowerCase();
-    const shown = q
+    shown = q
       ? workouts.filter((w) => w.title.toLowerCase().includes(q) || w.logs.some((l) => String(l.exercise).toLowerCase().includes(q)) || w.day.includes(q))
       : workouts;
     const months = new Map();
@@ -88,22 +109,59 @@ export function historyScreen(ctx) {
       const [y, m] = k.split('-').map(Number);
       return h('section', { class: 'section' },
         h('div', { class: 'label' }, `${MONTHS[m - 1]} ${y}`, h('span', {}, `${ws.length} workout${ws.length === 1 ? '' : 's'}`)),
-        h('div', { class: 'group' }, ws.map((w) => {
+        h('div', { class: `group${pick.on ? ' picking' : ''}` }, ws.map((w) => {
           const [yy, mm, dd] = w.day.split('-').map(Number);
-          return h('a', { class: 'rowi', href: `#/workout/${w.day}` },
+          const inner = [
             h('span', { class: 'datebox' }, h('b', {}, dd), h('small', {}, WD[new Date(Date.UTC(yy, mm - 1, dd)).getUTCDay()])),
             h('span', { class: 'main' }, h('span', { class: 'title' }, w.title),
-              h('span', { class: 'desc ellipsis' }, w.logs.map((l) => l.exercise).join(' · '))),
-            h('span', { class: 'chev-i' }, icon('chev')));
+              h('span', { class: 'desc ellipsis' }, w.logs.map((l) => l.exercise).join(' · ')))];
+          if (!pick.on) return h('a', { class: 'rowi', href: `#/workout/${w.day}` }, ...inner, h('span', { class: 'chev-i' }, icon('chev')));
+          const on = pick.days.has(w.day);
+          const row = h('button', { class: `rowi${on ? ' picked' : ''}`, type: 'button', role: 'checkbox', 'aria-checked': String(on) },
+            ...inner, h('span', { class: 'tick', 'aria-hidden': 'true' }, icon('check')));
+          row.addEventListener('click', () => {
+            const now = !pick.days.has(w.day);
+            if (now) pick.days.add(w.day);
+            else pick.days.delete(w.day);
+            row.classList.toggle('picked', now);
+            row.setAttribute('aria-checked', String(now));
+            paintBar();
+          });
+          return row;
         })));
     }) : [h('div', { class: 'group empty' }, icon('search'), q ? `Nothing matches “${search.value.trim()}”.` : 'No workouts yet.')]));
+    paintBar();
   };
+  toggle.addEventListener('click', () => {
+    pick.on = !pick.on;
+    pick.days.clear();
+    paint();
+  });
+  all.addEventListener('click', () => {
+    const everyShown = shown.every((w) => pick.days.has(w.day));
+    for (const w of shown) {
+      if (everyShown) pick.days.delete(w.day);
+      else pick.days.add(w.day);
+    }
+    paint();
+  });
+  del.addEventListener('click', busy(del, async () => {
+    const days = [...pick.days];
+    if (!days.length) return;
+    const what = days.length === 1 ? `${lb.workout(days[0])?.title || 'this workout'} on ${formatDay(days[0])}` : `${days.length} workouts`;
+    if (!confirm(`Delete ${what}? This removes ${days.length === 1 ? 'it' : 'them'} from all your devices.`)) return;
+    await lb.deleteWorkouts(days);
+    pick.on = false;
+    pick.days.clear();
+    toast(days.length === 1 ? 'Workout deleted.' : `${days.length} workouts deleted.`);
+    ctx.go('history');
+  }));
   search.addEventListener('input', paint);
   paint();
   return h('div', {},
-    pageHead('All workouts', `${workouts.length} workout${workouts.length === 1 ? '' : 's'} logged.`, { back: '#/' }),
+    pageHead('All workouts', `${workouts.length} workout${workouts.length === 1 ? '' : 's'} logged.`, { back: '#/', aside: toggle }),
     h('div', { class: 'search' }, icon('search'), search),
-    body);
+    body, bar);
 }
 
 const signed = (v, digits = 1) => (v === null || v === undefined ? '' : `${v > 0 ? '+' : v < 0 ? '−' : '±'}${fmtNum(Math.abs(v), digits)}%`);

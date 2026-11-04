@@ -275,7 +275,8 @@ main.wide { max-width: 860px; }
 @media (min-width: 760px) { main { padding-top: 40px; } }
 
 /* screens arrive with a gentle rise */
-.screen { animation: rise 0.35s var(--ease) both; }
+/* backwards, not both: a finished animation must leave no transform, or fixed bars inside the page stop being fixed. */
+.screen { animation: rise 0.35s var(--ease) backwards; }
 .screen.still { animation: none; }
 .loading-card { display: grid; justify-items: center; gap: 16px; padding: 48px 24px; text-align: center; }
 @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
@@ -381,6 +382,20 @@ input.inline-num { width: 84px; padding: 7px 10px; text-align: right; font-weigh
 .btn.block { width: 100%; }
 .btn.on { border-color: var(--gold); background: var(--gold-soft); color: var(--gold-text); }
 .btn:disabled { opacity: 0.55; cursor: default; transform: none; }
+.btn.ghost { border-color: transparent; background: none; color: var(--gold-text); }
+.btn.ghost:hover { background: var(--gold-soft); }
+/* History: Select to delete several workouts. */
+.group.picking .rowi .tick { flex: none; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--line); display: inline-flex; align-items: center; justify-content: center; color: transparent; transition: background var(--fast), border-color var(--fast), color var(--fast), transform var(--fast); }
+.group.picking .rowi .tick svg.i { width: 14px; height: 14px; stroke-width: 2.6; }
+.group.picking .rowi.picked { background: var(--gold-soft); }
+.group.picking .rowi.picked .tick { background: var(--gold); border-color: var(--gold); color: var(--on-gold); transform: scale(1.06); }
+.pick-dock { position: fixed; left: 50%; bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 12px); z-index: 30; display: flex; align-items: center; justify-content: space-between; gap: 12px; width: min(440px, calc(100% - 32px)); padding: 8px 8px 8px 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface-2); box-shadow: var(--shadow); font-size: 0.88rem; transform: translate(-50%, 140%); opacity: 0; pointer-events: none; transition: transform var(--base), opacity var(--base); }
+.picking-pad { padding-bottom: 72px; }
+.pick-dock.on { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+.pick-dock .count { color: var(--text-2); font-weight: 500; }
+.pick-dock .row { gap: 6px; flex-wrap: nowrap; }
+@media (min-width: 760px) { .pick-dock { bottom: 20px; } }
+@media (prefers-reduced-motion: reduce) { .pick-dock { transition: none; } }
 .icon-btn {
   width: 38px; height: 38px; border-radius: 50%; flex: none;
   display: inline-grid; place-items: center; border: 1px solid var(--line); background: transparent;

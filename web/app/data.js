@@ -340,6 +340,12 @@ export class Liftbook {
     if (w) await this.store.remove('workout_logs', w.logs.map((l) => l._k));
   }
 
+  /** Several days' workouts at once (the history's Select). */
+  async deleteWorkouts(days) {
+    const keys = days.flatMap((d) => this.workout(d)?.logs.map((l) => l._k) || []);
+    if (keys.length) await this.store.remove('workout_logs', keys);
+  }
+
   /* ---------------- exercise settings ---------------- */
 
   async setExerciseSetting(name, fields) {
