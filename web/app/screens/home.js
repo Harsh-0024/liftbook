@@ -78,6 +78,9 @@ export function historyScreen(ctx) {
   let selecting = false;
   const picked = new Set();
   let shownDays = [];
+  // A long history is drawn a page at a time; "Show more" adds the next page.
+  const PAGE = 60;
+  let limit = PAGE;
   const selectBtn = h('button', { class: 'btn small', type: 'button' }, 'Select');
   const count = h('span', { class: 'editor-meta', 'aria-live': 'polite' });
   const allBtn = h('button', { class: 'btn small', type: 'button' }, 'Select all');
@@ -112,15 +115,22 @@ export function historyScreen(ctx) {
       : workouts;
     shownDays = shown.map((w) => w.day);
     const months = new Map();
-    for (const w of shown) {
+    const inMonth = new Map();
+    shown.forEach((w, i) => {
       const k = w.day.slice(0, 7);
+      inMonth.set(k, (inMonth.get(k) || 0) + 1);
+      if (i >= limit) return;
       if (!months.has(k)) months.set(k, []);
       months.get(k).push(w);
-    }
+    });
+    const left = shown.length - limit;
+    const more = left > 0 ? h('button', { class: 'btn more-btn', type: 'button', onclick: () => { limit += PAGE; paint(); } },
+      ...(left > PAGE ? [`Show ${PAGE} more`, h('span', { class: 'subtle' }, `·\u2002${left} left`)] : [`Show the last ${left}`])) : null;
     body.replaceChildren(...(shown.length ? [...months].map(([k, ws]) => {
       const [y, m] = k.split('-').map(Number);
+      const n = inMonth.get(k);
       return h('section', { class: 'section' },
-        h('div', { class: 'label' }, `${MONTHS[m - 1]} ${y}`, h('span', {}, `${ws.length} workout${ws.length === 1 ? '' : 's'}`)),
+        h('div', { class: 'label' }, `${MONTHS[m - 1]} ${y}`, h('span', {}, `${n} workout${n === 1 ? '' : 's'}`)),
         h('div', { class: `group${selecting ? ' selecting' : ''}` }, ws.map((w) => {
           const [yy, mm, dd] = w.day.split('-').map(Number);
           const inner = [
@@ -140,7 +150,7 @@ export function historyScreen(ctx) {
           });
           return row;
         })));
-    }) : [h('div', { class: 'group empty' }, icon('search'), q ? `Nothing matches “${search.value.trim()}”.` : 'No workouts yet.')]));
+    }).concat(more || []) : [h('div', { class: 'group empty' }, icon('search'), q ? `Nothing matches “${search.value.trim()}”.` : 'No workouts yet.')]));
     markBar();
   };
 
@@ -170,7 +180,10 @@ export function historyScreen(ctx) {
     if (e.key === 'Escape' && selecting) setSelecting(false);
   };
   document.addEventListener('keydown', onKey);
-  search.addEventListener('input', paint);
+  search.addEventListener('input', () => {
+    limit = PAGE;
+    paint();
+  });
   sub();
   if (fromSettings && workouts.length) setSelecting(true);
   else paint();
