@@ -128,11 +128,8 @@ export function logScreen(ctx) {
     }
     writeDraft('');
     ctx.lastSaved = r;
-    for (const name of r.timedPrompts || []) {
-      if (confirm(`Is ${name} done for time (seconds) rather than reps?`)) await lb.setExerciseSetting(name, { is_timed: true });
-      else await lb.setExerciseSetting(name, { is_timed: false });
-    }
-    toast(!navigator.onLine || ctx.sync.status().error === 'offline' ? 'Saved on this device. It syncs when you’re back online.' : 'Workout saved.');
+    // The workout page says "Saved" (and asks about timed exercises); offline gets a word on syncing.
+    if (!navigator.onLine || ctx.sync.status().error === 'offline') toast('Saved on this device. It syncs when you’re back online.');
     ctx.go(`workout/${r.day}`);
   }
   save.addEventListener('click', busy(save, () => doSave(false)));

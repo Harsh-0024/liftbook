@@ -3,14 +3,23 @@
 // them); nothing here waits for the network except the shared plan and feedback.
 
 import { workoutParser } from '../core/parser.js';
-import { handleWorkoutLog, formatSetsDisplay, resolveTimedStatus, hasTimeHint } from '../core/logging.js';
-import { makeSettings, isBodyweightEnabled } from '../core/bodyweight.js';
-import { effectivePlanText, effectiveRepRangesText, getWorkoutDays, ownPlanText } from '../core/plans.js';
+import {
+  handleWorkoutLog, formatSetsDisplay, resolveTimedStatus, hasTimeHint, classifyPerformance, getBestLog, comparisonSetCount,
+} from '../core/logging.js';
+import { makeSettings, isBodyweightEnabled, inferLogUsesBodyweight, effectiveSetsForLog } from '../core/bodyweight.js';
+import {
+  effectivePlanText, effectiveRepRangesText, getWorkoutDays, ownPlanText, parseRepTargetSets, parsePlanTargetSets, resolveTargetSets,
+} from '../core/plans.js';
+import {
+  SPARKLINE_SESSIONS, MEDAL_KEYS, rankedSets, sessionScore, displaySets, trend, bestSummary, compareColumns, sparkline,
+  shortDate, longDate, formatSetsLine,
+} from '../core/insights.js';
+import { formatG as fmtG } from '../core/py.js';
 import { retrieveDay, retrieveCustom, describeRetrieveOutput } from '../core/retrieve.js';
 import {
   getChartData, getOverallProgressData, statsExerciseOptions, getAllExercisesSummary, bodyweightWarningExercises,
 } from '../core/stats.js';
-import { normalizeExerciseName, exerciseKey, statsExerciseKey, statsVocabulary } from '../core/names.js';
+import { normalizeExerciseName, exerciseKey, statsExerciseKey, statsVocabulary, buildNameIndex, namesFor } from '../core/names.js';
 import {
   validateRename, renamedName, renameInExerciseString, renameInPlanText, renameInRepText,
 } from '../core/renames.js';
@@ -154,29 +163,83 @@ export class Liftbook {
   }
 
   /**
-   * Each exercise of a day's workout against its session before and its best before (estimated
-   * max; total reps when there is none, as for bodyweight or timed sets). Percentages, or null
-   * the first time an exercise is done.
+   * Each exercise of a day's workout against its earlier sessions, as the old workout page showed
+   * it (routes/workouts.py view_workout): the trend vs the average of the last 3 sessions, the
+   * medal or gap vs the best, the sets matched strongest to strongest with the last session and
+   * the best, and the points of the last 8 sessions for a small chart.
    */
   compareWorkout(day) {
     const w = this.workout(day);
     if (!w) return [];
-    const keyOf = (l) => normalizeExerciseName(l.exercise);
-    const reps = (l) => (Array.isArray(l.sets?.reps) ? l.sets.reps.reduce((a, b) => a + (Number(b) || 0), 0) : 0);
-    const byMax = (l) => Number(l.estimated_1rm) > 0;
-    const before = this.history().filter((l) => dayOf(l.date) < day);
-    const pct = (a, b) => (a > 0 && b > 0 ? ((a - b) / b) * 100 : null);
+    const settings = makeSettings(this.exerciseSettings());
+    const all = this.history();
+    const order = new Map(all.map((l, i) => [l, i]));
+    const before = all.filter((l) => dayOf(l.date) < day);
+    const nameIndex = buildNameIndex([...new Set(all.map((l) => l.exercise))]);
+    const repTargetSets = parseRepTargetSets(this.text('rep_ranges'));
+    const planTargetSets = parsePlanTargetSets(this.planText());
+    const refYear = Number(day.slice(0, 4));
     return w.logs.map((log) => {
-      const score = byMax(log) ? (l) => (byMax(l) ? Number(l.estimated_1rm) : 0) : reps;
-      const k = keyOf(log);
-      const prev = before.filter((l) => keyOf(l) === k && score(l) > 0);
-      const now = score(log);
-      const recent = prev.reduce((a, b) => (!a || dayOf(b.date) >= dayOf(a.date) ? b : a), null);
-      const best = prev.length ? Math.max(...prev.map(score)) : 0;
-      const vsRecent = recent ? pct(now, score(recent)) : null;
-      const vsBest = best ? pct(now, best) : null;
-      const status = !prev.length ? 'first' : vsBest > 0.05 ? 'best' : vsRecent > 0.5 ? 'up' : vsRecent < -0.5 ? 'down' : 'steady';
-      return { log, byMax: byMax(log), vsRecent, vsBest, status };
+      const str = String(log.exercise_string || '');
+      const [targetSets, strict] = resolveTargetSets({
+        exerciseName: log.exercise, exerciseString: str, repTargetSets, planTargetSets,
+        inferredSetCount: comparisonSetCount(log.sets, str), defaultSets: 3,
+      });
+      const isTimed = Boolean(resolveTimedStatus({ exerciseName: log.exercise, exerciseString: str, settings, history: all, nameIndex }).is_timed);
+      const usesBw = inferLogUsesBodyweight(settings, log);
+      const names = new Set(namesFor(log.exercise, nameIndex));
+      const prevAll = before.filter((l) => names.has(l.exercise))
+        .sort((a, b) => (dayOf(a.date) < dayOf(b.date) ? 1 : dayOf(a.date) > dayOf(b.date) ? -1 : order.get(b) - order.get(a)));
+      const comparable = prevAll.filter((l) => !strict || comparisonSetCount(l.sets, l.exercise_string || '') >= targetSets);
+      const prev = comparable[0] || null;
+      let perf = classifyPerformance({
+        history: before, settings, exerciseName: log.exercise, currentSets: effectiveSetsForLog(settings, log),
+        targetSets, strictTargetSets: strict, nameIndex, isTimed, currentLogId: log.id, currentExerciseString: str,
+      });
+      if (!prev) perf = { ...perf, key: 'first_log' };
+      let best = null;
+      if (prev) {
+        best = (perf.reference_log_id != null && before.find((l) => l.id === perf.reference_log_id))
+          || getBestLog({ history: before, settings, exerciseName: log.exercise, targetSets, strictTargetSets: strict, nameIndex, isTimed });
+      }
+      const opts = { usesBodyweight: usesBw, isTimed };
+      const ranked = (l) => {
+        const eff = effectiveSetsForLog(settings, l);
+        return rankedSets(displaySets(l, eff, usesBw), eff, opts);
+      };
+      const score = (l) => sessionScore(effectiveSetsForLog(settings, l), { topN: targetSets, isTimed });
+      const todayRanked = ranked(log);
+      const todayScore = score(log);
+      const past = comparable.slice(0, SPARKLINE_SESSIONS - 1).map((l) => ({ log: l, day: dayOf(l.date), score: score(l) }));
+      const tr = trend(todayScore, past);
+      const side = (l) => (l ? { day: dayOf(l.date), date_text: shortDate(dayOf(l.date), refYear), ranked: ranked(l), bodyweight: l.bodyweight ?? null } : null);
+      const last = side(prev);
+      const bestSide = side(best);
+      const bestIsLast = Boolean(best && prev && best === prev);
+      const point = (l, extra) => ({ day: dayOf(l.date), date_text: longDate(dayOf(l.date)), sets: ranked(l).map((x) => x.label).join(' · '), ...extra });
+      const spark = sparkline([
+        ...past.slice().reverse().map((p) => point(p.log, { score: p.score, is_best: p.log === best })),
+        point(log, { score: todayScore, is_today: true }),
+      ], { average: tr?.average ?? null });
+      let bodyweightNote = null;
+      if (usesBw && last && log.bodyweight && last.bodyweight && Math.abs(Number(log.bodyweight) - Number(last.bodyweight)) >= 0.1) {
+        bodyweightNote = `Bodyweight ${fmtG(Number(log.bodyweight))} kg today vs ${fmtG(Number(last.bodyweight))} kg last time, which is included in the comparison.`;
+      }
+      return {
+        log, isTimed, usesBw, perf,
+        medal: MEDAL_KEYS.has(perf.key),
+        first: !prevAll.length,
+        setsRanked: todayRanked.map((x) => x.label),
+        setsLine: formatSetsLine(displaySets(log, effectiveSetsForLog(settings, log), usesBw), opts),
+        trend: tr,
+        trendDates: (tr?.days || []).map((d) => shortDate(d, refYear)).join(', '),
+        best: bestSummary(perf, { hasHistory: prevAll.length > 0 }),
+        last, bestCmp: bestSide, bestIsLast,
+        table: last ? compareColumns(todayRanked, last.ranked, bestIsLast ? null : bestSide?.ranked) : [],
+        bodyweightNote,
+        spark,
+        sparkFirst: spark ? shortDate(spark.dots[0].day, refYear) : '',
+      };
     });
   }
 
@@ -268,7 +331,8 @@ export class Liftbook {
       })));
     }
     const timedPrompts = [...new Set(result.summary.filter((r) => r.timed_prompt_needed).map((r) => r.timed_prompt_exercise))];
-    return { summary: result.summary, day: dayOf(parsed.date), appended: Boolean(existing), timedPrompts, skipped: check.errors };
+    const needsBodyweight = !this.profile()?.bodyweight && rows.some((l) => l.uses_bodyweight);
+    return { summary: result.summary, day: dayOf(parsed.date), appended: Boolean(existing), timedPrompts, skipped: check.errors, needsBodyweight };
   }
 
   async deleteWorkout(day) {

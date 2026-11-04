@@ -69,6 +69,7 @@ export function statsScreen(ctx) {
   let metric = 'data';
   let mode = 'index';
   let exercise = null;
+  let wanted = new URLSearchParams(location.hash.split('?')[1] || '').get('exercise');
 
   const body = h('div', {});
   const root = h('div', { dataset: { wide: '1' } }, pageHead('Stats', 'How your lifts are moving.'), body);
@@ -118,6 +119,13 @@ export function statsScreen(ctx) {
     }
 
     const opts = options();
+    if (!exercise && wanted) {
+      // Opened from a workout's "Full progress": that exercise, and its chart in view.
+      const key = normalizeExerciseName(wanted);
+      exercise = opts.find((o) => o.value === wanted || normalizeExerciseName(o.value) === key || normalizeExerciseName(o.label) === key)?.value || null;
+      if (exercise) setTimeout(() => root.querySelector('#exercise')?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 350);
+      wanted = null;
+    }
     if (!exercise && opts.length) exercise = opts[0].value;
     const select = h('select', { id: 'exercise', 'aria-label': 'Exercise' }, opts.map((o) => h('option', { value: o.value, selected: o.value === exercise }, `${o.label} (${o.sessions})`)));
     select.addEventListener('change', () => {

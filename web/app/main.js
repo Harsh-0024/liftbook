@@ -61,6 +61,8 @@ async function render() {
     current = { nav, live: Boolean(live) };
     // True when this draws the page already on show again (a synced change), not a new visit.
     ctx.redrawing = shownPath === p;
+    // "Saved" shows on the saved workout until you go somewhere else.
+    if (ctx.lastSaved && !ctx.redrawing && p !== `workout/${ctx.lastSaved.day}`) ctx.lastSaved = null;
     try {
       return show(await screen(ctx, ...m.slice(1)), nav);
     } catch (err) {
@@ -85,7 +87,10 @@ function show(el, nav) {
   const kept = same ? [...main.querySelectorAll('input[type=search]')].map((i) => ({
     label: i.getAttribute('aria-label'), value: i.value, focused: i === document.activeElement,
     start: i.selectionStart, end: i.selectionEnd })).filter((k) => k.value || k.focused) : [];
+  // ...and the exercise rows you had opened.
+  const opened = same ? [...main.querySelectorAll('details.ex-open')].map((d) => d.open) : [];
   main.replaceChildren(el);
+  main.querySelectorAll('details.ex-open').forEach((d, i) => { if (opened[i]) d.open = true; });
   for (const k of kept) {
     const i = [...main.querySelectorAll('input[type=search]')].find((x) => x.getAttribute('aria-label') === k.label);
     if (!i) continue;

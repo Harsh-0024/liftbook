@@ -536,11 +536,130 @@ a.avatar.big:hover { box-shadow: 0 0 0 9px var(--gold-soft); }
 .ex-cols { display: flex; justify-content: flex-end; gap: 14px; padding: 12px 18px 0; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--subtle); }
 .ex-cols span:first-child { flex: 1; }
 .ex-cols span + span { min-width: 64px; text-align: right; }
+.ex-cols i { flex: none; width: 16px; }
+.saved-note { display: flex; gap: 12px; align-items: flex-start; margin-top: 18px; padding: 13px 16px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); font-size: 0.88rem; line-height: 1.5; color: var(--text-2); animation: ex-open 260ms var(--ease); }
+.saved-note > svg.i { flex: none; color: var(--good); margin-top: 2px; }
+.saved-note .main { flex: 1; min-width: 0; }
+.saved-note strong { color: var(--text); font-weight: 600; }
+.saved-note p { margin: 4px 0 0; }
+.saved-note a { color: var(--gold-text); font-weight: 600; }
+.saved-note .ask { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--hair); }
+.wo-note { display: flex; gap: 8px; align-items: flex-start; margin: 14px 0 0; font-size: 0.8rem; color: var(--muted); }
+.wo-note svg.i { flex: none; width: 15px; height: 15px; margin-top: 2px; }
+.wo-note a { color: var(--gold-text); }
+/* A workout's exercises open to their recent form and how the sets compare (the old page's rows). */
+details.ex-open { display: block; padding: 0; }
+details.ex-open > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 16px 18px; -webkit-tap-highlight-color: transparent; transition: background var(--fast); }
+details.ex-open > summary::-webkit-details-marker { display: none; }
+details.ex-open > summary:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--gold-glow); }
+@media (hover: hover) { details.ex-open > summary:hover { background: var(--hover); } details.ex-open > summary:hover .ex-chev { opacity: 1; } }
+details.ex-open[open] { background: var(--hover); }
+details.ex-open[open] .title { color: var(--gold-text); }
+details.ex-open .title { transition: color var(--fast); }
+details.ex-open.missing .title { color: var(--warn); }
+details.ex-open .ex-chev { flex: none; display: inline-flex; color: var(--subtle); opacity: 0.5; transition: transform var(--base), opacity var(--fast); }
+details.ex-open .ex-chev svg { width: 16px; height: 16px; transform: rotate(90deg); }
+details.ex-open[open] .ex-chev { transform: rotate(180deg); opacity: 1; }
+details.ex-open .sets span:first-child { color: var(--text-2); }
+.cell { display: flex; justify-content: flex-end; }
+.chip { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; font-size: 0.85rem; font-weight: 500; }
+.chip .emoji { font-size: 0.9rem; line-height: 1; }
+.chip.up { color: var(--good); }
+.chip.down { color: var(--bad); }
+.chip.steady { color: var(--muted); }
+.chip.below, .chip.none, .chip.match { color: var(--muted); font-weight: 400; }
+.chip.first { color: var(--gold-text); }
+.chip.medal { height: 24px; padding: 0 8px; border: 1px solid var(--line-gold); border-radius: 999px; font-size: 0.8rem; font-weight: 600; color: var(--gold-text); background: var(--gold-soft); }
+.chip.medal.silver { color: #c0c4cc; background: rgba(192, 196, 204, 0.1); border-color: rgba(192, 196, 204, 0.4); }
+.chip.medal.bronze { color: #d29a6a; background: rgba(205, 127, 50, 0.1); border-color: rgba(205, 127, 50, 0.4); }
+:root[data-theme="light"] .chip.medal.silver { color: #5f6670; }
+:root[data-theme="light"] .chip.medal.bronze { color: #8a4f1c; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .chip.medal.silver { color: #5f6670; } :root:not([data-theme="dark"]) .chip.medal.bronze { color: #8a4f1c; } }
+.ex-body { padding: 0 18px 20px; }
+details.ex-open[open] .ex-body { animation: ex-open 220ms var(--ease); }
+@keyframes ex-open { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.ex-block { border-top: 1px solid var(--hair); padding-top: 14px; }
+.ex-block + .ex-block { margin-top: 16px; }
+.ex-block-head { position: relative; display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.ex-block-head .kicker { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--subtle); }
+.info-pop { display: inline-flex; }
+.info-pop > summary { list-style: none; cursor: pointer; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--subtle); -webkit-tap-highlight-color: transparent; }
+.info-pop > summary svg { width: 15px; height: 15px; }
+.info-pop > summary::-webkit-details-marker { display: none; }
+.info-pop > summary:hover, .info-pop[open] > summary { color: var(--gold-text); background: var(--gold-soft); }
+.info-pop .pop { position: absolute; top: calc(100% + 6px); left: 0; z-index: 20; width: min(380px, 100%); padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); box-shadow: var(--shadow); font-size: 0.8rem; line-height: 1.5; color: var(--text-2); animation: ex-open 160ms var(--ease); }
+.info-pop ul { margin: 0; padding-left: 16px; }
+.info-pop li + li { margin-top: 6px; }
+.info-pop b { color: var(--text); font-weight: 600; }
+.trend-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-bottom: 6px; font-size: 0.82rem; }
+.trend-value { font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.trend-value.up { color: var(--good); }
+.trend-value.down { color: var(--bad); }
+.trend-value.steady { color: var(--muted); }
+.spark-wrap { position: relative; max-width: 560px; }
+/* pan-y: vertical swipes still scroll the page, sideways drags slide along the chart. */
+.spark { width: 100%; height: auto; display: block; overflow: visible; touch-action: pan-y; cursor: crosshair; }
+.spark .line { fill: none; stroke: var(--subtle); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; opacity: 0.8; }
+.spark .avg { stroke: var(--subtle); stroke-width: 1.2; stroke-dasharray: 4 5; opacity: 0.7; }
+.spark .dot { fill: var(--subtle); }
+.spark .best { fill: none; stroke: var(--gold); stroke-width: 2.5; }
+.spark .today { fill: var(--gold); stroke: var(--surface); stroke-width: 3; }
+.spark .guide { stroke: var(--gold); stroke-width: 1; stroke-dasharray: 2 3; opacity: 0.6; }
+.spark .focus { fill: none; stroke: var(--gold); stroke-width: 2.5; }
+.spark-axis { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--subtle); margin-top: 4px; }
+.spark-tip { position: absolute; z-index: 15; max-width: 260px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line-gold); background: var(--surface-2); box-shadow: var(--shadow); line-height: 1.45; white-space: nowrap; pointer-events: none; }
+.spark-tip[hidden] { display: none; }
+.spark-tip.touch { pointer-events: auto; cursor: pointer; }
+.spark-tip.touch .tip-date::after { content: " ›"; }
+.tip-date { font-size: 0.74rem; font-weight: 600; color: var(--gold-text); }
+.tip-sets { margin-top: 4px; font: 0.82rem/1.45 var(--mono); color: var(--text); white-space: normal; }
+.spark-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.72rem; color: var(--muted); margin-top: 8px; }
+.spark-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.spark-legend .key { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
+.spark-legend .key.today { background: var(--gold); }
+.spark-legend .key.best { border: 2px solid var(--gold); }
+.spark-legend .key.avg { width: 16px; height: 0; border-radius: 0; border-top: 1.5px dashed var(--subtle); }
+.ex-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; table-layout: fixed; }
+.ex-table th { font-size: 0.66rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--subtle); text-align: left; padding: 0 8px 8px 0; vertical-align: bottom; }
+.ex-table th a { color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor; }
+.ex-table th a:hover { color: var(--gold-text); }
+.ex-table th .date { display: block; font-weight: 500; letter-spacing: 0; text-transform: none; font-size: 0.72rem; margin-top: 2px; }
+.ex-table td { padding: 9px 8px 9px 0; border-top: 1px solid var(--hair); vertical-align: top; font-size: 0.86rem; }
+.ex-table .rank { width: 13%; color: var(--subtle); font-size: 0.78rem; padding-top: 11px; }
+.ex-table .today { color: var(--text); font-weight: 600; font-family: var(--mono); font-size: 0.82rem; }
+.ex-table .val { display: block; color: var(--muted); font-family: var(--mono); font-size: 0.82rem; }
+.ex-table .delta { display: block; margin-top: 2px; font-size: 0.76rem; font-weight: 700; }
+.ex-table .delta.up { color: var(--good); }
+.ex-table .delta.down { color: var(--bad); }
+.ex-table .delta.steady { color: var(--muted); font-weight: 500; }
+.ex-foot { display: flex; justify-content: flex-end; margin-top: 12px; }
+.ex-foot a { font-size: 0.85rem; font-weight: 600; color: var(--gold-text); text-decoration: none; white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { details.ex-open[open] .ex-body, .info-pop .pop, .saved-note { animation: none; } }
+/* A synced redraw changes the page in place: nothing slides in again. */
+.screen.still .saved-note, .screen.still details.ex-open[open] .ex-body { animation: none; }
+/* Exercise | vs recent | vs best | chevron: the header and the rows share one column width. */
+.ex-cols, details.ex-open > summary { --col: 84px; gap: 14px; }
+.ex-cols span + span, details.ex-open .vs > * { flex: none; width: var(--col); min-width: 0; }
+details.ex-open .vs { gap: 14px; }
 @media (max-width: 480px) {
   .ex-row { flex-wrap: wrap; }
   .ex-row .vs { width: 100%; justify-content: flex-start; gap: 10px; }
   .ex-row .vs > * { min-width: 0; text-align: left; }
   .ex-cols span + span { display: none; }
+  /* On a phone the workout page keeps its columns, as the old page did; the sets stack. */
+  .ex-cols, details.ex-open > summary { --col: 70px; gap: 10px; }
+  .ex-cols { padding: 12px 12px 0; }
+  .ex-cols span + span { display: block; }
+  /* Values sit level with the exercise name, as on the old page; the sets stack below it. */
+  details.ex-open > summary { flex-wrap: nowrap; align-items: flex-start; padding: 16px 12px; }
+  details.ex-open .vs, details.ex-open .ex-chev { margin-top: 1px; }
+  details.ex-open .vs { width: auto; gap: 10px; }
+  details.ex-open .vs > * { text-align: right; }
+  details.ex-open .sets { flex-direction: column; }
+  details.ex-open .sets span + span::before { content: none; }
+  details.ex-open .chip { font-size: 0.8rem; }
+  details.ex-open .chip.medal { padding: 0 6px; font-size: 0.74rem; }
+  .ex-body { padding: 0 12px 18px; }
 }
 
 /* ---------- retrieve ---------- */
