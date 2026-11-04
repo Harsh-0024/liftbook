@@ -156,6 +156,19 @@ On the iPhone simulator in dark mode: Exercises (an open row with its switches),
 "Turning off Pull Ups" question, and Bulk import. Text, borders, the picked answer and the dimmed
 Import button all read clearly; nothing needed changing.
 
+### Keyboard and screen readers
+- **Branch:** `design/aesthetic-overhaul`, commit bee5c26
+- **Checked first:** on every page, all buttons, links and fields have names; switches are real
+  switches; focus rings show for the keyboard; messages and the check under the Log box are read out;
+  charts have a label. Nothing to fix there.
+- **Fixed:** every page was titled "Liftbook"; now each has its own ("Stats · Liftbook"), which
+  also shows in the browser's tabs and history. Moving to a new page puts focus on its heading, so a
+  screen reader says where you are, as it would on a full page load. The tab bar marks the page
+  you're on. A "Skip to content" link appears when you press Tab first.
+- **Checked:** `npm test` (50 pass); desktop Chrome (titles, focus after each tab, a redraw keeps
+  focus, typing in a search box keeps focus, skip link) and the iPhone simulator (no ring on the
+  heading, the page doesn't move).
+
 ### Checked: speed with a long history
 A stand-in account with 600 workouts (3,000 logs, three years). On this Mac every data step
 (history, stats, charts, retrieve, the spreadsheet) takes under 25 ms, and Home, Stats, Exercises
@@ -186,7 +199,7 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
-- Keyboard and screen reader pass: every button named, focus rings visible, Tab order sensible.
+- Keep a search box's text when a synced change redraws All workouts (a redraw clears it today).
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
