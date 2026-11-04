@@ -44,10 +44,17 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
   Installed on the Pixel 8 emulator too; sign-in, Home and Retrieve look right
   ([picture](docs/design-compare/android/new-app.jpg)). No real account was used.
 
+### 2. Plan page extras from the old app
+- **Branch:** `improve/plan-extras` (from `design/aesthetic-overhaul`), commit 6c6adb5
+- **What:** a "Copy and edit" row that makes the shared plan (or the built-in one) your own and
+  stops following, asking first if it would replace a plan you wrote. A "Format" link beside the
+  Plan label opens a short guide on how to write the plan. While you follow the shared plan, the
+  editor is replaced by a note saying so.
+- **Try it:** as above, with `origin/improve/plan-extras`, then Settings, Workout plan.
+- **Checked:** `npm test` (50 pass); desktop Chrome and the iPhone simulator (switch, copy, format).
+
 ## Ideas queued (next ones first)
 
 - Signed-out public home page, like the old app's, for people who aren't signed in yet.
-- "Format" button on the plan page that tidies the plan text, as the old one had.
-- Copy the shared plan into your own ("Copy and edit"), as the old plan page had.
 - Sync and data page as grouped rows instead of cards.
 - Password strength hints on Create account ("8+ characters", "a number").
