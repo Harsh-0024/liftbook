@@ -964,3 +964,13 @@ label.rowi { cursor: pointer; }
 .cal-tip { min-height: 1.5em; margin: 10px 2px 0; font-size: 0.86rem; color: var(--text-2); }
 .cal-tip b { color: var(--text); font-weight: 600; }
 @media (prefers-reduced-motion: reduce) { .cal-cell { transition: none; } }
+
+/* Keyboard shortcuts (press ?) */
+.keys-dialog { width: min(360px, calc(100% - 32px)); padding: 22px 24px 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.keys-dialog::backdrop { background: rgba(0, 0, 0, 0.35); }
+.keys-dialog[open] { animation: rise 0.2s var(--ease); }
+.keys-dialog h2 { margin: 0 0 14px; font: 600 1.35rem/1.2 var(--serif); }
+.keys-dialog dl { display: grid; grid-template-columns: auto 1fr; gap: 10px 14px; margin: 0 0 18px; align-items: center; }
+.keys-dialog dd { margin: 0; color: var(--text-2); font-size: 0.92rem; }
+.keys-dialog kbd { display: inline-block; min-width: 2.2em; padding: 3px 7px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 7px; background: var(--surface-2); font: 600 0.8rem/1.3 var(--font); text-align: center; }
+.keys-dialog form { display: flex; justify-content: flex-end; }

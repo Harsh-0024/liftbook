@@ -15,6 +15,7 @@ import { statsScreen } from './screens/stats.js';
 import { settingsScreen } from './screens/settings.js';
 import { coachScreen } from './screens/coach.js';
 import { isNative, startNative, wantsApp, appHandOff } from './native.js';
+import { installShortcuts } from './shortcuts.js';
 
 const main = document.getElementById('app');
 document.getElementById('year').textContent = String(new Date().getFullYear());
@@ -298,6 +299,7 @@ async function boot() {
       return true;
     },
   });
+  installShortcuts({ signedIn: () => Boolean(ctx), go });
   if (client.auth.session()) await start();
   else render();
 }
