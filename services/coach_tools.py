@@ -19,7 +19,7 @@ from services.logging import resolve_timed_exercise_status
 from services.retrieve import get_effective_plan_text, get_effective_rep_ranges_text
 from services.stats import _build_rep_range_map, _resolve_exercise_aliases
 from services.workout_title import classify_by_name
-from utils.dates import utc_now
+from utils.dates import local_today
 
 MAX_ROWS = 40
 PLAN_TEXT_LIMIT = 4000
@@ -64,7 +64,7 @@ def _clamp(value, low: int, high: int, default: int) -> int:
 
 
 def _today() -> date:
-    return utc_now().date()
+    return local_today()
 
 
 def _sets_text(log: WorkoutLog) -> str:

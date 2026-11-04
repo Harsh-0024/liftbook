@@ -1,6 +1,8 @@
 """The assistant's history questions that are answered without AI: rules and a real database."""
 import unittest
 from datetime import date, datetime, timedelta
+
+from utils.dates import local_now
 from unittest.mock import patch
 
 from sqlalchemy import create_engine
@@ -26,7 +28,7 @@ class TestQuestionRules(unittest.TestCase):
         self.assertEqual(_heuristic_intent("Tell me a joke"), (None, {}))
 
     def test_day_month_dates_are_the_nearest_past_one(self):
-        with patch.object(history_qa, "utc_now", return_value=datetime(2026, 9, 30, 12)):
+        with patch.object(history_qa, "local_today", return_value=date(2026, 9, 30)):
             self.assertEqual(_parse_day_month("why is the graph down on 12 sep"), date(2026, 9, 12))
             self.assertEqual(_parse_day_month("what about 28 Dec"), date(2025, 12, 28))
             self.assertIsNone(_parse_day_month("no date here"))
@@ -40,7 +42,7 @@ class TestAnswers(unittest.TestCase):
         self.user = User(username="asker", role=UserRole.ADMIN, is_verified=True)
         self.db.add(self.user)
         self.db.commit()
-        today = datetime.now().replace(hour=18, minute=0, second=0, microsecond=0)
+        today = local_now().replace(hour=18, minute=0, second=0, microsecond=0)
         self.push_day = today - timedelta(days=3)
         self.legs_day = today - timedelta(days=2)
         self.pull_day = today - timedelta(days=1)

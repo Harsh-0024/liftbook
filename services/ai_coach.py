@@ -19,7 +19,7 @@ import requests
 from config import Config
 from services import coach_tools
 from services.history_qa import answer_history_question
-from utils.dates import utc_now
+from utils.dates import local_today
 from utils.logger import logger
 
 BASE_URL = "https://generativelanguage.googleapis.com/v1beta"
@@ -84,7 +84,7 @@ def allow_request(user_id: int, now: Optional[float] = None) -> bool:
 
 
 def system_prompt(user, context: Optional[Dict[str, Any]] = None) -> str:
-    today = utc_now().date()
+    today = local_today()
     name = (getattr(user, "full_name", None) or getattr(user, "username", None) or "the lifter").split(" ")[0]
     bodyweight = getattr(user, "bodyweight", None)
     lines = [

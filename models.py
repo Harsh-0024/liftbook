@@ -6,6 +6,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker, scoped_session, relat
 from sqlalchemy.exc import OperationalError, SQLAlchemyError
 from sqlalchemy_utils import JSONType
 from datetime import datetime
+from utils.dates import local_now
 import os
 from config import Config
 from list_of_exercise import list_of_exercises, DEFAULT_REP_RANGES
@@ -225,7 +226,7 @@ class WorkoutLog(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False, index=True)
 
-    date = Column(DateTime, default=datetime.now, nullable=False, index=True)
+    date = Column(DateTime, default=local_now, nullable=False, index=True)
     workout_name = Column(String(100), nullable=True, index=True)
     exercise = Column(String(100), nullable=False, index=True)
     exercise_string = Column(Text)

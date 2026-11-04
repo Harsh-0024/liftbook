@@ -33,6 +33,7 @@ from services.logging import refresh_best_lift_pointers
 from services.stats import get_csv_export, get_json_export, timed_checker
 from sqlalchemy import desc
 from services.auth import AuthService, AuthenticationError, EmailNotVerifiedError
+from utils.dates import local_today
 from utils.errors import ValidationError
 from utils.logger import logger
 from utils.profile_images import (
@@ -64,7 +65,7 @@ def _infer_bulk_import_dates(headers, today: date | None = None):
     Missing years are inferred in pasted order. If a missing-year block would
     land before the previous block, the year rolls forward.
     """
-    today = today or datetime.now().date()
+    today = today or local_today()
     resolved = []
 
     for idx, header in enumerate(headers or []):

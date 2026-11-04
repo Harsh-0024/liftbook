@@ -5,6 +5,7 @@ import urllib.parse
 import threading
 import time
 from datetime import date, datetime
+from utils.dates import local_today
 
 from flask import Flask, render_template, jsonify, request, send_from_directory
 from flask_login import LoginManager
@@ -90,7 +91,7 @@ def create_app(config_object=Config, init_db: bool = True):
     def inject_feature_flags():
         return {
             'ENABLE_CSRF': bool(app.config.get('WTF_CSRF_ENABLED')),
-            'current_year': datetime.now().year,
+            'current_year': local_today().year,
         }
 
     app.jinja_env.globals['iphone_launch_screens'] = [

@@ -48,9 +48,9 @@ class Config:
     # Pagination
     ITEMS_PER_PAGE = 20
     
-    # Timezone (IST)
-    TIMEZONE_OFFSET_HOURS = 5
-    TIMEZONE_OFFSET_MINUTES = 30
+    # The time zone workouts live in: "today", undated workouts and Stats all use it.
+    # Any IANA name works (e.g. "Europe/London"); India by default.
+    APP_TIMEZONE = os.environ.get('APP_TIMEZONE', 'Asia/Kolkata')
     
     # Email Configuration
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')

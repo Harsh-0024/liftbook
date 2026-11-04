@@ -4,6 +4,7 @@ Workout logging service for processing and saving workout data.
 from collections import Counter, defaultdict
 from typing import Any, List, Dict, Optional, Tuple
 from datetime import datetime, date, timedelta
+from utils.dates import local_now
 from sqlalchemy import func, or_
 import math
 import re
@@ -634,7 +635,7 @@ def classify_exercise_performance(
             "id": current_log_id,
             "scores": vectors["scores"],
             "weights": vectors["weights"],
-            "date": datetime.now(),
+            "date": local_now(),
             "is_current": True,
         }
         rows.append(current_row)
@@ -1057,7 +1058,7 @@ def handle_workout_log(db_session, user, parsed_data: Dict) -> List[Dict]:
         List of summary dictionaries for each exercise
     """
     summary = []
-    workout_date = parsed_data.get('date', datetime.now())
+    workout_date = parsed_data.get('date') or local_now()
     workout_name = parsed_data.get('workout_name')
     # A "Body Weight - 73 kg" line is that workout's bodyweight; without one, an edited workout
     # keeps the bodyweight it was logged with. The line becomes the current bodyweight only when

@@ -43,7 +43,7 @@ from utils.logger import logger
 from utils.profile_images import get_profile_image_url
 from utils.rich_text import to_plain_text
 from utils.validators import is_safe_redirect_url, sanitize_text_input, validate_username
-from utils.dates import utc_now
+from utils.dates import local_from_epoch_ms, local_now, local_today, utc_now
 
 
 SHORTCUT_KEY_HELP = (
@@ -1471,7 +1471,7 @@ def register_workout_routes(app):
                     }
                 )
 
-            today = utc_now().date()
+            today = local_today()
             matched_items: list[tuple[datetime.date, str, int]] = []
             category_trained: dict[str, datetime.date] = {}
             session_evidence_items: list[tuple[datetime.date, dict]] = []
@@ -3438,12 +3438,11 @@ def register_workout_routes(app):
 
     def _client_saved_at(value):
         """When a workout kept on the phone offline was saved (milliseconds since
-        the epoch), as server time; None if missing or implausible."""
-        try:
-            saved_at = datetime.fromtimestamp(float(value) / 1000)
-        except (TypeError, ValueError, OverflowError, OSError):
+        the epoch), as local time; None if missing or implausible."""
+        saved_at = local_from_epoch_ms(value)
+        if saved_at is None:
             return None
-        now = datetime.now()
+        now = local_now()
         if saved_at > now + timedelta(minutes=5) or saved_at < now - timedelta(days=365):
             return None
         return saved_at

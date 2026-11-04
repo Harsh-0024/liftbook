@@ -16,7 +16,6 @@ from services.helpers import get_set_stats, timed_set_score
 from services.workout_quality import WorkoutQualityScorer
 from services.logging import _has_time_hint_in_exercise_string, resolve_timed_exercise_status
 from services.exercise_matching import compound_vocabulary, token_signature
-from utils.dates import local_date
 
 
 STATS_SORT_MODES = {
@@ -517,7 +516,7 @@ def get_chart_data(db_session, user, exercise_name):
         timed_target = None
 
     for log in logs:
-        label = local_date(log.date).isoformat() if log.date else ""
+        label = log.date.date().isoformat() if log.date else ""
         title = _clean_workout_title(getattr(log, 'workout_name', None))
 
         sets_for_quality = _normalize_sets_for_log(db_session, log)
@@ -669,7 +668,7 @@ def get_average_growth_data(db_session, user) -> Dict:
         if not key:
             continue
         if log.date:
-            date_key = local_date(log.date)
+            date_key = log.date.date()
             title_by_date.setdefault(date_key, _clean_workout_title(getattr(log, 'workout_name', None)))
         logs_by_exercise.setdefault(key, []).append(log)
 
@@ -683,7 +682,7 @@ def get_average_growth_data(db_session, user) -> Dict:
             one_rm = _get_peak_1rm_for_log(db_session, log)
             if not one_rm or one_rm <= 0:
                 continue
-            date_key = local_date(log.date)
+            date_key = log.date.date()
             best_by_day[date_key] = max(best_by_day.get(date_key, 0.0), float(one_rm))
 
         if not best_by_day:
@@ -822,7 +821,7 @@ def get_overall_progress_data(
         key = _normalize_exercise_name(log.exercise, vocabulary)
         if not key:
             continue
-        day = local_date(log.date)
+        day = log.date.date()
         workout_days.add(day)
         title_by_day.setdefault(day, _clean_workout_title(getattr(log, 'workout_name', None)))
         # The latest spelling names the exercise.

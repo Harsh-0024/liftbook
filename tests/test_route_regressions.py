@@ -43,7 +43,13 @@ from services.logging import (
 from liftbook import create_app
 from liftbook.routes.auth import _infer_bulk_import_dates
 from utils import profile_images
+from utils.dates import app_timezone, local_now, local_today
 
+
+
+def _epoch_ms(local_dt):
+    """A local (app time zone) wall-clock time as the milliseconds a phone sends."""
+    return int(local_dt.replace(tzinfo=app_timezone()).timestamp() * 1000)
 
 class _RouteTestConfig(Config):
     TESTING = True
@@ -159,14 +165,14 @@ class TestRouteRegressions(unittest.TestCase):
     def _upload_offline(self, text, saved_at=None, user=None):
         payload = {"text": text}
         if saved_at is not None:
-            payload["saved_at"] = int(saved_at.timestamp() * 1000)
+            payload["saved_at"] = _epoch_ms(saved_at)
         if user is not None:
             payload["user"] = user
         return self.client.post("/api/offline-workouts", json=payload)
 
     def test_offline_workout_uploads_on_the_day_it_was_saved(self):
         user = self._create_logged_in_user(username="offline_owner")
-        saved_at = datetime.now().replace(microsecond=0) - timedelta(days=3)
+        saved_at = local_now().replace(microsecond=0) - timedelta(days=3)
 
         response = self._upload_offline("Push Day\nBench Press 100x5", saved_at, "Offline_Owner")
         self.assertEqual(response.status_code, 200)
@@ -233,10 +239,10 @@ class TestRouteRegressions(unittest.TestCase):
 
     def test_fixed_offline_workout_keeps_its_saved_day(self):
         user = self._create_logged_in_user(username="offline_fixer")
-        saved_at = datetime.now().replace(microsecond=0) - timedelta(days=2)
+        saved_at = local_now().replace(microsecond=0) - timedelta(days=2)
         response = self.client.post("/log", data={
             "workout_text": "Leg Day\nSquat 120x5",
-            "saved_at": str(int(saved_at.timestamp() * 1000)),
+            "saved_at": str(_epoch_ms(saved_at)),
             "offline_id": "kept-1",
         })
         self.assertEqual(response.status_code, 302)
@@ -250,15 +256,15 @@ class TestRouteRegressions(unittest.TestCase):
         # A time far in the future is ignored: the workout is saved as of now.
         self.client.post("/log", data={
             "workout_text": "Arm Day\nCurl 20x10",
-            "saved_at": str(int((datetime.now() + timedelta(days=30)).timestamp() * 1000)),
+            "saved_at": str(_epoch_ms(local_now() + timedelta(days=30))),
         })
         newest = self.session.query(WorkoutLog).filter_by(user_id=user.id).order_by(WorkoutLog.id.desc()).first()
-        self.assertEqual(newest.date.date(), date.today())
+        self.assertEqual(newest.date.date(), local_today())
 
     def test_offline_workout_that_fails_again_keeps_its_place_on_the_phone(self):
         self._create_logged_in_user(username="offline_retry")
-        saved_at = datetime.now().replace(microsecond=0) - timedelta(days=4)
-        stamp = str(int(saved_at.timestamp() * 1000))
+        saved_at = local_now().replace(microsecond=0) - timedelta(days=4)
+        stamp = str(_epoch_ms(saved_at))
         response = self.client.post("/log", data={
             "workout_text": "# nothing to read",
             "saved_at": stamp,
@@ -283,7 +289,7 @@ class TestRouteRegressions(unittest.TestCase):
 
     def test_log_preview_checks_an_offline_workout_against_the_day_it_was_kept(self):
         user = self._create_logged_in_user(username="offline_preview")
-        saved_at = datetime.now().replace(hour=12, minute=0, second=0, microsecond=0) - timedelta(days=5)
+        saved_at = local_now().replace(hour=12, minute=0, second=0, microsecond=0) - timedelta(days=5)
         self.session.add(WorkoutLog(
             user_id=user.id, date=saved_at, workout_name="Leg Day", exercise="Squat",
             top_weight=100, top_reps=5,
@@ -293,7 +299,7 @@ class TestRouteRegressions(unittest.TestCase):
         body = self.client.post("/log/preview", data={
             "workout_text": "Leg Day\nLeg Press 200x10",
             "mode": "append",
-            "saved_at": str(int(saved_at.timestamp() * 1000)),
+            "saved_at": str(_epoch_ms(saved_at)),
         }).get_json()
         self.assertEqual(body["date_str"], saved_at.strftime("%Y-%m-%d"))
         self.assertEqual(body["existing"]["date_str"], saved_at.strftime("%Y-%m-%d"))
@@ -328,7 +334,7 @@ class TestRouteRegressions(unittest.TestCase):
             self.assertIsNotNone(found, path)
             self.assertEqual(found.group(1).strip(), f"{title} - Liftbook", path)
 
-        self.assertIn(f"{date.today().year} Liftbook", self.client.get("/log").get_data(as_text=True))
+        self.assertIn(f"{local_today().year} Liftbook", self.client.get("/log").get_data(as_text=True))
 
     def test_integrations_page_does_not_overstate_how_keys_are_kept(self):
         # Keys are saved as written (not encrypted), so the page mustn't say "stored securely".

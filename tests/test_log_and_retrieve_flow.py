@@ -7,6 +7,7 @@ from urllib.parse import parse_qs, urlsplit
 import tests.test_route_regressions as base
 from models import Plan, WorkoutLog
 from parsers.workout import workout_parser
+from utils.dates import local_now
 
 
 PLAN = """Cycle 1
@@ -167,7 +168,7 @@ class TestLogAndRetrieveFlow(unittest.TestCase):
         data = self.client.post("/log/preview", data={"workout_text": "Bench Press - [3]\n60 55, 8"}).get_json()
         self.assertIn("is read as the title", data["errors"][0]["message"])
 
-        tomorrow = datetime.now() + timedelta(days=1)
+        tomorrow = local_now() + timedelta(days=1)
         text = f"{tomorrow.day}/{tomorrow.month} - Push\nBench Press 60 x 8"
         data = self.client.post("/log/preview", data={"workout_text": text}).get_json()
         self.assertTrue(data["ok"])

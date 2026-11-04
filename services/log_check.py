@@ -8,6 +8,8 @@ only worth a warning (a line with no numbers, a name that looks like a typo).
 import difflib
 import re
 from datetime import datetime, timedelta
+
+from utils.dates import local_now, local_today
 from typing import Dict, List, Optional
 
 from sqlalchemy import func
@@ -80,7 +82,7 @@ def _sets_label(weights, reps, *, bodyweight: bool, seconds: bool = False) -> st
 
 def _date_label(value: datetime) -> str:
     day = value.date()
-    today = datetime.now().date()
+    today = local_today()
     if day == today:
         return "Today"
     if day == today - timedelta(days=1):
@@ -229,7 +231,7 @@ def check_workout_text(
         return result
     result["parsed"] = parsed
 
-    parsed_date = parsed.get("date") or now or datetime.now()
+    parsed_date = parsed.get("date") or now or local_now()
     result.update({
         "title": parsed.get("workout_name") or "Workout",
         "date_str": parsed_date.strftime("%Y-%m-%d"),
@@ -244,7 +246,7 @@ def check_workout_text(
             "line": 1,
             "message": f"Line 1: {_quote(parsed['invalid_date_text'])} isn't a real date. Check the day and month.",
         })
-    elif parsed_date.date() > datetime.now().date():
+    elif parsed_date.date() > local_today():
         result["warnings"].append({
             "line": None,
             "message": f"The date is in the future ({result['date_label']}). Check the first line if that's a typo.",

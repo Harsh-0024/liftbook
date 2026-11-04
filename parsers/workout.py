@@ -4,6 +4,8 @@ Workout text parser for converting raw workout text into structured data.
 import re
 import html
 from datetime import datetime
+
+from utils.dates import local_now
 from typing import Optional, Dict, List, Tuple
 
 
@@ -844,7 +846,7 @@ def workout_parser(
     weekday = _WEEKDAY_BEFORE_DATE.match(title_line)
     if weekday:
         title_line = title_line[weekday.end():]
-    now = now or datetime.now()
+    now = now or local_now()
     current_year = now.year
     # "2026-09-28 Push": year first, as other apps and exports write it.
     iso = re.match(r'^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})(?=\s|$|[-–—:,])', title_line)

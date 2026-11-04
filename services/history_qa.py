@@ -10,7 +10,7 @@ from config import Config
 from models import WorkoutLog
 from services.stats import get_average_growth_data, get_chart_data
 from utils.logger import logger
-from utils.dates import utc_now
+from utils.dates import local_now, local_today
 
 
 def _exercise_candidates(exercise_name: str) -> List[str]:
@@ -70,7 +70,7 @@ def _parse_day_month(text: str) -> Optional[date]:
     if not month_num:
         return None
 
-    today = utc_now().date()
+    today = local_today()
     year = today.year
     candidate = None
     try:
@@ -282,7 +282,7 @@ def _answer_best_day(db_session, user, *, day_type: str, since_days: int) -> Dic
     since_days = int(since_days or 30)
     since_days = max(1, min(since_days, 365))
 
-    cutoff_dt = utc_now() - timedelta(days=since_days)
+    cutoff_dt = local_now() - timedelta(days=since_days)
 
     logs = (
         db_session.query(WorkoutLog)

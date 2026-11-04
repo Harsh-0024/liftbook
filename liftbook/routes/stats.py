@@ -26,7 +26,7 @@ from services.stats import (
     set_stats_preferences,
 )
 from services.bodyweight import backfill_bodyweight_log_flags
-from utils.dates import local_date
+from utils.dates import local_today
 from utils.logger import logger
 from utils.validators import sanitize_text_input
 
@@ -79,7 +79,7 @@ def register_stats_routes(app):
                 key = key_by_name[log.exercise]
                 if not key or not log.date:
                     continue
-                usage_by_key.setdefault(key, set()).add(local_date(log.date))
+                usage_by_key.setdefault(key, set()).add(log.date.date())
 
             views_by_key = get_stats_exercise_view_counts(Session, user)
             exercises = sorted({log.exercise for log in logs if log.exercise})
@@ -231,7 +231,7 @@ def register_stats_routes(app):
                 flash("No workouts found in that date range.", "warning")
                 return redirect(url_for('data_settings'))
             csv_data = get_csv_export(Session, user, start_date=start_date, end_date=end_date)
-            date_suffix = datetime.now().strftime('%Y%m%d')
+            date_suffix = local_today().strftime('%Y%m%d')
             if start_date and end_date:
                 date_suffix = f"{start_date.strftime('%Y%m%d')}_{end_date.strftime('%Y%m%d')}"
             filename = f"workout_history_{user.username}_{date_suffix}.csv"
@@ -260,7 +260,7 @@ def register_stats_routes(app):
                 flash("No workouts found in that date range.", "warning")
                 return redirect(url_for('data_settings'))
             data = get_json_export(Session, user, start_date=start_date, end_date=end_date)
-            date_suffix = datetime.now().strftime('%Y%m%d')
+            date_suffix = local_today().strftime('%Y%m%d')
             if start_date and end_date:
                 date_suffix = f"{start_date.strftime('%Y%m%d')}_{end_date.strftime('%Y%m%d')}"
             filename = f"workout_history_{user.username}_{date_suffix}.json"
