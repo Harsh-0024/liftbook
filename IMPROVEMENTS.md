@@ -80,6 +80,11 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
   first. Cancel or Escape leaves without changes.
 - **Also (commit 3963caa):** a "Delete several workouts" row in Settings, under Data and connections,
   opens the list ready to pick, with Back going to Settings. On phones the bar stays on one line.
+- **Also (commit a8b5569):** after deleting one workout or several, the message at the bottom has
+  an Undo button for 8 seconds; it brings the same workouts back on every device.
+- **Also (commit 0de8d99):** a long history is drawn 60 workouts at a time, with "Show 60 more"
+  at the bottom (and "Show the last N" at the end). Month counts, search and Select all still cover
+  every workout. See "Checked: speed with a long history" below.
 - **Try it:** as above, with `origin/improve/history-select`, then Home, See all workouts, or
   Settings, Delete several workouts.
 - **Checked:** `npm test` (50 pass); desktop Chrome (pick, search plus select all, clear, delete)
@@ -127,6 +132,11 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
   Exercises page, though the app counts them. The switch and the line under the name now say what
   the app really does.
 
+### Fix on the design branch: messages at the bottom sat off-centre
+- **Branch:** `design/aesthetic-overhaul`, commit 6eab8d0
+- The short messages ("Workout saved.") started at the middle of the screen and ran to the right,
+  wrapping early on phones: their slide-in animation cancelled the centring. They're centred now.
+
 ### Fix on the design branch: iPhone zoomed in when you tapped a text box
 - **Branch:** `design/aesthetic-overhaul`, commit c81a927
 - Log, plan, feedback and other big boxes used 15px text, so iPhone Safari zoomed the page in on
@@ -140,6 +150,30 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
   Undo. Profile has a photo row and an "About you" group with a Save bar.
 - **Checked:** `npm test` (50 pass); desktop Chrome (open a row, switch on and back off, save the
   profile) and the iPhone simulator (both pages).
+
+### Checked: dark mode on tonight's pages
+On the iPhone simulator in dark mode: Exercises (an open row with its switches), the
+"Turning off Pull Ups" question, and Bulk import. Text, borders, the picked answer and the dimmed
+Import button all read clearly; nothing needed changing.
+
+### Keyboard and screen readers
+- **Branch:** `design/aesthetic-overhaul`, commit bee5c26
+- **Checked first:** on every page, all buttons, links and fields have names; switches are real
+  switches; focus rings show for the keyboard; messages and the check under the Log box are read out;
+  charts have a label. Nothing to fix there.
+- **Fixed:** every page was titled "Liftbook"; now each has its own ("Stats · Liftbook"), which
+  also shows in the browser's tabs and history. Moving to a new page puts focus on its heading, so a
+  screen reader says where you are, as it would on a full page load. The tab bar marks the page
+  you're on. A "Skip to content" link appears when you press Tab first.
+- **Checked:** `npm test` (50 pass); desktop Chrome (titles, focus after each tab, a redraw keeps
+  focus, typing in a search box keeps focus, skip link) and the iPhone simulator (no ring on the
+  heading, the page doesn't move).
+
+### Checked: speed with a long history
+A stand-in account with 600 workouts (3,000 logs, three years). On this Mac every data step
+(history, stats, charts, retrieve, the spreadsheet) takes under 25 ms, and Home, Stats, Exercises
+and Retrieve open in under 100 ms. All workouts was the one page that grew with the history: it
+built all 600 rows (6,200 elements). Now it opens with 60, in 40 ms, on `improve/history-select`.
 
 ### Checked: Android
 Stats in the Pixel 8 emulator's Chrome looks right. Its header leaves out the "Workout log" line
@@ -165,8 +199,12 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
+- Keep a search box's text when a synced change redraws All workouts (a redraw clears it today).
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
+- Public share links for a workout (the old `share_workout` page): the new app shares a workout as
+  text through the phone's share sheet. A link anyone can open needs a new Supabase table and
+  access rules, which I won't add to the live project without you. Say if you want it.
 - "Keep me signed in" (old sign-in page): the offline app always stays signed in on that device,
   so I left it out. Say if you want it back, for shared computers.
