@@ -197,6 +197,7 @@ function plan(ctx) {
   const followReps = h('input', { type: 'checkbox', class: 'switch', role: 'switch', checked: Boolean(s.follow_shared_exercises), 'aria-label': 'Follow the shared rep ranges' });
   followPlan.addEventListener('change', async () => {
     await lb.setSetting('follow_shared_plan', followPlan.checked);
+    showPlan();
     toast(followPlan.checked ? 'Following the shared plan.' : 'Using your own plan.');
   });
   followReps.addEventListener('change', async () => {
@@ -224,10 +225,45 @@ function plan(ctx) {
     mark();
     return h('div', { class: 'group' }, area, h('div', { class: 'editor-bar' }, meta, btn));
   };
+  // Copy and edit: the shared plan (or the built-in one) becomes your own, and you stop following.
+  const copy = h('button', { class: 'btn small', type: 'button' }, 'Copy');
+  copy.addEventListener('click', busy(copy, async () => {
+    const source = (shared.plan || DEFAULT_PLAN).trim();
+    const own = lb.text('plan').trim();
+    if (own && own !== source && !confirm('Replace your plan? Your own plan will be replaced by a copy of the shared plan.')) return;
+    await lb.setText('plan', source);
+    planText.value = source;
+    planText.dispatchEvent(new Event('input'));
+    if (followPlan.checked) {
+      followPlan.checked = false;
+      await lb.setSetting('follow_shared_plan', false);
+    }
+    showPlan();
+    toast('Copied. The plan is yours to change.');
+    planText.focus();
+  }));
   const refresh = h('button', { class: 'btn small', type: 'button' }, 'Check for updates');
   refresh.addEventListener('click', busy(refresh, async () => {
     toast((await lb.refreshShared()) ? 'Shared plan is up to date.' : 'Couldn’t reach the server.');
   }));
+
+  // How to write a plan, tucked behind "Format" beside the label as the old page had it.
+  const format = h('details', { class: 'fmt' }, h('summary', {}, 'Format'),
+    h('div', { class: 'fmt-pop group' },
+      h('pre', { class: 'mono' }, 'Cycle 1\nSession 1 – Chest & Biceps\nFlat Barbell Press\nRope Hammer Curl – [2]'),
+      h('p', {}, 'A session starts with ', h('b', {}, 'Session'), '. Add ', h('b', {}, '– [2]'), ' after an exercise to set how many sets, or ', h('b', {}, '– [3, 5-8]'), ' for sets and reps. Leave the plan empty to use the built-in one.')));
+  const planEditor = editorGroup(planText, 'plan', 'Save plan', 'Plan saved.');
+  const followingNote = h('div', { class: 'group empty' }, icon('person'),
+    h('p', {}, 'You’re using the shared plan.', h('br'), 'Turn the switch off, or copy it, to write your own.'));
+  const planSection = h('section', { class: 'section' },
+    h('div', { class: 'label' }, 'Plan', format), planEditor, followingNote);
+  const showPlan = () => {
+    const following = followPlan.checked && !admin;
+    planEditor.hidden = following;
+    format.hidden = following;
+    followingNote.hidden = !following;
+  };
+  showPlan();
 
   return h('div', {},
     admin ? h('div', { class: 'notice' }, icon('shield'), h('span', {}, 'You’re an admin: your plan and rep ranges are the shared ones others can follow.')) :
@@ -238,13 +274,12 @@ function plan(ctx) {
             h('span', { class: 'main' }, h('span', { class: 'title' }, 'Follow the shared plan'), h('span', { class: 'desc' }, 'Retrieve uses it instead of yours')), followPlan),
           h('label', { class: 'rowi' }, h('span', { class: 'ico' }, icon('sliders')),
             h('span', { class: 'main' }, h('span', { class: 'title' }, 'Follow the shared rep ranges'), h('span', { class: 'desc' }, 'Targets come from the shared plan')), followReps),
+          h('div', { class: 'rowi' }, h('span', { class: 'ico' }, icon('copy')),
+            h('span', { class: 'main' }, h('span', { class: 'title' }, 'Copy and edit'), h('span', { class: 'desc' }, 'Make the shared plan your own to change')), copy),
           h('div', { class: 'rowi' }, h('span', { class: 'ico' }, icon('sync')),
             h('span', { class: 'main' }, h('span', { class: 'title' }, 'Shared plan'),
               h('span', { class: 'desc' }, shared.updated_at ? `Updated ${formatDay(shared.updated_at)}` : 'Not downloaded yet')), refresh))),
-    h('section', { class: 'section' },
-      h('div', { class: 'label' }, 'Plan'),
-      editorGroup(planText, 'plan', 'Save plan', 'Plan saved.'),
-      h('p', { class: 'foot' }, 'A day header ("Session 1 - Legs"), then one exercise per line, with targets like "Squat - [3, 5-8]". Leave it empty for the built-in plan.')),
+    planSection,
     h('section', { class: 'section' },
       h('div', { class: 'label' }, 'Rep ranges'),
       editorGroup(repText, 'rep_ranges', 'Save rep ranges', 'Rep ranges saved.'),

@@ -674,3 +674,16 @@ label.rowi { cursor: pointer; }
 .kind:hover { border-color: color-mix(in srgb, var(--gold) 40%, var(--line)); }
 .kind[aria-pressed="true"] { border-color: var(--gold); background: var(--gold-soft); }
 .kind[aria-pressed="true"] svg.i { color: var(--gold-text); }
+
+/* ---------- plan: "Format" help beside the label ---------- */
+.label .fmt { align-self: center; }
+.fmt { position: relative; text-transform: none; letter-spacing: 0; }
+.fmt > summary { list-style: none; cursor: pointer; color: var(--gold-text); font-weight: 600; font-size: 0.8rem; }
+.fmt > summary::-webkit-details-marker { display: none; }
+.fmt-pop {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 20; width: min(340px, calc(100vw - 32px));
+  padding: 14px 16px; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35); font-weight: 400; color: var(--text-2);
+}
+.fmt-pop pre { margin: 0 0 10px; font-size: 0.82rem; line-height: 1.6; color: var(--text); white-space: pre-wrap; }
+.fmt-pop p { margin: 0; font-size: 0.8rem; line-height: 1.5; color: var(--muted); }
+.fmt-pop b { color: var(--text); font-weight: 600; }
