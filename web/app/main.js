@@ -69,13 +69,31 @@ async function render() {
   return go('');
 }
 
+let shownPath = null;
 function show(el, nav) {
   el.classList?.add('screen');
   main.classList.toggle('wide', Boolean(el.dataset?.wide));
+  const hadFocus = main.contains(document.activeElement) && document.activeElement !== main;
   main.replaceChildren(el);
-  for (const a of document.querySelectorAll('[data-nav]')) a.classList.toggle('active', a.dataset.nav === nav);
+  for (const a of document.querySelectorAll('[data-nav]')) {
+    a.classList.toggle('active', a.dataset.nav === nav);
+    if (a.dataset.nav === nav) a.setAttribute('aria-current', 'page');
+    else a.removeAttribute('aria-current');
+  }
   if (!show.keepScroll) window.scrollTo(0, 0);
   show.keepScroll = false;
+  // Each page has its own title, and moving to a new page puts focus on its heading, so a
+  // screen reader says where you are (as a full page load would).
+  const title = main.querySelector('h1');
+  const name = title?.textContent.trim();
+  document.title = name && path() ? `${name} · Liftbook` : 'Liftbook';
+  const moved = shownPath !== null && shownPath !== path();
+  shownPath = path();
+  // A redraw of the same page only moves focus if it took away the element that had it.
+  if (title && (moved || hadFocus) && !main.contains(document.activeElement)) {
+    title.setAttribute('tabindex', '-1');
+    title.focus({ preventScroll: true });
+  }
 }
 
 function renderSignedOut() {
@@ -208,6 +226,11 @@ async function boot() {
     }
   }
   window.addEventListener('hashchange', render);
+  // "Skip to content" for keyboards: the hash is the router's, so move focus instead of linking.
+  document.querySelector('.skip')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    main.focus();
+  });
   // Signed out elsewhere (the sign-in was revoked): back to the sign-in page. The data here
   // stays, so signing in again picks up any changes not yet synced.
   client.auth.onChange((session) => {

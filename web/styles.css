@@ -596,6 +596,9 @@ body.signed-out main { padding-top: calc(16px + var(--safe-top)); }
 }
 @media (min-width: 760px) { .toast { bottom: 28px; } }
 
+.skip { position: fixed; top: 8px; left: 8px; z-index: 100; padding: 10px 16px; border-radius: 10px; background: var(--gold); color: #1a1407; font-weight: 600; transform: translateY(-200%); }
+.skip:focus { transform: none; }
+h1[tabindex="-1"]:focus, main:focus { outline: none; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .empty { padding: 34px 20px; text-align: center; color: var(--muted); font-size: 0.92rem; line-height: 1.5; }
 .empty svg.i { display: block; margin: 0 auto 10px; width: 28px; height: 28px; color: var(--gold-text); opacity: 0.8; }
