@@ -170,6 +170,9 @@ Import button all read clearly; nothing needed changing.
 - **Also (commit 615ddab):** a paste with a blank line between every line (Notes on some phones copies
   that way) is put back together: one blank line above each exercise, its sets straight under it.
   After pasting a whole workout the box goes back to the title. Works for the Paste button too.
+- **Also (commit 0c605fe):** the rest of the old Log page: Undo after Clear (until you type again),
+  Cmd+Enter (Ctrl+Enter) saves, and tapping "2 exercises · 6 sets" goes to the check list. The old
+  page also kept the draft per account; here signing out already deletes it, so that wasn't needed.
 - **Try it:** as above, with `origin/improve/log-suggest`, then Log, a new line under the title.
 - **Checked:** `npm test` (57 pass, 6 new); desktop Chrome (a doubled paste tidied, a normal one left alone) (title and sets lines get none, arrows,
   Tab, tap; Use it with blank lines above the title) and the iPhone simulator (the list under the
@@ -241,7 +244,6 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
-- Look for anything else the old Log page did that the new one doesn't.
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
