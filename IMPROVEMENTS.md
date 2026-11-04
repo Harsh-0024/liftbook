@@ -94,6 +94,9 @@ The old app never had one: its `/` sent signed-out people to sign in, which the 
 does. The empty branch `improve/public-home` is left as it is (branches are never deleted).
 
 ## Ideas queued (next ones first)
+- Rep ranges: "Copy and edit" from the shared ones, as the old exercises page had.
+- Go through every old Settings row and list anything the new Settings still lacks.
+- A "Delete several workouts" row in Settings that opens All workouts ready to select, as before.
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
