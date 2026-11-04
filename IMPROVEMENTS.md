@@ -162,9 +162,15 @@ Import button all read clearly; nothing needed changing.
   title, not a sets line) and up to six names you've logged or have in your plan appear under that
   line, those starting with what you typed first. Arrow keys move, Tab or a tap picks, Escape
   closes; a rep range after the name stays. On Log and Edit workout.
+- **Also (commit 5c8a1e3):** the check under the Log box says which names are new ("New
+  exercise"), and for a typo of a name you know, "Did you mean Flat Barbell Press?" with a Use it
+  button that fixes that line; "A1 Zercher Squat" is read as Zercher Squat. An exercise typed twice
+  ("Also at no. 1") or already in that day's workout says so. Same rules as the old check
+  (`services/log_check.py`), and its own test cases give the same answers.
 - **Try it:** as above, with `origin/improve/log-suggest`, then Log, a new line under the title.
-- **Checked:** `npm test` (54 pass, 3 new); desktop Chrome (title and sets lines get none, arrows,
-  Tab, tap) and the iPhone simulator (the list under the line, tapping a name keeps the keyboard up).
+- **Checked:** `npm test` (55 pass, 4 new); desktop Chrome (title and sets lines get none, arrows,
+  Tab, tap; Use it with blank lines above the title) and the iPhone simulator (the list under the
+  line, tapping a name keeps the keyboard up; the "Did you mean" note and Use it).
 
 ### Faster pages with a long history
 - **Branch:** `design/aesthetic-overhaul`, commit 64ab6e2 (also merged into `improve/history-select`)
@@ -230,7 +236,7 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
-- Log page: the old "Did you mean …? Use it" fix for a name it doesn't know, and tidying pasted text.
+- Log page: tidying pasted text, as the old page did.
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
