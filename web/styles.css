@@ -407,6 +407,8 @@ select {
 }
 select option { background: var(--surface); color: var(--text); }
 textarea { font: 15px/1.75 var(--mono); min-height: 220px; resize: vertical; }
+/* iPhone zooms the page into any box under 16px when it's tapped; at 16px it stays put. */
+@media (max-width: 759.98px) { textarea { font-size: 16px; } }
 input::placeholder, textarea::placeholder { color: var(--subtle); opacity: 0.8; }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
 .check { display: flex; align-items: flex-start; gap: 10px; font-weight: 500; color: var(--text); font-size: 0.92rem; }
