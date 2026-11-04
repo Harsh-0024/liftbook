@@ -145,7 +145,6 @@ test('the spreadsheet has the old app’s columns, newest first, and dates can l
   assert.equal(lb.csv({ from: '2027-01-01' }).count, 0);
 });
 
-<<<<<<< HEAD
 test('a deleted workout can be brought back', async () => {
   const lb = await app();
   await lb.log(DAY1);
@@ -155,7 +154,8 @@ test('a deleted workout can be brought back', async () => {
   await lb.restoreLogs(ids);
   assert.equal(lb.workout('2026-10-31').logs.length, 2);
   assert.equal(lb.store.pending('workout_logs').length, 2);
-=======
+});
+
 test('history is kept between calls but follows every change, here or synced', async () => {
   const lb = await app();
   await lb.log(DAY1);
@@ -169,5 +169,4 @@ test('history is kept between calls but follows every change, here or synced', a
   assert.equal(lb.workout('2026-11-01').title, 'From phone');
   await lb.deleteWorkout('2026-11-01');
   assert.equal(lb.workouts().length, 1);
->>>>>>> design/aesthetic-overhaul
 });
