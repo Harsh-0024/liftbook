@@ -675,3 +675,13 @@ label.rowi { cursor: pointer; }
 .kind[aria-pressed="true"] { border-color: var(--gold); background: var(--gold-soft); }
 .kind[aria-pressed="true"] svg.i { color: var(--gold-text); }
 @media (max-width: 479.98px) { .grid-3 { gap: 8px; } .stat { padding: 14px 12px; } }
+
+/* Exercises: a row opens in place with its switches and rename */
+.pick-group > .rowi.sub { padding-left: 58px; background: var(--hover); margin: 0; font-weight: inherit; }
+.pick-group > .blk.sub { padding-left: 58px; background: var(--hover); border-top: 1px solid var(--hair); }
+.sub-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+.rename-row { flex-wrap: nowrap; gap: 8px; }
+.rename-row input { flex: 1; min-width: 0; height: 40px; }
+.editor-bar.static { position: static; }
+.profile-photo .avatar { flex: none; }
+@media (max-width: 479.98px) { .pick-group > .rowi.sub, .pick-group > .blk.sub { padding-left: 18px; } }

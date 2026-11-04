@@ -180,10 +180,15 @@ function profile(ctx) {
     await lb.saveProfile({ full_name: name.value.trim(), username: u, bodyweight: weight });
     toast('Profile saved.');
   }));
-  return h('div', { class: 'card' },
-    h('div', { class: 'row', style: 'margin-bottom:16px' }, avatar, photoBtn, file),
-    field('Name', name), field('Username', username), field('Bodyweight', bw, 'Used for bodyweight exercises like pull-ups and dips.'),
-    save);
+  return h('div', {},
+    h('div', { class: 'group' },
+      h('div', { class: 'rowi profile-photo' }, avatar,
+        h('span', { class: 'main' }, h('span', { class: 'title' }, 'Photo'), h('span', { class: 'desc' }, 'Shown at the top of Settings')),
+        photoBtn, file)),
+    h('section', { class: 'section' }, h('div', { class: 'label' }, 'About you'),
+      h('div', { class: 'group' }, h('div', { class: 'blk' },
+        field('Name', name), field('Username', username), field('Bodyweight (kg)', bw, 'Used for bodyweight exercises like pull-ups and dips.')),
+        h('div', { class: 'editor-bar static' }, h('span', { class: 'editor-meta' }, 'Kept on this device and synced'), save))));
 }
 
 /* ---------------- plan ---------------- */
@@ -255,57 +260,66 @@ function plan(ctx) {
 
 function exercises(ctx) {
   const { lb } = ctx;
-  const names = [...new Set(lb.history().map((l) => l.exercise))].sort((a, b) => a.localeCompare(b));
-  const search = h('input', { id: 'ex-search', type: 'search', placeholder: 'Search your exercises', autocapitalize: 'off' });
-  const list = h('ul', { class: 'list' });
-  const paint = () => {
-    const q = search.value.trim().toLowerCase();
-    list.replaceChildren(...names.filter((n) => !q || n.toLowerCase().includes(q)).slice(0, 100).map((n) => {
-      const s = lb.exerciseSetting(n) || {};
-      const timed = h('input', { type: 'checkbox', checked: s.is_timed === true, 'aria-label': `${n} is timed` });
-      const bw = h('input', { type: 'checkbox', checked: s.is_bodyweight === true, 'aria-label': `${n} uses bodyweight` });
-      timed.addEventListener('change', () => lb.setExerciseSetting(n, { is_timed: timed.checked }));
-      bw.addEventListener('change', () => lb.setExerciseSetting(n, { is_bodyweight: bw.checked, bodyweight_source: 'manual' }));
-      return h('li', {}, h('div', { class: 'item', style: 'flex-wrap:wrap' },
-        h('span', { style: 'font-weight:600' }, n),
-        h('span', { class: 'row', style: 'gap:14px' },
-          h('label', { class: 'check', style: 'margin:0' }, timed, 'Timed'),
-          h('label', { class: 'check', style: 'margin:0' }, bw, 'Bodyweight'),
-          h('button', { class: 'linkish', type: 'button', onclick: () => renameForm(n) }, 'Rename'))));
-    }));
-  };
-  search.addEventListener('input', paint);
+  const counts = new Map();
+  for (const l of lb.history()) counts.set(l.exercise, (counts.get(l.exercise) || 0) + 1);
+  const names = [...counts.keys()].sort((a, b) => a.localeCompare(b));
+  const search = h('input', { id: 'ex-search', type: 'search', placeholder: 'Search your exercises', autocapitalize: 'off', 'aria-label': 'Search your exercises' });
+  const group = h('div', { class: 'group pick-group' });
+  const kind = (s) => [s.is_timed ? 'Timed' : null, s.is_bodyweight ? 'Bodyweight added' : null].filter(Boolean).join(' · ') || 'Weight and reps';
+  let open = null;
 
-  const renameBox = h('div', {});
-  function renameForm(oldName) {
-    const to = h('input', { id: 'new-name', type: 'text', value: oldName, maxlength: 100 });
-    const info = h('p', { class: 'subtle' });
-    const go = h('button', { class: 'btn primary', type: 'button' }, 'Rename');
+  // One row per exercise; tap it to set timed or bodyweight, or rename it, in place.
+  const row = (n) => {
+    const s = lb.exerciseSetting(n) || {};
+    const desc = h('span', { class: 'desc' }, kind(s));
+    const head = h('button', { class: `rowi${open === n ? ' open' : ''}`, type: 'button', 'aria-expanded': String(open === n) },
+      h('span', { class: 'ico' }, icon('dumbbell')),
+      h('span', { class: 'main' }, h('span', { class: 'title' }, n), desc),
+      h('span', { class: 'value' }, `${counts.get(n)} logged`),
+      h('span', { class: 'chev-i' }, icon('chev')));
+    head.addEventListener('click', () => { open = open === n ? null : n; paint(); });
+    if (open !== n) return [head];
+    const sw = (key, label, hint, extra = {}) => {
+      const input = h('input', { type: 'checkbox', class: 'switch', role: 'switch', checked: s[key] === true, 'aria-label': `${n}: ${label}` });
+      input.addEventListener('change', async () => {
+        await lb.setExerciseSetting(n, { [key]: input.checked, ...extra });
+        s[key] = input.checked;
+        desc.textContent = kind(s);
+      });
+      return h('label', { class: 'rowi sub' }, h('span', { class: 'main' }, h('span', { class: 'title' }, label), h('span', { class: 'desc' }, hint)), input);
+    };
+    const to = h('input', { type: 'text', value: n, maxlength: 100, 'aria-label': `New name for ${n}` });
+    const info = h('div', { class: 'hint' }, 'Its history comes along.');
+    const go = h('button', { class: 'btn small primary', type: 'button' }, 'Rename');
     to.addEventListener('input', () => {
-      const pr = lb.renamePreview(oldName, to.value);
+      const pr = lb.renamePreview(n, to.value);
       info.textContent = pr.error || `Moves ${pr.logs} logged session${pr.logs === 1 ? '' : 's'}, and the name in your plan and rep ranges.`;
     });
     go.addEventListener('click', busy(go, async () => {
-      const r = await lb.rename(oldName, to.value);
+      const r = await lb.rename(n, to.value);
       toast(`Renamed. ${r.logs} session${r.logs === 1 ? '' : 's'} moved.`);
       ctx.refresh();
     }));
-    renameBox.replaceChildren(h('div', { class: 'card gold' }, h('h2', {}, `Rename ${oldName}`), field('New name', to), info,
-      h('div', { class: 'row' }, go, h('button', { class: 'btn', type: 'button', onclick: () => renameBox.replaceChildren() }, 'Cancel'))));
-    renameBox.scrollIntoView({ behavior: 'smooth' });
-    to.focus();
-  }
+    return [head,
+      sw('is_timed', 'Timed', 'Sets are seconds, not reps'),
+      sw('is_bodyweight', 'Bodyweight', 'Your bodyweight is added to the weight', { bodyweight_source: 'manual' }),
+      h('div', { class: 'blk sub' }, h('label', { class: 'sub-label' }, 'Rename'), h('div', { class: 'row rename-row' }, to, go), info)];
+  };
+  const paint = () => {
+    const q = search.value.trim().toLowerCase();
+    const shown = names.filter((n) => !q || n.toLowerCase().includes(q)).slice(0, 100);
+    group.replaceChildren(...(shown.length ? shown.flatMap(row)
+      : [h('div', { class: 'empty' }, icon('search'), names.length ? `Nothing matches “${search.value.trim()}”.` : 'Exercises show up here once you log them.')]));
+  };
+  search.addEventListener('input', paint);
+  paint();
 
   const renames = lb.renames();
-  paint();
   return h('div', {},
-    renameBox,
-    h('div', { class: 'card' },
-      h('p', { class: 'subtle' }, 'Timed: sets are seconds, not reps. Bodyweight: your bodyweight is added to the weight.'),
-      search, list),
-    renames.length ? h('div', { class: 'card' }, h('h2', {}, 'Renamed exercises'),
-      h('p', { class: 'subtle' }, 'Logs typed with the old name are saved under the new one.'),
-      h('ul', { class: 'list' }, renames.map((r) => {
+    h('div', { class: 'search' }, icon('search'), search),
+    h('section', { class: 'section' }, h('div', { class: 'label' }, 'Your exercises', h('span', {}, `${names.length} exercise${names.length === 1 ? '' : 's'}`)), group),
+    renames.length ? h('section', { class: 'section' }, h('div', { class: 'label' }, 'Renamed'),
+      h('div', { class: 'group' }, renames.map((r) => {
         const undo = h('button', { class: 'btn small', type: 'button' }, 'Undo');
         undo.addEventListener('click', busy(undo, async () => {
           if (!confirm(`Put ${r.new_name} back to ${r.old_name}?`)) return;
@@ -313,8 +327,10 @@ function exercises(ctx) {
           toast('Rename undone.');
           ctx.refresh();
         }));
-        return h('li', {}, h('div', { class: 'item' }, h('span', {}, `${r.old_name} → ${r.new_name}`), undo));
-      }))) : null);
+        return h('div', { class: 'rowi' }, h('span', { class: 'ico' }, icon('edit')),
+          h('span', { class: 'main' }, h('span', { class: 'title' }, `${r.old_name} → ${r.new_name}`), h('span', { class: 'desc' }, 'Logs typed with the old name are saved under the new one')), undo);
+      })),
+      ) : null);
 }
 
 /* ---------------- feedback ---------------- */
