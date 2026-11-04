@@ -47,6 +47,11 @@ local stand-in for Supabase. Neither touched the live site or real accounts.
 [iphone/dark-mode-new.jpg](iphone/dark-mode-new.jpg): ten screens of the new app in dark mode (Home, Log,
 Retrieve, Stats, Workout, Settings, plan, Feedback, Coach, custom workout).
 
+## Android
+
+[android/new-app.jpg](android/new-app.jpg): the redesigned debug app on a Pixel 8 emulator (sign-in), then
+Home and Retrieve in the emulator's Chrome against the local stand-in server.
+
 ## Still different on purpose
 
 - The old phone header had a **Log out** button; the new one has a sync dot, Coach and Settings.

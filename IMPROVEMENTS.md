@@ -41,7 +41,8 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
 - **Checked:** `npm test` (50 pass), desktop Chrome, iPhone 18 Pro simulator (light mode),
   `npm run android:sync` and a debug build (`./gradlew assembleDebug` with Java 21; the APK builds).
   Dark mode checked on the iPhone too ([picture](docs/design-compare/iphone/dark-mode-new.jpg)).
-  Not installed on the Android emulator, because that one is waiting for you to sign in for Phase 6.
+  Installed on the Pixel 8 emulator too; sign-in, Home and Retrieve look right
+  ([picture](docs/design-compare/android/new-app.jpg)). No real account was used.
 
 ## Ideas queued (next ones first)
 
