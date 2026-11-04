@@ -4,6 +4,7 @@
 import { h, icon, rowItem, pageHead, softDay, formatDay, copyText, toast, busy, fmtNum } from '../ui.js';
 import { formatSetsDisplay } from '../../core/logging.js';
 import { summaryTable } from './log.js';
+import { shareLinkBox } from '../share.js';
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -158,6 +159,7 @@ export function workoutScreen(ctx, day) {
     copyText(text);
   };
 
+  const link = shareLinkBox(ctx, day, w.title);
   const nums = [['New bests', count('best'), 'gold'], ['Improving', moved(1), 'good'], ['Dipping', moved(-1), 'bad'],
     ['Steady', cmp.filter((c) => c.status !== 'first' && (c.vsRecent === null || Math.abs(c.vsRecent) <= 0.5)).length, '']];
   return h('div', {},
@@ -190,7 +192,9 @@ export function workoutScreen(ctx, day) {
     h('div', { class: 'row', style: 'margin-top:6px' },
       h('a', { class: 'btn', href: `#/workout/${day}/edit` }, icon('edit'), 'Edit'),
       h('button', { class: 'btn', type: 'button', onclick: () => copyText(lb.workoutText(w)) }, icon('copy'), 'Copy as text'),
-      del));
+      link.button,
+      del),
+    link.box);
 }
 
 export function editScreen(ctx, day) {

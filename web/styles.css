@@ -691,3 +691,8 @@ label.rowi { cursor: pointer; }
 .editor-bar.static { position: static; }
 .profile-photo .avatar { flex: none; }
 @media (max-width: 479.98px) { .pick-group > .rowi.sub, .pick-group > .blk.sub { padding-left: 18px; } }
+
+/* Share links (share.js) */
+.share-box:empty { display: none; }
+.share-card { margin-top: 14px; }
+.share-url { display: block; word-break: break-all; font-size: 0.85rem; color: var(--text); }
