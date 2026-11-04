@@ -167,10 +167,15 @@ Import button all read clearly; nothing needed changing.
   button that fixes that line; "A1 Zercher Squat" is read as Zercher Squat. An exercise typed twice
   ("Also at no. 1") or already in that day's workout says so. Same rules as the old check
   (`services/log_check.py`), and its own test cases give the same answers.
+- **Also (commit 615ddab):** a paste with a blank line between every line (Notes on some phones copies
+  that way) is put back together: one blank line above each exercise, its sets straight under it.
+  After pasting a whole workout the box goes back to the title. Works for the Paste button too.
 - **Try it:** as above, with `origin/improve/log-suggest`, then Log, a new line under the title.
-- **Checked:** `npm test` (55 pass, 4 new); desktop Chrome (title and sets lines get none, arrows,
+- **Checked:** `npm test` (57 pass, 6 new); desktop Chrome (a doubled paste tidied, a normal one left alone) (title and sets lines get none, arrows,
   Tab, tap; Use it with blank lines above the title) and the iPhone simulator (the list under the
-  line, tapping a name keeps the keyboard up; the "Did you mean" note and Use it).
+  line, tapping a name keeps the keyboard up; the "Did you mean" note and Use it; press-and-hold
+  Paste of a doubled workout). Over the local test address Safari won't let the Paste button read
+  the clipboard (it says to press and hold instead); on the real https site it can.
 
 ### Faster pages with a long history
 - **Branch:** `design/aesthetic-overhaul`, commit 64ab6e2 (also merged into `improve/history-select`)
@@ -236,7 +241,7 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
-- Log page: tidying pasted text, as the old page did.
+- Look for anything else the old Log page did that the new one doesn't.
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
