@@ -37,6 +37,15 @@ export class Liftbook {
     this.store = store;
     this.client = client;
     this.userId = userId;
+    this.kept = new Map();
+  }
+
+  /** fn's answer, worked out again only after the table changes. Callers get their own copy of the list. */
+  keep(name, table, fn) {
+    const v = this.store.version[table];
+    let k = this.kept.get(name);
+    if (!k || k.v !== v) this.kept.set(name, (k = { v, value: fn() }));
+    return k.value.slice();
   }
 
   /* ---------------- profile and settings ---------------- */
@@ -111,12 +120,12 @@ export class Liftbook {
 
   /** Every logged exercise, oldest first as created: imported logs by their old id, then new ones. */
   history() {
-    return this.store.all('workout_logs').sort((a, b) => {
+    return this.keep('history', 'workout_logs', () => this.store.all('workout_logs').sort((a, b) => {
       const la = a.legacy_id ?? Infinity;
       const lb = b.legacy_id ?? Infinity;
       if (la !== lb) return la < lb ? -1 : 1;
       return timeKey(a.created_at) - timeKey(b.created_at) || String(a.id).localeCompare(String(b.id));
-    });
+    }));
   }
 
   exerciseSettings() {
@@ -129,13 +138,15 @@ export class Liftbook {
 
   /** Workouts, newest first: one per day, its exercises in logged order. */
   workouts() {
-    const byDay = new Map();
-    for (const log of this.history()) {
-      const day = dayOf(log.date);
-      if (!byDay.has(day)) byDay.set(day, { day, date: log.date, title: log.workout_name || 'Workout', logs: [] });
-      byDay.get(day).logs.push(log);
-    }
-    return [...byDay.values()].sort((a, b) => (a.day < b.day ? 1 : a.day > b.day ? -1 : 0));
+    return this.keep('workouts', 'workout_logs', () => {
+      const byDay = new Map();
+      for (const log of this.history()) {
+        const day = dayOf(log.date);
+        if (!byDay.has(day)) byDay.set(day, { day, date: log.date, title: log.workout_name || 'Workout', logs: [] });
+        byDay.get(day).logs.push(log);
+      }
+      return [...byDay.values()].sort((a, b) => (a.day < b.day ? 1 : a.day > b.day ? -1 : 0));
+    });
   }
 
   workout(day) {

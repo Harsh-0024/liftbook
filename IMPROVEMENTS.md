@@ -156,6 +156,17 @@ On the iPhone simulator in dark mode: Exercises (an open row with its switches),
 "Turning off Pull Ups" question, and Bulk import. Text, borders, the picked answer and the dimmed
 Import button all read clearly; nothing needed changing.
 
+### Fix on the design branch: a synced change no longer clears your search
+- **Branch:** `design/aesthetic-overhaul`, commits 61b52f1, 7a9ce68; and `improve/history-select`,
+  commit c6940eb
+- When another device's changes arrived, All workouts and Retrieve were drawn again from scratch:
+  the search box emptied and the cursor left it mid-word. Now what you typed, and the cursor, stay.
+  On `improve/history-select`, All workouts also keeps the pages you opened with "Show more", and
+  Select mode with what you ticked. Opening the page fresh still starts empty.
+- **Checked:** `npm test` (50 and 51 pass); desktop Chrome on the 600-workout stand-in (search,
+  cursor, 120 rows open, 2 ticked: all kept through a redraw; a fresh visit starts at 60) and the
+  iPhone simulator (typing a search).
+
 ### Keyboard and screen readers
 - **Branch:** `design/aesthetic-overhaul`, commit bee5c26
 - **Checked first:** on every page, all buttons, links and fields have names; switches are real
@@ -199,7 +210,7 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
-- Keep a search box's text when a synced change redraws All workouts (a redraw clears it today).
+- Look over Retrieve and the Workout page with a long history (many sessions, long plans).
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you

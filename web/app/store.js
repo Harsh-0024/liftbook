@@ -18,6 +18,8 @@ export class Store {
     this.rows = Object.fromEntries(TABLE_NAMES.map((t) => [t, new Map()]));
     this.meta = new Map();
     this.listeners = new Set();
+    // Goes up whenever a table's rows change, so lists worked out from them can be kept until then.
+    this.version = Object.fromEntries(TABLE_NAMES.map((t) => [t, 0]));
   }
 
   static async open(backend, options) {
@@ -77,6 +79,7 @@ export class Store {
       this.rows[table].set(key, row);
       saved.push(row);
     }
+    this.version[table]++;
     await this.backend.put(table, saved);
     this.emit(table, true);
     return Array.isArray(changes) ? saved : saved[0];
@@ -112,7 +115,10 @@ export class Store {
         done.push(row);
       }
     }
-    if (done.length) await this.backend.put(table, done);
+    if (done.length) {
+      this.version[table]++;
+      await this.backend.put(table, done);
+    }
     return done.length;
   }
 
@@ -141,7 +147,10 @@ export class Store {
         saved.push(row);
       }
     }
-    if (saved.length) await this.backend.put(table, saved);
+    if (saved.length) {
+      this.version[table]++;
+      await this.backend.put(table, saved);
+    }
     if (changed) this.emit(table, false);
     return changed;
   }
