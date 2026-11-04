@@ -82,6 +82,9 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
   opens the list ready to pick, with Back going to Settings. On phones the bar stays on one line.
 - **Also (commit a8b5569):** after deleting one workout or several, the message at the bottom has
   an Undo button for 8 seconds; it brings the same workouts back on every device.
+- **Also (commit 0de8d99):** a long history is drawn 60 workouts at a time, with "Show 60 more"
+  at the bottom (and "Show the last N" at the end). Month counts, search and Select all still cover
+  every workout. See "Checked: speed with a long history" below.
 - **Try it:** as above, with `origin/improve/history-select`, then Home, See all workouts, or
   Settings, Delete several workouts.
 - **Checked:** `npm test` (50 pass); desktop Chrome (pick, search plus select all, clear, delete)
@@ -153,6 +156,12 @@ On the iPhone simulator in dark mode: Exercises (an open row with its switches),
 "Turning off Pull Ups" question, and Bulk import. Text, borders, the picked answer and the dimmed
 Import button all read clearly; nothing needed changing.
 
+### Checked: speed with a long history
+A stand-in account with 600 workouts (3,000 logs, three years). On this Mac every data step
+(history, stats, charts, retrieve, the spreadsheet) takes under 25 ms, and Home, Stats, Exercises
+and Retrieve open in under 100 ms. All workouts was the one page that grew with the history: it
+built all 600 rows (6,200 elements). Now it opens with 60, in 40 ms, on `improve/history-select`.
+
 ### Checked: Android
 Stats in the Pixel 8 emulator's Chrome looks right. Its header leaves out the "Workout log" line
 because the emulator's display size makes the screen 360 points wide; under 380 the app hides it
@@ -177,7 +186,6 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
-- Speed with a long history (a few thousand logs): All workouts, Stats and Exercises.
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
