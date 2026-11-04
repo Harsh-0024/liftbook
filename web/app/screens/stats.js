@@ -110,7 +110,7 @@ export function statsScreen(ctx) {
       asPct.forEach((v, k) => { if (v !== null && v > (asPct[bestIdx] ?? -Infinity)) bestIdx = k; });
       const hl = highlights(lb.history(), from);
       tiles = h('div', { class: 'grid-3', style: 'margin-top:14px' },
-        tile('Best', pctText(asPct[bestIdx] ?? 0), formatDay(oLabels[bestIdx], { weekday: false, year: false })),
+        tile('Best', pctText(asPct[bestIdx] ?? 0, Math.abs(asPct[bestIdx] ?? 0) < 10 ? 1 : 0), formatDay(oLabels[bestIdx], { weekday: false, year: false })),
         tile('New bests', String(hl.newBests), range === 'all' ? 'all time' : `in ${RANGES.find(([v]) => v === range)[1]}`, 'gold'),
         hl.top ? tile('Most improved', pctText(hl.top.pct, 0), hl.top.name) : tile('Most improved', '–', 'nothing yet'));
     } else {
@@ -149,7 +149,7 @@ export function statsScreen(ctx) {
         h('div', { class: 'grid-3', style: 'margin-top:14px' },
           tile(c.is_timed ? 'Current score' : 'Current est. max', fmtNum(st.current_1rm)),
           tile('Best', fmtNum(st.max_1rm), null, 'gold'),
-          tile('Since first', pctText(st.improvement_pct || 0), null, (st.improvement_pct || 0) < 0 ? '' : '')),
+          tile('Since first', pctText(st.improvement_pct || 0, Math.abs(st.improvement_pct || 0) < 10 ? 1 : 0), null, (st.improvement_pct || 0) < 0 ? '' : '')),
         h('p', { class: 'foot', style: 'margin:12px 2px 0' }, `${c.labels.length} session${c.labels.length === 1 ? '' : 's'}`,
           c.labels.length ? ` · last ${formatDay(c.labels[c.labels.length - 1])}` : ''));
     }
