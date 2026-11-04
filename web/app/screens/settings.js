@@ -266,11 +266,13 @@ function exercises(ctx) {
   const search = h('input', { id: 'ex-search', type: 'search', placeholder: 'Search your exercises', autocapitalize: 'off', 'aria-label': 'Search your exercises' });
   const group = h('div', { class: 'group pick-group' });
   const kind = (s) => [s.is_timed ? 'Timed' : null, s.is_bodyweight ? 'Bodyweight added' : null].filter(Boolean).join(' · ') || 'Weight and reps';
+  // The switch shows what the app does now, built-in bodyweight exercises included.
+  const state = (n) => ({ ...(lb.exerciseSetting(n) || {}), is_bodyweight: lb.bodyweightOn(n) });
   let open = null;
 
   // One row per exercise; tap it to set timed or bodyweight, or rename it, in place.
   const row = (n) => {
-    const s = lb.exerciseSetting(n) || {};
+    const s = state(n);
     const desc = h('span', { class: 'desc' }, kind(s));
     const head = h('button', { class: `rowi${open === n ? ' open' : ''}`, type: 'button', 'aria-expanded': String(open === n) },
       h('span', { class: 'ico' }, icon('dumbbell')),
@@ -281,12 +283,52 @@ function exercises(ctx) {
     if (open !== n) return [head];
     const sw = (key, label, hint, extra = {}) => {
       const input = h('input', { type: 'checkbox', class: 'switch', role: 'switch', checked: s[key] === true, 'aria-label': `${n}: ${label}` });
-      input.addEventListener('change', async () => {
-        await lb.setExerciseSetting(n, { [key]: input.checked, ...extra });
-        s[key] = input.checked;
+      const row = h('label', { class: 'rowi sub' }, h('span', { class: 'main' }, h('span', { class: 'title' }, label), h('span', { class: 'desc' }, hint)), input);
+      const done = (on) => {
+        s[key] = on;
+        input.checked = on;
         desc.textContent = kind(s);
+      };
+      input.addEventListener('change', async () => {
+        // Turning bodyweight off with logs that count it: ask what those numbers meant, as before.
+        const conflict = key === 'is_bodyweight' && !input.checked ? lb.bodyweightConflict(n) : null;
+        if (conflict?.bodyweight_logs) {
+          input.checked = true;
+          row.after(bodyweightChoice(n, conflict, () => done(false)));
+          input.disabled = true;
+          return;
+        }
+        await lb.setExerciseSetting(n, { [key]: input.checked, ...extra });
+        done(input.checked);
       });
-      return h('label', { class: 'rowi sub' }, h('span', { class: 'main' }, h('span', { class: 'title' }, label), h('span', { class: 'desc' }, hint)), input);
+      return row;
+    };
+    const bodyweightChoice = (name, conflict, onDone) => {
+      const opts = [
+        ['future_only', 'Only from now on', 'Old logs keep the meaning they were saved with.'],
+        ['keep_offsets', 'Keep old logs as BW + number', 'A past “10” still means bodyweight + 10 kg.'],
+        ['literal', 'Read old logs as plain weight', 'A past “10” becomes 10 kg.'],
+      ];
+      const radios = opts.map(([value], i) => h('input', { type: 'radio', name: `bw-${name}`, value, checked: i === 0 }));
+      const apply = h('button', { class: 'btn small primary', type: 'button' }, 'Apply');
+      const cancel = h('button', { class: 'btn small', type: 'button' }, 'Cancel');
+      const box = h('div', { class: 'blk sub bw-choice', role: 'group', 'aria-label': `Turning off bodyweight for ${name}` },
+        h('b', {}, `Turning off ${name}`),
+        h('p', { class: 'hint' }, `${conflict.bodyweight_logs} of its ${conflict.total} log${conflict.total === 1 ? '' : 's'} count${conflict.bodyweight_logs === 1 ? 's' : ''} bodyweight. How should the old numbers be read?`),
+        h('div', { class: 'bw-opts' }, opts.map(([, title, hint], i) => h('label', { class: 'bw-opt' }, radios[i], h('span', {}, h('b', {}, title), h('small', {}, hint))))),
+        h('div', { class: 'row' }, apply, cancel));
+      const close = () => {
+        box.remove();
+        group.querySelectorAll('input.switch').forEach((x) => { x.disabled = false; });
+      };
+      cancel.addEventListener('click', close);
+      apply.addEventListener('click', busy(apply, async () => {
+        await lb.turnOffBodyweight(name, radios.find((r) => r.checked).value);
+        close();
+        onDone();
+        toast(`Bodyweight is off for ${name}.`);
+      }));
+      return box;
     };
     const to = h('input', { type: 'text', value: n, maxlength: 100, 'aria-label': `New name for ${n}` });
     const info = h('div', { class: 'hint' }, 'Its history comes along.');

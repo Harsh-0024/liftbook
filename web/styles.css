@@ -687,3 +687,11 @@ label.rowi { cursor: pointer; }
 .editor-bar.static { position: static; }
 .profile-photo .avatar { flex: none; }
 @media (max-width: 479.98px) { .pick-group > .rowi.sub, .pick-group > .blk.sub { padding-left: 18px; } }
+.bw-choice > b { display: block; font-size: 0.95rem; }
+.bw-choice > .hint { margin: 4px 0 12px; }
+.bw-opts { display: grid; gap: 8px; margin-bottom: 14px; }
+.bw-opt { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; margin: 0; border: 1px solid var(--hair); border-radius: 12px; background: var(--surface); cursor: pointer; font-weight: inherit; }
+.bw-opt:has(input:checked) { border-color: var(--line-gold); background: var(--gold-soft); }
+.bw-opt input { accent-color: var(--gold); margin-top: 3px; flex: none; width: 18px; height: 18px; }
+.bw-opt b { display: block; font-size: 0.9rem; font-weight: 600; color: var(--text); }
+.bw-opt small { display: block; margin-top: 2px; font-size: 0.8rem; color: var(--muted); }

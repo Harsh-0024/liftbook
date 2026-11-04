@@ -3,8 +3,8 @@
 // them); nothing here waits for the network except the shared plan and feedback.
 
 import { workoutParser } from '../core/parser.js';
-import { handleWorkoutLog, formatSetsDisplay, resolveTimedStatus, hasTimeHint } from '../core/logging.js';
-import { makeSettings } from '../core/bodyweight.js';
+import { handleWorkoutLog, formatSetsDisplay, resolveTimedStatus, hasTimeHint, logMetrics } from '../core/logging.js';
+import { makeSettings, hasBodyweightToken, inferLogUsesBodyweight, isBodyweightEnabled } from '../core/bodyweight.js';
 import { effectivePlanText, effectiveRepRangesText, getWorkoutDays, ownPlanText } from '../core/plans.js';
 import { retrieveDay, retrieveCustom, describeRetrieveOutput } from '../core/retrieve.js';
 import {
@@ -272,6 +272,47 @@ export class Liftbook {
     if (!key) return null;
     const before = this.store.get('exercise_settings', key, { deleted: true }) || {};
     return this.store.change('exercise_settings', { ...before, exercise_key: key, exercise_name: before.exercise_name || name, ...fields });
+  }
+
+  /** Whether an exercise counts bodyweight: your choice, or the built-in list (pull-ups, dips…). */
+  bodyweightOn(name) {
+    return isBodyweightEnabled(makeSettings(this.exerciseSettings()), name, '');
+  }
+
+  /**
+   * Before bodyweight is turned off for an exercise: its logs, and how many count bodyweight now
+   * (services.bodyweight.get_bodyweight_conflict_info). With any, the old page asked what to do.
+   */
+  bodyweightConflict(name) {
+    const key = exerciseKey(name);
+    const logs = key ? this.history().filter((l) => exerciseKey(l.exercise) === key) : [];
+    const bodyweightLogs = logs.filter((l) => hasBodyweightToken(l.exercise_string) || l.uses_bodyweight === true).length;
+    const wasSelected = this.exerciseSetting(name)?.is_bodyweight === true;
+    return { total: logs.length, bodyweight_logs: bodyweightLogs, has_conflict: Boolean(bodyweightLogs || wasSelected) };
+  }
+
+  /**
+   * Turn bodyweight off for an exercise, and say what its old logs mean:
+   * 'future_only' (each keeps what it meant), 'keep_offsets' (a past "10" stays bodyweight + 10)
+   * or 'literal' (a past "10" becomes 10 kg). Their best-set numbers are worked out again.
+   */
+  async turnOffBodyweight(name, resolution = 'future_only') {
+    const key = exerciseKey(name);
+    if (!key) return null;
+    const settings = makeSettings(this.exerciseSettings());
+    const history = this.history();
+    const logs = history.filter((l) => exerciseKey(l.exercise) === key);
+    const isTimed = Boolean(resolveTimedStatus({ exerciseName: name, settings, history }).is_timed);
+    const changes = [];
+    for (const log of logs) {
+      // Saved with the meaning it has today, so turning the setting off doesn't change it.
+      const uses = resolution === 'keep_offsets' ? true : resolution === 'literal' ? false : inferLogUsesBodyweight(settings, log);
+      if (log.uses_bodyweight === uses) continue;
+      const next = { ...log, uses_bodyweight: uses };
+      changes.push({ ...next, ...logMetrics(next, { settings, isTimed: isTimed || hasTimeHint(log.exercise_string || '') }) });
+    }
+    if (changes.length) await this.store.change('workout_logs', changes);
+    return this.setExerciseSetting(name, { is_bodyweight: false, bodyweight_source: 'manual' });
   }
 
   exerciseSetting(name) {
