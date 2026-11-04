@@ -234,6 +234,26 @@ function plan(ctx) {
     toast((await lb.refreshShared()) ? 'Shared plan is up to date.' : 'Couldn’t reach the server.');
   }));
 
+  // As the old "Copy and edit": the shared plan and rep ranges become your own, and following stops.
+  const copy = h('button', { class: 'btn small', type: 'button' }, 'Copy');
+  copy.addEventListener('click', busy(copy, async () => {
+    const nextPlan = (shared.plan || DEFAULT_PLAN).trim();
+    const nextReps = (shared.rep_ranges || defaultRepRangesText()).trim();
+    const mine = [lb.text('plan'), lb.text('rep_ranges')].some((t) => String(t || '').trim());
+    if (mine && !(await ask('Your own plan and rep ranges are replaced by a copy of the shared ones.', { title: 'Replace your plan?', yes: 'Replace', danger: true }))) return;
+    await lb.setText('plan', nextPlan);
+    await lb.setText('rep_ranges', nextReps);
+    await lb.setSetting('follow_shared_plan', false);
+    await lb.setSetting('follow_shared_exercises', false);
+    followPlan.checked = false;
+    followReps.checked = false;
+    for (const [area, text] of [[planText, nextPlan], [repText, nextReps]]) {
+      area.value = text;
+      area.dispatchEvent(new Event('input'));
+    }
+    toast('Copied. The plan is yours to edit now.');
+  }));
+
   return h('div', {},
     admin ? h('div', { class: 'notice' }, icon('shield'), h('span', {}, 'You’re an admin: your plan and rep ranges are the shared ones others can follow.')) :
       h('section', { class: 'section' },
@@ -245,7 +265,9 @@ function plan(ctx) {
             h('span', { class: 'main' }, h('span', { class: 'title' }, 'Follow the shared rep ranges'), h('span', { class: 'desc' }, 'Targets come from the shared plan')), followReps),
           h('div', { class: 'rowi' }, h('span', { class: 'ico' }, icon('sync')),
             h('span', { class: 'main' }, h('span', { class: 'title' }, 'Shared plan'),
-              h('span', { class: 'desc' }, shared.updated_at ? `Updated ${formatDay(shared.updated_at)}` : 'Not downloaded yet')), refresh))),
+              h('span', { class: 'desc' }, shared.updated_at ? `Updated ${formatDay(shared.updated_at)}` : 'Not downloaded yet')), refresh),
+          h('div', { class: 'rowi' }, h('span', { class: 'ico' }, icon('edit')),
+            h('span', { class: 'main' }, h('span', { class: 'title' }, 'Copy and edit'), h('span', { class: 'desc' }, 'Make the shared plan and rep ranges your own to change')), copy))),
     h('section', { class: 'section' },
       h('div', { class: 'label' }, 'Plan'),
       editorGroup(planText, 'plan', 'Save plan', 'Plan saved.'),
@@ -607,7 +629,11 @@ function sync(ctx) {
     h('div', { class: 'card' }, h('h2', {}, 'Spreadsheet'),
       h('p', { class: 'subtle' }, 'Every exercise you logged, one row each, for Excel, Numbers or Google Sheets. Leave the dates empty for all of it.'),
       h('div', { class: 'row' }, field('From', from), field('To', to)),
-      h('button', { class: 'btn', type: 'button', onclick: spreadsheet }, 'Download a CSV file')));
+      h('button', { class: 'btn', type: 'button', onclick: spreadsheet }, 'Download a CSV file')),
+    h('section', { class: 'section' }, h('div', { class: 'label' }, 'Clean up'),
+      h('div', { class: 'group' },
+        rowItem({ href: '#/settings/exercises', ico: 'edit', title: 'Rename an exercise', desc: 'Its history comes along' }),
+        rowItem({ href: '#/history?select', ico: 'trash', title: 'Delete several workouts', desc: 'Opens your history so you can pick them' }))));
 }
 
 /* ---------------- account ---------------- */

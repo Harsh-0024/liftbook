@@ -72,7 +72,8 @@ export function historyScreen(ctx) {
   const { lb } = ctx;
   const workouts = lb.workouts();
   // Selecting survives a synced redraw of this page, not a visit to another one.
-  const pick = ctx.redrawing && ctx.historyPick ? ctx.historyPick : { on: false, days: new Set() };
+  // '#/history?select' (from Sync and data) opens it already picking.
+  const pick = ctx.redrawing && ctx.historyPick ? ctx.historyPick : { on: /[?&]select\b/.test(location.hash), days: new Set() };
   ctx.historyPick = pick;
   for (const d of [...pick.days]) if (!lb.workout(d)) pick.days.delete(d);
   const search = h('input', { type: 'search', placeholder: 'Search workouts or exercises', 'aria-label': 'Search workouts', autocomplete: 'off' });
