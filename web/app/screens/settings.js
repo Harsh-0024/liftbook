@@ -639,21 +639,30 @@ function account(ctx) {
 
   const out = h('button', { class: 'btn', type: 'button' }, 'Sign out of this device');
   out.addEventListener('click', busy(out, () => ctx.signOut()));
-  const del = h('button', { class: 'btn danger', type: 'button' }, 'Delete my account');
+  // Delete: on the page, as the old app had it (no pop-up): what goes, a pointer to keep a copy,
+  // and the username typed to unlock the button.
+  const name = ctx.lb.profile()?.username || ctx.user.email;
+  const confirmBox = h('input', { id: 'delete-confirm', type: 'text', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', placeholder: name });
+  const del = h('button', { class: 'btn danger', type: 'button', disabled: true }, 'Delete my account');
+  confirmBox.addEventListener('input', () => { del.disabled = confirmBox.value.trim() !== name; });
   del.addEventListener('click', busy(del, async () => {
-    const name = ctx.lb.profile()?.username || ctx.user.email;
-    const typed = prompt(`This deletes your account and every workout, on all devices, for good.\n\nType ${name} to confirm.`);
-    if (typed === null) return;
-    if (typed.trim() !== name) throw new Error('That didn’t match, so nothing was deleted.');
+    if (confirmBox.value.trim() !== name) throw new Error('That didn’t match, so nothing was deleted.');
     await ctx.lb.deleteAccount();
     toast('Your account has been deleted.');
     await ctx.signOut({ force: true });
   }));
+  const deleteCard = h('div', { class: 'card danger-zone' },
+    h('h2', {}, 'Delete my account'),
+    h('p', { class: 'muted' }, 'This removes your account and everything in it: every workout, your plan, lifts, settings and photo, on all your devices. It can’t be undone. To keep a copy, ',
+      h('a', { href: '#/settings/sync' }, 'download your data'), ' first.'),
+    field(`To confirm, type your username: ${name}`, confirmBox),
+    del);
 
   return h('div', {},
     h('div', { class: 'card' }, h('h2', {}, 'Email'), h('p', { class: 'muted' }, ctx.user.email),
       field('New email', email, 'We email a link to confirm it. Your sign-in changes once you open it.'), moveEmail),
     h('div', { class: 'card' }, h('h2', {}, 'Password'), field('New password', pw, 'At least 8 characters.'), change),
     h('div', { class: 'card' }, h('h2', {}, 'Appearance'), themeSeg()),
-    h('div', { class: 'card' }, h('div', { class: 'row' }, out, del)));
+    h('div', { class: 'card' }, out),
+    deleteCard);
 }
