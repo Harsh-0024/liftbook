@@ -61,11 +61,28 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
 - **Try it:** as above, with `origin/improve/polish`, then Settings, Sync and data, or Create account.
 - **Checked:** `npm test` (50 pass); desktop Chrome and the iPhone simulator.
 
+### 4. Search an exercise on Stats
+- **Branch:** `improve/stats-search` (from `design/aesthetic-overhaul`), commit 2961601
+- **What:** a "Search an exercise" box at the top of Stats, as the old page had. Pick a suggestion
+  or type part of a name and press return: the Exercise card switches to it and scrolls into view.
+  An unknown name says so.
+- **Try it:** as above, with `origin/improve/stats-search`, then Stats.
+- **Checked:** desktop Chrome (full name, part of a name, unknown name) and the iPhone simulator
+  (typed "row", return, Barbell Row opened).
+
+### Fix on the design branch: Stats tiles cut off on phones
+- **Branch:** `design/aesthetic-overhaul`, commit 23ecfcd
+- "Since first" showed "+45.8%" cut off on an iPhone. Percentages from 10% up are now whole
+  numbers ("+46%", as the big number above already was), and tile numbers shrink a little on phones.
+
+### Checked: Android
+Stats in the Pixel 8 emulator's Chrome looks right. Its header leaves out the "Workout log" line
+because the emulator's display size makes the screen 360 points wide; under 380 the app hides it
+on purpose.
+
 ### Dropped: signed-out public home page
 The old app never had one: its `/` sent signed-out people to sign in, which the new app already
 does. The empty branch `improve/public-home` is left as it is (branches are never deleted).
 
 ## Ideas queued (next ones first)
 - "Keep me signed in" choice on sign-in, as the old one had (decide if the offline app needs it).
-- Stats on Android in the emulator, checked properly (it was still loading in the last check).
-- Exercise search inside the overall Stats card, as the old Stats page had.
