@@ -156,6 +156,16 @@ On the iPhone simulator in dark mode: Exercises (an open row with its switches),
 "Turning off Pull Ups" question, and Bulk import. Text, borders, the picked answer and the dimmed
 Import button all read clearly; nothing needed changing.
 
+### 9. Exercise name suggestions while you type
+- **Branch:** `improve/log-suggest` (from `design/aesthetic-overhaul`), commit d309797
+- **What:** as on the old Log page: type two or more letters at the start of a line (not the
+  title, not a sets line) and up to six names you've logged or have in your plan appear under that
+  line, those starting with what you typed first. Arrow keys move, Tab or a tap picks, Escape
+  closes; a rep range after the name stays. On Log and Edit workout.
+- **Try it:** as above, with `origin/improve/log-suggest`, then Log, a new line under the title.
+- **Checked:** `npm test` (54 pass, 3 new); desktop Chrome (title and sets lines get none, arrows,
+  Tab, tap) and the iPhone simulator (the list under the line, tapping a name keeps the keyboard up).
+
 ### Faster pages with a long history
 - **Branch:** `design/aesthetic-overhaul`, commit 64ab6e2 (also merged into `improve/history-select`)
 - **What:** each page asked for the whole sorted history 3 to 5 times, and with 3,000 logs each
@@ -220,7 +230,7 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
-- Log page: suggest exercise names you've used while you type a new one (check what the old app did first).
+- Log page: the old "Did you mean …? Use it" fix for a name it doesn't know, and tidying pasted text.
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
