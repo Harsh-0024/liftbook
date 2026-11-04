@@ -148,6 +148,11 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
 - **Checked:** `npm test` (50 pass); desktop Chrome (open a row, switch on and back off, save the
   profile) and the iPhone simulator (both pages).
 
+### Checked: dark mode on tonight's pages
+On the iPhone simulator in dark mode: Exercises (an open row with its switches), the
+"Turning off Pull Ups" question, and Bulk import. Text, borders, the picked answer and the dimmed
+Import button all read clearly; nothing needed changing.
+
 ### Checked: Android
 Stats in the Pixel 8 emulator's Chrome looks right. Its header leaves out the "Workout log" line
 because the emulator's display size makes the screen 360 points wide; under 380 the app hides it
@@ -172,6 +177,7 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
+- Speed with a long history (a few thousand logs): All workouts, Stats and Exercises.
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
