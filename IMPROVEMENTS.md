@@ -98,6 +98,24 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
 - **Checked:** `npm test` (50 pass); desktop Chrome against the local stand-in (upload, remove: the
   file is gone from storage and the letter comes back) and the iPhone simulator (both buttons).
 
+### 7. Bulk import: paste many workout days at once
+- **Branch:** `improve/bulk-import` (from `design/aesthetic-overhaul`), commits 7e29a5c, b8aef70
+- **What:** Settings, Bulk import, as the old Data page had. Paste days that each start with a date
+  ("03/02 Back", "Monday 28/9 Push", "2025-02-03 Legs"). A check under the box shows each day as
+  Ready, Already in or Failed, with how many exercises and sets, and "year guessed" where you didn't
+  write one; "Import N days" saves the ready ones. A missing year is worked out the way the old page
+  did (`web/core/bulk.js`, checked against the old Python code on the same inputs).
+- **Decided:** one change from the old page: a day that would land in the future (for example
+  "1/9" after "6/9/26" rolls to next year) is marked Failed instead of imported.
+- **Try it:** as above, with `origin/improve/bulk-import`, then Settings, Bulk import.
+- **Checked:** `npm test` (54 pass, 4 new); desktop Chrome against the local stand-in (check, import,
+  the workout opens) and the iPhone simulator (typing, the check list).
+
+### Fix on the design branch: iPhone zoomed in when you tapped a text box
+- **Branch:** `design/aesthetic-overhaul`, commit c81a927
+- Log, plan, feedback and other big boxes used 15px text, so iPhone Safari zoomed the page in on
+  tap. On phones they're 16px now and the page stays put.
+
 ### Exercises and Profile pages in grouped rows
 - **Branch:** `design/aesthetic-overhaul`, commit 026f5cf
 - **What:** these two pages were still plain cards. Exercises now lists one row per exercise with
@@ -131,7 +149,6 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
-- Bulk import: paste many workout days at once.
 - Ask how to read old logs when bodyweight is turned off for an exercise.
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
