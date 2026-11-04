@@ -84,7 +84,9 @@ export function historyScreen(ctx) {
   const delBtn = h('button', { class: 'btn danger small', type: 'button' }, icon('trash'), 'Delete');
   const bar = h('div', { class: 'group select-bar', role: 'region', 'aria-label': 'Selected workouts', hidden: true },
     h('div', { class: 'editor-bar' }, count, h('div', { class: 'row' }, allBtn, delBtn)));
-  const head = pageHead('All workouts', '', { back: '#/', aside: workouts.length ? selectBtn : null });
+  // Settings opens this page as #/history?select, ready to pick, and Back goes to Settings.
+  const fromSettings = /\?(.*&)?select\b/.test(location.hash);
+  const head = pageHead('All workouts', '', { back: fromSettings ? '#/settings' : '#/', aside: workouts.length ? selectBtn : null });
   const sub = () => {
     const p = head.querySelector('p') || head.firstChild.appendChild(h('p', {}));
     p.textContent = `${workouts.length} workout${workouts.length === 1 ? '' : 's'} logged.`;
@@ -98,7 +100,7 @@ export function historyScreen(ctx) {
     paint();
   };
   const markBar = () => {
-    count.textContent = picked.size ? `${picked.size} selected` : 'Tap workouts to select them';
+    count.textContent = picked.size ? `${picked.size} selected` : 'Tap to pick';
     delBtn.disabled = !picked.size;
     allBtn.textContent = shownDays.length && shownDays.every((d) => picked.has(d)) ? 'Clear' : 'Select all';
   };
@@ -165,7 +167,8 @@ export function historyScreen(ctx) {
   document.addEventListener('keydown', onKey);
   search.addEventListener('input', paint);
   sub();
-  paint();
+  if (fromSettings && workouts.length) setSelecting(true);
+  else paint();
   return h('div', {}, head, h('div', { class: 'search' }, icon('search'), search), body, bar);
 }
 

@@ -119,7 +119,8 @@ function index(ctx) {
       h('div', { class: 'group' },
         rowItem({ href: '#/settings/sync', ico: 'sync', title: 'Sync and data', desc: 'Devices, backup file, export',
           value: st.pending ? `${st.pending} to sync` : st.last_sync ? `Synced ${ago(st.last_sync)}` : '' }),
-        rowItem({ href: '#/settings/shortcuts', ico: 'phone', title: 'Apple Shortcuts', desc: 'Log and get workouts from Notes on your iPhone' }))),
+        rowItem({ href: '#/settings/shortcuts', ico: 'phone', title: 'Apple Shortcuts', desc: 'Log and get workouts from Notes on your iPhone' }),
+        rowItem({ href: '#/history?select', ico: 'trash', title: 'Delete several workouts', desc: 'Opens your list so you can pick them' }))),
 
     h('section', { class: 'section' }, h('div', { class: 'label' }, 'Account'),
       h('div', { class: 'group' },

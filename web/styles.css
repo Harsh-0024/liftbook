@@ -688,4 +688,5 @@ label.rowi { cursor: pointer; }
 .select-bar { position: sticky; bottom: 16px; margin-top: 16px; z-index: 5; box-shadow: 0 8px 28px rgba(0,0,0,0.25); }
 .select-bar .editor-bar { position: static; border-top: 0; }
 @media (max-width: 759.98px) { .select-bar { bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 10px); } }
-.select-bar .editor-bar { flex-wrap: nowrap; } .select-bar .editor-meta { flex: 1 1 auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.select-bar .editor-bar { flex-wrap: nowrap; } .select-bar .editor-meta { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.select-bar .row { flex-wrap: nowrap; flex: none; gap: 8px; }
