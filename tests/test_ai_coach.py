@@ -12,7 +12,7 @@ from sqlalchemy.pool import StaticPool
 from config import Config
 from models import Base, CoachAnswer, RepRange, User, UserApiKey, UserRole, WorkoutLog
 from services import ai_coach, coach_tools
-from utils.dates import utc_now
+from utils.dates import local_now
 from liftbook import create_app
 
 
@@ -34,7 +34,7 @@ class _CoachDb(unittest.TestCase):
         self.db.add_all([self.user, self.other])
         self.db.commit()
         # The tools count days in UTC; a local "today" breaks these tests after local midnight.
-        self.today = utc_now().replace(hour=12, minute=0, second=0, microsecond=0)
+        self.today = local_now().replace(hour=12, minute=0, second=0, microsecond=0)
         days = lambda n: self.today - timedelta(days=n)
         rows = [
             _log(self.user, days(1), "Back Squat", 120, 5, 140, "Legs"),
