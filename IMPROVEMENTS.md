@@ -156,6 +156,30 @@ On the iPhone simulator in dark mode: Exercises (an open row with its switches),
 "Turning off Pull Ups" question, and Bulk import. Text, borders, the picked answer and the dimmed
 Import button all read clearly; nothing needed changing.
 
+### 9. Exercise name suggestions while you type
+- **Branch:** `improve/log-suggest` (from `design/aesthetic-overhaul`), commit d309797
+- **What:** as on the old Log page: type two or more letters at the start of a line (not the
+  title, not a sets line) and up to six names you've logged or have in your plan appear under that
+  line, those starting with what you typed first. Arrow keys move, Tab or a tap picks, Escape
+  closes; a rep range after the name stays. On Log and Edit workout.
+- **Also (commit 5c8a1e3):** the check under the Log box says which names are new ("New
+  exercise"), and for a typo of a name you know, "Did you mean Flat Barbell Press?" with a Use it
+  button that fixes that line; "A1 Zercher Squat" is read as Zercher Squat. An exercise typed twice
+  ("Also at no. 1") or already in that day's workout says so. Same rules as the old check
+  (`services/log_check.py`), and its own test cases give the same answers.
+- **Also (commit 615ddab):** a paste with a blank line between every line (Notes on some phones copies
+  that way) is put back together: one blank line above each exercise, its sets straight under it.
+  After pasting a whole workout the box goes back to the title. Works for the Paste button too.
+- **Also (commit 0c605fe):** the rest of the old Log page: Undo after Clear (until you type again),
+  Cmd+Enter (Ctrl+Enter) saves, and tapping "2 exercises · 6 sets" goes to the check list. The old
+  page also kept the draft per account; here signing out already deletes it, so that wasn't needed.
+- **Try it:** as above, with `origin/improve/log-suggest`, then Log, a new line under the title.
+- **Checked:** `npm test` (57 pass, 6 new); desktop Chrome (a doubled paste tidied, a normal one left alone) (title and sets lines get none, arrows,
+  Tab, tap; Use it with blank lines above the title) and the iPhone simulator (the list under the
+  line, tapping a name keeps the keyboard up; the "Did you mean" note and Use it; press-and-hold
+  Paste of a doubled workout). Over the local test address Safari won't let the Paste button read
+  the clipboard (it says to press and hold instead); on the real https site it can.
+
 ### Faster pages with a long history
 - **Branch:** `design/aesthetic-overhaul`, commit 64ab6e2 (also merged into `improve/history-select`)
 - **What:** each page asked for the whole sorted history 3 to 5 times, and with 3,000 logs each
@@ -220,12 +244,15 @@ Left out on purpose: "current password" to change the password (Supabase signs y
 and JSON export with dates (the backup file keeps everything).
 
 ## Ideas queued (next ones first)
-- Log page: suggest exercise names you've used while you type a new one (check what the old app did first).
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
 
 ## Open questions for you
-- Public share links for a workout (the old `share_workout` page): the new app shares a workout as
-  text through the phone's share sheet. A link anyone can open needs a new Supabase table and
-  access rules, which I won't add to the live project without you. Say if you want it.
-- "Keep me signed in" (old sign-in page): the offline app always stays signed in on that device,
-  so I left it out. Say if you want it back, for shared computers.
+- Public share links for a workout (the old `share_workout` page): you said yes. The Supabase part
+  is on branch `improve/share-links` (table `share_links`, functions `share_day`,
+  `stop_sharing_day`, `shared_workout`, tested on a local Postgres). Waiting for you to run it in
+  the live project's SQL editor; the app's Share link button and the page that shows a link come
+  after that.
+
+## Decided
+- "Keep me signed in" (old sign-in page): stays out (you agreed). The offline app always stays
+  signed in on that device.

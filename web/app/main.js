@@ -73,12 +73,15 @@ async function render() {
 
 let shownPath = null;
 function show(el, nav) {
+  const same = shownPath === path();
+  // A new page rises into view; a redraw of the page on show (a sync) changes in place, without
+  // fading out and in again.
   el.classList?.add('screen');
+  if (same) el.classList?.add('still');
   main.classList.toggle('wide', Boolean(el.dataset?.wide));
   const hadFocus = main.contains(document.activeElement) && document.activeElement !== main;
   // A synced change redraws the page you're on: keep what's typed in its search boxes, and the
   // cursor if you were typing there.
-  const same = shownPath === path();
   const kept = same ? [...main.querySelectorAll('input[type=search]')].map((i) => ({
     label: i.getAttribute('aria-label'), value: i.value, focused: i === document.activeElement,
     start: i.selectionStart, end: i.selectionEnd })).filter((k) => k.value || k.focused) : [];
@@ -127,12 +130,33 @@ function renderSignedOut() {
 async function start() {
   const user = client.auth.user();
   if (!user) return render();
-  document.body.classList.remove('signed-out');
   const store = await Store.open(idbBackend(dbName(user.id)));
   const lb = new Liftbook(store, client, user.id);
   const sync = createSync({ store, db: client.db, userId: user.id });
   ctx = { lb, store, sync, client, user, go, toast, signOut, refresh: () => render() };
 
+  // First time on this device: fetch the account before showing any page, so the home page
+  // doesn't flash "no workouts yet" and then redraw as they arrive.
+  const firstTime = !store.getMeta('first_sync_done');
+  if (firstTime) {
+    show(h('div', { class: 'card auth loading-card', role: 'status' },
+      h('span', { class: 'spinner', 'aria-hidden': 'true' }),
+      h('p', { class: 'muted' }, 'Getting your workouts…')), '');
+    const r = await sync.runOnce();
+    if (!r.error) {
+      await store.setMeta('first_sync_done', true);
+      // The first sync on this device decides whether the account still needs a username.
+      if (!lb.profile()) {
+        const meta = user.user_metadata || {};
+        if (meta.username && (await lb.usernameAvailable(meta.username).catch(() => false))) {
+          await lb.saveProfile({ username: meta.username, full_name: meta.full_name || '' });
+        }
+      }
+    }
+    shownPath = null; // the page after this rises in as a new page
+  }
+
+  document.body.classList.remove('signed-out');
   sync.onStatus(paintPill);
   paintPill(sync.status());
   // Remote changes redraw screens that only show data (never one being typed in).
@@ -145,21 +169,6 @@ async function start() {
   stopSync = startAutoSync(sync, store);
   lb.refreshShared();
   render();
-
-  // The first sync on this device decides whether the account still needs a username.
-  if (!store.getMeta('first_sync_done')) {
-    const r = await sync.runOnce();
-    if (!r.error) {
-      await store.setMeta('first_sync_done', true);
-      if (!lb.profile()) {
-        const meta = user.user_metadata || {};
-        if (meta.username && (await lb.usernameAvailable(meta.username).catch(() => false))) {
-          await lb.saveProfile({ username: meta.username, full_name: meta.full_name || '' });
-        }
-      }
-      render();
-    }
-  }
 }
 
 function paintPill(st) {
@@ -290,12 +299,25 @@ async function boot() {
 
 // The offline copy is for the website; the Android app already carries every file.
 if ('serviceWorker' in navigator && location.protocol !== 'file:' && !isNative) {
-  // A new version takes over as soon as it has installed; reload once so this page runs it too
-  // (the log draft is kept on the device, so nothing typed is lost). Not on the very first visit.
+  // A new version takes over as soon as it has installed; this page reloads once to run it too.
+  // Not on the very first visit, and never under someone's finger: if they've started using the
+  // page, the reload waits until the app goes to the background (a switch to another app, a
+  // locked phone), so it's ready next time they look. Nothing typed is lost either way (the log
+  // draft is kept on the device).
   const hadVersion = !!navigator.serviceWorker.controller;
   let reloaded = false;
+  let used = false;
+  const markUsed = () => { used = true; };
+  for (const type of ['pointerdown', 'keydown', 'scroll']) addEventListener(type, markUsed, { once: true, capture: true, passive: true });
+  const reload = () => {
+    if (reloaded) return;
+    reloaded = true;
+    location.reload();
+  };
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (hadVersion && !reloaded) { reloaded = true; location.reload(); }
+    if (!hadVersion) return;
+    if (!used) return reload();
+    document.addEventListener('visibilitychange', () => { if (document.hidden) reload(); });
   });
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').catch((err) => console.warn('offline copy unavailable', err));

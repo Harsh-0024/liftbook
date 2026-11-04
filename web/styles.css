@@ -276,6 +276,8 @@ main.wide { max-width: 860px; }
 
 /* screens arrive with a gentle rise */
 .screen { animation: rise 0.35s var(--ease) both; }
+.screen.still { animation: none; }
+.loading-card { display: grid; justify-items: center; gap: 16px; padding: 48px 24px; text-align: center; }
 @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .screen, .sync-pill.busy::before, .spinner { animation: none; } }
 
