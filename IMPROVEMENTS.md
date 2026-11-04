@@ -50,8 +50,11 @@ Turning on branch previews in the Cloudflare Pages project would give one per br
   stops following, asking first if it would replace a plan you wrote. A "Format" link beside the
   Plan label opens a short guide on how to write the plan. While you follow the shared plan, the
   editor is replaced by a note saying so.
+- **Also (commit 6d374ca):** the same "Copy and edit" for rep ranges, and a note in place of the
+  rep ranges box while you follow the shared ones. Each Copy row sits under its own switch.
 - **Try it:** as above, with `origin/improve/plan-extras`, then Settings, Workout plan.
-- **Checked:** `npm test` (50 pass); desktop Chrome and the iPhone simulator (switch, copy, format).
+- **Checked:** `npm test` (50 pass); desktop Chrome and the iPhone simulator (switch, copy, format,
+  rep ranges copy).
 
 ### 3. Small polish
 - **Branch:** `improve/polish` (from `design/aesthetic-overhaul`), commit af2fa73
@@ -94,7 +97,6 @@ The old app never had one: its `/` sent signed-out people to sign in, which the 
 does. The empty branch `improve/public-home` is left as it is (branches are never deleted).
 
 ## Ideas queued (next ones first)
-- Rep ranges: "Copy and edit" from the shared ones, as the old exercises page had.
 - Go through every old Settings row and list anything the new Settings still lacks.
 - A "Delete several workouts" row in Settings that opens All workouts ready to select, as before.
 - Sign-up "Confirm password" box: left out on purpose (the eye button shows what you typed).
