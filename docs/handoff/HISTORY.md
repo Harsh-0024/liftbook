@@ -97,3 +97,25 @@ The newest copy of these two books is on the branch that is "in progress".
   `scheduleReminders(list)` that asks permission and replaces Liftbook's pending notifications;
   call it on start, resume, after sync and after saving a workout or settings; tapping a planned
   reminder opens Retrieve for that session. Then step 3: Settings > Reminders page.
+
+### 2026-11-05 — Item 3, step 2: the Android app sets the reminders on the phone
+- `@capacitor/local-notifications` ^8.3.1 added (package.json; lockfile: only the plugin's 10
+  lines, kept in the owner's npm format; `npx cap sync android` updated
+  `android/capacitor.settings.gradle` and `android/app/capacitor.build.gradle`). The plugin
+  brings the Android permissions itself (post notifications, exact alarms, restore after a restart).
+- Notification icon `android/app/src/main/res/drawable/ic_stat_liftbook.xml` (a one-colour
+  dumbbell) and gold accent, set in `capacitor.config.json` (`plugins.LocalNotifications`).
+- `web/app/data.js`: `reminders()`, `setReminders(fields)`, `plannedWorkouts()`,
+  `savePlannedWorkouts(list)`, `upcomingReminders(now)`.
+- `web/app/native.js`: `remindersSupported` (Android app only), `reminderPermission({ ask })`,
+  `scheduleReminders(list, idOf)` (cancels Liftbook's pending ones, sets the new list; other
+  apps' untouched; nothing without permission), `onReminderTap(open)`.
+- `web/app/main.js`: reminders worked out again 1.5 s after any data change (here or synced),
+  at start and when the app comes back to the front; cleared on sign-out; a tapped reminder
+  opens Retrieve (planned) or Log (gap).
+- Tests: `web/app/test/reminders_native.test.js` (stand-in plugin), `reminders_data.test.js`.
+  `npm test`: 75 pass. **Not checked: a real phone** (no Android SDK here).
+- **Next (step 3):** Settings > Reminders page: the switch (asks Android's permission when turned
+  on; on the website says it works in the Android app), quiet hours, usual gap (Auto shows the
+  worked-out number), and planned workouts (add: once on a date or weekly; time; session from the
+  plan; delete). Add the row in Settings under Training.

@@ -15,6 +15,10 @@
     },
     "SystemBars": {
       "insetsHandling": "css"
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_liftbook",
+      "iconColor": "#D4AF37"
     }
   }
 }

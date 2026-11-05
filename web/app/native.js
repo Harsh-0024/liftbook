@@ -77,6 +77,66 @@ export function startNative({ onLink, onResume, onOnline, onBack }) {
   }
 }
 
+/* ---------------- reminders (the phone's own notifications) ---------------- */
+
+/** Whether this device can show Liftbook's reminders (the Android app; not the website yet). */
+export const remindersSupported = isNative && Boolean(plugins.LocalNotifications);
+
+/** "granted", "denied" or "prompt" (not asked yet); "unsupported" on the website. */
+export async function reminderPermission({ ask = false } = {}) {
+  const { LocalNotifications } = plugins;
+  if (!remindersSupported) return 'unsupported';
+  try {
+    const now = await LocalNotifications.checkPermissions();
+    if (now.display === 'granted' || !ask) return now.display;
+    return (await LocalNotifications.requestPermissions()).display;
+  } catch {
+    return 'denied';
+  }
+}
+
+// A local wall-clock time ("YYYY-MM-DDTHH:MM") as a Date on this device.
+function localTime(stamp) {
+  const [d, t] = stamp.split('T');
+  const [y, m, day] = d.split('-').map(Number);
+  const [hh, mm] = t.split(':').map(Number);
+  return new Date(y, m - 1, day, hh, mm);
+}
+
+/**
+ * Makes the phone's pending Liftbook notifications exactly `list` (from Liftbook.upcomingReminders,
+ * each with an id from notificationId): the old ones go, the new ones are set. Quietly does
+ * nothing on the website or without permission.
+ */
+export async function scheduleReminders(list, idOf) {
+  const { LocalNotifications } = plugins;
+  if (!remindersSupported) return 0;
+  try {
+    const pending = (await LocalNotifications.getPending()).notifications || [];
+    const ours = pending.filter((n) => n.extra?.liftbook);
+    if (ours.length) await LocalNotifications.cancel({ notifications: ours.map((n) => ({ id: n.id })) });
+    if (!list.length || (await reminderPermission()) !== 'granted') return 0;
+    await LocalNotifications.schedule({
+      notifications: list.map((r) => ({
+        id: idOf(r.key), title: r.title, body: r.body,
+        schedule: { at: localTime(r.at), allowWhileIdle: true },
+        extra: { liftbook: true, kind: r.kind, route: r.kind === 'planned' ? 'retrieve' : 'log', day: r.day || null },
+      })),
+    });
+    return list.length;
+  } catch {
+    return 0; // a reminder is never worth an error message
+  }
+}
+
+/** Tapping a reminder: `open(route)` ("retrieve" or "log"). */
+export function onReminderTap(open) {
+  plugins.LocalNotifications?.addListener?.('localNotificationActionPerformed', (e) => {
+    const extra = e?.notification?.extra || {};
+    if (extra.liftbook) open(extra.route || '');
+  });
+}
+
 /** A photo from the camera or the gallery (the app asks which); null when cancelled. */
 export async function pickPhoto() {
   const { Camera } = plugins;

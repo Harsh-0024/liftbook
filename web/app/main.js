@@ -14,7 +14,8 @@ import { retrieveScreen, retrieveDayScreen, retrieveCustomScreen } from './scree
 import { statsScreen } from './screens/stats.js';
 import { settingsScreen } from './screens/settings.js';
 import { coachScreen } from './screens/coach.js';
-import { isNative, startNative, wantsApp, appHandOff } from './native.js';
+import { isNative, startNative, wantsApp, appHandOff, scheduleReminders, onReminderTap } from './native.js';
+import { notificationId } from '../core/reminders.js';
 import { installShortcuts } from './shortcuts.js';
 
 const main = document.getElementById('app');
@@ -25,6 +26,16 @@ const dbName = (uid) => `liftbook-${uid}`;
 
 let ctx = null; // the signed-in app: {lb, store, sync, client, ...}
 let stopSync = null;
+
+// The phone's reminders follow the workouts and settings: worked out again shortly after any
+// change (here or synced in) and when the app comes back to the front; cleared on sign-out.
+let reminderTimer = null;
+function refreshReminders(delay = 1500) {
+  clearTimeout(reminderTimer);
+  reminderTimer = setTimeout(() => {
+    if (ctx) scheduleReminders(ctx.lb.upcomingReminders(), notificationId);
+  }, delay);
+}
 let current = null; // the screen on show: {name, live}
 
 /* ---------------- routes ---------------- */
@@ -173,6 +184,8 @@ async function start() {
     }
   });
   stopSync = startAutoSync(sync, store);
+  store.subscribe(() => refreshReminders());
+  refreshReminders(0);
   lb.refreshShared();
   render();
 }
@@ -217,6 +230,8 @@ async function signOut({ force = false } = {}) {
   }
   const uid = ctx.user.id;
   stopSync?.();
+  clearTimeout(reminderTimer);
+  await scheduleReminders([], notificationId);
   await ctx.store.backend.close?.();
   ctx = null;
   pill.hidden = true;
@@ -289,7 +304,10 @@ async function boot() {
       history.replaceState(null, '', location.pathname + hash);
       location.reload();
     },
-    onResume: () => ctx?.sync.runOnce(),
+    onResume: () => {
+      ctx?.sync.runOnce();
+      refreshReminders(0);
+    },
     onOnline: () => ctx?.sync.runOnce(),
     // Android's back button: back a screen, or out of the app from the home screen.
     onBack(canGoBack) {
@@ -299,6 +317,8 @@ async function boot() {
       return true;
     },
   });
+  // A tapped reminder opens what it's about: Retrieve for a planned workout, Log otherwise.
+  onReminderTap((route) => { if (ctx) go(route); });
   installShortcuts({ signedIn: () => Boolean(ctx), isAdmin: () => Boolean(ctx?.lb.isAdmin()), go });
   if (client.auth.session()) await start();
   else render();

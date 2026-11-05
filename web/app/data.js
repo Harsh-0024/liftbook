@@ -16,6 +16,7 @@ import {
   shortDate, longDate, formatSetsLine,
 } from '../core/insights.js';
 import { formatG as fmtG } from '../core/py.js';
+import { reminderSettings, plannedWorkouts, upcomingReminders } from '../core/reminders.js';
 import { retrieveDay, retrieveCustom, describeRetrieveOutput, picksForPlanLines, oftenTrainedKeys } from '../core/retrieve.js';
 import {
   getChartData, getOverallProgressData, statsExerciseOptions, getAllExercisesSummary, bodyweightWarningExercises,
@@ -74,6 +75,35 @@ export class Liftbook {
 
   async setSetting(key, value) {
     return this.store.change('app_settings', { json: { ...this.settings(), [key]: value } });
+  }
+
+  /* ---------------- reminders ---------------- */
+
+  /** Reminder settings (switch, quiet hours, usual gap), synced with the other settings. */
+  reminders() {
+    return reminderSettings(this.settings().reminders);
+  }
+
+  async setReminders(fields) {
+    return this.setSetting('reminders', { ...this.reminders(), ...fields });
+  }
+
+  /** Workouts planned for a day and time: [{ id, date | weekday, time, title, category, dayId }]. */
+  plannedWorkouts() {
+    return plannedWorkouts(this.settings().planned_workouts);
+  }
+
+  async savePlannedWorkouts(list) {
+    return this.setSetting('planned_workouts', plannedWorkouts(list));
+  }
+
+  /** Every reminder due in the next two weeks, as of `now` on this device's clock. */
+  upcomingReminders(now = new Date()) {
+    const p = (n) => String(n).padStart(2, '0');
+    const stamp = `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}T${p(now.getHours())}:${p(now.getMinutes())}`;
+    return upcomingReminders({
+      now: stamp, workoutDays: this.workouts().map((w) => w.day), settings: this.settings().reminders, planned: this.plannedWorkouts(),
+    });
   }
 
   text(kind) {
