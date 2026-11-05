@@ -427,6 +427,70 @@ export class Liftbook {
     };
   }
 
+  /** The session after the last one logged ("Session 3 - Back" → 4), wrapping round; null if unknown. */
+  nextSessionId(ids = this.sessionIds()) {
+    for (const w of this.workouts().slice(0, 10)) {
+      const m = /\bsession\s*(\d+)/i.exec(w.title);
+      if (m && ids.includes(Number(m[1]))) return ids[(ids.indexOf(Number(m[1])) + 1) % ids.length];
+    }
+    return null;
+  }
+
+  /** The plan's session numbers, in order ([1, 2, 3, 4]). */
+  sessionIds() {
+    const sessions = this.planDays().workout?.Session || {};
+    return Object.keys(sessions).map((n) => Number(n.slice('Session'.length).trim())).filter(Number.isFinite);
+  }
+
+  /**
+   * What the home-screen widget shows: today's planned workout, or else the next session, with
+   * what to aim for in its first exercises (the last sets to beat, or the target for a new one).
+   * { heading, title, lines: [{ name, aim }], more, route, updated }
+   */
+  widgetSummary(now = new Date(), { maxLines = 4 } = {}) {
+    const p = (n) => String(n).padStart(2, '0');
+    const today = `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
+    const planned = this.plannedWorkouts()
+      .filter((x) => x.date === today || (!x.date && x.weekday === now.getDay()))
+      .sort((a, b) => (a.time < b.time ? -1 : 1))[0];
+    const plans = this.planDays();
+    const dayName = (category, id) => {
+      const title = category === 'Session' ? plans.session_titles?.[id] : null;
+      return title ? `${category} ${id} - ${title}` : `${category} ${id}`;
+    };
+    let category = null;
+    let dayId = null;
+    let heading = 'Next';
+    let title = '';
+    if (planned) {
+      heading = `Today · ${planned.time}`;
+      ({ category, dayId } = planned);
+      title = planned.title || 'Workout';
+    } else {
+      dayId = this.nextSessionId();
+      if (dayId === null && this.sessionIds().length) dayId = this.sessionIds()[0];
+      if (dayId !== null) {
+        category = 'Session';
+        title = dayName(category, dayId);
+      }
+    }
+    const trainedToday = this.workouts().some((w) => w.day === today);
+    if (trainedToday && planned) heading = 'Today · logged';
+    let lines = [];
+    let more = 0;
+    if (category && dayId !== null && plans.workout?.[category]?.[`${category} ${dayId}`]) {
+      const ex = this.retrieveDay(category, dayId).described.exercises;
+      lines = ex.slice(0, maxLines).map((e) => ({ name: e.name, aim: e.sets_label || e.target || 'new' }));
+      more = Math.max(0, ex.length - maxLines);
+    }
+    if (!title) title = 'Log a workout';
+    return {
+      heading, title, lines, more,
+      route: category && dayId !== null ? `retrieve/day/${encodeURIComponent(category)}/${dayId}` : 'log',
+      updated: `${today}T${p(now.getHours())}:${p(now.getMinutes())}`,
+    };
+  }
+
   retrieveDay(category, dayId) {
     const [text, exercises, sets] = retrieveDay(category, dayId, { planText: this.planText(), ...this.retrieveContext() });
     return { text, exercises, sets, described: describeRetrieveOutput(text) };

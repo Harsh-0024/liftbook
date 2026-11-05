@@ -11,14 +11,6 @@ function dayLabel(plans, category, dayName) {
   return { id, label: title ? `${dayName} · ${title}` : dayName };
 }
 
-/** The session after the last one logged ("Session 3 - Back" → 4), wrapping round; null if unknown. */
-function nextSession(lb, ids) {
-  for (const w of lb.workouts().slice(0, 10)) {
-    const m = /\bsession\s*(\d+)/i.exec(w.title);
-    if (m && ids.includes(Number(m[1]))) return ids[(ids.indexOf(Number(m[1])) + 1) % ids.length];
-  }
-  return null;
-}
 
 export function retrieveScreen(ctx) {
   const { lb } = ctx;
@@ -27,7 +19,7 @@ export function retrieveScreen(ctx) {
   const following = lb.settings().follow_shared_plan && !lb.isAdmin();
   const sessions = plans.workout?.Session || {};
   const ids = Object.keys(sessions).map((n) => Number(n.slice('Session'.length).trim())).filter(Number.isFinite);
-  const next = nextSession(lb, ids);
+  const next = lb.nextSessionId(ids);
 
   const cell = (category, dayName) => {
     const { id } = dayLabel(plans, category, dayName);

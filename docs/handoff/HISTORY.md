@@ -9,7 +9,7 @@ Read `CONTEXT.md` (same folder) first.
 | 1. Today / time zone | `improve/one-clock` | `design/aesthetic-overhaul` @ 9076371 | done |
 | 2. Light-mode gold | `improve/light-contrast` | `design/aesthetic-overhaul` @ 9076371 | done |
 | 3. Reminders | `feature/reminders` | `design/aesthetic-overhaul` @ 9076371 | done (phone check pending) |
-| 4. Widget | `feature/widget` | `feature/reminders` | not started |
+| 4. Widget | `feature/widget` | `feature/reminders` @ b8e1872 | in progress |
 
 The newest copy of these two books is on the branch that is "in progress".
 
@@ -139,3 +139,20 @@ The newest copy of these two books is on the branch that is "in progress".
   plan a workout ~35 minutes ahead, lock the phone.
 - **Next:** item 3 is done apart from that phone check. Item 4: widget on a new branch
   `feature/widget` from `feature/reminders` (it shows the planned workout).
+
+### 2026-11-05 — Item 4, step 1: what the widget shows (branch `feature/widget`)
+- New branch `feature/widget` from `feature/reminders` @ b8e1872.
+- `web/app/data.js`: `widgetSummary(now)` -> `{ heading, title, lines: [{ name, aim }], more,
+  route, updated }`. Today's planned workout ("Today · 18:30", "Today · logged" once a workout is
+  saved that day) or else the next session ("Next"); up to 4 exercises with the last sets to
+  beat (`sets_label` from Retrieve) or the target for a new one ("2 × 6–10"); route opens that
+  session's targets, or Log when there's no plan.
+- The "next session" rule moved from `screens/retrieve.js` into `data.js` (`nextSessionId()`,
+  `sessionIds()`): Retrieve and the widget use one copy.
+- `web/app/test/widget_data.test.js` (3 tests). `npm test`: 78 pass.
+- **Next (step 2):** the native Android part: a small Capacitor plugin in `android/app/src/main/java/in/liftbook/app/`
+  (`WidgetBridge`, saves the summary as JSON in SharedPreferences and refreshes the widget),
+  `LiftbookWidget` (AppWidgetProvider + RemoteViews layout `res/layout/widget_liftbook.xml`,
+  info `res/xml/liftbook_widget_info.xml`), registered in `MainActivity` and the manifest. Taps
+  open `in.liftbook.app://open#/<route>`; "Log" opens `#/log`. Then `native.js` `updateWidget()`
+  called with the reminders refresh.
