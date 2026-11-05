@@ -2,7 +2,8 @@
 // quality), its summary and bests, the overall progress lines and the exercise list. Ports
 // services/stats.py (and the list built in liftbook/routes/stats.py) without the database.
 // Days are the person's local days: log times are moved by tzOffsetMinutes (India, +5:30, by
-// default, as the Python app's TIMEZONE_OFFSET does).
+// default, as the Python app's TIMEZONE_OFFSET does, to match its tests). The app passes 0:
+// its saved times are already local (LOCAL_TIMES in app/data.js).
 import { re, strip, toFloat, toInt, isDict, fsum, formatG, pyRound, maxBy, compareKeys, sortBy } from './py.js';
 import { calculateWorkoutScore, calculateTimedWorkoutScore, getSetStats, timedSetScore } from './scoring.js';
 import { effectiveSetsForLog, hasBodyweightToken, isBodyweightEnabled, makeSettings, setsOfLog } from './bodyweight.js';

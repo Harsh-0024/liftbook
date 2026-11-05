@@ -83,6 +83,13 @@ export function localDay(value, offsetMinutes = 0) {
   return `${pad(d.year, 4)}-${pad(d.month)}-${pad(d.day)}`;
 }
 
+/** The calendar day ("YYYY-MM-DD") on this device's clock, or of a Date or ISO time read on it.
+ *  (new Date().toISOString() gives the UTC day, which is yesterday in India before 5:30 am.) */
+export function deviceDay(value = new Date()) {
+  const d = value instanceof Date ? value : new Date(Date.parse(value));
+  return `${pad(d.getFullYear(), 4)}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 /** Whole days from day a to day b ("YYYY-MM-DD"). */
 export function daysBetween(a, b) {
   const pa = parseDate(a);

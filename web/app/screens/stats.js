@@ -2,6 +2,7 @@
 
 import { h, icon, pageHead, lineChart, fmtNum, formatDay } from '../ui.js';
 import { normalizeExerciseName } from '../../core/names.js';
+import { addDays, deviceDay } from '../../core/dates.js';
 import { overallView } from '../../core/overall_view.js';
 import { consistencyYears, yearWindow, consistencyHero, consistencyTiles, yearGrid } from '../../core/consistency.js';
 
@@ -58,7 +59,7 @@ const METRICS = [['data', 'Estimated max'], ['weight', 'Top weight'], ['volume',
 
 function since(range) {
   if (range === 'all') return '';
-  return new Date(Date.now() - Number(range) * 86400000).toISOString().slice(0, 10);
+  return addDays(deviceDay(), -Number(range));
 }
 
 /** Only the points from `from` on (labels are "YYYY-MM-DD"). */
