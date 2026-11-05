@@ -8,7 +8,7 @@ Read `CONTEXT.md` (same folder) first.
 | --- | --- | --- | --- |
 | 1. Today / time zone | `improve/one-clock` | `design/aesthetic-overhaul` @ 9076371 | done |
 | 2. Light-mode gold | `improve/light-contrast` | `design/aesthetic-overhaul` @ 9076371 | done |
-| 3. Reminders | `feature/reminders` | `design/aesthetic-overhaul` @ 9076371 | in progress |
+| 3. Reminders | `feature/reminders` | `design/aesthetic-overhaul` @ 9076371 | done (phone check pending) |
 | 4. Widget | `feature/widget` | `feature/reminders` | not started |
 
 The newest copy of these two books is on the branch that is "in progress".
@@ -119,3 +119,23 @@ The newest copy of these two books is on the branch that is "in progress".
   on; on the website says it works in the Android app), quiet hours, usual gap (Auto shows the
   worked-out number), and planned workouts (add: once on a date or weekly; time; session from the
   plan; delete). Add the row in Settings under Training.
+
+### 2026-11-05 — Item 3, step 3: Settings > Reminders page
+- `web/app/screens/settings.js`: new section `reminders` (row "Reminders · On/Off" under
+  Training). The switch (on the Android app it asks Android's permission first; if refused it
+  stays off and says where to allow it; on the website it saves and says reminders show in the
+  Android app), a "Next: Fri 6 Nov, 09:00 · ..." line, "Remind me after" (Usual (N days) or 1-14),
+  quiet hours (two time boxes), planned workouts (list with remove; add: workout from the plan or
+  "Any workout", Once on a date / Every week on a weekday, time).
+- A tapped planned reminder opens that session's targets (`retrieve/day/<category>/<id>`).
+- `web/styles.css`: time boxes get the same style as other inputs. Bell icon in `ui.js`.
+- **Decided:** this branch doesn't depend on `improve/one-clock`; a small `todayHere()` in
+  settings.js instead of `deviceDay()`. When both are merged, `todayHere` can become `deviceDay`.
+- Checked in Chromium (phone size, light and dark) against the stand-in: switch on, add a weekly
+  plan, the list, the Next line, Settings row "On", no errors. Picture:
+  `docs/design-compare/reminders-page.jpg`. `npm test`: 75 pass.
+- **Not checked:** on a real Android phone (permission prompt, notifications arriving, tap
+  opening the page). To try: `npm run android:debug`, install, Settings > Reminders, switch on,
+  plan a workout ~35 minutes ahead, lock the phone.
+- **Next:** item 3 is done apart from that phone check. Item 4: widget on a new branch
+  `feature/widget` from `feature/reminders` (it shows the planned workout).

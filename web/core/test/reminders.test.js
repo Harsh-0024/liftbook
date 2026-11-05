@@ -63,7 +63,7 @@ test('a gap set by hand wins over the worked-out one, and the morning time keeps
 
 test('a planned workout is reminded half an hour before, once or every week', () => {
   const planned = [
-    { id: 'a', date: '2026-11-06', time: '18:00', title: 'Session 2 - Pull' },
+    { id: 'a', date: '2026-11-06', time: '18:00', title: 'Session 2 - Pull', category: 'Session', dayId: 2 },
     { id: 'b', weekday: 1, time: '19:30', title: '' }, // Mondays
   ];
   const all = upcomingReminders({ now: '2026-11-05T12:00', workoutDays: ['2026-11-05'], settings: ON, planned });
@@ -74,6 +74,7 @@ test('a planned workout is reminded half an hour before, once or every week', ()
     ['2026-11-16T19:00', 'Workout'],
   ]);
   assert.equal(plannedOnes[0].body, 'Planned for 18:00 today. Tap to see what to aim for.');
+  assert.deepEqual(plannedOnes.map((r) => r.route), ['retrieve/day/Session/2', 'retrieve', 'retrieve']);
   // A day already trained gets no reminder; a past one neither.
   const trained = upcomingReminders({ now: '2026-11-05T12:00', workoutDays: ['2026-11-06'], settings: ON, planned: [planned[0]] });
   assert.equal(trained.filter((r) => r.kind === 'planned').length, 0);

@@ -24,7 +24,7 @@ const { notificationId } = await import('../../core/reminders.js');
 
 const list = [
   { key: 'gap:2026-10-30', kind: 'gap', at: '2026-11-02T09:00', title: 'Time for a workout?', body: '3 days since your last one.' },
-  { key: 'planned:a:2026-11-06', kind: 'planned', at: '2026-11-06T17:30', title: 'Session 2 - Pull', body: 'Planned for 18:00 today.', day: '2026-11-06' },
+  { key: 'planned:a:2026-11-06', kind: 'planned', at: '2026-11-06T17:30', title: 'Session 2 - Pull', body: 'Planned for 18:00 today.', day: '2026-11-06', route: 'retrieve/day/Session/2' },
 ];
 
 test('reminders are set at the local time, and replace the old ones but nothing else', async () => {
@@ -37,7 +37,7 @@ test('reminders are set at the local time, and replace the old ones but nothing 
   const pull = ours.find((n) => n.extra.kind === 'planned');
   assert.equal(pull.id, notificationId('planned:a:2026-11-06'));
   assert.deepEqual([pull.schedule.at.getFullYear(), pull.schedule.at.getMonth(), pull.schedule.at.getDate(), pull.schedule.at.getHours(), pull.schedule.at.getMinutes()], [2026, 10, 6, 17, 30]);
-  assert.equal(pull.extra.route, 'retrieve');
+  assert.equal(pull.extra.route, 'retrieve/day/Session/2');
   // Switched off (empty list): Liftbook's are cleared.
   await native.scheduleReminders([], notificationId);
   assert.deepEqual(LN.state.pending.map((n) => n.id), [7]);

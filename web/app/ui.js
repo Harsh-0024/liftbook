@@ -121,6 +121,7 @@ const ICONS = {
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
   check: '<path d="m5 12 5 5L20 7"/>',
   clipboard: '<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h4"/>',
+  bell: '<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
   calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
   heart: '<path d="M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3 4.8 4.8 0 0 1 9 3c-2 4.6-9 9-9 9z"/>',
   thumbdown: '<path d="M10 15v4a2.5 2.5 0 0 0 2.5 2.5L16 14V3H6.7a2 2 0 0 0-2 1.7L3.3 12a2 2 0 0 0 2 2.3H10zM16 3h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/>',

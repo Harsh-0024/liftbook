@@ -128,7 +128,7 @@ export function upcomingReminders({ now, workoutDays = [], settings: saved = {},
     const away = daysBetween(last, due.slice(0, 10));
     if (away <= usual + 3) {
       keep({
-        key: `gap:${last}`, kind: 'gap', at: due, title: 'Time for a workout?',
+        key: `gap:${last}`, kind: 'gap', at: due, title: 'Time for a workout?', route: 'log',
         body: `${away} days since your last one. You usually train every ${usual === 1 ? 'day' : `${usual} days`}.`,
       });
     }
@@ -149,6 +149,8 @@ export function upcomingReminders({ now, workoutDays = [], settings: saved = {},
         key: `planned:${plan.id}:${day}`, kind: 'planned', at: when, title: plannedTitle(plan),
         body: `Planned for ${plan.time} ${when.slice(0, 10) === day ? 'today' : 'tomorrow'}. Tap to see what to aim for.`,
         plan: plan.id, day,
+        // Tapping it opens that session's targets (or Retrieve when it isn't one of the plan's).
+        route: plan.category && plan.dayId ? `retrieve/day/${encodeURIComponent(plan.category)}/${plan.dayId}` : 'retrieve',
       });
     }
   }

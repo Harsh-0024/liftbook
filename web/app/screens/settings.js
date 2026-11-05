@@ -8,7 +8,9 @@ import { FEEDBACK_KINDS } from '../data.js';
 import { defaultRepRangesText } from '../../core/plans.js';
 import { DEFAULT_PLAN } from '../../core/plans.js';
 import { planDays, customKeys, nicknamesText } from '../../core/sessions.js';
-import { isNative, pickPhoto, saveFile, linkBackUrl } from '../native.js';
+import { isNative, pickPhoto, saveFile, linkBackUrl, remindersSupported, reminderPermission } from '../native.js';
+import { usualGapDays, DEFAULT_GAP_DAYS } from '../../core/reminders.js';
+import { addDays } from '../../core/dates.js';
 
 const SECTIONS = [
   ['profile', 'Profile', 'Name, username, bodyweight, photo'],
@@ -16,6 +18,7 @@ const SECTIONS = [
   ['exercises', 'Exercises', 'Timed, bodyweight, renames'],
   ['shortcuts', 'Apple Shortcuts', 'Log and get workouts from Notes on your iPhone'],
   ['feedback', 'Feedback', 'Tell the developer what works for you, what doesn’t, and what you’d like next.'],
+  ['reminders', 'Reminders', 'A gentle nudge when it’s been longer than usual, and before a workout you’ve planned.'],
   ['sync', 'Sync and data', 'Devices, backup file'],
   ['account', 'Account', 'Password, theme, sign out, delete'],
 ];
@@ -34,7 +37,7 @@ export function settingsScreen(ctx, section) {
   const found = SECTIONS.find(([k]) => k === section);
   if (!found) return index(ctx);
   const [key, title] = found;
-  const body = { profile, plan, exercises, shortcuts, feedback, sync, account }[key](ctx);
+  const body = { profile, plan, exercises, shortcuts, feedback, reminders, sync, account }[key](ctx);
   return h('div', {}, pageHead(title, found[2], { back: '#/settings' }), body);
 }
 
@@ -113,6 +116,7 @@ function index(ctx) {
       h('div', { class: 'group' },
         rowItem({ href: '#/settings/plan', ico: 'plan', title: 'Workout plan and rep ranges', desc: 'Your days, the exercises in them, target reps' }),
         rowItem({ href: '#/settings/exercises', ico: 'dumbbell', title: 'Exercises', desc: 'Timed, bodyweight, renames' }),
+        rowItem({ href: '#/settings/reminders', ico: 'bell', title: 'Reminders', desc: 'When it’s been a while, before a planned workout', value: ctx.lb.reminders().on ? 'On' : 'Off' }),
         rowItem({ href: '#/coach', ico: 'coach', title: 'AI coach', desc: 'Ask about your training' }))),
 
     h('section', { class: 'section' }, h('div', { class: 'label' }, 'Data and connections'),
@@ -135,6 +139,154 @@ function index(ctx) {
 
 function field(label, input, hint) {
   return h('div', { class: 'field' }, h('label', { for: input.id }, label), input, hint ? h('div', { class: 'hint' }, hint) : null);
+}
+
+/* ---------------- reminders ---------------- */
+
+// Today on this device's clock ("YYYY-MM-DD"); toISOString() would give the UTC day.
+const todayHere = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+/** "Every Monday · 19:30" or "Fri 6 Nov · 18:00" */
+const shortDay = (day) => formatDay(day, { year: day.slice(0, 4) !== todayHere().slice(0, 4) });
+
+function plannedWhen(p) {
+  return `${p.date ? shortDay(p.date) : `Every ${WEEKDAYS[p.weekday]}`} · ${p.time}`;
+}
+
+/** "Fri 6 Nov, 17:30" for a reminder's local time. */
+function reminderWhen(stamp) {
+  return `${shortDay(stamp.slice(0, 10))}, ${stamp.slice(11, 16)}`;
+}
+
+/** A setting with its title and explanation on top and its control underneath. */
+function blockRow(ico, title, desc, control, forId = null) {
+  return h('div', { class: 'blk' },
+    h('div', { class: 'row', style: 'gap:14px;margin-bottom:12px;align-items:flex-start;flex-wrap:nowrap' },
+      h('span', { class: 'ico', style: 'color:var(--gold-text);flex:none;margin-top:2px' }, icon(ico)),
+      h(forId ? 'label' : 'div', { ...(forId ? { for: forId } : {}), style: 'margin:0;color:inherit;display:flex;flex-direction:column;gap:2px;flex:1;min-width:0' },
+        h('b', { style: 'font-size:.95rem' }, title), h('span', { class: 'muted', style: 'font-size:.85rem' }, desc))),
+    control);
+}
+
+function reminders(ctx) {
+  const { lb } = ctx;
+  const r = lb.reminders();
+  const redraw = () => ctx.refresh();
+  const days = lb.workouts().map((w) => w.day);
+  const worked = usualGapDays(days, todayHere());
+
+  // The switch. On the phone, turning it on asks Android for permission first.
+  const on = h('input', { type: 'checkbox', class: 'switch', role: 'switch', checked: r.on, 'aria-label': 'Reminders' });
+  on.addEventListener('change', async () => {
+    if (on.checked && remindersSupported && (await reminderPermission({ ask: true })) !== 'granted') {
+      on.checked = false;
+      toast('Notifications are off for Liftbook. Turn them on in Android’s settings, then try again.', 6000);
+      return;
+    }
+    await lb.setReminders({ on: on.checked });
+    toast(on.checked ? 'Reminders on.' : 'Reminders off.');
+    redraw();
+  });
+
+  const time = (id, value, label) => h('input', { type: 'time', id, value, 'aria-label': label, style: 'width:auto;min-width:130px;flex:1' });
+  const from = time('quiet-from', r.quietFrom, 'Quiet from');
+  const to = time('quiet-to', r.quietTo, 'Quiet until');
+  for (const el of [from, to]) {
+    el.addEventListener('change', async () => {
+      if (!from.value || !to.value) return;
+      await lb.setReminders({ quietFrom: from.value, quietTo: to.value });
+      toast('Quiet hours saved.');
+      redraw();
+    });
+  }
+
+  const gap = h('select', { id: 'gap-days', 'aria-label': 'Remind me after' },
+    h('option', { value: 'auto', selected: r.gapDays === 'auto' }, `Usual (${worked ?? DEFAULT_GAP_DAYS} days${worked ? '' : ', until there’s more training'})`),
+    ...Array.from({ length: 14 }, (_, i) => h('option', { value: String(i + 1), selected: r.gapDays === i + 1 }, i ? `${i + 1} days` : '1 day')));
+  gap.addEventListener('change', async () => {
+    await lb.setReminders({ gapDays: gap.value === 'auto' ? 'auto' : Number(gap.value) });
+    toast('Saved.');
+    redraw();
+  });
+
+  // What will happen next, so the settings can be checked at a glance.
+  const next = r.on ? lb.upcomingReminders()[0] : null;
+  const status = !r.on ? 'Off. Nothing is sent.'
+    : next ? `Next: ${reminderWhen(next.at)} · ${next.kind === 'planned' ? next.title : 'if you haven’t trained by then'}`
+      : 'On. Nothing due in the next two weeks.';
+
+  // Planned workouts.
+  const planned = lb.plannedWorkouts();
+  const remove = (id) => async () => {
+    await lb.savePlannedWorkouts(planned.filter((p) => p.id !== id));
+    toast('Removed.');
+    redraw();
+  };
+  const plans = lb.planDays();
+  const sessionChoices = [];
+  for (const [category, dayMap] of Object.entries(plans.workout || {})) {
+    for (const dayName of Object.keys(dayMap || {})) {
+      const id = dayName.slice(category.length).trim();
+      const title = category === 'Session' ? plans.session_titles?.[id] : null;
+      sessionChoices.push({ value: `${category}|${id}`, label: title ? `${dayName} - ${title}` : dayName });
+    }
+  }
+  const pick = h('select', { id: 'plan-session', 'aria-label': 'Which workout' },
+    h('option', { value: '' }, 'Any workout'), ...sessionChoices.map((c) => h('option', { value: c.value }, c.label)));
+  const repeat = h('select', { id: 'plan-repeat', 'aria-label': 'How often' },
+    h('option', { value: 'once' }, 'Once'), h('option', { value: 'weekly' }, 'Every week'));
+  const date = h('input', { type: 'date', id: 'plan-date', value: addDays(todayHere(), 1), min: todayHere(), 'aria-label': 'Day' });
+  const weekday = h('select', { id: 'plan-weekday', 'aria-label': 'Day of the week', hidden: true },
+    ...WEEKDAYS.map((d, i) => h('option', { value: String(i) }, d)));
+  const at = time('plan-time', '18:00', 'Time');
+  repeat.addEventListener('change', () => {
+    date.hidden = repeat.value !== 'once';
+    weekday.hidden = repeat.value === 'once';
+  });
+  const add = h('button', { class: 'btn primary', type: 'button' }, icon('plus'), 'Add');
+  add.addEventListener('click', async () => {
+    if (!at.value || (repeat.value === 'once' && !date.value)) return toast('Pick a day and a time.');
+    const choice = sessionChoices.find((c) => c.value === pick.value);
+    const [category, dayId] = choice ? choice.value.split('|') : [null, null];
+    const item = {
+      id: globalThis.crypto?.randomUUID?.() || `p-${Date.now()}`, time: at.value,
+      title: choice ? choice.label : '', category, dayId: dayId ? Number(dayId) : null,
+      ...(repeat.value === 'once' ? { date: date.value } : { weekday: Number(weekday.value) }),
+    };
+    await lb.savePlannedWorkouts([...planned, item]);
+    toast('Planned.');
+    redraw();
+  });
+
+  return h('div', { class: 'stack' },
+    h('section', { class: 'section' },
+      h('div', { class: 'group' },
+        h('label', { class: 'rowi' }, h('span', { class: 'ico' }, icon('bell')),
+          h('span', { class: 'main' }, h('span', { class: 'title' }, 'Reminders'), h('span', { class: 'desc' }, status)), on)),
+      remindersSupported ? null : h('p', { class: 'foot' },
+        isNative ? 'This version of the app can’t show notifications yet.'
+          : 'Reminders show on your phone in the Liftbook Android app. What you set here is kept for it.')),
+
+    h('section', { class: 'section' }, h('div', { class: 'label' }, 'When it’s been a while'),
+      h('div', { class: 'group' },
+        blockRow('calendar', 'Remind me after', 'Days without a workout. Usual is worked out from the last eight weeks.', gap, 'gap-days')),
+      h('p', { class: 'foot' }, 'It comes at 9:00 the next morning, and once more the day after. Then it stays quiet until you train.')),
+
+    h('section', { class: 'section' }, h('div', { class: 'label' }, 'Quiet hours'),
+      h('div', { class: 'group' },
+        blockRow('moon', 'No reminders between', 'One due then waits until they end.',
+          h('div', { class: 'row', style: 'gap:10px;align-items:center;flex-wrap:wrap' }, from, h('span', { class: 'muted' }, 'and'), to)))),
+
+    h('section', { class: 'section' }, h('div', { class: 'label' }, 'Planned workouts'),
+      h('div', { class: 'group' },
+        ...planned.map((p) => h('div', { class: 'rowi' }, h('span', { class: 'ico' }, icon('dumbbell')),
+          h('span', { class: 'main' }, h('span', { class: 'title' }, p.title || 'Workout'), h('span', { class: 'desc' }, plannedWhen(p))),
+          h('button', { class: 'btn', type: 'button', 'aria-label': `Remove ${p.title || 'workout'}, ${plannedWhen(p)}`, onclick: remove(p.id) }, icon('trash')))),
+        h('div', { class: 'blk stack', style: 'gap:10px' },
+          field('Workout', pick), h('div', { class: 'row', style: 'gap:10px;flex-wrap:wrap' }, repeat, date, weekday, at), add)),
+      h('p', { class: 'foot' }, 'A reminder comes 30 minutes before, unless you’ve already logged a workout that day.')));
 }
 
 /* ---------------- profile ---------------- */

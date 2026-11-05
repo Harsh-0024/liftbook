@@ -120,7 +120,7 @@ export async function scheduleReminders(list, idOf) {
       notifications: list.map((r) => ({
         id: idOf(r.key), title: r.title, body: r.body,
         schedule: { at: localTime(r.at), allowWhileIdle: true },
-        extra: { liftbook: true, kind: r.kind, route: r.kind === 'planned' ? 'retrieve' : 'log', day: r.day || null },
+        extra: { liftbook: true, kind: r.kind, route: r.route || '', day: r.day || null },
       })),
     });
     return list.length;
