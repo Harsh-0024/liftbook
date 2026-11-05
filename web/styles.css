@@ -64,7 +64,7 @@
     --text: #1a1a1a;
     --text-2: #2d2d2d;
     --muted: #676767;
-    --subtle: #737373;
+    --subtle: #6b6b6b; /* 4.5:1+ on every light surface (#737373 was 4.1-4.3) */
     --gold: #c9a961;
     --gold-bright: #d4af37;
     --gold-text: #8a6512;
@@ -72,7 +72,7 @@
     --gold-soft: rgba(201, 169, 97, 0.1);
     --gold-glow: rgba(201, 169, 97, 0.25);
     --glow: rgba(201, 169, 97, 0.07);
-    --on-gold: #fff;
+    --on-gold: #1a1a1a; /* dark on gold, as in dark mode: white on this gold was 2.3-3.2:1 */
     --good: #15803d;
     --bad: #b91c1c;
     --bad-soft: rgba(220, 38, 38, 0.07);
@@ -99,7 +99,7 @@
   --text: #1a1a1a;
   --text-2: #2d2d2d;
   --muted: #676767;
-  --subtle: #737373;
+  --subtle: #6b6b6b; /* 4.5:1+ on every light surface (#737373 was 4.1-4.3) */
   --gold: #c9a961;
   --gold-bright: #d4af37;
   --gold-text: #8a6512;
@@ -107,7 +107,7 @@
   --gold-soft: rgba(201, 169, 97, 0.1);
   --gold-glow: rgba(201, 169, 97, 0.25);
   --glow: rgba(201, 169, 97, 0.07);
-  --on-gold: #fff;
+  --on-gold: #1a1a1a; /* dark on gold, as in dark mode: white on this gold was 2.3-3.2:1 */
   --good: #15803d;
   --bad: #b91c1c;
   --bad-soft: rgba(220, 38, 38, 0.07);
@@ -359,7 +359,7 @@ input.inline-num { width: 84px; padding: 7px 10px; text-align: right; font-weigh
 .nums .gold b { color: var(--gold-text); }
 .nums .good b { color: var(--good); }
 .nums .bad b { color: var(--bad); }
-.nums .zero b { color: var(--subtle); opacity: 0.55; }
+.nums .zero b { color: var(--subtle); opacity: 0.8; } /* quieter than a count, still 3:1+ */
 
 /* ---------- buttons ---------- */
 .btn {
