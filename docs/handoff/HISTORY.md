@@ -11,7 +11,8 @@ Read `CONTEXT.md` (same folder) first.
 | 3. Reminders | `feature/reminders` | `design/aesthetic-overhaul` @ 9076371 | done (phone check pending) |
 | 4. Widget | `feature/widget` | `feature/reminders` @ b8e1872 | done (phone check pending) |
 
-The newest copy of these two books is on the branch that is "in progress".
+The newest copy of these two books is on **`feature/widget`** (the last branch worked on). Older
+copies on the other branches stop at the step done there.
 
 ## Log
 
