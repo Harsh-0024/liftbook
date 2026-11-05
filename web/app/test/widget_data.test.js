@@ -52,3 +52,13 @@ test('with no plan at all it offers to log a workout', async () => {
   assert.deepEqual(w.lines, []);
   assert.equal(w.route, 'log');
 });
+
+test('the widget gets a summary for each of the next seven days, so a planned day shows on its day', async () => {
+  const lb = await app();
+  await lb.savePlannedWorkouts([{ id: 'x', date: '2026-11-06', time: '07:00', title: 'Session 2 - Pull', category: 'Session', dayId: 2 }]);
+  const days = lb.widgetDays(THU);
+  assert.deepEqual(Object.keys(days), ['2026-11-05', '2026-11-06', '2026-11-07', '2026-11-08', '2026-11-09', '2026-11-10', '2026-11-11']);
+  assert.equal(days['2026-11-05'].heading, 'Next');
+  assert.equal(days['2026-11-06'].heading, 'Today · 07:00');
+  assert.equal(days['2026-11-06'].title, 'Session 2 - Pull');
+});

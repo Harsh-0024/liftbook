@@ -129,6 +129,21 @@ export async function scheduleReminders(list, idOf) {
   }
 }
 
+/* ---------------- home-screen widget (Android app) ---------------- */
+
+/** Hands the widget its summaries ({ "YYYY-MM-DD": summary }), or clears it (null). */
+export async function updateWidget(days) {
+  const W = plugins.LiftbookWidget;
+  if (!isNative || !W) return false;
+  try {
+    if (days) await W.update({ days });
+    else await W.clear();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** Tapping a reminder: `open(route)` ("retrieve" or "log"). */
 export function onReminderTap(open) {
   plugins.LocalNotifications?.addListener?.('localNotificationActionPerformed', (e) => {

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Long-press the app icon: Log workout, Today's workout. Each opens that page of the app
+     (in.liftbook.app://open#/..., handled by onLink in web/app/main.js). -->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="log"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/shortcut_log_short"
+        android:shortcutLongLabel="@string/shortcut_log_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="in.liftbook.app://open#/log"
+            android:targetPackage="in.liftbook.app"
+            android:targetClass="in.liftbook.app.MainActivity" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="retrieve"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/shortcut_retrieve_short"
+        android:shortcutLongLabel="@string/shortcut_retrieve_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="in.liftbook.app://open#/retrieve"
+            android:targetPackage="in.liftbook.app"
+            android:targetClass="in.liftbook.app.MainActivity" />
+    </shortcut>
+</shortcuts>

@@ -51,10 +51,17 @@ helper needs is here; the history says what's done and what's next.
 - An earlier branch, `harsh024/affectionate-brown-l39qhv`, changed the **old Flask app** by
   mistake (time zone, gold contrast). Not to be used; left in place (never delete branches).
 
+- Reminder settings and planned workouts live in the synced `app_settings` row (no Supabase
+  change). Reminders: the phone's own notifications (`@capacitor/local-notifications`).
+- The widget: native Android (Java) in `android/app/src/main/java/in/liftbook/app/`, fed by the
+  app through its own small plugin `LiftbookWidget` with summaries for the next 7 days.
+- Old website workouts are fixed by the import script, not by SQL on Supabase (can't move twice).
+
 ## Open questions for the owner (not answered yet)
 - How will the Mac and Windows apps be made (Electron, Tauri, or the web app installed from
   Chrome/Edge)? Decides what reminders can do there.
 - Is an iPhone version still planned?
+- After a phone test: are reminder times right (gap at 9:00, planned 30 min before)?
 
 ## Findings that the work is based on
 - **Item 1:** Stats (`web/core/stats.js`, `DEFAULT_TZ_OFFSET_MINUTES = 330`) adds 5h30 to every

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The widget's colours (light; values-night/ has the dark ones) and text, as in the app. -->
+<resources>
+    <color name="widget_bg">#FCFAF7</color>
+    <color name="widget_line">#33C9A961</color>
+    <color name="widget_text">#1A1A1A</color>
+    <color name="widget_muted">#666666</color>
+    <color name="widget_gold">#8A6512</color>
+    <color name="widget_gold_fill">#D4AF37</color>
+    <color name="widget_on_gold">#0B0B0C</color>
+
+    <string name="widget_log">+ Log</string>
+    <string name="shortcut_log_short">Log</string>
+    <string name="shortcut_log_long">Log workout</string>
+    <string name="shortcut_retrieve_short">Retrieve</string>
+    <string name="shortcut_retrieve_long">Today\'s workout</string>
+    <string name="widget_open_app">Open Liftbook once to fill this in</string>
+    <string name="widget_description">Today\'s planned workout or your next session, what to aim for, and a quick Log button.</string>
+
+    <style name="WidgetLine">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">3dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">@color/widget_text</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+</resources>

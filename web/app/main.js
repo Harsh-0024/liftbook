@@ -14,7 +14,7 @@ import { retrieveScreen, retrieveDayScreen, retrieveCustomScreen } from './scree
 import { statsScreen } from './screens/stats.js';
 import { settingsScreen } from './screens/settings.js';
 import { coachScreen } from './screens/coach.js';
-import { isNative, startNative, wantsApp, appHandOff, scheduleReminders, onReminderTap } from './native.js';
+import { isNative, startNative, wantsApp, appHandOff, scheduleReminders, onReminderTap, updateWidget } from './native.js';
 import { notificationId } from '../core/reminders.js';
 import { installShortcuts } from './shortcuts.js';
 
@@ -27,13 +27,16 @@ const dbName = (uid) => `liftbook-${uid}`;
 let ctx = null; // the signed-in app: {lb, store, sync, client, ...}
 let stopSync = null;
 
-// The phone's reminders follow the workouts and settings: worked out again shortly after any
-// change (here or synced in) and when the app comes back to the front; cleared on sign-out.
+// The phone's reminders and home-screen widget follow the workouts and settings: worked out
+// again shortly after any change (here or synced in) and when the app comes back to the front;
+// cleared on sign-out.
 let reminderTimer = null;
 function refreshReminders(delay = 1500) {
   clearTimeout(reminderTimer);
   reminderTimer = setTimeout(() => {
-    if (ctx) scheduleReminders(ctx.lb.upcomingReminders(), notificationId);
+    if (!ctx) return;
+    scheduleReminders(ctx.lb.upcomingReminders(), notificationId);
+    updateWidget(ctx.lb.widgetDays());
   }, delay);
 }
 let current = null; // the screen on show: {name, live}
@@ -232,6 +235,7 @@ async function signOut({ force = false } = {}) {
   stopSync?.();
   clearTimeout(reminderTimer);
   await scheduleReminders([], notificationId);
+  await updateWidget(null);
   await ctx.store.backend.close?.();
   ctx = null;
   pill.hidden = true;
@@ -295,6 +299,11 @@ async function boot() {
     // An emailed link opened the app: start again from it, the way the website does.
     onLink(url) {
       const hash = String(url).includes('#') ? `#${String(url).split('#')[1]}` : '';
+      // The widget opens a page (in.liftbook.app://open#/log): just go there.
+      if (/^in\.liftbook\.app:\/\/open/.test(String(url))) {
+        if (hash) location.hash = hash;
+        return;
+      }
       try {
         if (!hash || sessionStorage.getItem('liftbook-link') === url) return;
         sessionStorage.setItem('liftbook-link', url);

@@ -491,6 +491,19 @@ export class Liftbook {
     };
   }
 
+  /** The widget's summary for today and the next days: { "YYYY-MM-DD": summary } (the widget
+   *  picks the day it is, so a planned workout shows on its day even if the app isn't opened). */
+  widgetDays(now = new Date(), count = 7) {
+    const p = (n) => String(n).padStart(2, '0');
+    const out = {};
+    for (let i = 0; i < count; i++) {
+      // Each day at its start (today: now), so "Today · 18:30" is about that day.
+      const d = i ? new Date(now.getFullYear(), now.getMonth(), now.getDate() + i, 0, 1) : now;
+      out[`${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`] = this.widgetSummary(d);
+    }
+    return out;
+  }
+
   retrieveDay(category, dayId) {
     const [text, exercises, sets] = retrieveDay(category, dayId, { planText: this.planText(), ...this.retrieveContext() });
     return { text, exercises, sets, described: describeRetrieveOutput(text) };

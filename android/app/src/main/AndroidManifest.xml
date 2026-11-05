@@ -19,6 +19,8 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- Long-press the icon: Log workout, Today's workout (res/xml/shortcuts.xml). -->
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts" />
 
             <!-- Emailed links (sign-up, password reset, email change) come back as in.liftbook.app://auth#... -->
             <intent-filter>
@@ -27,7 +29,25 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="in.liftbook.app" android:host="auth" />
             </intent-filter>
+
+            <!-- The home-screen widget opens a page of the app: in.liftbook.app://open#/log -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="in.liftbook.app" android:host="open" />
+            </intent-filter>
         </activity>
+
+        <!-- Home-screen widget: today's planned workout or the next session (LiftbookWidget.java). -->
+        <receiver
+            android:name=".LiftbookWidget"
+            android:exported="false"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/liftbook_widget_info" />
+        </receiver>
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -9,7 +9,7 @@ Read `CONTEXT.md` (same folder) first.
 | 1. Today / time zone | `improve/one-clock` | `design/aesthetic-overhaul` @ 9076371 | done |
 | 2. Light-mode gold | `improve/light-contrast` | `design/aesthetic-overhaul` @ 9076371 | done |
 | 3. Reminders | `feature/reminders` | `design/aesthetic-overhaul` @ 9076371 | done (phone check pending) |
-| 4. Widget | `feature/widget` | `feature/reminders` @ b8e1872 | in progress |
+| 4. Widget | `feature/widget` | `feature/reminders` @ b8e1872 | done (phone check pending) |
 
 The newest copy of these two books is on the branch that is "in progress".
 
@@ -156,3 +156,39 @@ The newest copy of these two books is on the branch that is "in progress".
   info `res/xml/liftbook_widget_info.xml`), registered in `MainActivity` and the manifest. Taps
   open `in.liftbook.app://open#/<route>`; "Log" opens `#/log`. Then `native.js` `updateWidget()`
   called with the reminders refresh.
+
+### 2026-11-05 — Item 4, step 2: the Android home-screen widget and icon shortcuts
+- Native (Java, `android/app/src/main/java/in/liftbook/app/`):
+  - `LiftbookWidget.java` (AppWidgetProvider): reads the summaries from SharedPreferences
+    (`liftbook_widget` / `days`), draws today's: heading, title, up to 4 "Exercise · aim" lines,
+    "+ N more", and a "+ Log" button. Tap the widget: that session's targets; "+ Log": Log. Links
+    are `in.liftbook.app://open#/<route>`. Redrawn when the app sends new summaries and every 30 min.
+  - `WidgetBridgePlugin.java`: the app's own Capacitor plugin `LiftbookWidget` with `update({ days })`
+    and `clear()`. Registered in `MainActivity.java` (`registerPlugin`).
+  - Resources: `res/layout/widget_liftbook.xml`, `res/xml/liftbook_widget_info.xml` (4x2 cells,
+    resizable), `res/drawable/widget_bg.xml`, `widget_button.xml`, colours and text in
+    `res/values/widget.xml` and `res/values-night/widget.xml` (light and dark, as the app).
+  - Manifest: the widget receiver, an `in.liftbook.app://open` link filter, and long-press icon
+    shortcuts (`res/xml/shortcuts.xml`: Log workout, Today's workout).
+- App side: `data.js widgetDays(now)` (summary for each of the next 7 days, so a planned day shows
+  on its day without opening the app); `native.js updateWidget(days | null)`; `main.js` sends them
+  with every reminders refresh, clears on sign-out, and opens `open#/...` links without reloading.
+- Website / Android web app: `web/manifest.webmanifest` gets the same two long-press shortcuts
+  (Chrome on Android shows them for the installed web app). No widget there: not possible.
+- Checked: `npm test` 80 pass (new `widget_native.test.js`, more in `widget_data.test.js`); the Java
+  compiles (`javac`) against stand-ins of the Android/Capacitor classes, and every Capacitor
+  method used was checked against Capacitor's own source; all XML parses.
+- **Not checked (no Android SDK here):** an Android build and the widget on a phone. To try:
+  `npm run android:debug`, install, open the app once, long-press the home screen > Widgets >
+  Liftbook. If the build fails, the error will most likely be in one of the files above.
+
+## Where things stand (end of 2026-11-05 session)
+All four items are built, each on its own branch, all pushed; none merged (the owner decides).
+- `improve/one-clock` (item 1) and `improve/light-contrast` (item 2): from `design/aesthetic-overhaul`.
+- `feature/reminders` (item 3) from `design/aesthetic-overhaul`; `feature/widget` (item 4) on top of it.
+- Merging all: `todayHere()` in settings.js (reminders) can become `deviceDay()` (one-clock).
+  Light-mode "Add" / gold buttons get dark text once `improve/light-contrast` is in.
+- **Owner's steps:** (1) before the switch to the new app, rerun the import
+  (`scripts/import_to_supabase.py --dry-run`, then without) so old workouts land on the right day;
+  (2) build the Android app and try reminders and the widget on a phone; (3) answer the open
+  questions in CONTEXT.md (desktop apps, iPhone).
