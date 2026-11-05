@@ -21,6 +21,13 @@ Passwords carry over as they are: both apps use bcrypt, so everyone signs in
 with the password they already have. Accounts without an email can't sign in
 to Supabase with a password; they are listed at the end.
 
+Workout times: the old app saved an undated workout with its server's clock
+(UTC), and a dated one as midnight of that day. The new app keeps every
+workout in the person's own clock time, so undated ones (any time but exactly
+midnight) are moved to LIFTBOOK_TIME_ZONE (India by default) as they are
+copied: one saved at 1:30 am in India lands on that day, not the night before.
+A workout already in Supabase gets the moved time on the next run.
+
 Not copied: `lifts` (the app works it out from the workouts), email codes
 (Supabase Auth sends its own), the app icon (a file in the new app) and
 profile photos (they move from R2 separately).
@@ -35,6 +42,7 @@ import sys
 import uuid
 from collections import Counter
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 import psycopg2
 import psycopg2.extras
@@ -52,6 +60,22 @@ def utc(value):
     if value is None:
         return None
     return value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value
+
+
+# The people's time zone: undated old workouts were stamped in UTC and move to it.
+LOCAL_ZONE = ZoneInfo(os.environ.get("LIFTBOOK_TIME_ZONE", "Asia/Kolkata"))
+
+
+def local_workout_time(value: datetime) -> datetime:
+    """An old workout_logs.date as the person's own clock time (no zone), as the new app keeps it.
+
+    Exactly midnight: a date written in the workout, already the person's day; kept.
+    Anything else: the old server's clock (UTC) when an undated workout was saved; moved."""
+    if value is None or value.tzinfo is not None:
+        return value
+    if (value.hour, value.minute, value.second, value.microsecond) == (0, 0, 0, 0):
+        return value
+    return value.replace(tzinfo=timezone.utc).astimezone(LOCAL_ZONE).replace(tzinfo=None)
 
 
 def rows(cur, sql: str):
@@ -236,11 +260,16 @@ def import_logs(src, dst, user_ids, counts):
     for r in rows(src, "select * from workout_logs order by id"):
         if r["user_id"] not in user_ids:
             continue
+        when = local_workout_time(r["date"])
+        if when != r["date"]:
+            counts["workout times moved from UTC to local time"] += 1
+            if when.date() != r["date"].date():
+                counts["  ...of which now on a different (the right) day"] += 1
         upsert(dst, "workout_logs", ("user_id", "id"), {
             "user_id": user_ids[r["user_id"]],
             "id": new_id("workout_logs", r["id"]),
             "legacy_id": r["id"],
-            "date": r["date"],
+            "date": when,
             "workout_name": r["workout_name"],
             "exercise": r["exercise"],
             "exercise_string": r["exercise_string"],
