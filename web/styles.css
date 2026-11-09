@@ -1008,3 +1008,8 @@ label.rowi { cursor: pointer; }
 .btn.danger.solid { background: var(--bad); border-color: var(--bad); color: #fff; }
 .btn.danger.solid:hover { background: var(--bad); color: #fff; filter: brightness(1.08); }
 @media (prefers-reduced-motion: reduce) { .ask-dialog[open], .keys-dialog[open] { animation: none; } }
+
+/* ---------- small polish: sync rows ---------- */
+.sync-lines { display: flex; flex-direction: column; gap: 2px; }
+.group > .blk .date-pair { gap: 12px; }
+.group > .blk .field { margin: 0; }
