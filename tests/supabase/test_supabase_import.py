@@ -453,6 +453,7 @@ def test_share_links(databases):
     assert shown["username"] == "harsh"
     assert shown["workout_name"] == "Push"
     assert [(e["exercise"], e["best"]) for e in shown["exercises"]] == [("Bench Press", True), ("Dip", False)]
+    assert shown["exercises"][0]["gain"] > 0 and shown["exercises"][1]["gain"] is None  # "+x%" past the old best
     assert shown["exercises"][0]["sets"] == {"weights": [85], "reps": [5]}
     assert "bodyweight" not in str(shown) and str(owner) not in str(shown)
     assert view("authenticated", friend) == shown

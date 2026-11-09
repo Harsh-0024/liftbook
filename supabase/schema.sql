@@ -696,12 +696,10 @@ as $$
     ), logs as (
         select l.*,
                row_number() over (order by l.date, l.created_at, l.id) as n,
-               (l.estimated_1rm is not null and l.estimated_1rm > (
-                   select max(e.estimated_1rm) from public.workout_logs e
-                   where e.user_id = l.user_id and e.deleted_at is null
-                     and lower(e.exercise) = lower(l.exercise)
-                     and e.date < link.day::timestamp
-               )) as best
+               (select max(e.estimated_1rm) from public.workout_logs e
+                where e.user_id = l.user_id and e.deleted_at is null
+                  and lower(e.exercise) = lower(l.exercise)
+                  and e.date < link.day::timestamp) as prev_best
         from public.workout_logs l
         join link on l.user_id = link.user_id
         where l.deleted_at is null
@@ -716,7 +714,10 @@ as $$
             'exercise', exercise,
             'exercise_string', exercise_string,
             'sets', sets,
-            'best', coalesce(best, false)
+            'best', coalesce(estimated_1rm > prev_best, false),
+            -- how far past the old best, in percent (null when it isn't a new best)
+            'gain', case when estimated_1rm > prev_best and prev_best > 0
+                         then round(((estimated_1rm / prev_best - 1) * 100)::numeric, 1) end
         ) order by n)
     )
     from logs

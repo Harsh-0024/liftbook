@@ -2,7 +2,7 @@
 // is "share links" in supabase/schema.sql: the link holds a random token, and opening it shows
 // that day as it is now. Making and stopping a link needs the internet; the rest of the app doesn't.
 
-import { h, icon, pageHead, formatDay, copyText, toast, busy } from './ui.js';
+import { h, icon, pageHead, formatDay, copyText, toast, busy, fmtNum } from './ui.js';
 import { formatSetsDisplay } from '../core/logging.js';
 import { WEB_APP_URL } from '../config.js';
 import { isNative } from './native.js';
@@ -113,36 +113,53 @@ export function sharedScreen(client, token, { signedIn = false } = {}) {
       return;
     }
     const after = signedIn
-      ? h('a', { class: 'btn', href: '#/' }, 'Your workouts')
-      : h('div', { class: 'card', style: 'margin-top:18px' },
-        h('h2', {}, 'Liftbook'),
-        h('p', { class: 'muted' }, 'Log your workouts by pasting them from Notes, and see how each lift is going.'),
-        h('div', { class: 'row' }, h('a', { class: 'btn primary', href: '#/signup' }, 'Create an account'), h('a', { class: 'btn', href: '#/signin' }, 'Sign in')));
+      ? h('div', { class: 'row', style: 'margin-top:18px' }, h('a', { class: 'btn', href: '#/' }, icon('home'), 'Your workouts'))
+      : h('section', { class: 'card share-cta' },
+        h('div', { class: 'auth-brand' }, h('img', { class: 'logo', src: 'icons/icon-192.png', alt: '', width: 40, height: 40 }), h('span', {}, 'Liftbook')),
+        h('h2', {}, w?.username ? `Train like ${w.username}.` : 'Your workouts, in one place.', h('br'), 'Log it in seconds.'),
+        h('p', { class: 'muted' }, 'Keep writing your workouts in Notes. Paste one into Liftbook and it turns into personal bests and progress you can see, on every device, even offline.'),
+        h('ul', { class: 'share-feats' },
+          [['clipboard', 'Paste and done', 'No forms: paste your note, or type it the same way.'],
+            ['medal', 'Automatic personal bests', 'A medal every time you beat your best.'],
+            ['stats', 'Progress you can trust', 'Trends that see past one-off good or bad days.']]
+            .map(([ico, t, d]) => h('li', {}, h('span', { class: 'share-feat-ico' }, icon(ico)), h('div', {}, h('b', {}, t), h('span', {}, d))))),
+        h('div', { class: 'row' }, h('a', { class: 'btn primary', href: '#/signup' }, 'Start free'), h('a', { class: 'btn', href: '#/signin' }, 'Sign in')));
     if (!w) {
       document.title = 'Link not found · Liftbook';
-      page.replaceChildren(pageHead('Link not found', 'This workout isn’t shared any more: its owner stopped sharing it, or deleted it.'), after);
+      page.replaceChildren(pageHead('Link not found', 'This workout isn’t shared any more: its owner stopped sharing it, or deleted it. Ask them for a new link.'), after);
       return;
     }
     const ex = w.exercises || [];
     const sets = ex.reduce((n, e) => n + (Array.isArray(e.sets?.reps) ? e.sets.reps.length : 0), 0);
     const bests = ex.filter((e) => e.best).length;
     const url = location.href;
-    document.title = `${w.workout_name || 'Workout'} · Liftbook`;
+    const who = w.username || 'Someone';
+    const plural = (n, word) => `${word}${n === 1 ? '' : 's'}`;
+    document.title = `${w.workout_name || 'Workout'} · ${who} · Liftbook`;
     page.replaceChildren(
-      h('h1', { class: 'wo-title' }, w.workout_name || 'Workout'),
-      h('p', { class: 'wo-meta' }, h('span', {}, w.username ? `Shared by ${w.username}` : 'Shared'), h('span', {}, formatDay(w.day)),
-        h('span', {}, `${ex.length} exercise${ex.length === 1 ? '' : 's'}`), sets ? h('span', {}, `${sets} set${sets === 1 ? '' : 's'}`) : null,
-        bests ? h('span', {}, `${bests} new best${bests === 1 ? '' : 's'}`) : null),
-      h('div', { class: 'group', style: 'margin-top:18px' }, ex.map((e) => {
-        const shown = formatSetsDisplay(e.sets) || String(e.exercise_string || '').split('\n').slice(1).join(', ');
-        return h('div', { class: 'ex-row' },
-          h('div', { class: 'main' },
-            h('div', { class: 'title' }, e.exercise),
-            h('div', { class: 'sets' }, String(shown).split(/,\s*/).filter(Boolean).map((t) => h('span', {}, t.replace(/ x /g, '×'))))),
-          e.best ? h('div', { class: 'vs' }, h('span', { class: 'pill best' }, icon('medal'), 'New best')) : null);
-      })),
-      h('div', { class: 'row', style: 'margin-top:6px' },
-        h('button', { class: 'btn', type: 'button', onclick: () => copyText(sharedText(w, url)) }, icon('copy'), 'Copy as text')),
+      h('section', { class: 'card share-hero' },
+        h('div', { class: 'share-by' }, h('span', { class: 'share-avatar', 'aria-hidden': 'true' }, who.slice(0, 1).toUpperCase()),
+          h('span', {}, h('b', {}, who), h('span', { class: 'muted' }, 'shared a workout'))),
+        h('h1', {}, w.workout_name || 'Workout'),
+        h('p', { class: 'muted' }, formatDay(w.day)),
+        h('div', { class: 'nums', style: '--cols:3' },
+          h('div', {}, h('b', {}, ex.length), h('span', {}, plural(ex.length, 'Exercise'))),
+          h('div', {}, h('b', {}, sets), h('span', {}, plural(sets, 'Set'))),
+          h('div', { class: bests ? 'gold' : 'zero' }, h('b', {}, bests), h('span', {}, plural(bests, 'New best'))))),
+      h('div', { class: 'group share-list' },
+        h('div', { class: 'share-list-head' }, h('span', {}, 'The workout'),
+          h('button', { class: 'btn small', type: 'button', onclick: () => copyText(sharedText(w, url)) }, icon('copy'), 'Copy')),
+        ex.map((e, i) => {
+          const shown = formatSetsDisplay(e.sets) || String(e.exercise_string || '').split('\n').slice(1).join(', ');
+          return h('div', { class: 'ex-row' },
+            h('span', { class: 'share-num' }, String(i + 1).padStart(2, '0')),
+            h('div', { class: 'main' },
+              h('div', { class: 'title' }, e.exercise),
+              h('div', { class: 'sets' }, String(shown).split(/,\s*/).filter(Boolean).map((t) => h('span', {}, t.replace(/ x /g, '×'))))),
+            e.best ? h('div', { class: 'vs' }, h('span', { class: 'pill best', title: 'New personal best' }, icon('medal'),
+              e.gain ? `+${fmtNum(e.gain)}%` : 'New best')) : null);
+        })),
+      h('div', { class: 'share-end', role: 'separator' }, h('span', {}, 'End of workout')),
       after);
   };
   load();

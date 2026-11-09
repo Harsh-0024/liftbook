@@ -696,3 +696,27 @@ label.rowi { cursor: pointer; }
 .share-box:empty { display: none; }
 .share-card { margin-top: 14px; }
 .share-url { display: block; word-break: break-all; font-size: 0.85rem; color: var(--text); }
+/* The page a share link opens */
+.share-hero { text-align: center; padding: 26px 18px 6px; background: radial-gradient(120% 70% at 50% 0%, var(--gold-soft), transparent 70%), var(--surface); }
+.share-hero h1 { margin: 14px 0 4px; }
+.share-hero > .muted { margin: 0 0 6px; }
+.share-hero .nums { border-top: 1px solid var(--hair); margin: 14px -18px 0; }
+.share-by { display: inline-flex; align-items: center; gap: 10px; padding: 5px 14px 5px 5px; border: 1px solid var(--line-gold); border-radius: 999px; background: var(--gold-soft); text-align: left; }
+.share-by > span:last-child { display: flex; flex-direction: column; line-height: 1.2; font-size: 0.85rem; }
+.share-by .muted { font-size: 0.72rem; }
+.share-avatar { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: var(--gold-text); border: 1px solid var(--line-gold); background: var(--bg); }
+.share-list { margin-top: 18px; }
+.share-list-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid var(--hair); }
+.share-list-head > span { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.share-num { flex: none; align-self: flex-start; padding-top: 2px; font: 600 0.75rem var(--mono); color: var(--subtle); }
+.share-end { display: flex; align-items: center; gap: 12px; margin: 26px 0 18px; font-size: 0.64rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--subtle); }
+.share-end::before, .share-end::after { content: ""; flex: 1; border-top: 1px solid var(--hair); }
+.share-cta { text-align: center; padding: 26px 20px; }
+.share-cta .auth-brand { margin-bottom: 14px; }
+.share-cta h2 { margin: 0 0 10px; }
+.share-cta .row { justify-content: center; }
+.share-feats { list-style: none; margin: 18px 0; padding: 0; display: grid; gap: 12px; text-align: left; }
+.share-feats li { display: flex; gap: 12px; align-items: flex-start; }
+.share-feats b, .share-feats span { display: block; }
+.share-feats div > span { color: var(--muted); font-size: 0.85rem; }
+.share-feat-ico { flex: none; width: 34px; height: 34px; border-radius: 10px; display: grid !important; place-items: center; color: var(--gold-text); background: var(--gold-soft); border: 1px solid var(--line-gold); }
