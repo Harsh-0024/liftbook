@@ -1,7 +1,7 @@
 // Settings: profile, plan and rep ranges, exercises (timed, bodyweight, renames), feedback,
 // sync and the account.
 
-import { h, icon, rowItem, pageHead, toast, busy, ago, formatDay, fmtNum, copyText } from '../ui.js';
+import { h, icon, rowItem, pageHead, toast, busy, ago, formatDay, fmtNum, copyText, ask } from '../ui.js';
 import { avatar } from './home.js';
 import { Online } from '../online.js';
 import { FEEDBACK_KINDS } from '../data.js';
@@ -632,6 +632,7 @@ function bulkImport(ctx) {
     meta.textContent = !ta.value.trim() ? 'Nothing is saved yet'
       : days.length ? `${days.length} day${days.length === 1 ? '' : 's'} found · nothing saved yet` : 'No days found: start each day with a date like 03/02';
     if (!days.length) return result.replaceChildren();
+    const left = days.filter((d) => d.status === 'ready').reduce((k, d) => k + (d.check.errors?.length || 0), 0);
     const dated = days.filter((d) => d.status !== 'failed').map((d) => d.date).sort();
     result.replaceChildren(
       h('section', { class: 'section' },
@@ -639,7 +640,8 @@ function bulkImport(ctx) {
         h('div', { class: 'grid-3' },
           h('div', { class: 'stat' }, h('span', {}, 'Ready'), h('b', { class: 'gold' }, ready)),
           h('div', { class: 'stat' }, h('span', {}, 'Already in'), h('b', {}, n('skipped'))),
-          h('div', { class: 'stat' }, h('span', {}, 'Failed'), h('b', {}, n('failed'))))),
+          h('div', { class: 'stat' }, h('span', {}, 'Failed'), h('b', {}, n('failed')))),
+        left ? h('p', { class: 'bulk-warn', style: 'margin:10px 4px 0' }, `${left} line${left === 1 ? '' : 's'} not understood: ${left === 1 ? 'it is' : 'they are'} left out of the days below. Fix ${left === 1 ? 'it' : 'them'} above to keep ${left === 1 ? 'it' : 'them'}.`) : null),
       h('section', { class: 'section' }, h('div', { class: 'group' }, days.map((d) => {
         const [ico, word] = STATUS[d.status];
         const c = d.check;
@@ -649,7 +651,10 @@ function bulkImport(ctx) {
           h('span', { class: 'ico' }, icon(ico)),
           h('span', { class: 'main' },
             h('span', { class: 'title' }, c?.parsed ? `${formatDay(d.date)} · ${c.parsed.workout_name || 'Workout'}` : d.text.split('\n')[0]),
-            h('span', { class: 'desc' }, notes)),
+            h('span', { class: 'desc' }, notes),
+            // Lines a ready day leaves out, as the old page's "Exercise lines not understood".
+            d.status === 'ready' && c.errors?.length
+              ? h('span', { class: 'desc bulk-warn' }, `Left out: ${c.errors.join(' ')}`) : null),
           h('span', { class: 'value' }, word));
       }))));
   };
@@ -660,7 +665,7 @@ function bulkImport(ctx) {
   });
   go.addEventListener('click', busy(go, async () => {
     const ready = days.filter((d) => d.status === 'ready').length;
-    if (!ready || !confirm(`Import ${ready} workout day${ready === 1 ? '' : 's'}?`)) return;
+    if (!ready || !await ask(`${ready} workout day${ready === 1 ? '' : 's'} will be added to your history.`, { title: `Import ${ready} day${ready === 1 ? '' : 's'}?`, yes: 'Import' })) return;
     const r = await lb.bulkImport(ta.value);
     toast(`${r.saved} workout${r.saved === 1 ? '' : 's'} imported.`);
     ctx.go('history');
