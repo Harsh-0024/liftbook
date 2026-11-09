@@ -619,3 +619,109 @@ begin
         with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = (select auth.uid())::text);
 end;
 $$;
+
+-- --------------------------------------------------------------------------
+-- share links
+-- --------------------------------------------------------------------------
+-- A link anyone can open, signed in or not, for one day's workout. The link
+-- holds a random token, not the person's id. Opening it shows that day's
+-- workout as it is now: the exercises and sets, which ones were new bests,
+-- and the owner's username. Edits show up, and a deleted workout shows as not
+-- found. Nothing else of theirs is shown: no bodyweight, no other days. Stop
+-- sharing removes the token, so the link stops working for good; sharing the
+-- day again makes a new one.
+create table if not exists public.share_links (
+    token      text primary key check (token ~ '^[0-9a-f]{32}$'),
+    user_id    uuid not null references auth.users (id) on delete cascade,
+    day        date not null,
+    created_at timestamptz not null default now(),
+    unique (user_id, day)
+);
+alter table public.share_links enable row level security;
+revoke all on public.share_links from anon, authenticated;
+grant select (token, day, created_at) on public.share_links to authenticated;
+drop policy if exists own_read on public.share_links;
+create policy own_read on public.share_links for select to authenticated
+    using (user_id = (select auth.uid()));
+
+-- The link's token for one of your days; the same one again if the day is
+-- already shared.
+create or replace function public.share_day(share_day date)
+returns text
+language plpgsql
+volatile
+security definer
+set search_path = ''
+as $$
+declare
+    t text;
+begin
+    if (select auth.uid()) is null then
+        raise exception 'not signed in' using errcode = '42501';
+    end if;
+    insert into public.share_links (token, user_id, day)
+    values (replace(gen_random_uuid()::text, '-', ''), (select auth.uid()), share_day)
+    on conflict (user_id, day) do update set day = excluded.day
+    returning token into t;
+    return t;
+end;
+$$;
+revoke all on function public.share_day(date) from public;
+grant execute on function public.share_day(date) to authenticated;
+
+-- Stop sharing one of your days: its link stops working.
+create or replace function public.stop_sharing_day(share_day date)
+returns void
+language sql
+volatile
+security definer
+set search_path = ''
+as $$
+    delete from public.share_links where user_id = (select auth.uid()) and day = share_day;
+$$;
+revoke all on function public.stop_sharing_day(date) from public;
+grant execute on function public.stop_sharing_day(date) to authenticated;
+
+-- What a share link shows, for anyone who has it: null when the token is
+-- unknown, stopped, or the day has no workout any more.
+create or replace function public.shared_workout(share_token text)
+returns jsonb
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+    with link as (
+        select user_id, day from public.share_links where token = share_token
+    ), logs as (
+        select l.*,
+               row_number() over (order by l.date, l.created_at, l.id) as n,
+               (select max(e.estimated_1rm) from public.workout_logs e
+                where e.user_id = l.user_id and e.deleted_at is null
+                  and lower(e.exercise) = lower(l.exercise)
+                  and e.date < link.day::timestamp) as prev_best
+        from public.workout_logs l
+        join link on l.user_id = link.user_id
+        where l.deleted_at is null
+          and l.date >= link.day::timestamp
+          and l.date < link.day::timestamp + interval '1 day'
+    )
+    select jsonb_build_object(
+        'day', (select day from link),
+        'username', (select p.username from public.profiles p join link on p.user_id = link.user_id),
+        'workout_name', (select workout_name from logs where n = 1),
+        'exercises', jsonb_agg(jsonb_build_object(
+            'exercise', exercise,
+            'exercise_string', exercise_string,
+            'sets', sets,
+            'best', coalesce(estimated_1rm > prev_best, false),
+            -- how far past the old best, in percent (null when it isn't a new best)
+            'gain', case when estimated_1rm > prev_best and prev_best > 0
+                         then round(((estimated_1rm / prev_best - 1) * 100)::numeric, 1) end
+        ) order by n)
+    )
+    from logs
+    having count(*) > 0;
+$$;
+revoke all on function public.shared_workout(text) from public;
+grant execute on function public.shared_workout(text) to anon, authenticated;

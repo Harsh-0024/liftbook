@@ -14,6 +14,7 @@ import { retrieveScreen, retrieveDayScreen, retrieveCustomScreen } from './scree
 import { statsScreen } from './screens/stats.js';
 import { settingsScreen } from './screens/settings.js';
 import { coachScreen } from './screens/coach.js';
+import { SHARE_PATH, sharedScreen } from './share.js';
 import { isNative, startNative, wantsApp, appHandOff } from './native.js';
 import { installShortcuts } from './shortcuts.js';
 
@@ -51,6 +52,13 @@ export const go = (to) => {
 };
 
 async function render() {
+  // A share link opens for anyone, signed in or not.
+  const shared = SHARE_PATH.exec(path());
+  if (shared) {
+    if (ctx) current = { nav: 'home', live: false };
+    else document.body.classList.add('signed-out');
+    return show(sharedScreen(client, shared[1], { signedIn: Boolean(ctx) }), ctx ? 'home' : '');
+  }
   if (!ctx) return renderSignedOut();
   const p = path();
   if (p === 'signin' || p === 'signup' || p === 'forgot') return go('');

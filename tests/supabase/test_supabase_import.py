@@ -415,3 +415,76 @@ def test_edge_functions_service_role_can_do_what_they_need(databases):
         with connect(target) as cur:
             cur.execute("set role service_role")
             cur.execute("delete from public.shortcut_keys")
+
+
+def test_share_links(databases):
+    source, target = databases
+    seed(source)
+    importer.run(source, target, dry_run=False)
+    owner, friend = uid(1), uid(2)
+    with signed_in(target, owner) as cur:
+        cur.execute(
+            "insert into public.workout_logs (id, date, workout_name, exercise, exercise_string, sets, estimated_1rm)"
+            " values (%s, '2025-05-10 18:00', 'Push', 'Bench Press', 'Bench Press 85x5', '{\"weights\": [85], \"reps\": [5]}', 99),"
+            "        (%s, '2025-05-10 18:05', 'Push', 'Dip', 'Dip bw x 8', null, null)",
+            (str(uuid.uuid4()), str(uuid.uuid4())),
+        )
+        cur.execute("select public.share_day('2025-05-10')")
+        token = cur.fetchone()[0]
+        cur.execute("select public.share_day('2025-05-10')")
+        assert cur.fetchone()[0] == token  # sharing again gives the same link
+        cur.execute("select day from public.share_links")
+        assert len(cur.fetchall()) == 1
+
+    def view(role="anon", who=None, t=None):
+        conn = psycopg2.connect(target)
+        try:
+            with conn.cursor() as cur:
+                cur.execute(f"set role {role}")
+                if who:
+                    cur.execute("select set_config('request.jwt.claim.sub', %s, false)", (str(who),))
+                cur.execute("select public.shared_workout(%s)", (t or token,))
+                return cur.fetchone()[0]
+        finally:
+            conn.close()
+
+    shown = view()
+    assert shown["day"] == "2025-05-10"
+    assert shown["username"] == "harsh"
+    assert shown["workout_name"] == "Push"
+    assert [(e["exercise"], e["best"]) for e in shown["exercises"]] == [("Bench Press", True), ("Dip", False)]
+    assert shown["exercises"][0]["gain"] > 0 and shown["exercises"][1]["gain"] is None  # "+x%" past the old best
+    assert shown["exercises"][0]["sets"] == {"weights": [85], "reps": [5]}
+    assert "bodyweight" not in str(shown) and str(owner) not in str(shown)
+    assert view("authenticated", friend) == shown
+    assert view(t="0" * 32) is None
+
+    # Other people can't see or stop someone's links, or make one for them.
+    with signed_in(target, friend) as cur:
+        cur.execute("select count(*) from public.share_links")
+        assert cur.fetchone()[0] == 0
+        cur.execute("select public.stop_sharing_day('2025-05-10')")
+    assert view() == shown
+    for statement in ("insert into public.share_links (token, user_id, day) values (repeat('a', 32), "
+                      f"'{owner}', '2025-05-01')", "delete from public.share_links", "select user_id from public.share_links"):
+        with pytest.raises(errors.InsufficientPrivilege):
+            with signed_in(target, friend) as cur:
+                cur.execute(statement)
+    conn = psycopg2.connect(target)
+    try:
+        with conn.cursor() as cur:
+            cur.execute("set role anon")
+            with pytest.raises(errors.InsufficientPrivilege):
+                cur.execute("select public.share_day('2025-05-01')")
+    finally:
+        conn.close()
+
+    # A deleted workout shows as not found; stopping sharing ends the link.
+    with signed_in(target, owner) as cur:
+        cur.execute("update public.workout_logs set deleted_at = now(), updated_at = now() where exercise = 'Dip'")
+    assert [e["exercise"] for e in view()["exercises"]] == ["Bench Press"]
+    with signed_in(target, owner) as cur:
+        cur.execute("select public.stop_sharing_day('2025-05-10')")
+        cur.execute("select public.share_day('2025-05-10')")
+        assert cur.fetchone()[0] != token
+    assert view() is None
