@@ -2,7 +2,7 @@
 // is "share links" in supabase/schema.sql: the link holds a random token, and opening it shows
 // that day as it is now. Making and stopping a link needs the internet; the rest of the app doesn't.
 
-import { h, icon, pageHead, formatDay, copyText, toast, busy, fmtNum } from './ui.js';
+import { h, icon, pageHead, formatDay, copyText, toast, busy, fmtNum, ask } from './ui.js';
 import { formatSetsDisplay } from '../core/logging.js';
 import { WEB_APP_URL } from '../config.js';
 import { isNative } from './native.js';
@@ -44,7 +44,7 @@ export function shareLinkBox(ctx, day, title) {
     const url = shareUrl(token);
     const stop = h('button', { class: 'btn small danger', type: 'button' }, 'Stop sharing');
     stop.addEventListener('click', busy(stop, async () => {
-      if (!confirm('Stop sharing? The link stops working for everyone who has it.')) return;
+      if (!await ask('The link stops working for everyone who has it.', { title: 'Stop sharing?', yes: 'Stop sharing', danger: true })) return;
       try {
         await db.rpc('stop_sharing_day', { share_day: day });
       } catch (err) {

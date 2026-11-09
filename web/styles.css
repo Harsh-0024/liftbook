@@ -720,3 +720,14 @@ label.rowi { cursor: pointer; }
 .share-feats b, .share-feats span { display: block; }
 .share-feats div > span { color: var(--muted); font-size: 0.85rem; }
 .share-feat-ico { flex: none; width: 34px; height: 34px; border-radius: 10px; display: grid !important; place-items: center; color: var(--gold-text); background: var(--gold-soft); border: 1px solid var(--line-gold); }
+
+/* ask(): the app's own "are you sure?" (instead of the browser's pop-up) */
+.ask-dialog { width: min(400px, calc(100% - 32px)); padding: 22px 22px 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.ask-dialog::backdrop { background: rgba(0, 0, 0, 0.4); }
+.ask-dialog[open] { animation: rise 0.2s var(--ease); }
+.ask-dialog h2 { margin: 0 0 8px; font: 600 1.3rem/1.25 var(--serif); }
+.ask-dialog p { margin: 0 0 18px; color: var(--text-2); font-size: 0.94rem; line-height: 1.5; }
+.ask-actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.btn.danger.solid { background: var(--bad); border-color: var(--bad); color: #fff; }
+.btn.danger.solid:hover { background: var(--bad); color: #fff; filter: brightness(1.08); }
+@media (prefers-reduced-motion: reduce) { .ask-dialog[open] { animation: none; } }
