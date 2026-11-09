@@ -17,6 +17,7 @@ const SECTIONS = [
   ['shortcuts', 'Apple Shortcuts', 'Log and get workouts from Notes on your iPhone'],
   ['feedback', 'Feedback', 'Tell the developer what works for you, what doesn’t, and what you’d like next.'],
   ['sync', 'Sync and data', 'Sync between devices, a backup file and a spreadsheet of everything you logged.'],
+  ['import', 'Bulk import', 'Paste many workout days at once. Each day starts with a date like 03/02; days you’ve already logged are skipped.'],
   ['account', 'Account', 'Password, theme, sign out, delete'],
 ];
 
@@ -34,7 +35,7 @@ export function settingsScreen(ctx, section) {
   const found = SECTIONS.find(([k]) => k === section);
   if (!found) return index(ctx);
   const [key, title] = found;
-  const body = { profile, plan, exercises, shortcuts, feedback, sync, account }[key](ctx);
+  const body = { profile, plan, exercises, shortcuts, feedback, sync, import: bulkImport, account }[key](ctx);
   return h('div', {}, pageHead(title, found[2], { back: '#/settings' }), body);
 }
 
@@ -119,6 +120,7 @@ function index(ctx) {
       h('div', { class: 'group' },
         rowItem({ href: '#/settings/sync', ico: 'sync', title: 'Sync and data', desc: 'Devices, backup file, export',
           value: st.pending ? `${st.pending} to sync` : st.last_sync ? `Synced ${ago(st.last_sync)}` : '' }),
+        rowItem({ href: '#/settings/import', ico: 'clipboard', title: 'Bulk import', desc: 'Paste many workout days at once' }),
         rowItem({ href: '#/settings/shortcuts', ico: 'phone', title: 'Apple Shortcuts', desc: 'Log and get workouts from Notes on your iPhone' }))),
 
     h('section', { class: 'section' }, h('div', { class: 'label' }, 'Account'),
@@ -735,6 +737,71 @@ function sync(ctx) {
       h('div', { class: 'group' },
         rowItem({ href: '#/settings/exercises', ico: 'edit', title: 'Rename an exercise', desc: 'Its history comes along' }),
         rowItem({ href: '#/history?select', ico: 'trash', title: 'Delete several workouts', desc: 'Opens your history so you can pick them' }))));
+}
+
+/* ---------------- bulk import ---------------- */
+
+function bulkImport(ctx) {
+  const { lb } = ctx;
+  const ta = h('textarea', {
+    class: 'editor', spellcheck: 'false', autocapitalize: 'off', autocomplete: 'off', 'aria-label': 'Workouts to import',
+    placeholder: '03/02 Back & Biceps\nPull-Ups - [6-10]\nbw, 10 8 6\n\n04/02 Chest & Shoulders\nBench Press - [6-10]\n80 75, 8 10',
+  });
+  const meta = h('span', { class: 'editor-meta', 'aria-live': 'polite' }, 'Nothing is saved yet');
+  const go = h('button', { class: 'btn primary small', type: 'button', disabled: true }, 'Import');
+  const result = h('div', {});
+  const STATUS = { ready: ['check', 'Ready'], skipped: ['calendar', 'Already in'], failed: ['info', 'Failed'] };
+  let days = [];
+  const paint = () => {
+    days = ta.value.trim() ? lb.bulkCheck(ta.value) : [];
+    const n = (st) => days.filter((d) => d.status === st).length;
+    const ready = n('ready');
+    go.disabled = !ready;
+    go.textContent = ready ? `Import ${ready} day${ready === 1 ? '' : 's'}` : 'Import';
+    meta.textContent = !ta.value.trim() ? 'Nothing is saved yet'
+      : days.length ? `${days.length} day${days.length === 1 ? '' : 's'} found · nothing saved yet` : 'No days found: start each day with a date like 03/02';
+    if (!days.length) return result.replaceChildren();
+    const left = days.filter((d) => d.status === 'ready').reduce((k, d) => k + (d.check.errors?.length || 0), 0);
+    const dated = days.filter((d) => d.status !== 'failed').map((d) => d.date).sort();
+    result.replaceChildren(
+      h('section', { class: 'section' },
+        h('div', { class: 'label' }, 'Check', dated.length ? h('span', {}, dated[0] === dated[dated.length - 1] ? formatDay(dated[0]) : `${formatDay(dated[0])} – ${formatDay(dated[dated.length - 1])}`) : null),
+        h('div', { class: 'grid-3' },
+          h('div', { class: 'stat' }, h('span', {}, 'Ready'), h('b', { class: 'gold' }, ready)),
+          h('div', { class: 'stat' }, h('span', {}, 'Already in'), h('b', {}, n('skipped'))),
+          h('div', { class: 'stat' }, h('span', {}, 'Failed'), h('b', {}, n('failed')))),
+        left ? h('p', { class: 'bulk-warn', style: 'margin:10px 4px 0' }, `${left} line${left === 1 ? '' : 's'} not understood: ${left === 1 ? 'it is' : 'they are'} left out of the days below. Fix ${left === 1 ? 'it' : 'them'} above to keep ${left === 1 ? 'it' : 'them'}.`) : null),
+      h('section', { class: 'section' }, h('div', { class: 'group' }, days.map((d) => {
+        const [ico, word] = STATUS[d.status];
+        const c = d.check;
+        const what = d.status === 'ready' ? `${c.exercise_count} exercise${c.exercise_count === 1 ? '' : 's'} · ${c.set_count} set${c.set_count === 1 ? '' : 's'}` : d.reason;
+        const notes = [what, d.guessed && d.date ? 'year guessed' : null, `lines ${d.start}–${d.end}`].filter(Boolean).join(' · ');
+        return h('div', { class: `rowi bulk-${d.status}` },
+          h('span', { class: 'ico' }, icon(ico)),
+          h('span', { class: 'main' },
+            h('span', { class: 'title' }, c?.parsed ? `${formatDay(d.date)} · ${c.parsed.workout_name || 'Workout'}` : d.text.split('\n')[0]),
+            h('span', { class: 'desc' }, notes),
+            // Lines a ready day leaves out, as the old page's "Exercise lines not understood".
+            d.status === 'ready' && c.errors?.length
+              ? h('span', { class: 'desc bulk-warn' }, `Left out: ${c.errors.join(' ')}`) : null),
+          h('span', { class: 'value' }, word));
+      }))));
+  };
+  let timer = null;
+  ta.addEventListener('input', () => {
+    clearTimeout(timer);
+    timer = setTimeout(paint, 300);
+  });
+  go.addEventListener('click', busy(go, async () => {
+    const ready = days.filter((d) => d.status === 'ready').length;
+    if (!ready || !await ask(`${ready} workout day${ready === 1 ? '' : 's'} will be added to your history.`, { title: `Import ${ready} day${ready === 1 ? '' : 's'}?`, yes: 'Import' })) return;
+    const r = await lb.bulkImport(ta.value);
+    toast(`${r.saved} workout${r.saved === 1 ? '' : 's'} imported.`);
+    ctx.go('history');
+  }));
+  return h('div', {},
+    h('div', { class: 'group' }, ta, h('div', { class: 'editor-bar' }, meta, go)),
+    result);
 }
 
 /* ---------------- account ---------------- */

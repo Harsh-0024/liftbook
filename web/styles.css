@@ -997,6 +997,12 @@ label.rowi { cursor: pointer; }
 .keys-dialog form { display: flex; justify-content: flex-end; }
 .card.danger-zone { border-color: var(--bad-line); }
 .card.danger-zone h2 { color: var(--bad); }
+.bulk-failed .ico { color: var(--bad); }
+.bulk-skipped .ico { color: var(--subtle); }
+.bulk-failed .value { color: var(--bad); }
+
+/* Bulk import: lines a day leaves out */
+.bulk-warn { color: var(--warn); font-size: 0.82rem; }
 
 /* ask(): the app's own "are you sure?" (instead of the browser's pop-up) */
 .ask-dialog { width: min(400px, calc(100% - 32px)); padding: 22px 22px 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
