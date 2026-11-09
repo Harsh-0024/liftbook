@@ -511,3 +511,64 @@ export function describeRetrieveOutput(output) {
   }
   return described;
 }
+
+// Which exercises someone trains often (services/retrieve.py often_trained_keys).
+const PACE_HISTORY_DAYS = 182;
+const BREAK_COUNTS_AS_DAYS = 14;
+const WINDOW_PACES = 3;
+const WINDOW_MIN_DAYS = 28;
+const WINDOW_MAX_DAYS = 182;
+const OFTEN_MIN_DAYS = 2;
+const MIN_REPEATS_TO_FOLD = 5;
+const PLAN_FOLLOWED_SHARE = 0.5;
+
+const dayNumber = (day) => {
+  const [y, m, d] = String(day).slice(0, 10).split('-').map(Number);
+  return Date.UTC(y, m - 1, d) / 86400000;
+};
+const median = (xs) => {
+  const s = [...xs].sort((a, b) => a - b);
+  const mid = Math.floor(s.length / 2);
+  return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
+};
+
+/**
+ * workouts: [[ 'YYYY-MM-DD', Set of exercise keys ]]. Returns the Set of keys trained often,
+ * or null when there isn't enough history yet to tell (then nothing is folded away).
+ */
+export function oftenTrainedKeys(workouts, planKeys = []) {
+  const days = [...new Set(workouts.map(([day]) => String(day).slice(0, 10)))].sort();
+  if (!days.length) return null;
+  // A clock that runs on training time: breaks count as two weeks at most.
+  const clock = new Map();
+  let now = 0;
+  days.forEach((day, i) => {
+    if (i) now += Math.min(BREAK_COUNTS_AS_DAYS, dayNumber(day) - dayNumber(days[i - 1]));
+    clock.set(day, now);
+  });
+  const times = new Map();
+  for (const [day, keys] of workouts) {
+    for (const key of keys || []) {
+      if (!key) continue;
+      if (!times.has(key)) times.set(key, new Set());
+      times.get(key).add(clock.get(String(day).slice(0, 10)));
+    }
+  }
+  const sorted = new Map([...times].map(([k, ts]) => [k, [...ts].sort((a, b) => a - b)]));
+  const gaps = [];
+  for (const ts of sorted.values()) for (let i = 1; i < ts.length; i++) if (ts[i] > now - PACE_HISTORY_DAYS) gaps.push(ts[i] - ts[i - 1]);
+  if (gaps.length < MIN_REPEATS_TO_FOLD) return null;
+  const pace = median(gaps);
+  const window = Math.min(WINDOW_MAX_DAYS, Math.max(WINDOW_MIN_DAYS, WINDOW_PACES * pace));
+  const often = new Set();
+  for (const [key, ts] of sorted) {
+    if (ts.filter((t) => t > now - window).length >= OFTEN_MIN_DAYS) often.add(key);
+    else if (ts.length === 1 && now - ts[0] <= pace) often.add(key);
+  }
+  const plan = new Set([...planKeys].filter(Boolean));
+  if (plan.size) {
+    const lately = new Set([...sorted].filter(([, ts]) => ts[ts.length - 1] > now - PACE_HISTORY_DAYS).map(([k]) => k));
+    if ([...plan].filter((k) => lately.has(k)).length >= PLAN_FOLLOWED_SHARE * plan.size) for (const k of plan) often.add(k);
+  }
+  return often;
+}

@@ -50,19 +50,24 @@ export function createSync({ store, db, userId, debounceMs = DEBOUNCE_MS, overla
     return rows.length;
   }
 
-  async function pull(table) {
-    const cursorKey = `cursor:${table}`;
-    const cursor = store.getMeta(cursorKey);
+  /** Everything changed on the server since this table's cursor (all of it the first time). */
+  async function fetchChanges(table) {
+    const cursor = store.getMeta(`cursor:${table}`);
     const since = cursor ? new Date(Math.floor(timeKey(cursor) / 1000) - overlapMs).toISOString() : null;
-    let newest = cursor;
-    let changed = 0;
+    const all = [];
     for (let offset = 0; ; offset += page) {
       const rows = (await db.pullPage(table, since, offset, page)) || [];
-      changed += await store.applyRemote(table, rows);
-      for (const r of rows) if (!newest || timeKey(r.server_updated_at) > timeKey(newest)) newest = r.server_updated_at;
+      all.push(...rows);
       if (rows.length < page) break;
     }
-    if (newest !== cursor) await store.setMeta(cursorKey, newest);
+    return { cursor, rows: all };
+  }
+
+  async function apply(table, { cursor, rows }) {
+    const changed = await store.applyRemote(table, rows);
+    let newest = cursor;
+    for (const r of rows) if (!newest || timeKey(r.server_updated_at) > timeKey(newest)) newest = r.server_updated_at;
+    if (newest !== cursor) await store.setMeta(`cursor:${table}`, newest);
     return changed;
   }
 
@@ -70,7 +75,9 @@ export function createSync({ store, db, userId, debounceMs = DEBOUNCE_MS, overla
     let up = 0;
     let down = 0;
     for (const t of TABLE_NAMES) up += await push(t);
-    for (const t of TABLE_NAMES) down += await pull(t);
+    // The tables download at the same time (one wait instead of seven), then go in one by one.
+    const fetched = await Promise.all(TABLE_NAMES.map(fetchChanges));
+    for (const [i, t] of TABLE_NAMES.entries()) down += await apply(t, fetched[i]);
     return { up, down };
   }
 

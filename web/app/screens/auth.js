@@ -1,22 +1,88 @@
 // Signing in, creating an account, resetting a password, and choosing a username.
 
-import { h, toast, busy } from '../ui.js';
+import { h, icon, toast, busy } from '../ui.js';
 import { linkBackUrl } from '../native.js';
 
 const USERNAME_RE = /^[A-Za-z0-9_.-]{3,50}$/;
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const PASSWORD_MIN = 8;
 
+/** The card the original app used: the logo, a title, the form; links to other pages under it. */
 function shell(title, sub, ...body) {
+  const below = body.filter((b) => b?.classList?.contains('alt'));
   return h('div', { class: 'auth' },
-    h('img', { class: 'logo', src: 'icons/icon-192.png', alt: '', width: 72, height: 72 }),
-    h('h1', {}, title),
-    h('p', { class: 'sub' }, sub),
-    h('div', { class: 'card' }, ...body));
+    h('div', { class: 'card' },
+      h('div', { class: 'auth-brand' }, h('img', { class: 'logo', src: 'icons/icon-192.png', alt: '', width: 56, height: 56 }), h('span', {}, 'Liftbook')),
+      h('h1', {}, title),
+      h('p', { class: 'sub' }, sub),
+      ...body.filter((b) => !below.includes(b))),
+    ...below);
 }
 
-function field(label, input, hint) {
-  return h('div', { class: 'field' }, h('label', { for: input.id }, label), input, hint ? h('div', { class: 'hint' }, hint) : null);
+function field(label, input, hint, aside = null) {
+  const control = input.type === 'password' ? withEye(input) : input;
+  return h('div', { class: 'field' },
+    aside ? h('div', { class: 'label-row' }, h('label', { for: input.id }, label), aside) : h('label', { for: input.id }, label),
+    control, input.type === 'email' ? domains(input) : null,
+    hint ? (typeof hint === 'string' ? h('div', { class: 'hint' }, hint) : hint) : null);
+}
+
+/**
+ * Quiet "@gmail.com" buttons under an email box, as the original app had: shown once you've typed
+ * the part before the @, filtered by what follows it, gone once the address is complete.
+ */
+function domains(input) {
+  const box = h('div', { class: 'domains', hidden: true });
+  const buttons = ['gmail.com', 'icloud.com', 'outlook.com', 'yahoo.com'].map((d) => {
+    const b = h('button', { type: 'button', tabindex: '-1' }, `@${d}`);
+    b.addEventListener('mousedown', (e) => e.preventDefault()); // keep the keyboard up
+    b.addEventListener('click', () => {
+      const local = input.value.trim().split('@')[0];
+      if (!local) return input.focus();
+      input.value = `${local}@${d}`;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.focus();
+    });
+    return [d, b];
+  });
+  const update = () => {
+    const v = input.value.trim();
+    const at = v.indexOf('@');
+    const local = at === -1 ? v : v.slice(0, at);
+    const typed = at === -1 ? '' : v.slice(at + 1).toLowerCase();
+    let shown = 0;
+    for (const [d, b] of buttons) {
+      b.hidden = !(local && shown < 3 && d.startsWith(typed) && d !== typed);
+      if (!b.hidden) shown += 1;
+    }
+    box.hidden = shown === 0;
+  };
+  box.append(...buttons.map(([, b]) => b));
+  input.addEventListener('input', update);
+  return box;
+}
+
+/** The password rule under a new password, turning green once it's met. */
+function passwordRule(input) {
+  const rule = h('span', {}, icon('check'), `At least ${PASSWORD_MIN} characters`);
+  const paint = () => rule.classList.toggle('met', input.value.length >= PASSWORD_MIN);
+  input.addEventListener('input', paint);
+  paint();
+  return h('div', { class: 'hint pw-rule' }, rule);
+}
+
+/** A password box with a button to show what was typed. */
+function withEye(input) {
+  const eye = h('button', { type: 'button', class: 'eye', 'aria-label': 'Show password', 'aria-pressed': 'false' }, icon('eye'));
+  eye.addEventListener('click', () => {
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    eye.setAttribute('aria-pressed', String(show));
+    eye.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    eye.replaceChildren(icon(show ? 'eye-off' : 'eye'));
+    input.focus();
+  });
+  return h('div', { class: 'pw' }, input, eye);
 }
 
 function passwordProblem(password) {
@@ -38,10 +104,8 @@ function signIn(client, onSignedIn) {
   const btn = h('button', { class: 'btn primary block', type: 'submit' }, 'Sign in');
   const form = h('form', { novalidate: true },
     field('Email', email),
-    field('Password', password),
+    field('Password', password, null, h('a', { href: '#/forgot', class: 'small-link' }, 'Forgot password?')),
     err, btn,
-    h('p', { class: 'center subtle', style: 'margin-top:14px' },
-      h('a', { href: '#/forgot' }, 'Forgot your password?')),
   );
   form.addEventListener('submit', busy(btn, async () => {
     err.textContent = '';
@@ -58,7 +122,7 @@ function signIn(client, onSignedIn) {
     await onSignedIn();
   }));
   return shell('Welcome back', 'Sign in to your workout log.', form,
-    h('p', { class: 'center subtle', style: 'margin:14px 0 0' }, 'New here? ', h('a', { href: '#/signup' }, 'Create an account')));
+    h('p', { class: 'alt' }, 'New here? ', h('a', { href: '#/signup' }, 'Create an account')));
 }
 
 function signUp(client, onSignedIn) {
@@ -72,7 +136,7 @@ function signUp(client, onSignedIn) {
     field('Your name', name),
     field('Username', username, 'Letters, numbers, dots, dashes and underscores; 3 or more.'),
     field('Email', email),
-    field('Password', password, `At least ${PASSWORD_MIN} characters.`),
+    field('Password', password, passwordRule(password)),
     err, btn);
   form.addEventListener('submit', busy(btn, async () => {
     err.textContent = '';
@@ -103,7 +167,7 @@ function signUp(client, onSignedIn) {
       h('p', { class: 'muted' }, `We sent a link to ${email.value.trim()}. Open it on this device to finish creating your account.`)));
   }));
   return shell('Create your account', 'Your workouts, on every device, even offline.', form,
-    h('p', { class: 'center subtle', style: 'margin:14px 0 0' }, 'Already have one? ', h('a', { href: '#/signin' }, 'Sign in')));
+    h('p', { class: 'alt' }, 'Already have one? ', h('a', { href: '#/signin' }, 'Sign in')));
 }
 
 function forgot(client) {
@@ -126,7 +190,7 @@ function forgot(client) {
     form.replaceWith(h('p', { class: 'muted' }, 'If there is an account with that email, a link to choose a new password is on its way.'));
   }));
   return shell('Reset your password', 'We’ll email you a link.', form,
-    h('p', { class: 'center subtle', style: 'margin:14px 0 0' }, h('a', { href: '#/signin' }, 'Back to sign in')));
+    h('p', { class: 'alt' }, h('a', { href: '#/signin' }, 'Back to sign in')));
 }
 
 /** After a reset link: choose the new password (signed in by the link). */

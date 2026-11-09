@@ -13,6 +13,7 @@ no framework: the same files run in a browser, in Capacitor on Android and in No
 | `scoring.js` | Estimated 1RM, workout scores, comparing two workouts | `services/helpers.py`, `services/best_scoring.py`, `services/workout_quality.py` |
 | `logging.js` | Saving a workout: the rows to store and the summary shown | `services/logging.py` |
 | `retrieve.js` | Retrieve: the next workout's targets, as text | `services/retrieve.py` |
+| `insights.js` | The workout page's exercise rows: trend vs recent sessions, medals, sets vs last and best, the small chart | `services/workout_insights.py` |
 | `stats.js` | Stats page: charts, summaries, growth, overall progress | `services/stats.py` |
 | `dates.js`, `html.js`, `py.js` | Dates, HTML entities, and helpers that make JavaScript behave like Python | |
 | `defaults.js`, `html_entities.js` | Generated data (`scripts/make_js_core_data.py`) | `list_of_exercise.py`, Python's `html.entities` |

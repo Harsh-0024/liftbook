@@ -2,15 +2,25 @@
 // store through the workout logic in web/core/. Changes are written to the store (which syncs
 // them); nothing here waits for the network except the shared plan and feedback.
 
-import { workoutParser } from '../core/parser.js';
-import { handleWorkoutLog, formatSetsDisplay, resolveTimedStatus, hasTimeHint } from '../core/logging.js';
-import { makeSettings } from '../core/bodyweight.js';
-import { effectivePlanText, effectiveRepRangesText, getWorkoutDays, ownPlanText } from '../core/plans.js';
-import { retrieveDay, retrieveCustom, describeRetrieveOutput } from '../core/retrieve.js';
+import { workoutParser, parsePlanExerciseLine, isTimeOnlyExercise } from '../core/parser.js';
+import {
+  handleWorkoutLog, formatSetsDisplay, resolveTimedStatus, hasTimeHint, classifyPerformance, getBestLog, comparisonSetCount,
+} from '../core/logging.js';
+import { makeSettings, isBodyweightEnabled, inferLogUsesBodyweight, effectiveSetsForLog } from '../core/bodyweight.js';
+import {
+  effectivePlanText, effectiveRepRangesText, getWorkoutDays, ownPlanText, parseRepTargetSets, parsePlanTargetSets, resolveTargetSets,
+  parseRepRangesText, lookupRepTarget,
+} from '../core/plans.js';
+import {
+  SPARKLINE_SESSIONS, MEDAL_KEYS, rankedSets, sessionScore, displaySets, trend, bestSummary, compareColumns, sparkline,
+  shortDate, longDate, formatSetsLine,
+} from '../core/insights.js';
+import { formatG as fmtG } from '../core/py.js';
+import { retrieveDay, retrieveCustom, describeRetrieveOutput, picksForPlanLines, oftenTrainedKeys } from '../core/retrieve.js';
 import {
   getChartData, getOverallProgressData, statsExerciseOptions, getAllExercisesSummary, bodyweightWarningExercises,
 } from '../core/stats.js';
-import { normalizeExerciseName, exerciseKey, statsExerciseKey, statsVocabulary } from '../core/names.js';
+import { normalizeExerciseName, exerciseKey, statsExerciseKey, statsVocabulary, buildNameIndex, namesFor } from '../core/names.js';
 import {
   validateRename, renamedName, renameInExerciseString, renameInPlanText, renameInRepText,
 } from '../core/renames.js';
@@ -37,6 +47,15 @@ export class Liftbook {
     this.store = store;
     this.client = client;
     this.userId = userId;
+    this.kept = new Map();
+  }
+
+  /** fn's answer, worked out again only after the table changes. Callers get their own copy of the list. */
+  keep(name, table, fn) {
+    const v = this.store.version[table];
+    let k = this.kept.get(name);
+    if (!k || k.v !== v) this.kept.set(name, (k = { v, value: fn() }));
+    return k.value.slice();
   }
 
   /* ---------------- profile and settings ---------------- */
@@ -111,12 +130,12 @@ export class Liftbook {
 
   /** Every logged exercise, oldest first as created: imported logs by their old id, then new ones. */
   history() {
-    return this.store.all('workout_logs').sort((a, b) => {
+    return this.keep('history', 'workout_logs', () => this.store.all('workout_logs').sort((a, b) => {
       const la = a.legacy_id ?? Infinity;
       const lb = b.legacy_id ?? Infinity;
       if (la !== lb) return la < lb ? -1 : 1;
       return timeKey(a.created_at) - timeKey(b.created_at) || String(a.id).localeCompare(String(b.id));
-    });
+    }));
   }
 
   exerciseSettings() {
@@ -129,17 +148,100 @@ export class Liftbook {
 
   /** Workouts, newest first: one per day, its exercises in logged order. */
   workouts() {
-    const byDay = new Map();
-    for (const log of this.history()) {
-      const day = dayOf(log.date);
-      if (!byDay.has(day)) byDay.set(day, { day, date: log.date, title: log.workout_name || 'Workout', logs: [] });
-      byDay.get(day).logs.push(log);
-    }
-    return [...byDay.values()].sort((a, b) => (a.day < b.day ? 1 : a.day > b.day ? -1 : 0));
+    return this.keep('workouts', 'workout_logs', () => {
+      const byDay = new Map();
+      for (const log of this.history()) {
+        const day = dayOf(log.date);
+        if (!byDay.has(day)) byDay.set(day, { day, date: log.date, title: log.workout_name || 'Workout', logs: [] });
+        byDay.get(day).logs.push(log);
+      }
+      return [...byDay.values()].sort((a, b) => (a.day < b.day ? 1 : a.day > b.day ? -1 : 0));
+    });
   }
 
   workout(day) {
     return this.workouts().find((w) => w.day === day) || null;
+  }
+
+  /**
+   * Each exercise of a day's workout against its earlier sessions, as the old workout page showed
+   * it (routes/workouts.py view_workout): the trend vs the average of the last 3 sessions, the
+   * medal or gap vs the best, the sets matched strongest to strongest with the last session and
+   * the best, and the points of the last 8 sessions for a small chart.
+   */
+  compareWorkout(day) {
+    const w = this.workout(day);
+    if (!w) return [];
+    const settings = makeSettings(this.exerciseSettings());
+    const all = this.history();
+    const order = new Map(all.map((l, i) => [l, i]));
+    const before = all.filter((l) => dayOf(l.date) < day);
+    const nameIndex = buildNameIndex([...new Set(all.map((l) => l.exercise))]);
+    const repTargetSets = parseRepTargetSets(this.text('rep_ranges'));
+    const planTargetSets = parsePlanTargetSets(this.planText());
+    const refYear = Number(day.slice(0, 4));
+    return w.logs.map((log) => {
+      const str = String(log.exercise_string || '');
+      const [targetSets, strict] = resolveTargetSets({
+        exerciseName: log.exercise, exerciseString: str, repTargetSets, planTargetSets,
+        inferredSetCount: comparisonSetCount(log.sets, str), defaultSets: 3,
+      });
+      const isTimed = Boolean(resolveTimedStatus({ exerciseName: log.exercise, exerciseString: str, settings, history: all, nameIndex }).is_timed);
+      const usesBw = inferLogUsesBodyweight(settings, log);
+      const names = new Set(namesFor(log.exercise, nameIndex));
+      const prevAll = before.filter((l) => names.has(l.exercise))
+        .sort((a, b) => (dayOf(a.date) < dayOf(b.date) ? 1 : dayOf(a.date) > dayOf(b.date) ? -1 : order.get(b) - order.get(a)));
+      const comparable = prevAll.filter((l) => !strict || comparisonSetCount(l.sets, l.exercise_string || '') >= targetSets);
+      const prev = comparable[0] || null;
+      let perf = classifyPerformance({
+        history: before, settings, exerciseName: log.exercise, currentSets: effectiveSetsForLog(settings, log),
+        targetSets, strictTargetSets: strict, nameIndex, isTimed, currentLogId: log.id, currentExerciseString: str,
+      });
+      if (!prev) perf = { ...perf, key: 'first_log' };
+      let best = null;
+      if (prev) {
+        best = (perf.reference_log_id != null && before.find((l) => l.id === perf.reference_log_id))
+          || getBestLog({ history: before, settings, exerciseName: log.exercise, targetSets, strictTargetSets: strict, nameIndex, isTimed });
+      }
+      const opts = { usesBodyweight: usesBw, isTimed };
+      const ranked = (l) => {
+        const eff = effectiveSetsForLog(settings, l);
+        return rankedSets(displaySets(l, eff, usesBw), eff, opts);
+      };
+      const score = (l) => sessionScore(effectiveSetsForLog(settings, l), { topN: targetSets, isTimed });
+      const todayRanked = ranked(log);
+      const todayScore = score(log);
+      const past = comparable.slice(0, SPARKLINE_SESSIONS - 1).map((l) => ({ log: l, day: dayOf(l.date), score: score(l) }));
+      const tr = trend(todayScore, past);
+      const side = (l) => (l ? { day: dayOf(l.date), date_text: shortDate(dayOf(l.date), refYear), ranked: ranked(l), bodyweight: l.bodyweight ?? null } : null);
+      const last = side(prev);
+      const bestSide = side(best);
+      const bestIsLast = Boolean(best && prev && best === prev);
+      const point = (l, extra) => ({ day: dayOf(l.date), date_text: longDate(dayOf(l.date)), sets: ranked(l).map((x) => x.label).join(' · '), ...extra });
+      const spark = sparkline([
+        ...past.slice().reverse().map((p) => point(p.log, { score: p.score, is_best: p.log === best })),
+        point(log, { score: todayScore, is_today: true }),
+      ], { average: tr?.average ?? null });
+      let bodyweightNote = null;
+      if (usesBw && last && log.bodyweight && last.bodyweight && Math.abs(Number(log.bodyweight) - Number(last.bodyweight)) >= 0.1) {
+        bodyweightNote = `Bodyweight ${fmtG(Number(log.bodyweight))} kg today vs ${fmtG(Number(last.bodyweight))} kg last time, which is included in the comparison.`;
+      }
+      return {
+        log, isTimed, usesBw, perf,
+        medal: MEDAL_KEYS.has(perf.key),
+        first: !prevAll.length,
+        setsRanked: todayRanked.map((x) => x.label),
+        setsLine: formatSetsLine(displaySets(log, effectiveSetsForLog(settings, log), usesBw), opts),
+        trend: tr,
+        trendDates: (tr?.days || []).map((d) => shortDate(d, refYear)).join(', '),
+        best: bestSummary(perf, { hasHistory: prevAll.length > 0 }),
+        last, bestCmp: bestSide, bestIsLast,
+        table: last ? compareColumns(todayRanked, last.ranked, bestIsLast ? null : bestSide?.ranked) : [],
+        bodyweightNote,
+        spark,
+        sparkFirst: spark ? shortDate(spark.dots[0].day, refYear) : '',
+      };
+    });
   }
 
   /** The workout as text again, as it would be typed (editing, copying). */
@@ -159,7 +261,10 @@ export class Liftbook {
     if (!clean) return { ok: false, errors: ['Type your workout first.'], parsed: null };
     let parsed;
     try {
-      parsed = workoutParser(clean, { bodyweight: this.profile()?.bodyweight ?? null, now });
+      // As the Python log route: bodyweight sets stay as offsets ("BW+20" is 20), flagged as
+      // bodyweight; stats add the bodyweight once. Without this they were stored as 98 and
+      // counted 78 kg twice.
+      parsed = workoutParser(clean, { bodyweight: this.profile()?.bodyweight ?? null, preserveBodyweightOffsets: true, now });
     } catch (err) {
       return { ok: false, errors: [`Couldn’t read this: ${err.message}`], parsed: null };
     }
@@ -172,6 +277,22 @@ export class Liftbook {
     if (parsed.invalid_date_text) errors.push(`\u201c${parsed.invalid_date_text}\u201d isn\u2019t a date this app can read.`);
     const invalid = exercises.filter((e) => e.valid === false || e.missing_name);
     for (const e of invalid.filter((x) => x.valid === false)) errors.push(`“${e.name}”: couldn’t read its sets (“${String(e.exercise_string || '').split('\n').slice(1).join(' ')}”).`);
+    // Each exercise's sets as the old check wrote them: "BW+20×6" for bodyweight, "60×1s" or "45s"
+    // for timed (your answer, the known timed list, or a time written in the text).
+    const settings = makeSettings(this.exerciseSettings());
+    const num = (v) => fmtG(Number(v) || 0);
+    for (const e of exercises) {
+      if (e.valid === false || e.missing_name) continue;
+      const str = String(e.exercise_string || '');
+      const bw = Boolean(isBodyweightEnabled(settings, e.name, str) || isTimeOnlyExercise(str, e.source_name || e.name));
+      const secs = Boolean(resolveTimedStatus({ exerciseName: e.name, exerciseString: str, settings }).is_timed);
+      e.sets_label = (e.reps || []).map((r, k) => {
+        const w = Number(e.weights?.[k]) || 0;
+        if (bw) return `${w ? `BW${w > 0 ? '+' : '−'}${num(Math.abs(w))}` : 'BW'}×${r}${secs ? 's' : ''}`;
+        if (secs && !w) return `${r}s`;
+        return `${num(w)}×${r}${secs ? 's' : ''}`;
+      }).join(' · ');
+    }
     const day = dayOf(parsed.date);
     const existing = this.workout(day);
     return {
@@ -230,12 +351,19 @@ export class Liftbook {
       })));
     }
     const timedPrompts = [...new Set(result.summary.filter((r) => r.timed_prompt_needed).map((r) => r.timed_prompt_exercise))];
-    return { summary: result.summary, day: dayOf(parsed.date), appended: Boolean(existing), timedPrompts, skipped: check.errors };
+    const needsBodyweight = !this.profile()?.bodyweight && rows.some((l) => l.uses_bodyweight);
+    return { summary: result.summary, day: dayOf(parsed.date), appended: Boolean(existing), timedPrompts, skipped: check.errors, needsBodyweight };
   }
 
   async deleteWorkout(day) {
     const w = this.workout(day);
     if (w) await this.store.remove('workout_logs', w.logs.map((l) => l._k));
+  }
+
+  /** Several days' workouts at once (the history's Select). */
+  async deleteWorkouts(days) {
+    const keys = days.flatMap((d) => this.workout(d)?.logs.map((l) => l._k) || []);
+    if (keys.length) await this.store.remove('workout_logs', keys);
   }
 
   /* ---------------- exercise settings ---------------- */
@@ -245,6 +373,11 @@ export class Liftbook {
     if (!key) return null;
     const before = this.store.get('exercise_settings', key, { deleted: true }) || {};
     return this.store.change('exercise_settings', { ...before, exercise_key: key, exercise_name: before.exercise_name || name, ...fields });
+  }
+
+  /** Whether an exercise counts bodyweight: your choice, or the built-in list (pull-ups, dips…). */
+  bodyweightOn(name) {
+    return isBodyweightEnabled(makeSettings(this.exerciseSettings()), name, '');
   }
 
   exerciseSetting(name) {
@@ -269,33 +402,68 @@ export class Liftbook {
     return { text, exercises, sets, described: describeRetrieveOutput(text) };
   }
 
-  retrieveCustom(exerciseLines, title) {
-    const [text, exercises, sets] = retrieveCustom(exerciseLines, { title, ...this.retrieveContext() });
+  retrieveCustom(exerciseLines, title, setOverrides = null) {
+    const [text, exercises, sets] = retrieveCustom(exerciseLines, { title, setOverrides, ...this.retrieveContext() });
     return { text, exercises, sets, described: describeRetrieveOutput(text) };
   }
 
   /** Every exercise ever logged or in the plan, for picking by hand; most retrieved first. */
+  /**
+   * Every exercise in the plan or the history, for picking by hand, as the old picker had it:
+   * the sets and reps a plan retrieve would give it, and whether it's trained often (in the
+   * plan you follow, or part of your routine) or goes under "Less often". Most retrieved first.
+   */
   exerciseCatalog() {
     const counts = new Map();
     for (const e of this.store.all('retrieval_events')) counts.set(e.exercise_key, (counts.get(e.exercise_key) || 0) + 1);
-    const names = new Map();
+    const items = new Map();
     const days = this.planDays().workout || {};
     for (const cat of Object.values(days)) {
       for (const lines of Object.values(cat)) {
         for (const line of lines) {
-          const name = String(line).replace(/\s*-\s*\[.*$/, '').trim();
+          const parsed = parsePlanExerciseLine(String(line));
+          const name = String(parsed.name || line).trim();
           const key = normalizeExerciseName(name);
-          if (key && !names.has(key)) names.set(key, name);
+          if (key && !items.has(key)) items.set(key, { key, name, line: String(line), inPlan: true });
         }
       }
     }
+    const byDay = new Map();
     for (const log of this.history()) {
       const key = normalizeExerciseName(log.exercise);
-      if (key && !names.has(key)) names.set(key, log.exercise);
+      if (!key) continue;
+      if (!items.has(key)) items.set(key, { key, name: log.exercise, line: log.exercise, inPlan: false });
+      const day = String(log.date || '').slice(0, 10);
+      if (day) (byDay.get(day) || byDay.set(day, new Set()).get(day)).add(key);
     }
-    return [...names.entries()]
-      .map(([key, name]) => ({ key, name, count: counts.get(key) || 0 }))
+    // null: too little history to tell, so nothing folds away.
+    const often = oftenTrainedKeys([...byDay].sort(), [...items.values()].filter((i) => i.inPlan).map((i) => i.key));
+    const repText = this.repRangesText();
+    const [ranges, setsBy] = parseRepRangesText(repText);
+    return [...items.values()]
+      .map((it) => {
+        const [, sets] = picksForPlanLines([it.line], repText)[0] || [null, 3];
+        const range = lookupRepTarget(it.name, ranges, setsBy)[0] || parsePlanExerciseLine(it.line).inline_range || '';
+        return { key: it.key, name: it.name, count: counts.get(it.key) || 0, sets, reps: String(range),
+          often: often === null || often.has(it.key) };
+      })
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  }
+
+  /** The exercises of a plan day with their sets ([[name, sets]]), for Edit. */
+  planDayPicks(category, dayId) {
+    const lines = this.planDays().workout?.[category]?.[`${category} ${dayId}`] || [];
+    const byKey = new Map(picksForPlanLines(lines, this.repRangesText()));
+    const out = [];
+    for (const line of lines) {
+      const name = String(parsePlanExerciseLine(String(line)).name || line).trim();
+      const key = normalizeExerciseName(name);
+      if (byKey.has(key)) {
+        out.push([name, byKey.get(key)]);
+        byKey.delete(key);
+      }
+    }
+    return out;
   }
 
   async recordRetrievals(names) {

@@ -6,7 +6,7 @@
 // old one, takes over, and the old copy is removed.
 'use strict';
 
-const VERSION = 'd5048c20cf45';
+const VERSION = 'dab60e097c50';
 const FILES = [
   './',
   'app/data.js',
@@ -20,6 +20,7 @@ const FILES = [
   'app/screens/retrieve.js',
   'app/screens/settings.js',
   'app/screens/stats.js',
+  'app/shortcuts.js',
   'app/store.js',
   'app/supabase.js',
   'app/sync.js',
@@ -28,13 +29,16 @@ const FILES = [
   'config.js',
   'core/bodyweight.js',
   'core/coach_tools.js',
+  'core/consistency.js',
   'core/dates.js',
   'core/defaults.js',
   'core/history_qa.js',
   'core/html.js',
   'core/html_entities.js',
+  'core/insights.js',
   'core/logging.js',
   'core/names.js',
+  'core/overall_view.js',
   'core/parser.js',
   'core/plans.js',
   'core/py.js',
@@ -44,6 +48,12 @@ const FILES = [
   'core/scoring.js',
   'core/sessions.js',
   'core/stats.js',
+  'fonts/LICENSE-cormorant.md',
+  'fonts/LICENSE-inter.md',
+  'fonts/cormorant-garamond-latin-500-normal.woff2',
+  'fonts/cormorant-garamond-latin-600-normal.woff2',
+  'fonts/cormorant-garamond-latin-700-normal.woff2',
+  'fonts/inter.woff2',
   'icons/favicon-32.png',
   'icons/icon-180.png',
   'icons/icon-192.png',
