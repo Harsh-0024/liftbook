@@ -160,3 +160,20 @@ test('history is kept between calls but follows every change, here or synced', a
   await lb.deleteWorkout('2026-11-01');
   assert.equal(lb.workouts().length, 1);
 });
+
+test('turning bodyweight off asks about old logs, and each answer reads them its way', async () => {
+  for (const [resolution, uses] of [['future_only', true], ['keep_offsets', true], ['literal', false]]) {
+    const lb = await app();
+    await lb.log('20/10/26 Pull\n\nWeighted Dips\nbw+10 x 8, 8');
+    assert.equal(lb.bodyweightOn('Weighted Dips'), true);
+    const c = lb.bodyweightConflict('Weighted Dips');
+    assert.deepEqual([c.total, c.bodyweight_logs], [1, 1]);
+    const before = lb.history()[0].top_weight;
+    await lb.turnOffBodyweight('Weighted Dips', resolution);
+    const log = lb.history()[0];
+    assert.equal(log.uses_bodyweight, uses, resolution);
+    assert.equal(lb.bodyweightOn('Weighted Dips'), false);
+    if (resolution === 'literal') assert.ok(log.top_weight < before, 'plain weight is lighter than bodyweight + 10');
+    else assert.equal(log.top_weight, before);
+  }
+});
