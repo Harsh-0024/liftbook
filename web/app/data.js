@@ -361,15 +361,24 @@ export class Liftbook {
     return { summary: result.summary, day: dayOf(parsed.date), appended: Boolean(existing), timedPrompts, skipped: check.errors, needsBodyweight };
   }
 
+  /** Soft-deletes the day's logs; returns their ids so restoreLogs() can bring them back. */
   async deleteWorkout(day) {
     const w = this.workout(day);
-    if (w) await this.store.remove('workout_logs', w.logs.map((l) => l._k));
+    if (!w) return [];
+    await this.store.remove('workout_logs', w.logs.map((l) => l._k));
+    return w.logs.map((l) => l.id);
   }
 
-  /** Several days' workouts at once (the history's Select). */
+  /** Undo a delete: the same rows come back, everywhere, at the next sync. */
+  async restoreLogs(ids) {
+    if (ids?.length) await this.store.change('workout_logs', ids.map((id) => ({ id, deleted_at: null })));
+  }
+
+  /** Several days' workouts at once (the history's Select); returns their ids for restoreLogs(). */
   async deleteWorkouts(days) {
-    const keys = days.flatMap((d) => this.workout(d)?.logs.map((l) => l._k) || []);
-    if (keys.length) await this.store.remove('workout_logs', keys);
+    const logs = days.flatMap((d) => this.workout(d)?.logs || []);
+    if (logs.length) await this.store.remove('workout_logs', logs.map((l) => l._k));
+    return logs.map((l) => l.id);
   }
 
   /* ---------------- exercise settings ---------------- */

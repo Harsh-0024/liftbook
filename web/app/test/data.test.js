@@ -145,6 +145,28 @@ test('the spreadsheet has the old app’s columns, newest first, and dates can l
   assert.equal(lb.csv({ from: '2027-01-01' }).count, 0);
 });
 
+test('a deleted workout can be brought back', async () => {
+  const lb = await app();
+  await lb.log(DAY1);
+  const ids = await lb.deleteWorkout('2026-10-31');
+  assert.equal(ids.length, 2);
+  assert.equal(lb.workouts().length, 0);
+  await lb.restoreLogs(ids);
+  assert.equal(lb.workout('2026-10-31').logs.length, 2);
+  assert.equal(lb.store.pending('workout_logs').length, 2);
+});
+
+test('several deleted workouts come back together', async () => {
+  const lb = await app();
+  await lb.log(DAY1);
+  await lb.log('1/11/26 Session 1\n\nSquat\n105 x 5');
+  const ids = await lb.deleteWorkouts(['2026-10-31', '2026-11-01']);
+  assert.equal(ids.length, 3);
+  assert.equal(lb.workouts().length, 0);
+  await lb.restoreLogs(ids);
+  assert.equal(lb.workouts().length, 2);
+});
+
 test('history is kept between calls but follows every change, here or synced', async () => {
   const lb = await app();
   await lb.log(DAY1);

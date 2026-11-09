@@ -67,13 +67,17 @@ export function homeScreen(ctx) {
       h('a', { class: 'see-all', href: '#/history' }, 'See all workouts')) : null);
 }
 
+// A long history is drawn a page at a time; "Show more" adds the next page.
+const PAGE = 60;
+
 /** Every workout, a month at a time, with a search, and Select to delete several at once. */
 export function historyScreen(ctx) {
   const { lb } = ctx;
   const workouts = lb.workouts();
   // Selecting survives a synced redraw of this page, not a visit to another one.
   // '#/history?select' (from Sync and data) opens it already picking.
-  const pick = ctx.redrawing && ctx.historyPick ? ctx.historyPick : { on: /[?&]select\b/.test(location.hash), days: new Set() };
+  const fromSettings = /[?&]select\b/.test(location.hash);
+  const pick = ctx.redrawing && ctx.historyPick ? ctx.historyPick : { on: fromSettings, days: new Set(), limit: PAGE };
   ctx.historyPick = pick;
   for (const d of [...pick.days]) if (!lb.workout(d)) pick.days.delete(d);
   const search = h('input', { type: 'search', placeholder: 'Search workouts or exercises', 'aria-label': 'Search workouts', autocomplete: 'off' });
@@ -101,15 +105,22 @@ export function historyScreen(ctx) {
       ? workouts.filter((w) => w.title.toLowerCase().includes(q) || w.logs.some((l) => String(l.exercise).toLowerCase().includes(q)) || w.day.includes(q))
       : workouts;
     const months = new Map();
-    for (const w of shown) {
+    const inMonth = new Map();
+    shown.forEach((w, i) => {
       const k = w.day.slice(0, 7);
+      inMonth.set(k, (inMonth.get(k) || 0) + 1);
+      if (i >= pick.limit) return;
       if (!months.has(k)) months.set(k, []);
       months.get(k).push(w);
-    }
+    });
+    const left = shown.length - pick.limit;
+    const more = left > 0 ? h('button', { class: 'btn more-btn', type: 'button', onclick: () => { pick.limit += PAGE; paint(); } },
+      ...(left > PAGE ? [`Show ${PAGE} more`, h('span', { class: 'subtle' }, `·\u2002${left} left`)] : [`Show the last ${left}`])) : null;
     body.replaceChildren(...(shown.length ? [...months].map(([k, ws]) => {
       const [y, m] = k.split('-').map(Number);
+      const n = inMonth.get(k);
       return h('section', { class: 'section' },
-        h('div', { class: 'label' }, `${MONTHS[m - 1]} ${y}`, h('span', {}, `${ws.length} workout${ws.length === 1 ? '' : 's'}`)),
+        h('div', { class: 'label' }, `${MONTHS[m - 1]} ${y}`, h('span', {}, `${n} workout${n === 1 ? '' : 's'}`)),
         h('div', { class: `group${pick.on ? ' picking' : ''}` }, ws.map((w) => {
           const [yy, mm, dd] = w.day.split('-').map(Number);
           const inner = [
@@ -130,7 +141,7 @@ export function historyScreen(ctx) {
           });
           return row;
         })));
-    }) : [h('div', { class: 'group empty' }, icon('search'), q ? `Nothing matches “${search.value.trim()}”.` : 'No workouts yet.')]));
+    }).concat(more || []) : [h('div', { class: 'group empty' }, icon('search'), q ? `Nothing matches “${search.value.trim()}”.` : 'No workouts yet.')]));
     paintBar();
   };
   toggle.addEventListener('click', () => {
@@ -151,16 +162,31 @@ export function historyScreen(ctx) {
     if (!days.length) return;
     const what = days.length === 1 ? `${lb.workout(days[0])?.title || 'this workout'} on ${formatDay(days[0])}` : `${days.length} workouts`;
     if (!(await ask(`This removes ${days.length === 1 ? 'it' : 'them'} from all your devices.`, { title: `Delete ${what}?`, yes: 'Delete', danger: true }))) return;
-    await lb.deleteWorkouts(days);
+    const ids = await lb.deleteWorkouts(days);
     pick.on = false;
     pick.days.clear();
-    toast(days.length === 1 ? 'Workout deleted.' : `${days.length} workouts deleted.`);
+    const n = days.length;
+    toast(n === 1 ? 'Workout deleted.' : `${n} workouts deleted.`, { ms: 8000, action: 'Undo', onAction: async () => {
+      await lb.restoreLogs(ids);
+      toast(n === 1 ? 'Workout back.' : `${n} workouts back.`);
+      ctx.refresh();
+    } });
     ctx.go('history');
   }));
-  search.addEventListener('input', paint);
+  // Escape leaves Select, as on the old list.
+  const onKey = (e) => {
+    if (!body.isConnected) return document.removeEventListener('keydown', onKey);
+    if (e.key === 'Escape' && pick.on) toggle.click();
+  };
+  document.addEventListener('keydown', onKey);
+  search.addEventListener('input', (e) => {
+    // A new search starts from the first page; the app putting back your search after a redraw doesn't.
+    if (e.isTrusted) pick.limit = PAGE;
+    paint();
+  });
   paint();
   return h('div', {},
-    pageHead('All workouts', `${workouts.length} workout${workouts.length === 1 ? '' : 's'} logged.`, { back: '#/', aside: toggle }),
+    pageHead('All workouts', `${workouts.length} workout${workouts.length === 1 ? '' : 's'} logged.`, { back: fromSettings ? '#/settings' : '#/', aside: toggle }),
     h('div', { class: 'search' }, icon('search'), search),
     body, bar);
 }
@@ -364,8 +390,12 @@ export function workoutScreen(ctx, day) {
   const del = h('button', { class: 'btn danger', type: 'button' }, icon('trash'), 'Delete');
   del.addEventListener('click', busy(del, async () => {
     if (!(await ask('This removes it from all your devices.', { title: `Delete ${w.title} on ${formatDay(day)}?`, yes: 'Delete', danger: true }))) return;
-    await lb.deleteWorkout(day);
-    toast('Workout deleted.');
+    const ids = await lb.deleteWorkout(day);
+    toast('Workout deleted.', { ms: 8000, action: 'Undo', onAction: async () => {
+      await lb.restoreLogs(ids);
+      toast('Workout back.');
+      ctx.go(`workout/${day}`);
+    } });
     ctx.go('history');
   }));
   const share = async () => {

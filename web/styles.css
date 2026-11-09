@@ -936,6 +936,10 @@ label.rowi { cursor: pointer; }
 .kind[aria-pressed="true"] svg.i { color: var(--gold-text); }
 @media (max-width: 479.98px) { .grid-3 { gap: 8px; } .stat { padding: 14px 12px; } }
 
+/* ---------- All workouts: Show more ---------- */
+.more-btn { display: flex; width: 100%; justify-content: center; margin-top: 16px; }
+.more-btn .subtle { font-weight: 400; }
+
 /* Exercises: a row opens in place with its switches and rename */
 .pick-group > .rowi.sub { padding-left: 58px; background: var(--hover); margin: 0; font-weight: inherit; }
 .pick-group > .blk.sub { padding-left: 58px; background: var(--hover); border-top: 1px solid var(--hair); }
