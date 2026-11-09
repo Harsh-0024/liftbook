@@ -1,6 +1,6 @@
 // Stats: overall progress (Strength Index or Improvement Rate) and each exercise's chart.
 
-import { h, icon, pageHead, lineChart, fmtNum, formatDay } from '../ui.js';
+import { h, icon, pageHead, lineChart, fmtNum, formatDay, toast } from '../ui.js';
 import { normalizeExerciseName } from '../../core/names.js';
 import { overallView } from '../../core/overall_view.js';
 import { consistencyYears, yearWindow, consistencyHero, consistencyTiles, yearGrid } from '../../core/consistency.js';
@@ -94,7 +94,36 @@ export function statsScreen(ctx) {
   let wanted = new URLSearchParams(location.hash.split('?')[1] || '').get('exercise');
 
   const body = h('div', {});
-  const root = h('div', { dataset: { wide: '1' } }, pageHead('Stats', 'How your lifts are moving.'), body);
+  // Search an exercise, as the old Stats page had: picking one opens it in the Exercise card.
+  const list = h('datalist', { id: 'stats-exercises' });
+  const search = h('input', { id: 'stats-search', type: 'search', list: 'stats-exercises', placeholder: 'Search an exercise',
+    'aria-label': 'Search an exercise', autocapitalize: 'off', autocomplete: 'off', enterkeyhint: 'go' });
+  const jump = () => {
+    const q = search.value.trim().toLowerCase();
+    if (!q) return;
+    const opts = lb.statsOptions();
+    const hit = opts.find((o) => o.label.toLowerCase() === q) || opts.find((o) => o.label.toLowerCase().startsWith(q))
+      || opts.find((o) => o.label.toLowerCase().includes(q));
+    if (!hit) return toast(`No exercise called “${search.value.trim()}” in your workouts.`);
+    exercise = hit.value;
+    lb.countView(exercise);
+    search.value = '';
+    search.blur();
+    paint();
+    body.querySelector('#exercise-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  // A pick from the suggestions fires "input" with the full name; Enter jumps on whatever was typed.
+  search.addEventListener('input', () => {
+    if (lb.statsOptions().some((o) => o.label === search.value)) jump();
+  });
+  search.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      jump();
+    }
+  });
+  const root = h('div', { dataset: { wide: '1' } }, pageHead('Stats', 'How your lifts are moving.'),
+    h('div', { class: 'search', style: 'margin-bottom:18px' }, icon('search'), search, list), body);
 
   const options = () => {
     const list = lb.statsOptions();
@@ -191,6 +220,7 @@ export function statsScreen(ctx) {
       wanted = null;
     }
     if (!exercise && opts.length) exercise = opts[0].value;
+    list.replaceChildren(...opts.map((o) => h('option', { value: o.label })));
     const select = h('select', { id: 'exercise', 'aria-label': 'Exercise' }, opts.map((o) => h('option', { value: o.value, selected: o.value === exercise }, `${o.label} (${o.sessions})`)));
     select.addEventListener('change', () => {
       exercise = select.value;
@@ -243,7 +273,7 @@ export function statsScreen(ctx) {
         chart,
         tiles || '',
         h('p', { class: 'foot', style: 'margin:12px 2px 0' }, foot)),
-      h('div', { class: 'card' },
+      h('div', { class: 'card', id: 'exercise-card', style: 'scroll-margin-top:90px' },
         h('div', { class: 'card-head', style: 'margin-bottom:12px' }, h('h2', {}, 'Exercise'), sortSel),
         opts.length ? h('div', { class: 'field' }, select) : null,
         exerciseCard)].filter(Boolean)); // replaceChildren would print a null as the word "null"
