@@ -429,7 +429,7 @@ function admin(ctx) {
     const counts = { new: 0, seen: 0, done: 0 };
     for (const r of rows) counts[r.status] = (counts[r.status] || 0) + 1;
     const item = (r) => {
-      const status = h('select', { 'aria-label': 'Status' }, ['new', 'seen', 'done'].map((v) => h('option', { value: v, selected: v === r.status }, v)));
+      const status = h('select', { 'aria-label': 'Status', class: 'status-pick' }, ['new', 'seen', 'done'].map((v) => h('option', { value: v, selected: v === r.status }, v)));
       status.addEventListener('change', async () => {
         try {
           await lb.setFeedbackStatus(r.id, status.value);
@@ -443,8 +443,9 @@ function admin(ctx) {
       // Who sent it, and Reply by email, as the old admin page had.
       const who = [r.full_name, r.username ? `@${r.username}` : null, r.email].filter(Boolean).join(' · ');
       const reply = r.email ? h('a', { class: 'btn small', href: `mailto:${r.email}?subject=${encodeURIComponent('About your feedback on Liftbook')}` }, 'Reply') : null;
-      return h('li', {}, h('div', { class: 'item', style: 'align-items:flex-start;gap:12px' },
-        h('div', { style: 'min-width:0' }, h('div', { style: 'white-space:pre-wrap' }, r.message),
+      // On a narrow phone, Reply and the status drop under the message instead of squeezing it.
+      return h('li', {}, h('div', { class: 'item', style: 'align-items:flex-start;gap:12px;flex-wrap:wrap' },
+        h('div', { style: 'min-width:0;flex:1 1 220px' }, h('div', { style: 'white-space:pre-wrap' }, r.message),
           h('div', { class: 'meta' }, who),
           h('div', { class: 'meta' }, `${FEEDBACK_LABELS[r.kind] || r.kind} · ${formatDay(r.created_at)}${r.page ? ` · ${r.page}` : ''}`)),
         h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, reply, status)));
@@ -477,8 +478,9 @@ function admin(ctx) {
     const filterBar = h('div', { class: 'tabs', role: 'group', 'aria-label': 'Show answers' });
     const list = h('div', { class: 'stack' });
     const card = (a) => h('details', { class: 'card' },
-        h('summary', {}, h('span', { style: 'font-weight:600' }, a.question),
-          h('div', { class: 'meta' }, `${a.username} · ${formatDay(a.created_at)} · ${a.source === 'rules' ? 'built-in' : a.model || 'ai'}${a.rating === 1 ? ' · 👍' : a.rating === -1 ? ' · 👎' : ''}${a.ms ? ` · ${(a.ms / 1000).toFixed(1)} s` : ''}`)),
+        // Question, then who/when/model under it (side by side they ran together on a phone).
+        h('summary', {}, h('div', { style: 'min-width:0;flex:1' }, h('div', { style: 'font-weight:600' }, a.question),
+          h('div', { class: 'subtle', style: 'font-size:0.82rem;margin-top:4px' }, `${a.username} · ${formatDay(a.created_at)} · ${a.source === 'rules' ? 'built-in' : a.model || 'ai'}${a.rating === 1 ? ' · 👍' : a.rating === -1 ? ' · 👎' : ''}${a.ms ? ` · ${(a.ms / 1000).toFixed(1)} s` : ''}`))),
         h('p', { style: 'white-space:pre-wrap' }, a.answer),
         a.comment ? h('p', { class: 'subtle' }, `Comment: ${a.comment}`) : null,
         a.failed ? h('p', { class: 'subtle' }, `Failed first: ${a.failed}`) : null);
@@ -647,7 +649,7 @@ function sync(ctx) {
       h('button', { class: 'btn', type: 'button', onclick: backup }, 'Download a backup file')),
     h('div', { class: 'card' }, h('h2', {}, 'Spreadsheet'),
       h('p', { class: 'subtle' }, 'Every exercise you logged, one row each, for Excel, Numbers or Google Sheets. Leave the dates empty for all of it.'),
-      h('div', { class: 'row' }, field('From', from), field('To', to)),
+      h('div', { class: 'date-pair' }, field('From', from), field('To', to)),
       h('button', { class: 'btn', type: 'button', onclick: spreadsheet }, 'Download a CSV file')),
     h('section', { class: 'section' }, h('div', { class: 'label' }, 'Clean up'),
       h('div', { class: 'group' },
