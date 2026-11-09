@@ -476,6 +476,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--g
 }
 .editor-meta { flex: 1 1 160px; min-width: 0; font-size: 0.8rem; color: var(--subtle); font-variant-numeric: tabular-nums; }
 .editor-meta .ok { font-weight: 600; }
+.meta-btn { background: none; border: 0; padding: 0; text-align: left; font-family: inherit; cursor: pointer; }
 @media (max-width: 759.98px) { .editor-bar { bottom: calc(var(--tabbar-h) + var(--safe-bottom)); } }
 
 /* ---------- small pieces ---------- */
@@ -1046,3 +1047,25 @@ label.rowi { cursor: pointer; }
 .bw-opt input { accent-color: var(--gold); margin-top: 3px; flex: none; width: 18px; height: 18px; }
 .bw-opt b { display: block; font-size: 0.9rem; font-weight: 600; color: var(--text); }
 .bw-opt small { display: block; margin-top: 2px; font-size: 0.8rem; color: var(--muted); }
+
+/* Exercise-name suggestions float just under the line being typed (Log and Edit). */
+.editor-wrap { position: relative; overflow: visible; }
+.suggest { position: absolute; left: 12px; right: 12px; z-index: 6; max-width: 360px; padding: 6px;
+  border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); box-shadow: 0 8px 28px rgba(0,0,0,0.18); }
+.suggest[hidden] { display: none; }
+.suggest button { display: block; width: 100%; padding: 10px 12px; border: 0; border-radius: 8px; background: transparent;
+  text-align: left; font: inherit; font-size: .92rem; font-weight: 500; color: var(--muted); cursor: pointer; }
+.suggest button.active, .suggest button:hover { background: var(--gold-soft); color: var(--text); }
+
+/* Log check: a name you haven't used, a close misspelling or a repeat. */
+.name-note { font-size: .82rem; color: var(--muted); }
+.name-note.is-suggest, .name-note.is-twice, .name-note.is-dup { color: var(--warn); font-weight: 600; }
+.rowi.warn .ico { color: var(--warn); }
+
+/* A box that grows with its text (autoGrow in ui.js): no scrolling inside it. */
+.editor.grows { overflow: hidden; resize: none; }
+/* Log: the count and Save float above the tab bar while everything scrolls under them. */
+.log-bar { position: sticky; bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 10px); margin-top: 14px; z-index: 5; box-shadow: 0 8px 28px rgba(0,0,0,0.18); }
+.log-bar .editor-bar { position: static; border-top: 0; }
+@media (min-width: 760px) { .log-bar { bottom: 16px; } }
+.log-flow > .section:first-of-type, .log-flow > [role=alert] { margin-top: 0; }

@@ -1,8 +1,10 @@
 // Home (a welcome: you, two ways in, the last few workouts), every workout, one workout, and
 // editing it. The layout follows the original app's.
 
-import { h, icon, rowItem, pageHead, softDay, formatDay, copyText, toast, busy, fmtNum, ask } from '../ui.js';
+import { h, icon, rowItem, pageHead, softDay, formatDay, copyText, toast, busy, fmtNum, ask, autoGrow } from '../ui.js';
 import { formatSetsDisplay } from '../../core/logging.js';
+import { attachSuggestions } from '../suggest.js';
+import { attachPasteTidy } from '../paste.js';
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -450,6 +452,10 @@ export function editScreen(ctx, day) {
   const date = h('input', { id: 'edit_date', type: 'date', value: day, required: true, 'aria-label': 'Date' });
   const ta = h('textarea', { id: 'workout_text', class: 'editor', spellcheck: 'false', autocapitalize: 'off', 'aria-label': 'The exercises and their sets' },
     lines.slice(1).join('\n').trim());
+  autoGrow(ta);
+  // Name suggestions while typing; here the box starts with an exercise, not the title.
+  const suggest = attachSuggestions(ta, () => lb.exerciseCatalog().map((e) => e.name), { firstLineIsTitle: false });
+  attachPasteTidy(ta);
   const text = () => {
     const [y, m, d] = (date.value || day).split('-').map(Number);
     return `${d}/${m}/${String(y % 100).padStart(2, '0')} ${title.value.trim() || 'Workout'}\n\n${ta.value.trim()}`;
@@ -499,8 +505,9 @@ export function editScreen(ctx, day) {
     h('div', { class: 'edit-fields' },
       h('label', { class: 'field' }, h('span', {}, 'Title'), title),
       h('label', { class: 'field date' }, h('span', {}, 'Date'), date)),
-    h('div', { class: 'group' },
+    h('div', { class: 'group editor-wrap' },
       ta,
+      suggest,
       h('div', { class: 'editor-bar' }, meta,
         h('div', { class: 'row' }, h('a', { class: 'btn small', href: `#/workout/${day}` }, 'Cancel'), btn))),
     err, checkBox);

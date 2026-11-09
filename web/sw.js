@@ -6,13 +6,14 @@
 // old one, takes over, and the old copy is removed.
 'use strict';
 
-const VERSION = '064eedc8b599';
+const VERSION = '48906d6d2335';
 const FILES = [
   './',
   'app/data.js',
   'app/main.js',
   'app/native.js',
   'app/online.js',
+  'app/paste.js',
   'app/screens/auth.js',
   'app/screens/coach.js',
   'app/screens/home.js',
@@ -22,6 +23,7 @@ const FILES = [
   'app/screens/stats.js',
   'app/shortcuts.js',
   'app/store.js',
+  'app/suggest.js',
   'app/supabase.js',
   'app/sync.js',
   'app/tables.js',
@@ -38,6 +40,7 @@ const FILES = [
   'core/html_entities.js',
   'core/insights.js',
   'core/logging.js',
+  'core/name_check.js',
   'core/names.js',
   'core/overall_view.js',
   'core/parser.js',

@@ -123,7 +123,8 @@ export function muscleGroup(name) {
 }
 
 /* difflib.get_close_matches, as Python does it (no junk: names are far under 200 characters). */
-function matchingCharacters(a, b) {
+/** difflib's matching blocks of two character lists, as [i, j, size], in order. */
+function matchingBlocks(a, b) {
   const b2j = new Map();
   b.forEach((c, j) => (b2j.has(c) ? b2j.get(c).push(j) : b2j.set(c, [j])));
   const longest = (alo, ahi, blo, bhi) => {
@@ -142,17 +143,31 @@ function matchingCharacters(a, b) {
     }
     return [besti, bestj, bestsize];
   };
-  let total = 0;
+  const blocks = [];
   const queue = [[0, a.length, 0, b.length]];
   while (queue.length) {
     const [alo, ahi, blo, bhi] = queue.pop();
     const [i, j, k] = longest(alo, ahi, blo, bhi);
     if (!k) continue;
-    total += k;
+    blocks.push([i, j, k]);
     if (alo < i && blo < j) queue.push([alo, i, blo, j]);
     if (i + k < ahi && j + k < bhi) queue.push([i + k, ahi, j + k, bhi]);
   }
-  return total;
+  return blocks.sort((p, q) => p[0] - q[0] || p[1] - q[1]);
+}
+
+const matchingCharacters = (a, b) => matchingBlocks(a, b).reduce((n, [, , k]) => n + k, 0);
+
+/** Characters that differ between two strings: each replaced, inserted or deleted run counts its longer side. */
+export function changedChars(a, b) {
+  const x = Array.from(a);
+  const y = Array.from(b);
+  let [i0, j0, n] = [0, 0, 0];
+  for (const [i, j, k] of [...matchingBlocks(x, y), [x.length, y.length, 0]]) {
+    n += Math.max(i - i0, j - j0);
+    [i0, j0] = [i + k, j + k];
+  }
+  return n;
 }
 
 export function similarity(a, b) {
