@@ -161,6 +161,14 @@ function profile(ctx) {
   if (isNative) photoBtn.addEventListener('click', busy(photoBtn, async () => upload(await pickPhoto())));
   else photoBtn.addEventListener('click', () => file.click());
   file.addEventListener('change', busy(photoBtn, () => upload(file.files[0])));
+  // Only when there is a photo to remove, as the old Account page had.
+  const removeBtn = p.avatar_path ? h('button', { class: 'btn small danger', type: 'button', 'aria-label': 'Remove photo' }, 'Remove') : null;
+  removeBtn?.addEventListener('click', busy(removeBtn, async () => {
+    if (!(await ask('It goes from your profile on all your devices.', { title: 'Remove your profile photo?', yes: 'Remove photo', danger: true }))) return;
+    await lb.removeAvatar();
+    toast('Photo removed.');
+    ctx.refresh();
+  }));
 
   const save = h('button', { class: 'btn primary', type: 'button' }, 'Save');
   save.addEventListener('click', busy(save, async () => {
@@ -184,7 +192,7 @@ function profile(ctx) {
     h('div', { class: 'group' },
       h('div', { class: 'rowi profile-photo' }, avatar,
         h('span', { class: 'main' }, h('span', { class: 'title' }, 'Photo'), h('span', { class: 'desc' }, 'Shown at the top of Settings')),
-        photoBtn, file)),
+        h('span', { class: 'row photo-btns' }, photoBtn, removeBtn), file)),
     h('section', { class: 'section' }, h('div', { class: 'label' }, 'About you'),
       h('div', { class: 'group' }, h('div', { class: 'blk' },
         field('Name', name), field('Username', username), field('Bodyweight (kg)', bw, 'Used for bodyweight exercises like pull-ups and dips.')),

@@ -1013,3 +1013,5 @@ label.rowi { cursor: pointer; }
 .sync-lines { display: flex; flex-direction: column; gap: 2px; }
 .group > .blk .date-pair { gap: 12px; }
 .group > .blk .field { margin: 0; }
+.photo-btns { flex: none; gap: 8px; flex-wrap: nowrap; }
+@media (max-width: 479.98px) { .profile-photo { flex-wrap: wrap; } .profile-photo .photo-btns { width: 100%; padding-left: 78px; margin-top: -4px; } }
