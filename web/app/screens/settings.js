@@ -440,10 +440,14 @@ function admin(ctx) {
           toast(err.message, 5000);
         }
       });
+      // Who sent it, and Reply by email, as the old admin page had.
+      const who = [r.full_name, r.username ? `@${r.username}` : null, r.email].filter(Boolean).join(' · ');
+      const reply = r.email ? h('a', { class: 'btn small', href: `mailto:${r.email}?subject=${encodeURIComponent('About your feedback on Liftbook')}` }, 'Reply') : null;
       return h('li', {}, h('div', { class: 'item', style: 'align-items:flex-start;gap:12px' },
         h('div', { style: 'min-width:0' }, h('div', { style: 'white-space:pre-wrap' }, r.message),
-          h('div', { class: 'meta' }, `${FEEDBACK_LABELS[r.kind] || r.kind} · ${r.username || r.email} · ${formatDay(r.created_at)}${r.page ? ` · ${r.page}` : ''}`)),
-        status));
+          h('div', { class: 'meta' }, who),
+          h('div', { class: 'meta' }, `${FEEDBACK_LABELS[r.kind] || r.kind} · ${formatDay(r.created_at)}${r.page ? ` · ${r.page}` : ''}`)),
+        h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, reply, status)));
     };
     const shown = h('div', { class: 'card' }, rows.length ? h('ul', { class: 'list' }, rows.map(item)) : h('p', { class: 'subtle' }, 'No feedback yet.'));
     // Shown once as new; from now on the sender sees it was read (as in the old app).
@@ -456,7 +460,7 @@ function admin(ctx) {
   async function peopleTab() {
     const rows = await lb.adminUsers();
     const active = rows.filter((r) => r.last_workout && (Date.now() - Date.parse(r.last_workout)) < 30 * 86400000).length;
-    return [h('p', { class: 'subtle' }, `${rows.length} accounts · ${active} logged in the last 30 days`),
+    return [h('p', { class: 'subtle' }, `${rows.length} account${rows.length === 1 ? '' : 's'} · ${active} logged in the last 30 days`),
       h('div', { class: 'card' }, h('ul', { class: 'list' }, rows.map((r) => h('li', {}, h('div', { class: 'item', style: 'align-items:flex-start' },
         h('div', { style: 'min-width:0' },
           h('div', { style: 'font-weight:600' }, `${r.username || '(no username yet)'}${r.full_name ? ` · ${r.full_name}` : ''}${r.is_admin ? ' · admin' : ''}`),
@@ -466,13 +470,28 @@ function admin(ctx) {
 
   async function coachTab() {
     const { totals = {}, answers = [] } = await lb.adminCoach(100);
-    return [h('p', { class: 'subtle' }, `${totals.answers || 0} answers · ${totals.helpful || 0} 👍 · ${totals.not_helpful || 0} 👎 · ${totals.built_in || 0} built-in`),
-      h('div', { class: 'stack' }, answers.length ? answers.map((a) => h('details', { class: 'card' },
+    // All / Not helpful / Helpful / Unrated, as the old admin page filtered them.
+    const FILTERS = [['all', 'All', () => true], ['bad', 'Not helpful', (a) => a.rating === -1],
+      ['good', 'Helpful', (a) => a.rating === 1], ['none', 'Unrated', (a) => !a.rating]];
+    let pick = 'all';
+    const filterBar = h('div', { class: 'tabs', role: 'group', 'aria-label': 'Show answers' });
+    const list = h('div', { class: 'stack' });
+    const card = (a) => h('details', { class: 'card' },
         h('summary', {}, h('span', { style: 'font-weight:600' }, a.question),
           h('div', { class: 'meta' }, `${a.username} · ${formatDay(a.created_at)} · ${a.source === 'rules' ? 'built-in' : a.model || 'ai'}${a.rating === 1 ? ' · 👍' : a.rating === -1 ? ' · 👎' : ''}${a.ms ? ` · ${(a.ms / 1000).toFixed(1)} s` : ''}`)),
         h('p', { style: 'white-space:pre-wrap' }, a.answer),
         a.comment ? h('p', { class: 'subtle' }, `Comment: ${a.comment}`) : null,
-        a.failed ? h('p', { class: 'subtle' }, `Failed first: ${a.failed}`) : null)) : h('div', { class: 'card subtle' }, 'No answers yet.'))];
+        a.failed ? h('p', { class: 'subtle' }, `Failed first: ${a.failed}`) : null);
+    const show = () => {
+      filterBar.replaceChildren(...FILTERS.map(([k, label, test]) => h('button', {
+        type: 'button', class: k === pick ? 'on' : '', 'aria-pressed': String(k === pick), onclick: () => { pick = k; show(); },
+      }, `${label} ${answers.filter(test).length}`)));
+      const shown = answers.filter(FILTERS.find(([k]) => k === pick)[2]);
+      list.replaceChildren(...(shown.length ? shown.map(card) : [h('div', { class: 'card subtle' }, answers.length ? 'None here.' : 'No answers yet.')]));
+    };
+    show();
+    return [h('p', { class: 'subtle' }, `${totals.answers || 0} answers · ${totals.helpful || 0} 👍 · ${totals.not_helpful || 0} 👎 · ${totals.built_in || 0} built-in`),
+      filterBar, list];
   }
 
   async function paint() {
