@@ -26,7 +26,7 @@ import { normalizeExerciseName, exerciseKey, statsExerciseKey, statsVocabulary, 
 import {
   validateRename, renamedName, renameInExerciseString, renameInPlanText, renameInRepText,
 } from '../core/renames.js';
-import { parseDate, formatDateTime, localDay } from '../core/dates.js';
+import { parseDate, deviceDay, addDays } from '../core/dates.js';
 import { timeKey } from './tables.js';
 
 export const FEEDBACK_KINDS = ['like', 'dislike', 'improve', 'idea'];
@@ -43,6 +43,12 @@ const uuid = () => {
 
 /** "2026-10-31T09:00:00" -> "2026-10-31" (workout dates are the person's own clock, no zone). */
 export const dayOf = (date) => String(date || '').slice(0, 10);
+
+// Saved workout times are already the person's own clock time (workout_logs.date), so Stats
+// must not move them. The core's default (+5:30) copies the old Python app, which saved
+// undated workouts in the server's UTC; with it, a workout saved after 6:30 pm showed in
+// Stats on the next day.
+export const LOCAL_TIMES = { tzOffsetMinutes: 0 };
 
 export class Liftbook {
   constructor(store, client, userId) {
@@ -551,15 +557,15 @@ export class Liftbook {
       const k = statsExerciseKey(s.exercise_name || s.exercise_key, vocabulary);
       if (k && s.view_count) views[k] = (views[k] || 0) + s.view_count;
     }
-    return statsExerciseOptions({ history, views });
+    return statsExerciseOptions({ history, views, ...LOCAL_TIMES });
   }
 
   chart(exercise) {
-    return getChartData(exercise, { history: this.history(), settings: this.exerciseSettings(), ownRepRanges: this.text('rep_ranges') });
+    return getChartData(exercise, { history: this.history(), settings: this.exerciseSettings(), ownRepRanges: this.text('rep_ranges'), ...LOCAL_TIMES });
   }
 
   overall(mode = 'index') {
-    return getOverallProgressData({ history: this.history(), settings: this.exerciseSettings(), mode });
+    return getOverallProgressData({ history: this.history(), settings: this.exerciseSettings(), mode, ...LOCAL_TIMES });
   }
 
   summaries() {
@@ -578,8 +584,8 @@ export class Liftbook {
   /** Workouts per week and the current streak (Home). */
   overview() {
     const workouts = this.workouts();
-    const today = localDay(formatDateTime(parseDate(new Date())));
-    const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+    const today = deviceDay();
+    const weekAgo = addDays(today, -7);
     return {
       total: workouts.length,
       thisWeek: workouts.filter((w) => w.day > weekAgo && w.day <= today).length,

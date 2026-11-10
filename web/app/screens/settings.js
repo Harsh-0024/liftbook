@@ -7,6 +7,7 @@ import { Online } from '../online.js';
 import { FEEDBACK_KINDS } from '../data.js';
 import { defaultRepRangesText } from '../../core/plans.js';
 import { DEFAULT_PLAN } from '../../core/plans.js';
+import { deviceDay } from '../../core/dates.js';
 import { planDays, customKeys, nicknamesText } from '../../core/sessions.js';
 import { isNative, pickPhoto, saveFile, linkBackUrl } from '../native.js';
 
@@ -706,7 +707,7 @@ function sync(ctx) {
   now.addEventListener('click', busy(now, () => ctx.sync.runOnce()));
   const backup = () => {
     const blob = new Blob([JSON.stringify({ app: 'liftbook', exported_at: new Date().toISOString(), ...store.snapshot() }, null, 1)], { type: 'application/json' });
-    saveFile(`liftbook-${lb.profile()?.username || 'backup'}-${new Date().toISOString().slice(0, 10)}.json`, blob).catch((err) => toast(err.message || String(err)));
+    saveFile(`liftbook-${lb.profile()?.username || 'backup'}-${deviceDay()}.json`, blob).catch((err) => toast(err.message || String(err)));
   };
   const from = h('input', { id: 'csv-from', type: 'date' });
   const to = h('input', { id: 'csv-to', type: 'date' });
@@ -714,7 +715,7 @@ function sync(ctx) {
     if (from.value && to.value && from.value > to.value) return toast('The start date is after the end date.');
     const { count, text } = lb.csv({ from: from.value, to: to.value });
     if (!count) return toast('No workouts in those dates.');
-    const range = from.value || to.value ? `${(from.value || 'start').replaceAll('-', '')}_${(to.value || 'today').replaceAll('-', '')}` : new Date().toISOString().slice(0, 10).replaceAll('-', '');
+    const range = from.value || to.value ? `${(from.value || 'start').replaceAll('-', '')}_${(to.value || 'today').replaceAll('-', '')}` : deviceDay().replaceAll('-', '');
     saveFile(`workout_history_${lb.profile()?.username || 'liftbook'}_${range}.csv`, new Blob([text], { type: 'text/csv' })).catch((err) => toast(err.message || String(err)));
   };
   const counts = lb.overview();
