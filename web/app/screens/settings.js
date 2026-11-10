@@ -7,6 +7,7 @@ import { Online } from '../online.js';
 import { FEEDBACK_KINDS } from '../data.js';
 import { defaultRepRangesText } from '../../core/plans.js';
 import { DEFAULT_PLAN } from '../../core/plans.js';
+import { deviceDay } from '../../core/dates.js';
 import { planDays, customKeys, nicknamesText } from '../../core/sessions.js';
 import { isNative, pickPhoto, saveFile, linkBackUrl } from '../native.js';
 
@@ -706,7 +707,7 @@ function sync(ctx) {
   now.addEventListener('click', busy(now, () => ctx.sync.runOnce()));
   const backup = () => {
     const blob = new Blob([JSON.stringify({ app: 'liftbook', exported_at: new Date().toISOString(), ...store.snapshot() }, null, 1)], { type: 'application/json' });
-    saveFile(`liftbook-${lb.profile()?.username || 'backup'}-${new Date().toISOString().slice(0, 10)}.json`, blob).catch((err) => toast(err.message || String(err)));
+    saveFile(`liftbook-${lb.profile()?.username || 'backup'}-${deviceDay()}.json`, blob).catch((err) => toast(err.message || String(err)));
   };
   const from = h('input', { id: 'csv-from', type: 'date' });
   const to = h('input', { id: 'csv-to', type: 'date' });
@@ -714,7 +715,7 @@ function sync(ctx) {
     if (from.value && to.value && from.value > to.value) return toast('The start date is after the end date.');
     const { count, text } = lb.csv({ from: from.value, to: to.value });
     if (!count) return toast('No workouts in those dates.');
-    const range = from.value || to.value ? `${(from.value || 'start').replaceAll('-', '')}_${(to.value || 'today').replaceAll('-', '')}` : new Date().toISOString().slice(0, 10).replaceAll('-', '');
+    const range = from.value || to.value ? `${(from.value || 'start').replaceAll('-', '')}_${(to.value || 'today').replaceAll('-', '')}` : deviceDay().replaceAll('-', '');
     saveFile(`workout_history_${lb.profile()?.username || 'liftbook'}_${range}.csv`, new Blob([text], { type: 'text/csv' })).catch((err) => toast(err.message || String(err)));
   };
   const counts = lb.overview();
@@ -806,13 +807,35 @@ function bulkImport(ctx) {
 
 /* ---------------- account ---------------- */
 
+/**
+ * "Current password" before changing the email or the password, as the old app asked: someone
+ * holding an unlocked phone can't take the account over. Forgot it: sign out, then "Forgot password?".
+ */
+function currentPassword(id) {
+  return h('input', { id, type: 'password', autocomplete: 'current-password' });
+}
+
+async function confirmPassword(ctx, input) {
+  if (!input.value) throw new Error('Type your current password first.');
+  let ok;
+  try {
+    ok = await ctx.client.auth.checkPassword(ctx.user.email, input.value);
+  } catch (err) {
+    if (err.status === 0) throw new Error('This needs the internet.');
+    throw err;
+  }
+  if (!ok) throw new Error('That isn’t your current password. Forgot it? Sign out, then tap “Forgot password?”.');
+}
+
 function account(ctx) {
+  const emailPw = currentPassword('email-current-password');
   const email = h('input', { id: 'new-email', type: 'email', autocomplete: 'email', autocapitalize: 'off', placeholder: 'new@example.com' });
   const moveEmail = h('button', { class: 'btn', type: 'button' }, 'Change email');
   moveEmail.addEventListener('click', busy(moveEmail, async () => {
     const next = email.value.trim().toLowerCase();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(next)) throw new Error('Type the new email address.');
     if (next === String(ctx.user.email || '').toLowerCase()) throw new Error('That’s already your email.');
+    await confirmPassword(ctx, emailPw);
     try {
       await ctx.client.auth.updateEmail(next, linkBackUrl());
     } catch (err) {
@@ -820,14 +843,19 @@ function account(ctx) {
       throw err;
     }
     email.value = '';
+    emailPw.value = '';
     toast('Check your inbox: open the link we sent to finish the change.', 7000);
   }));
+  const oldPw = currentPassword('current-password');
   const pw = h('input', { id: 'new-password', type: 'password', autocomplete: 'new-password' });
   const change = h('button', { class: 'btn', type: 'button' }, 'Change password');
   change.addEventListener('click', busy(change, async () => {
     if (pw.value.length < 8) throw new Error('Use at least 8 characters.');
+    await confirmPassword(ctx, oldPw);
+    if (pw.value === oldPw.value) throw new Error('That is your current password. Choose a new one.');
     await ctx.client.auth.updatePassword(pw.value);
     pw.value = '';
+    oldPw.value = '';
     toast('Password changed.');
   }));
 
@@ -854,8 +882,10 @@ function account(ctx) {
 
   return h('div', {},
     h('div', { class: 'card' }, h('h2', {}, 'Email'), h('p', { class: 'muted' }, ctx.user.email),
-      field('New email', email, 'We email a link to confirm it. Your sign-in changes once you open it.'), moveEmail),
-    h('div', { class: 'card' }, h('h2', {}, 'Password'), field('New password', pw, 'At least 8 characters.'), change),
+      field('New email', email, 'We email a link to confirm it. Your sign-in changes once you open it.'),
+      field('Current password', emailPw), moveEmail),
+    h('div', { class: 'card' }, h('h2', {}, 'Password'), field('Current password', oldPw),
+      field('New password', pw, 'At least 8 characters.'), change),
     h('div', { class: 'card' }, h('h2', {}, 'Appearance'), themeSeg()),
     h('div', { class: 'card' }, out),
     deleteCard);

@@ -153,7 +153,8 @@ function resolveExercise(d, exercise) {
   return cands.filter((c) => logged.has(c)).sort()[0] || null;
 }
 
-const chartFor = (d, name) => getChartData(name, { history: d.history, settings: d.settings, ownRepRanges: d.ownRepRanges || '' });
+// Saved times are the person's own clock time: no time-zone shift (see LOCAL_TIMES in app/data.js).
+const chartFor = (d, name) => getChartData(name, { history: d.history, settings: d.settings, ownRepRanges: d.ownRepRanges || '', tzOffsetMinutes: 0 });
 
 function pointAt(series, labels, day) {
   const idx = labels.indexOf(day);
@@ -168,7 +169,7 @@ function explainDrop(d, { day, exercise, metric }) {
   metric = low(metric) || 'e1rm';
   const dayLogs = d.history.filter((l) => iso(l.date) === day);
   if (!exercise) {
-    const data = getAverageGrowthData({ history: d.history, settings: d.settings });
+    const data = getAverageGrowthData({ history: d.history, settings: d.settings, tzOffsetMinutes: 0 });
     const p = pointAt(seriesFor(data, 'data'), data.labels || [], day);
     if (!p) return { ok: true, answer: `I don't have a plotted point for ${day} on Overall Progress (no logs that day).`, results: [] };
     const answer = p.delta === null

@@ -97,24 +97,28 @@ export function authScreens({ client, onSignedIn, go }, which) {
   return signIn(client, onSignedIn, go);
 }
 
+/** A username, as profiles.username allows (supabase/schema.sql). */
+const USERNAME_RE = /^[A-Za-z0-9_.-]{3,50}$/;
+
 function signIn(client, onSignedIn) {
-  const email = h('input', { id: 'email', type: 'email', autocomplete: 'username', required: true, autocapitalize: 'off' });
+  const email = h('input', { id: 'email', type: 'text', inputmode: 'email', autocomplete: 'username', required: true, autocapitalize: 'off', spellcheck: 'false' });
   const password = h('input', { id: 'password', type: 'password', autocomplete: 'current-password', required: true });
   const err = h('p', { class: 'error', role: 'alert' });
   const btn = h('button', { class: 'btn primary block', type: 'submit' }, 'Sign in');
   const form = h('form', { novalidate: true },
-    field('Email', email),
+    field('Email or username', email),
     field('Password', password, null, h('a', { href: '#/forgot', class: 'small-link' }, 'Forgot password?')),
     err, btn,
   );
   form.addEventListener('submit', busy(btn, async () => {
     err.textContent = '';
-    if (!EMAIL_RE.test(email.value.trim())) {
-      err.textContent = 'Type the email you signed up with.';
+    const who = email.value.trim();
+    if (!EMAIL_RE.test(who) && !USERNAME_RE.test(who)) {
+      err.textContent = who.includes('@') ? 'That email doesn’t look right.' : 'Type your email or your username.';
       return;
     }
     try {
-      await client.auth.signIn(email.value.trim(), password.value);
+      await client.auth.signIn(who, password.value);
     } catch (e) {
       err.textContent = e.message;
       return;

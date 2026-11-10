@@ -26,7 +26,8 @@ function errorMessage(status, payload) {
     ? String(payload.msg || payload.message || payload.error_description || payload.error || '')
     : '';
   const code = payload && typeof payload === 'object' ? String(payload.error_code || payload.code || '') : '';
-  if (code === 'invalid_credentials' || /invalid login credentials/i.test(text)) return 'That email and password don’t match.';
+  if (code === 'invalid_credentials' || /invalid login credentials/i.test(text)) return /username/i.test(text) ? text : 'That email and password don’t match.';
+  if (code === 'over_request_rate_limit' && text) return text;
   if (code === 'email_not_confirmed' || /email not confirmed/i.test(text)) return 'Confirm your email first: open the link we sent you.';
   if (code === 'user_already_exists' || /already registered/i.test(text)) return 'There is already an account with that email. Sign in instead.';
   if (code === 'weak_password' || /password should/i.test(text)) return text || 'Choose a stronger password.';
@@ -127,9 +128,25 @@ export function createClient({ url, key, fetchFn = (...args) => globalThis.fetch
       return () => listeners.delete(fn);
     },
     accessToken,
-    async signIn(email, password) {
-      const payload = await request('POST', '/auth/v1/token?grant_type=password', { email, password });
+    /** With an email, or a username (the "signin" Edge Function finds its email on the server). */
+    async signIn(emailOrUsername, password) {
+      const who = String(emailOrUsername || '').trim();
+      const payload = who.includes('@')
+        ? await request('POST', '/auth/v1/token?grant_type=password', { email: who, password })
+        : await request('POST', '/functions/v1/signin', { username: who, password });
       return writeSession(payload);
+    },
+    /** Is this the signed-in person's password? (Asked again before changing email or password.) */
+    async checkPassword(email, password) {
+      try {
+        const check = await request('POST', '/auth/v1/token?grant_type=password', { email, password });
+        // That made a second sign-in on the server; end it, keeping this device's own.
+        if (check?.access_token) request('POST', '/auth/v1/logout?scope=local', {}, { token: check.access_token }).catch(() => {});
+        return true;
+      } catch (err) {
+        if (err.status === 400) return false;
+        throw err;
+      }
     },
     /** Returns the session, or null when the email has to be confirmed first. */
     async signUp(email, password, data = {}, redirectTo = null) {
@@ -209,6 +226,8 @@ export function createClient({ url, key, fetchFn = (...args) => globalThis.fetch
     rpc: (name, args = {}) => rest('POST', `rpc/${name}`, args),
     /** Before signing in (sign-up): the anon key alone. */
     rpcAnon: (name, args = {}) => request('POST', `/rest/v1/rpc/${name}`, args),
+    /** An Edge Function anyone may call (no sign-in), e.g. functionAnon('share/<token>'). */
+    functionAnon: (path) => request('GET', `/functions/v1/${path}`),
   };
 
   /* ---------------- profile photos ---------------- */

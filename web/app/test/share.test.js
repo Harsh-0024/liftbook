@@ -4,9 +4,14 @@ import { shareUrl, sharedText, SHARE_PATH } from '../share.js';
 
 test('a share link points at this website, or the public one from the phone app', () => {
   const token = 'a'.repeat(32);
-  assert.equal(shareUrl(token, { native: false, loc: { origin: 'https://beta.liftbook.in', pathname: '/' } }),
-    `https://beta.liftbook.in/#/s/${token}`);
-  assert.equal(shareUrl(token, { native: true }), `https://beta.liftbook.in/#/s/${token}`);
+  assert.equal(shareUrl(token, { native: false, loc: { origin: 'https://beta.liftbook.in', pathname: '/', hostname: 'beta.liftbook.in' } }),
+    `https://beta.liftbook.in/s/${token}`);
+  assert.equal(shareUrl(token, { native: false, loc: { origin: 'https://beta.liftbook.in', pathname: '/index.html', hostname: 'beta.liftbook.in' } }),
+    `https://beta.liftbook.in/s/${token}`);
+  assert.equal(shareUrl(token, { native: true }), `https://beta.liftbook.in/s/${token}`);
+  // Running on this computer there's no preview page, so the link is the in-app one.
+  assert.equal(shareUrl(token, { native: false, loc: { origin: 'http://localhost:8000', pathname: '/', hostname: 'localhost' } }),
+    `http://localhost:8000/#/s/${token}`);
   assert.equal(SHARE_PATH.exec(`s/${token}`)[1], token);
   assert.equal(SHARE_PATH.exec('s/not-a-token'), null);
 });

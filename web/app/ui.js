@@ -1,5 +1,7 @@
 // Small helpers for building the screens: elements, icons, rows, messages, dates, a line chart.
 
+import { deviceDay } from '../core/dates.js';
+
 /** h('div', {class: 'card', onclick: fn}, 'text', child, [more]) */
 export function h(tag, attrs = {}, ...children) {
   const el = document.createElement(tag);
@@ -77,7 +79,7 @@ export function ago(iso) {
   if (s < 60) return 'just now';
   if (s < 3600) return `${Math.floor(s / 60)} min ago`;
   if (s < 86400) return `${Math.floor(s / 3600)} h ago`;
-  return formatDay(new Date(Date.parse(iso)).toISOString(), { weekday: false });
+  return formatDay(deviceDay(iso), { weekday: false });
 }
 
 export const fmtNum = (n, digits = 1) => (n === null || n === undefined || Number.isNaN(n) ? '–'

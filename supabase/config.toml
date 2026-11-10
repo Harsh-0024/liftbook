@@ -42,3 +42,11 @@ content_path = "./supabase/templates/email_change.html"
 [auth.email.template.magic_link]
 subject = "Your Liftbook sign-in link"
 content_path = "./supabase/templates/magic_link.html"
+
+[functions.share]
+# Share links are for anyone, signed in or not.
+verify_jwt = false
+
+[functions.signin]
+# Signing in comes before having a sign-in.
+verify_jwt = false

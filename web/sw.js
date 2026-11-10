@@ -6,7 +6,7 @@
 // old one, takes over, and the old copy is removed.
 'use strict';
 
-const VERSION = 'c083c07230c7';
+const VERSION = '7918a57a164c';
 const FILES = [
   './',
   'app/data.js',
@@ -99,6 +99,9 @@ self.addEventListener('fetch', (event) => {
     const cache = await caches.open(CACHE);
     const hit = await cache.match(req, { ignoreSearch: true });
     if (hit) return hit;
+    // A share link (/s/<token>) opens on the in-app page; previews are web/_worker.js's job.
+    const shared = req.mode === 'navigate' && /^s\/([0-9a-f]{32})\/?$/.exec(url.pathname.slice(scope.pathname.length));
+    if (shared) return Response.redirect(`${scope.href}#/s/${shared[1]}`, 302);
     if (req.mode === 'navigate') {
       const home = await cache.match('./');
       if (home) return home;
