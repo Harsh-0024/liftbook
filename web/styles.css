@@ -1021,7 +1021,7 @@ label.rowi { cursor: pointer; }
 .share-by { display: inline-flex; align-items: center; gap: 10px; padding: 5px 14px 5px 5px; border: 1px solid var(--line-gold); border-radius: 999px; background: var(--gold-soft); text-align: left; }
 .share-by > span:last-child { display: flex; flex-direction: column; line-height: 1.2; font-size: 0.85rem; }
 .share-by .muted { font-size: 0.72rem; }
-.share-avatar { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: var(--gold-text); border: 1px solid var(--line-gold); background: var(--bg); }
+.share-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; display: grid; place-items: center; font-weight: 700; color: var(--gold-text); border: 1px solid var(--line-gold); background: var(--bg); }
 .share-list { margin-top: 18px; }
 .share-list-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid var(--hair); }
 .share-list-head > span { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }

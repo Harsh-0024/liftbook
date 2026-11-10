@@ -807,13 +807,35 @@ function bulkImport(ctx) {
 
 /* ---------------- account ---------------- */
 
+/**
+ * "Current password" before changing the email or the password, as the old app asked: someone
+ * holding an unlocked phone can't take the account over. Forgot it: sign out, then "Forgot password?".
+ */
+function currentPassword(id) {
+  return h('input', { id, type: 'password', autocomplete: 'current-password' });
+}
+
+async function confirmPassword(ctx, input) {
+  if (!input.value) throw new Error('Type your current password first.');
+  let ok;
+  try {
+    ok = await ctx.client.auth.checkPassword(ctx.user.email, input.value);
+  } catch (err) {
+    if (err.status === 0) throw new Error('This needs the internet.');
+    throw err;
+  }
+  if (!ok) throw new Error('That isn’t your current password. Forgot it? Sign out, then tap “Forgot password?”.');
+}
+
 function account(ctx) {
+  const emailPw = currentPassword('email-current-password');
   const email = h('input', { id: 'new-email', type: 'email', autocomplete: 'email', autocapitalize: 'off', placeholder: 'new@example.com' });
   const moveEmail = h('button', { class: 'btn', type: 'button' }, 'Change email');
   moveEmail.addEventListener('click', busy(moveEmail, async () => {
     const next = email.value.trim().toLowerCase();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(next)) throw new Error('Type the new email address.');
     if (next === String(ctx.user.email || '').toLowerCase()) throw new Error('That’s already your email.');
+    await confirmPassword(ctx, emailPw);
     try {
       await ctx.client.auth.updateEmail(next, linkBackUrl());
     } catch (err) {
@@ -821,14 +843,19 @@ function account(ctx) {
       throw err;
     }
     email.value = '';
+    emailPw.value = '';
     toast('Check your inbox: open the link we sent to finish the change.', 7000);
   }));
+  const oldPw = currentPassword('current-password');
   const pw = h('input', { id: 'new-password', type: 'password', autocomplete: 'new-password' });
   const change = h('button', { class: 'btn', type: 'button' }, 'Change password');
   change.addEventListener('click', busy(change, async () => {
     if (pw.value.length < 8) throw new Error('Use at least 8 characters.');
+    await confirmPassword(ctx, oldPw);
+    if (pw.value === oldPw.value) throw new Error('That is your current password. Choose a new one.');
     await ctx.client.auth.updatePassword(pw.value);
     pw.value = '';
+    oldPw.value = '';
     toast('Password changed.');
   }));
 
@@ -855,8 +882,10 @@ function account(ctx) {
 
   return h('div', {},
     h('div', { class: 'card' }, h('h2', {}, 'Email'), h('p', { class: 'muted' }, ctx.user.email),
-      field('New email', email, 'We email a link to confirm it. Your sign-in changes once you open it.'), moveEmail),
-    h('div', { class: 'card' }, h('h2', {}, 'Password'), field('New password', pw, 'At least 8 characters.'), change),
+      field('New email', email, 'We email a link to confirm it. Your sign-in changes once you open it.'),
+      field('Current password', emailPw), moveEmail),
+    h('div', { class: 'card' }, h('h2', {}, 'Password'), field('Current password', oldPw),
+      field('New password', pw, 'At least 8 characters.'), change),
     h('div', { class: 'card' }, h('h2', {}, 'Appearance'), themeSeg()),
     h('div', { class: 'card' }, out),
     deleteCard);

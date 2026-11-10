@@ -725,3 +725,40 @@ as $$
 $$;
 revoke all on function public.shared_workout(text) from public;
 grant execute on function public.shared_workout(text) to anon, authenticated;
+-- The "share" Edge Function (supabase/functions/share) reads a shared day with the service key,
+-- adds a short-lived link to the owner's profile photo, and gives link previews (WhatsApp,
+-- iMessage) their title and picture.
+grant select on public.share_links to service_role;
+grant execute on function public.shared_workout(text) to service_role;
+
+-- --------------------------------------------------------------------------
+-- sign in with a username
+-- --------------------------------------------------------------------------
+-- The "signin" Edge Function (supabase/functions/signin) turns a username into its account's
+-- email on the server, then signs in with it, so nobody can look up someone's email from their
+-- username. Only the service key can call this.
+create or replace function public.email_for_username(name text)
+returns text
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+    select u.email from public.profiles p join auth.users u on u.id = p.user_id
+    where lower(p.username) = lower(name) and p.deleted_at is null
+    limit 1;
+$$;
+revoke all on function public.email_for_username(text) from public, anon, authenticated;
+grant execute on function public.email_for_username(text) to service_role;
+
+-- Wrong passwords per username, so guessing one person's password by username stops after
+-- 10 tries in 15 minutes (Supabase's own limit counts per address, and every username sign-in
+-- comes from the Edge Function's address).
+create table if not exists public.signin_failures (
+    name text not null,
+    at   timestamptz not null default now()
+);
+create index if not exists signin_failures_name_at on public.signin_failures (name, at);
+alter table public.signin_failures enable row level security;
+revoke all on public.signin_failures from anon, authenticated;
+grant select, insert, delete on public.signin_failures to service_role;

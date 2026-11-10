@@ -10,9 +10,14 @@ import { isNative } from './native.js';
 export const SHARE_PATH = /^s\/([0-9a-f]{32})$/;
 
 /** The address to send: this website, or the public one from inside the phone app. */
+// The website's own address, /s/<token>, so a link pasted into WhatsApp or iMessage shows a
+// preview (web/_worker.js writes it); opening it goes on to the page below. On a computer
+// running the app locally there's no _worker.js, so the link is the in-app one.
 export function shareUrl(token, { native = isNative, loc = globalThis.location } = {}) {
-  const base = native ? WEB_APP_URL : `${loc.origin}${loc.pathname}`;
-  return `${base}#/s/${token}`;
+  if (native) return `${WEB_APP_URL.replace(/\/?$/, '/')}s/${token}`;
+  const base = `${loc.origin}${loc.pathname.replace(/[^/]*$/, '')}`;
+  if (/^(localhost|127\.|\[::1\]|192\.168\.|10\.)/.test(loc.hostname)) return `${base}#/s/${token}`;
+  return `${base}s/${token}`;
 }
 
 /** The text "Copy as text" gives on a shared workout, like the owner's own copy. */
@@ -103,7 +108,11 @@ export function sharedScreen(client, token, { signedIn = false } = {}) {
   const load = async () => {
     let w;
     try {
-      w = await client.db.rpcAnon('shared_workout', { share_token: token });
+      // The "share" Edge Function adds the owner's photo; the database function alone still works.
+      w = await client.db.functionAnon(`share/${token}`).catch((err) => {
+        if (err?.status === 404) return null;
+        return client.db.rpcAnon('shared_workout', { share_token: token });
+      });
     } catch (err) {
       const retry = h('button', { class: 'btn', type: 'button' }, 'Try again');
       retry.addEventListener('click', busy(retry, load));
@@ -138,7 +147,9 @@ export function sharedScreen(client, token, { signedIn = false } = {}) {
     document.title = `${w.workout_name || 'Workout'} · ${who} · Liftbook`;
     page.replaceChildren(
       h('section', { class: 'card share-hero' },
-        h('div', { class: 'share-by' }, h('span', { class: 'share-avatar', 'aria-hidden': 'true' }, who.slice(0, 1).toUpperCase()),
+        h('div', { class: 'share-by' }, w.avatar_url
+          ? h('img', { class: 'share-avatar', src: w.avatar_url, alt: '', width: 32, height: 32 })
+          : h('span', { class: 'share-avatar', 'aria-hidden': 'true' }, who.slice(0, 1).toUpperCase()),
           h('span', {}, h('b', {}, who), h('span', { class: 'muted' }, 'shared a workout'))),
         h('h1', {}, w.workout_name || 'Workout'),
         h('p', { class: 'muted' }, formatDay(w.day)),
