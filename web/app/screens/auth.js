@@ -97,9 +97,6 @@ export function authScreens({ client, onSignedIn, go }, which) {
   return signIn(client, onSignedIn, go);
 }
 
-/** A username, as profiles.username allows (supabase/schema.sql). */
-const USERNAME_RE = /^[A-Za-z0-9_.-]{3,50}$/;
-
 function signIn(client, onSignedIn) {
   const email = h('input', { id: 'email', type: 'text', inputmode: 'email', autocomplete: 'username', required: true, autocapitalize: 'off', spellcheck: 'false' });
   const password = h('input', { id: 'password', type: 'password', autocomplete: 'current-password', required: true });
