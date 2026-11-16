@@ -27,6 +27,7 @@ import {
   validateRename, renamedName, renameInExerciseString, renameInPlanText, renameInRepText,
 } from '../core/renames.js';
 import { parseDate, deviceDay, addDays } from '../core/dates.js';
+import { weekStrip } from '../core/week.js';
 import { timeKey } from './tables.js';
 
 export const FEEDBACK_KINDS = ['like', 'dislike', 'improve', 'idea'];
@@ -596,6 +597,11 @@ export class Liftbook {
       exercises: new Set(this.history().map((l) => normalizeExerciseName(l.exercise))).size,
       last: workouts[0] || null,
     };
+  }
+
+  /** Home's strip: the last 7 days, which were trained, and the weeks in a row (core/week.js). */
+  week() {
+    return weekStrip(this.workouts().map((w) => w.day), deviceDay());
   }
 
   /* ---------------- renames ---------------- */

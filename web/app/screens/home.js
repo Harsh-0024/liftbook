@@ -42,6 +42,7 @@ export function homeScreen(ctx) {
   const todayIso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   const doneToday = recent[0]?.day === todayIso;
   const o = lb.overview();
+  const week = lb.week();
 
   const actions = workouts.length
     ? [doneToday
@@ -59,14 +60,27 @@ export function homeScreen(ctx) {
       doneToday ? h('p', { class: 'note' }, 'Nice work today.')
         : !workouts.length ? h('p', { class: 'note muted' }, 'Your workouts will show up here.') : null),
     h('div', { class: 'home-actions' }, actions),
+    // The last 7 days, today last: a gold tick on each day trained (a tap opens that workout).
+    workouts.length ? h('section', { class: 'section', 'aria-label': 'The last 7 days' },
+      h('div', { class: 'label' }, 'Last 7 days', h('span', {}, `${week.count} workout${week.count === 1 ? '' : 's'}`)),
+      h('div', { class: 'group week-strip' }, week.days.map((d) => {
+        const cls = `wday${d.trained ? ' on' : ''}${d.today ? ' today' : ''}`;
+        const inner = [h('small', { 'aria-hidden': 'true' }, d.letter), h('span', { class: 'dot', 'aria-hidden': 'true' }, d.trained ? icon('check') : null)];
+        const when = d.today ? 'Today' : d.name;
+        return d.trained
+          ? h('a', { class: cls, href: `#/workout/${d.day}`, 'aria-label': `${when}: ${lb.workout(d.day)?.title || 'workout'}` }, inner)
+          : h('span', { class: cls, role: 'img', 'aria-label': `${when}: no workout` }, inner);
+      }))) : null,
     workouts.length ? h('section', { class: 'section', 'aria-label': 'Recent workouts' },
       h('div', { class: 'label' }, 'Recent'),
-      h('div', { class: 'group' }, recent.map((w) => rowItem({
-        href: `#/workout/${w.day}`, title: w.title, value: softDay(w.day, today),
-      }))),
+      h('div', { class: 'group' }, recent.map((w) => {
+        // "Session 2 - Legs" reads as Legs, with the session underneath (as in All workouts).
+        const split = splitSessionTitle(w.title);
+        return rowItem({ href: `#/workout/${w.day}`, title: split.title, desc: split.session || undefined, value: softDay(w.day, today) });
+      })),
       h('div', { class: 'grid-3 home-stats' },
         h('div', { class: 'stat' }, h('span', {}, 'Workouts'), h('b', {}, o.total)),
-        h('div', { class: 'stat' }, h('span', {}, 'This week'), h('b', { class: 'gold' }, o.thisWeek)),
+        h('div', { class: 'stat' }, h('span', {}, 'Weeks in a row'), h('b', { class: 'gold' }, week.weeks)),
         h('div', { class: 'stat' }, h('span', {}, 'Exercises'), h('b', {}, o.exercises))),
       h('a', { class: 'see-all', href: '#/history' }, 'See all workouts')) : null);
 }

@@ -583,6 +583,18 @@ a.avatar.big:hover { box-shadow: 0 0 0 9px var(--gold-soft); }
 .home .section { margin-top: 42px; }
 .see-all { display: block; margin-top: 16px; text-align: center; font-weight: 600; font-size: 0.88rem; }
 .home-stats { margin-top: 14px; }
+/* Home: the last 7 days, a gold tick on each day trained. */
+.week-strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); padding: 14px 10px 16px; }
+.wday { display: grid; justify-items: center; gap: 9px; color: var(--subtle); text-decoration: none !important; -webkit-tap-highlight-color: transparent; }
+.wday small { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; }
+.wday .dot { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; color: transparent; transition: transform var(--fast), box-shadow var(--fast); }
+.wday .dot svg.i { width: 15px; height: 15px; stroke-width: 2.6; }
+.wday.on .dot { background: var(--gold-fill); border-color: transparent; color: var(--on-gold); }
+.wday.today small { color: var(--gold-text); }
+.wday.today:not(.on) .dot { border-color: var(--line-gold); box-shadow: 0 0 0 4px var(--gold-soft); }
+a.wday:hover .dot, a.wday:focus-visible .dot { transform: scale(1.08); box-shadow: 0 0 0 4px var(--gold-soft); }
+a.wday:focus-visible { outline: none; }
+.home .section + .section { margin-top: 26px; }
 @media (min-width: 760px) { .home { padding-top: 4vh; } }
 
 /* ---------- all workouts ---------- */

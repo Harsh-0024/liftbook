@@ -6,7 +6,7 @@
 // old one, takes over, and the old copy is removed.
 'use strict';
 
-const VERSION = '676c53e743e0';
+const VERSION = 'a0857bfddee1';
 const FILES = [
   './',
   'app/data.js',
@@ -53,6 +53,7 @@ const FILES = [
   'core/scoring.js',
   'core/sessions.js',
   'core/stats.js',
+  'core/week.js',
   'fonts/LICENSE-cormorant.md',
   'fonts/LICENSE-inter.md',
   'fonts/cormorant-garamond-latin-500-normal.woff2',
