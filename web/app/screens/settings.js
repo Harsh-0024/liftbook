@@ -8,6 +8,7 @@ import { FEEDBACK_KINDS } from '../data.js';
 import { defaultRepRangesText } from '../../core/plans.js';
 import { DEFAULT_PLAN } from '../../core/plans.js';
 import { deviceDay } from '../../core/dates.js';
+import { normalizeExerciseName } from '../../core/names.js';
 import { planDays, customKeys, nicknamesText } from '../../core/sessions.js';
 import { isNative, pickPhoto, saveFile, linkBackUrl } from '../native.js';
 
@@ -322,6 +323,10 @@ function exercises(ctx) {
   const { lb } = ctx;
   const counts = new Map();
   for (const l of lb.history()) counts.set(l.exercise, (counts.get(l.exercise) || 0) + 1);
+  // Plan exercises you haven't logged yet are listed too (as the old page did), so one can be
+  // set as timed or bodyweight before its first workout.
+  const loggedKeys = new Set([...counts.keys()].map((n) => normalizeExerciseName(n)));
+  for (const it of lb.exerciseCatalog()) if (!loggedKeys.has(it.key) && !counts.has(it.name)) counts.set(it.name, 0);
   const names = [...counts.keys()].sort((a, b) => a.localeCompare(b));
   const search = h('input', { id: 'ex-search', type: 'search', placeholder: 'Search your exercises', autocapitalize: 'off', 'aria-label': 'Search your exercises' });
   const group = h('div', { class: 'group pick-group' });
@@ -337,7 +342,7 @@ function exercises(ctx) {
     const head = h('button', { class: `rowi${open === n ? ' open' : ''}`, type: 'button', 'aria-expanded': String(open === n) },
       h('span', { class: 'ico' }, icon('dumbbell')),
       h('span', { class: 'main' }, h('span', { class: 'title' }, n), desc),
-      h('span', { class: 'value' }, `${counts.get(n)} logged`),
+      h('span', { class: 'value' }, counts.get(n) ? `${counts.get(n)} logged` : 'In your plan'),
       h('span', { class: 'chev-i' }, icon('chev')));
     head.addEventListener('click', () => { open = open === n ? null : n; paint(); });
     if (open !== n) return [head];
@@ -405,7 +410,8 @@ function exercises(ctx) {
     return [head,
       sw('is_timed', 'Timed', 'Sets are seconds, not reps'),
       sw('is_bodyweight', 'Bodyweight', 'Your bodyweight is added to the weight', { bodyweight_source: 'manual' }),
-      h('div', { class: 'blk sub' }, h('label', { class: 'sub-label' }, 'Rename'), h('div', { class: 'row rename-row' }, to, go), info)];
+      // Nothing logged yet: the name is the plan's, changed on the Workout plan page.
+      !counts.get(n) ? null : h('div', { class: 'blk sub' }, h('label', { class: 'sub-label' }, 'Rename'), h('div', { class: 'row rename-row' }, to, go), info)].filter(Boolean);
   };
   const paint = () => {
     const q = search.value.trim().toLowerCase();

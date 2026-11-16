@@ -188,3 +188,16 @@ export function nicknamesText(planText, words) {
   }
   return { text: JSON.stringify(mapping) };
 }
+
+const SESSION_TITLE = /^session\s+(\d+)\s*[-\u2013\u2014:]\s*(.+)$/i;
+
+/**
+ * A workout title written as "Session 2 - Legs" -> {session: 'Session 2', title: 'Legs'}, as the
+ * old All workouts list showed it (routes/workouts.py _home_history). Other titles come back whole.
+ */
+export function splitSessionTitle(title) {
+  const text = String(title || '').trim();
+  const m = SESSION_TITLE.exec(text);
+  if (!m) return { session: '', title: text };
+  return { session: `Session ${m[1]}`, title: m[2].trim() };
+}

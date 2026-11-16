@@ -1089,7 +1089,14 @@ label.rowi { cursor: pointer; }
 /* Log check: a name you haven't used, a close misspelling or a repeat. */
 .name-note { font-size: .82rem; color: var(--muted); }
 .name-note.is-suggest, .name-note.is-twice, .name-note.is-dup { color: var(--warn); font-weight: 600; }
-.rowi.warn .ico { color: var(--warn); }
+.rowi.warn .ico, .rowi.warn .num { color: var(--warn); }
+/* Log check rows: 1, 2, 3 on the left, "3 sets" or "New" on the right; a tap jumps to the line. */
+.rowi.check-row { cursor: pointer; align-items: flex-start; }
+.rowi.check-row:hover { background: var(--hover); }
+.rowi.check-row:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--line-gold); }
+.rowi .num { flex: none; width: 22px; padding-top: 3px; font-size: 0.72rem; color: var(--subtle); font-variant-numeric: tabular-nums; }
+.rowi .tag { flex: none; padding-top: 3px; font-size: 0.74rem; font-weight: 600; color: var(--subtle); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rowi .tag.is-new { color: var(--gold-text); }
 
 /* A box that grows with its text (autoGrow in ui.js): no scrolling inside it. */
 .editor.grows { overflow: hidden; resize: none; }

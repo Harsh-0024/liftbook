@@ -82,6 +82,8 @@ export function logScreen(ctx) {
       : 'Nothing to check yet');
     checkHead.textContent = c.parsed ? `${formatDay(c.day)} · ${c.parsed.workout_name || 'Workout'}` : '';
     checkBox.hidden = !exercises.length;
+    // Rows count the exercises 1, 2, 3 and say how many sets each has, as the old check did.
+    let order = 0;
     checkList.replaceChildren(...exercises.map((e, i) => {
       const bad = e.valid === false || e.missing_name;
       // Names you haven't used, close misspellings ("Use it" puts the known name on that line), repeats.
@@ -90,21 +92,54 @@ export function logScreen(ctx) {
       const fix = n?.state === 'suggest' && n.fixLine !== null
         ? h('button', { class: 'btn small', type: 'button', 'aria-label': `Use it: ${n.suggestion} on line ${e.line}`, onclick: () => useLine(e.line, n.fixLine) }, 'Use it')
         : null;
-      return h('div', { class: `rowi${flagged && n.state !== 'new' ? ' warn' : ''}` },
-        h('span', { class: 'ico', style: bad ? 'color:var(--bad)' : '' }, icon(bad ? 'info' : 'check')),
+      const sets = (e.reps || []).length;
+      const tag = bad || fix ? null : n?.state === 'new' ? 'New' : `${sets} set${sets === 1 ? '' : 's'}`;
+      // A tap on the row puts the cursor on that exercise's line in the box.
+      const row = h('div', { class: `rowi check-row${flagged && n.state !== 'new' ? ' warn' : ''}`, role: 'button', tabindex: '0' },
+        bad ? h('span', { class: 'ico', style: 'color:var(--bad)' }, icon('info')) : h('span', { class: 'num', 'aria-hidden': 'true' }, String(order += 1)),
         h('span', { class: 'main' }, h('span', { class: 'title' }, e.name),
-          h('span', { class: 'desc mono' }, bad ? 'Couldn’t read these sets' : e.sets_label),
-          flagged ? h('span', { class: `desc name-note is-${n.state}` }, n.note) : null),
-        fix);
+          h('span', { class: 'desc mono' }, !bad ? e.sets_label
+            : String(e.exercise_string || '').split('\n').slice(1).join('').trim() ? 'Couldn’t read these sets' : 'No sets under it'),
+          // "New" is said by the tag on the right.
+          flagged && tag !== 'New' ? h('span', { class: `desc name-note is-${n.state}` }, n.note) : null),
+        fix,
+        tag ? h('span', { class: `tag${tag === 'New' ? ' is-new' : ''}` }, tag) : null);
+      const jump = (ev) => {
+        if (ev.target.closest('button')) return;
+        if (ev.type === 'keydown') {
+          if (ev.key !== 'Enter' && ev.key !== ' ') return;
+          ev.preventDefault();
+        }
+        jumpToLine(e.line);
+      };
+      row.addEventListener('click', jump);
+      row.addEventListener('keydown', jump);
+      return row;
     }));
     problems.replaceChildren(c.errors.length ? h('ul', { class: 'errors' }, c.errors.map((e) => h('li', {}, e))) : '');
     if (c.existing) checkHead.textContent += ` · adds to ${c.existing.title} if you choose`;
   };
+  // The check reads the text trimmed, so its line 1 is the first line that isn't blank.
+  const lineIndex = (lineNo) => lineNo - 1 + (ta.value.match(/^\s*/)[0].match(/\n/g) || []).length;
+  const jumpToLine = (lineNo) => {
+    const lines = ta.value.split('\n');
+    const k = lineIndex(lineNo);
+    if (!lineNo || k < 0 || k >= lines.length) return;
+    // The cursor goes to the start of the line (nothing selected, so typing can't wipe the line).
+    const start = lines.slice(0, k).reduce((n, l) => n + l.length + 1, 0);
+    ta.focus({ preventScroll: true });
+    ta.setSelectionRange(start, start);
+    const cs = getComputedStyle(ta);
+    const lineHeight = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.5;
+    const y = (parseFloat(cs.paddingTop) || 0) + k * lineHeight;
+    if (ta.scrollHeight > ta.clientHeight + 1) ta.scrollTop = Math.max(0, y - lineHeight);
+    const top = ta.getBoundingClientRect().top + y - ta.scrollTop;
+    // Bring the line a little below the header if it is off the screen.
+    if (top < 90 || top > innerHeight - 140) window.scrollBy({ top: top - Math.min(200, innerHeight / 3), behavior: 'smooth' });
+  };
   const useLine = (lineNo, text) => {
     const lines = ta.value.split('\n');
-    // The check reads the text trimmed, so its line 1 is the first line that isn't blank.
-    const blankAbove = (ta.value.match(/^\s*/)[0].match(/\n/g) || []).length;
-    const k = lineNo - 1 + blankAbove;
+    const k = lineIndex(lineNo);
     if (k < 0 || k >= lines.length) return;
     lines[k] = text;
     ta.value = lines.join('\n');

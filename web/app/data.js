@@ -289,7 +289,11 @@ export class Liftbook {
     }
     if (parsed.invalid_date_text) errors.push(`\u201c${parsed.invalid_date_text}\u201d isn\u2019t a date this app can read.`);
     const invalid = exercises.filter((e) => e.valid === false || e.missing_name);
-    for (const e of invalid.filter((x) => x.valid === false)) errors.push(`“${e.name}”: couldn’t read its sets (“${String(e.exercise_string || '').split('\n').slice(1).join(' ')}”).`);
+    for (const e of invalid.filter((x) => x.valid === false)) {
+      const sets = String(e.exercise_string || '').split('\n').slice(1).join(' ').trim();
+      // A name with nothing under it has no sets to quote.
+      errors.push(sets ? `“${e.name}”: couldn’t read its sets (“${sets}”).` : `“${e.name}”: no sets under it.`);
+    }
     // Each exercise's sets as the old check wrote them: "BW+20×6" for bodyweight, "60×1s" or "45s"
     // for timed (your answer, the known timed list, or a time written in the text).
     const settings = makeSettings(this.exerciseSettings());

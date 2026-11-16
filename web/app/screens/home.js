@@ -6,6 +6,7 @@ import { formatSetsDisplay } from '../../core/logging.js';
 import { attachSuggestions } from '../suggest.js';
 import { attachPasteTidy } from '../paste.js';
 import { shareLinkBox } from '../share.js';
+import { splitSessionTitle } from '../../core/sessions.js';
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -126,10 +127,13 @@ export function historyScreen(ctx) {
         h('div', { class: 'label' }, `${MONTHS[m - 1]} ${y}`, h('span', {}, `${n} workout${n === 1 ? '' : 's'}`)),
         h('div', { class: `group${pick.on ? ' picking' : ''}` }, ws.map((w) => {
           const [yy, mm, dd] = w.day.split('-').map(Number);
+          const split = splitSessionTitle(w.title);
           const inner = [
             h('span', { class: 'datebox' }, h('b', {}, dd), h('small', {}, WD[new Date(Date.UTC(yy, mm - 1, dd)).getUTCDay()])),
-            h('span', { class: 'main' }, h('span', { class: 'title' }, w.title),
-              h('span', { class: 'desc ellipsis' }, w.logs.map((l) => l.exercise).join(' · ')))];
+            // "Session 2 - Legs" reads as Legs, with the session in front of its exercises.
+            h('span', { class: 'main' }, h('span', { class: 'title' }, split.title),
+              h('span', { class: 'desc ellipsis' }, split.session ? [h('span', { class: 'session' }, split.session), ' · '] : null,
+                w.logs.map((l) => l.exercise).join(' · ')))];
           if (!pick.on) return h('a', { class: 'rowi', href: `#/workout/${w.day}` }, ...inner, h('span', { class: 'chev-i' }, icon('chev')));
           const on = pick.days.has(w.day);
           const row = h('button', { class: `rowi${on ? ' picked' : ''}`, type: 'button', role: 'checkbox', 'aria-checked': String(on) },
