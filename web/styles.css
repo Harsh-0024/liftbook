@@ -1163,4 +1163,4 @@ button.rowi.more-sessions .title { color: var(--gold-text); font-size: 0.86rem; 
 .log-start[hidden] { display: none; }
 
 /* Log: a date after today (likely a typo in the year). */
-.log-future { color: var(--gold-text); }
+.log-future { color: var(--gold-text); margin-bottom: 14px; }
