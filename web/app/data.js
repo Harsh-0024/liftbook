@@ -531,16 +531,36 @@ export class Liftbook {
     }
     // null: too little history to tell, so nothing folds away.
     const often = oftenTrainedKeys([...byDay].sort(), [...items.values()].filter((i) => i.inPlan).map((i) => i.key));
+    const pins = this.oftenPins();
     const repText = this.repRangesText();
     const [ranges, setsBy] = parseRepRangesText(repText);
     return [...items.values()]
       .map((it) => {
         const [, sets] = picksForPlanLines([it.line], repText)[0] || [null, 3];
         const range = lookupRepTarget(it.name, ranges, setsBy)[0] || parsePlanExerciseLine(it.line).inline_range || '';
+        // Your own "keep on top" or "less often" for an exercise wins over what the history says.
+        const auto = often === null || often.has(it.key);
+        const pinned = pins[it.key] === 'top' || pins[it.key] === 'less' ? pins[it.key] : null;
         return { key: it.key, name: it.name, count: counts.get(it.key) || 0, sets, reps: String(range),
-          often: often === null || often.has(it.key) };
+          auto, pinned, often: pinned ? pinned === 'top' : auto };
       })
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  }
+
+  /** { exerciseKey: 'top' | 'less' }: exercises you placed yourself in the custom workout picker. */
+  oftenPins() {
+    const o = this.settings().often_pins;
+    return o && typeof o === 'object' && !Array.isArray(o) ? { ...o } : {};
+  }
+
+  /** Place exercises yourself: { key: 'top' | 'less' | null } (null goes back to automatic). */
+  async setOftenPins(changes) {
+    const next = this.oftenPins();
+    for (const [key, where] of Object.entries(changes)) {
+      if (where === 'top' || where === 'less') next[key] = where;
+      else delete next[key];
+    }
+    return this.setSetting('often_pins', next);
   }
 
   /** The exercises of a plan day with their sets ([[name, sets]]), for Edit. */

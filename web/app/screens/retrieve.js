@@ -232,6 +232,7 @@ export function retrieveCustomScreen(ctx) {
 
   const open = new Set();
   const openLess = new Set();
+  const arranging = new Set(); // groups being arranged: a tap moves an exercise between the two lists
   const picker = h('div', { class: 'group picker-groups' });
   const pickedList = h('div', { class: 'cr-picked' });
   const empty = h('p', { class: 'subtle cr-empty' }, 'Nothing picked yet.');
@@ -261,6 +262,28 @@ export function retrieveCustomScreen(ctx) {
       toast(`Up to ${MAX_PICKS} exercises.`);
       return;
     } else picks.push({ name, sets: info(name).sets || 3 });
+    paint();
+  };
+  // Arranging: "keep on top" or "less often" is yours to choose, and remembered on all your devices.
+  const place = (c, where) => {
+    c.pinned = where === (c.auto ? 'top' : 'less') ? null : where; // back where it would be anyway: no pin
+    c.often = where === 'top';
+    lb.setOftenPins({ [c.key]: c.pinned }).catch((err) => toast(err.message || String(err)));
+    paint();
+  };
+  const mover = (c) => h('button', { type: 'button', class: 'pick move', 'aria-label': c.often ? `Move ${c.name} to Less often` : `Keep ${c.name} on top`,
+    onclick: () => place(c, c.often ? 'less' : 'top') },
+  h('span', { class: 'pick-name' }, c.name, c.pinned ? h('small', {}, 'placed by you') : null),
+  h('span', { class: 'pick-move' }, icon(c.often ? 'down' : 'up')));
+  const resetGroup = (items) => {
+    const changes = {};
+    for (const c of items) {
+      if (!c.pinned) continue;
+      changes[c.key] = null;
+      c.pinned = null;
+      c.often = c.auto;
+    }
+    lb.setOftenPins(changes).catch((err) => toast(err.message || String(err)));
     paint();
   };
   const option = (c) => h('button', { type: 'button', class: `pick${has(c.name) ? ' on' : ''}${c.often ? '' : ' other'}`, 'aria-pressed': String(has(c.name)), onclick: () => toggle(c.name) },
@@ -304,6 +327,17 @@ export function retrieveCustomScreen(ctx) {
         h('span', { class: `value${n ? ' gold' : ''}` }, n ? `${n} picked` : `${items.length}`),
         h('span', { class: 'chev-i' }, icon('chev')));
         if (!open.has(g)) return h('div', { class: 'pick-group' }, head);
+        if (arranging.has(g)) {
+          return h('div', { class: 'pick-group' }, head,
+            h('p', { class: 'pick-hint' }, 'Tap an exercise to move it. Your choice is remembered.'),
+            h('div', { class: 'pick-sub' }, 'On top'),
+            often.length ? h('div', { class: 'pick-list' }, often.map(mover)) : h('p', { class: 'pick-hint' }, 'Nothing here.'),
+            h('div', { class: 'pick-sub' }, 'Less often'),
+            less.length ? h('div', { class: 'pick-list' }, less.map(mover)) : h('p', { class: 'pick-hint' }, 'Nothing here.'),
+            h('div', { class: 'pick-tools' },
+              items.some((c) => c.pinned) ? h('button', { type: 'button', class: 'btn ghost small', onclick: () => resetGroup(items) }, 'Back to automatic') : null,
+              h('button', { type: 'button', class: 'btn small', onclick: () => { arranging.delete(g); paint(); } }, 'Done')));
+        }
         const lessOpen = openLess.has(g) || less.some((c) => has(c.name));
         return h('div', { class: 'pick-group' }, head,
           h('div', { class: 'pick-list' }, (fold ? often : items).map(option)),
@@ -311,7 +345,9 @@ export function retrieveCustomScreen(ctx) {
             onclick: () => { if (openLess.has(g)) openLess.delete(g); else openLess.add(g); paint(); } },
           h('span', { class: 'main' }, h('span', { class: 'title' }, 'Less often ', h('span', { class: 'subtle' }, String(less.length)))),
           h('span', { class: 'chev-i' }, icon('chev'))) : null,
-          fold && lessOpen ? h('div', { class: 'pick-list less' }, less.map(option)) : null);
+          fold && lessOpen ? h('div', { class: 'pick-list less' }, less.map(option)) : null,
+          items.length > 1 ? h('div', { class: 'pick-tools' },
+            h('button', { type: 'button', class: 'btn ghost small', onclick: () => { arranging.add(g); paint(); } }, 'Arrange')) : null);
       }).filter(Boolean));
     }
     pickedList.replaceChildren(...picks.map(rowFor));

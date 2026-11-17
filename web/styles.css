@@ -1135,3 +1135,12 @@ a.group.rowi.bests-link { margin-bottom: 18px; }
 .wo-step small { display: block; font-size: 0.76rem; margin-top: 1px; }
 .wo-step svg.i { flex: none; width: 16px; height: 16px; color: var(--subtle); }
 .wo-step .flip { display: inline-flex; transform: scaleX(-1); }
+
+/* Custom workout: arranging a group (keep on top / less often) */
+.pick-tools { display: flex; justify-content: flex-end; gap: 8px; padding: 2px 16px 12px; }
+.pick-hint { margin: 0; padding: 4px 20px 10px; font-size: 0.8rem; color: var(--subtle); }
+.pick-sub { padding: 8px 20px 2px; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.pick.move .pick-name small { display: block; font-size: 0.74rem; font-weight: 500; color: var(--gold-text); margin-top: 1px; }
+.pick-move { flex: none; display: inline-flex; color: var(--subtle); }
+.pick-move svg { width: 17px; height: 17px; }
+.pick.move:hover .pick-move { color: var(--gold-text); }
