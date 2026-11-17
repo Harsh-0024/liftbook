@@ -257,6 +257,31 @@ export function lineChart(labels, values, { unit = '', base = null, tag = null, 
   return svg;
 }
 
+/** Unsaved typing kept on this device, so a tap elsewhere or the app reloading for an update
+ *  doesn't lose it. Keys start "liftbook-" and end "-draft…": sign-out clears them all. */
+export function deviceDraft(key) {
+  return {
+    read() {
+      try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch { return null; }
+    },
+    write(value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage blocked */ }
+    },
+    clear() {
+      try { localStorage.removeItem(key); } catch { /* storage blocked */ }
+    },
+  };
+}
+
+/** The note over a box whose unsaved changes came back, with a Discard button. */
+export function keptNote(onDiscard) {
+  const discard = h('button', { class: 'btn small', type: 'button' }, 'Discard');
+  const note = h('div', { class: 'notice kept-note', role: 'status', hidden: true },
+    h('span', {}, 'Your unsaved changes from last time are back.'), discard);
+  discard.addEventListener('click', () => { note.hidden = true; onDiscard(); });
+  return note;
+}
+
 /** A button that shows it is busy while `fn` runs, and any error as a message. */
 export function busy(button, fn) {
   return async (event) => {

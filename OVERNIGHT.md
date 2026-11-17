@@ -162,6 +162,13 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     it, and sign-out now clears every draft on the device (the Custom workout drafts were left
     behind before). Checked on the computer: kept after leaving the screen and after a reload,
     Discard puts the saved plan back, saving clears it, an out-of-date draft is dropped.
+26. **Workout edits and feedback are kept until saved too.** The Edit workout screen (title, date
+    and the exercises) and the Feedback box now keep unsaved typing on the device the same way.
+    An edit comes back with the same note and Discard button, only if the workout hasn't changed
+    since; Cancel and Save clear it. Feedback comes back with the kind you picked, and Send clears
+    it. The draft code is now one small helper in `ui.js`, shared with the plan editors. Checked
+    on the computer: kept after leaving each screen, Discard and Cancel clear it, a stale edit
+    draft is dropped, and the plan editors still behave as in item 25.
 
 ## Next when resumed
 

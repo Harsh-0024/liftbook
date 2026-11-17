@@ -1,7 +1,7 @@
 // Home (a welcome: you, two ways in, the last few workouts), every workout, one workout, and
 // editing it. The layout follows the original app's.
 
-import { h, icon, rowItem, pageHead, softDay, formatDay, copyText, toast, busy, fmtNum, ask, autoGrow } from '../ui.js';
+import { h, icon, rowItem, pageHead, softDay, formatDay, copyText, toast, busy, fmtNum, ask, autoGrow, deviceDraft, keptNote } from '../ui.js';
 import { formatSetsDisplay } from '../../core/logging.js';
 import { attachSuggestions } from '../suggest.js';
 import { attachPasteTidy } from '../paste.js';
@@ -518,6 +518,33 @@ export function editScreen(ctx, day) {
   const date = h('input', { id: 'edit_date', type: 'date', value: day, required: true, 'aria-label': 'Date' });
   const ta = h('textarea', { id: 'workout_text', class: 'editor', spellcheck: 'false', autocapitalize: 'off', 'aria-label': 'The exercises and their sets' },
     lines.slice(1).join('\n').trim());
+  // Unsaved changes are kept on the device until saved or cancelled, and come back only if the
+  // workout hasn't changed since (another device, a sync).
+  const base = lb.workoutText(w);
+  const draft = deviceDraft(`liftbook-edit-draft-${day}`);
+  const start = { title: title.value, date: date.value, text: ta.value };
+  const changed = () => title.value !== start.title || date.value !== start.date || ta.value !== start.text;
+  const kept = keptNote(() => {
+    title.value = start.title;
+    date.value = start.date;
+    ta.value = start.text;
+    draft.clear();
+    ta.dispatchEvent(new Event('input'));
+  });
+  const was = draft.read();
+  if (was && was.base === base) {
+    title.value = was.title;
+    date.value = was.date;
+    ta.value = was.text;
+    kept.hidden = !changed();
+  } else if (was) {
+    draft.clear();
+  }
+  for (const el of [title, date, ta]) {
+    el.addEventListener('input', () => (changed()
+      ? draft.write({ base, title: title.value, date: date.value, text: ta.value })
+      : draft.clear()));
+  }
   autoGrow(ta);
   // Name suggestions while typing; here the box starts with an exercise, not the title.
   const suggest = attachSuggestions(ta, () => lb.exerciseCatalog().map((e) => e.name), { firstLineIsTitle: false });
@@ -563,11 +590,13 @@ export function editScreen(ctx, day) {
       err.replaceChildren(h('ul', { class: 'errors' }, (r.errors || [r.error]).map((e) => h('li', {}, e))));
       return;
     }
+    draft.clear();
     ctx.lastSaved = r; // the workout page says "Saved"
     ctx.go(`workout/${r.day}`);
   }));
   return h('div', {},
     pageHead('Edit workout', 'Fix names or numbers. Change the date to move the workout.', { back: `#/workout/${day}` }),
+    kept,
     h('div', { class: 'edit-fields' },
       h('label', { class: 'field' }, h('span', {}, 'Title'), title),
       h('label', { class: 'field date' }, h('span', {}, 'Date'), date)),
@@ -575,6 +604,6 @@ export function editScreen(ctx, day) {
       ta,
       suggest,
       h('div', { class: 'editor-bar' }, meta,
-        h('div', { class: 'row' }, h('a', { class: 'btn small', href: `#/workout/${day}` }, 'Cancel'), btn))),
+        h('div', { class: 'row' }, h('a', { class: 'btn small', href: `#/workout/${day}`, onclick: () => draft.clear() }, 'Cancel'), btn))),
     err, checkBox);
 }

@@ -1,7 +1,7 @@
 // Settings: profile, plan and rep ranges, exercises (timed, bodyweight, renames), feedback,
 // sync and the account.
 
-import { h, icon, rowItem, pageHead, toast, busy, ago, formatDay, fmtNum, copyText, ask } from '../ui.js';
+import { h, icon, rowItem, pageHead, toast, busy, ago, formatDay, fmtNum, copyText, ask, deviceDraft, keptNote } from '../ui.js';
 import { avatar } from './home.js';
 import { Online } from '../online.js';
 import { FEEDBACK_KINDS } from '../data.js';
@@ -230,15 +230,10 @@ function plan(ctx) {
   // website reloading itself for an update while you copy something from Notes, would lose them.
   // A draft only comes back if the saved text hasn't changed since (another device, Copy).
   const editorGroup = (area, kind, label, done) => {
-    const key = `liftbook-${kind}-draft`;
-    const readKept = () => { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch { return null; } };
+    const draft = deviceDraft(`liftbook-${kind}-draft`);
     const keep = () => {
-      try {
-        if (area.value === lb.text(kind)) localStorage.removeItem(key);
-        else localStorage.setItem(key, JSON.stringify({ base: lb.text(kind), text: area.value }));
-      } catch {
-        // storage blocked: nothing kept
-      }
+      if (area.value === lb.text(kind)) draft.clear();
+      else draft.write({ base: lb.text(kind), text: area.value });
     };
     const meta = h('span', { class: 'editor-meta' });
     const btn = h('button', { class: 'btn primary small', type: 'button' }, label);
@@ -248,21 +243,18 @@ function plan(ctx) {
       btn.disabled = saved;
       if (saved) kept.hidden = true;
     };
-    const discard = h('button', { class: 'btn small', type: 'button' }, 'Discard');
-    const kept = h('div', { class: 'notice kept-note', role: 'status', hidden: true },
-      h('span', {}, 'Your unsaved changes from last time are back.'), discard);
-    discard.addEventListener('click', () => {
+    const kept = keptNote(() => {
       area.value = lb.text(kind);
       keep();
       mark();
       area.focus();
     });
-    const draft = readKept();
-    if (draft && draft.base === lb.text(kind) && draft.text !== area.value) {
-      area.value = draft.text;
+    const was = draft.read();
+    if (was && was.base === lb.text(kind) && was.text !== area.value) {
+      area.value = was.text;
       kept.hidden = false;
-    } else if (draft) {
-      try { localStorage.removeItem(key); } catch { /* blocked */ }
+    } else if (was) {
+      draft.clear();
     }
     area.addEventListener('input', () => { keep(); mark(); });
     btn.addEventListener('click', busy(btn, async () => {
@@ -488,6 +480,16 @@ function feedback(ctx) {
     for (const t of tiles) t.setAttribute('aria-pressed', String(t.dataset.kind === k));
     msg.placeholder = prompts[k];
   };
+  // What's typed here is kept until it's sent, like the other boxes.
+  const draft = deviceDraft('liftbook-feedback-draft');
+  const was = draft.read();
+  if (was && FEEDBACK_KINDS.includes(was.kind) && typeof was.text === 'string') {
+    kind = was.kind;
+    msg.value = was.text;
+  }
+  const keep = () => (msg.value.trim() ? draft.write({ kind, text: msg.value }) : draft.clear());
+  msg.addEventListener('input', keep);
+  for (const t of tiles) t.addEventListener('click', keep);
   pick(kind);
   const send = h('button', { class: 'btn primary small', type: 'button' }, icon('send'), 'Send');
   const mine = h('div', {}, h('p', { class: 'subtle', style: 'padding:16px 20px;margin:0' }, 'Loading what you sent…'));
@@ -512,6 +514,7 @@ function feedback(ctx) {
       throw err;
     }
     msg.value = '';
+    draft.clear();
     toast('Thank you. Sent.');
     load();
   }));

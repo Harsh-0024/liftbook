@@ -344,7 +344,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && !isNative) 
   // Not on the very first visit, and never under someone's finger: if they've started using the
   // page, the reload waits until the app goes to the background (a switch to another app, a
   // locked phone), so it's ready next time they look. Nothing typed is lost either way (the log,
-  // custom workout, plan and rep-range boxes keep drafts on the device).
+  // custom workout, plan, rep-range, workout edit and feedback boxes keep drafts on the device).
   const hadVersion = !!navigator.serviceWorker.controller;
   let reloaded = false;
   let used = false;
