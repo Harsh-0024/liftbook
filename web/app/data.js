@@ -32,6 +32,7 @@ import { weekStrip } from '../core/week.js';
 import { nextSessionId } from '../core/sessions.js';
 import { personalBests } from '../core/bests.js';
 import { bodyweightTrend } from '../core/weight_trend.js';
+import { muscleBalance } from '../core/balance.js';
 import { timeKey } from './tables.js';
 
 export const FEEDBACK_KINDS = ['like', 'dislike', 'improve', 'idea'];
@@ -623,6 +624,11 @@ export class Liftbook {
     }
     return [...byDay.values()].map((r) => ({ day: r.day, title: r.title, sets: r.parts.join(' · ') }))
       .sort((a, b) => (a.day < b.day ? 1 : a.day > b.day ? -1 : 0));
+  }
+
+  /** Sets per muscle group per week since `from` ('' for everything); core/balance.js. */
+  muscleBalance(from = '') {
+    return muscleBalance(this.history(), { from, today: deviceDay() });
   }
 
   /** Bodyweight over time from the workouts' own records, or null when there is no trend yet. */

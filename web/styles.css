@@ -1149,3 +1149,11 @@ a.group.rowi.bests-link { margin-bottom: 18px; }
 .session-row .title .pill { margin-left: 8px; vertical-align: 1px; padding: 1px 8px; font-size: 0.66rem; }
 .session-row .desc.mono { font-size: 0.8rem; overflow-wrap: anywhere; }
 button.rowi.more-sessions .title { color: var(--gold-text); font-size: 0.86rem; text-align: center; }
+
+/* Stats: sets per muscle group */
+.balance { display: grid; gap: 10px; }
+.balance-row { display: grid; grid-template-columns: 5.6rem minmax(0, 1fr) 2.6rem; align-items: center; gap: 12px; font-size: 0.88rem; }
+.balance-name { color: var(--text-2, var(--text)); }
+.balance-track { height: 8px; border-radius: 999px; background: var(--hair); overflow: hidden; }
+.balance-track i { display: block; height: 100%; border-radius: 999px; background: var(--gold-fill, var(--gold)); }
+.balance-row b { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }

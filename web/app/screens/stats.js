@@ -113,6 +113,21 @@ function sessionList(sessions, chart) {
   return h('div', {}, h('div', { class: 'label', style: 'margin:18px 2px 0' }, 'Sessions'), box);
 }
 
+/** Sets per muscle group per week over the chosen range: what gets the work, what is skipped. */
+function balanceCard(lb, from, range) {
+  const b = lb.muscleBalance(from);
+  if (!b) return null;
+  const rangeText = { 30: 'the last month', 90: 'the last 3 months', 180: 'the last 6 months', 365: 'the last year', all: 'all your workouts' }[range] || 'this range';
+  return h('div', { class: 'card' },
+    h('div', { class: 'card-head', style: 'margin-bottom:12px' }, h('h2', {}, 'Muscle balance'), h('span', { class: 'foot' }, 'sets a week')),
+    h('div', { class: 'balance', role: 'list' }, b.rows.map((r) =>
+      h('div', { class: 'balance-row', role: 'listitem', 'aria-label': `${r.group}: ${fmtNum(r.perWeek)} sets a week` },
+        h('span', { class: 'balance-name' }, r.group),
+        h('span', { class: 'balance-track', 'aria-hidden': 'true' }, h('i', { style: `width:${Math.max(2, r.share * 100).toFixed(1)}%` })),
+        h('b', { 'aria-hidden': 'true' }, fmtNum(r.perWeek))))),
+    h('p', { class: 'foot', style: 'margin:12px 2px 0' }, `Average sets each week over ${rangeText}, by the muscle an exercise's name points to. The range buttons above change it.`));
+}
+
 /** Bodyweight over the chosen range, once two different weights have been logged. */
 function bodyweightCard(lb, from, short) {
   const t = lb.bodyweightTrend();
@@ -333,6 +348,7 @@ export function statsScreen(ctx) {
         h('div', { class: 'card-head', style: 'margin-bottom:12px' }, h('h2', {}, 'Exercise'), sortSel),
         opts.length ? h('div', { class: 'field' }, select) : null,
         exerciseCard),
+      balanceCard(lb, from, range),
       bodyweightCard(lb, from, short)].filter(Boolean)); // replaceChildren would print a null as the word "null"
   }
   paint();
