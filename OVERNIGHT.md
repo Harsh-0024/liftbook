@@ -228,6 +228,11 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     saving it read "Saved" next to a Save button that was on (the same could happen to Delete in
     History and Import). `busy()` now keeps whatever the work decided: Save is off after saving,
     and on again as soon as you type. Tested: save, type, undo the typing.
+38. **Checked: extra text spacing fits (no change needed).** With the spacing some readers and
+    reading tools add (line height 1.5, wider letters and words, more room after paragraphs), no
+    text on 12 screens was cut off or spilled over anything, and no page grew sideways. Checked at
+    computer width; the phone build couldn't be checked this way (the simulator's Safari can't
+    take the test styles).
 
 ## Next when resumed
 
