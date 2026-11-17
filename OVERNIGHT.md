@@ -106,6 +106,11 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     Found by opening every screen (and missing-workout, bad-date and unknown-page links): no other
     errors. Checked on desktop and the iPhone simulator.
 
+17. **Custom workout: the title box has a name for screen readers.** A sweep of every screen for
+    buttons, links and boxes a screen reader can't name found only this one (VoiceOver read it as
+    "text field"). It now reads "Workout title", as on Retrieve days. Muhurta's pages had none.
+    Checked on desktop; nothing changes on screen.
+
 ## Next when resumed
 
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already
