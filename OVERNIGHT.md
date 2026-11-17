@@ -283,6 +283,10 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     ring in the system's highlight colour; the normal look is untouched. Checked that the rule is
     served and off in normal mode (the browser here can't turn that mode on).
 
+Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
+unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen
+(desktop); sign-in on the iPhone in light mode shows the new outlines.
+
 ## Next when resumed
 
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already
