@@ -23,7 +23,8 @@ function typing(el) {
 }
 
 let dialog = null;
-function toggleHelp(admin) {
+/** Opens (or closes) the list of shortcuts: "?" anywhere, or Settings > Keyboard shortcuts. */
+export function toggleHelp(admin) {
   if (dialog?.open) { dialog.close(); return; }
   dialog?.remove(); // drawn fresh: the admin keys come and go with the account
   dialog = h('dialog', { class: 'keys-dialog', 'aria-labelledby': 'keys-title' },

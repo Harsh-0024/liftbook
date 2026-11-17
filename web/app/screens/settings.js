@@ -3,6 +3,7 @@
 
 import { describe, h, icon, rowItem, pageHead, toast, busy, ago, formatDay, fmtNum, copyText, ask, deviceDraft, keptNote } from '../ui.js';
 import { avatar } from './home.js';
+import { toggleHelp } from '../shortcuts.js';
 import { Online } from '../online.js';
 import { FEEDBACK_KINDS } from '../data.js';
 import { defaultRepRangesText } from '../../core/plans.js';
@@ -131,7 +132,11 @@ function index(ctx) {
         ctx.lb.isAdmin() ? rowItem({ href: '#/settings/admin', ico: 'shield', title: 'Admin', desc: 'Feedback, people, coach answers' }) : null)),
 
     h('section', { class: 'section' }, h('div', { class: 'label' }, 'Help make it better'),
-      h('div', { class: 'group' }, rowItem({ href: '#/settings/feedback', ico: 'chat', title: 'Send feedback', desc: 'What you like, what you don’t, ideas' }))),
+      h('div', { class: 'group' }, rowItem({ href: '#/settings/feedback', ico: 'chat', title: 'Send feedback', desc: 'What you like, what you don’t, ideas' }),
+        // Only with a keyboard and mouse: the shortcuts were findable only by pressing "?".
+        matchMedia('(hover: hover) and (pointer: fine)').matches
+          ? rowItem({ onclick: () => toggleHelp(ctx.lb.isAdmin()), ico: 'keyboard', title: 'Keyboard shortcuts', desc: 'Or press ? on any page', chev: false })
+          : null)),
 
     h('div', { class: 'group', style: 'margin-top:30px' },
       rowItem({ onclick: (e) => busy(e.currentTarget, () => ctx.signOut())(e), ico: 'logout', title: 'Sign out of this device', chev: false })));

@@ -249,6 +249,12 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     colour) for light, and a theme picked in Settings sets both (`index.html`). The phone app's
     own status bar already followed the theme. Tested light, dark and automatic. Today's iPhone
     Safari colours its bars from the page itself, so it looked right there before as well.
+42. **Settings shows the keyboard shortcuts.** On a computer, Liftbook has a full set of keys
+    (H home, L log, G stats, / search, the arrows between workouts...), but the only way to find
+    them was to press "?" without knowing it. Settings now has a "Keyboard shortcuts" row (under
+    Help make it better, with a small keyboard icon) that opens the same list, and says "Or press
+    ? on any page". Shown only with a mouse and keyboard, not on phones. Tested: it opens the
+    list, and focus returns to the row when it closes.
 
 ## Next when resumed
 
