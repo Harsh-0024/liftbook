@@ -92,6 +92,10 @@ export function homeScreen(ctx) {
       h('a', { class: 'see-all', href: '#/history' }, 'See all workouts')) : null);
 }
 
+const LONG_MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+/** A day as someone would type it when searching: "mon 9 nov 2026 november". */
+const dayWords = (day) => `${formatDay(day).toLowerCase()} ${LONG_MONTHS[Number(day.slice(5, 7)) - 1] || ''}`;
+
 // A long history is drawn a page at a time; "Show more" adds the next page.
 const PAGE = 60;
 
@@ -127,7 +131,9 @@ export function historyScreen(ctx) {
   const paint = () => {
     const q = search.value.trim().toLowerCase();
     shown = q
-      ? workouts.filter((w) => w.title.toLowerCase().includes(q) || w.logs.some((l) => String(l.exercise).toLowerCase().includes(q)) || w.day.includes(q))
+      // The day matches as it reads too: "9 nov", "november", "mon 9 nov 2026" (and 2026-11-09).
+      ? workouts.filter((w) => w.title.toLowerCase().includes(q) || w.logs.some((l) => String(l.exercise).toLowerCase().includes(q)) || w.day.includes(q)
+        || dayWords(w.day).includes(q))
       : workouts;
     const months = new Map();
     const inMonth = new Map();
