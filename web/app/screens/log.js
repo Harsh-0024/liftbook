@@ -1,7 +1,7 @@
 // Log: type (or paste) a workout, see what it reads as, save it. Works offline: the save is
 // on this device at once and syncs later. An unsaved draft is kept if the app closes.
 
-import { h, icon, pageHead, formatDay, busy, toast, autoGrow } from '../ui.js';
+import { h, icon, pageHead, formatDay, busy, toast, autoGrow, rowItem } from '../ui.js';
 import { attachSuggestions } from '../suggest.js';
 import { attachPasteTidy, tidyPaste, showFromTop } from '../paste.js';
 
@@ -59,8 +59,33 @@ export function logScreen(ctx) {
   const problems = h('div', { role: 'alert' });
   const save = h('button', { class: 'btn primary small', type: 'button' }, 'Save');
   const paste = h('button', { class: 'btn small', type: 'button' });
+  // An empty box offers the next session from the plan, with your last numbers, to fill in
+  // (what Retrieve's "Log" button does, one tap from here). Not on the day a workout is logged.
+  let startRow = null;
+  try {
+    const workouts = lb.workouts();
+    const iso = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const next = workouts.length && workouts[0].day !== iso ? lb.nextSession() : null;
+    if (next) {
+      const name = `Session ${next.id}${next.title ? ` · ${next.title}` : ''}`;
+      startRow = h('div', { class: 'group log-start' }, rowItem({
+        ico: 'list', title: `Start from ${name}`,
+        desc: `Next in your plan${next.exercises ? `: ${next.exercises} exercise${next.exercises === 1 ? '' : 's'}` : ''}, with your last numbers to fill in`,
+        onclick: () => {
+          const r = lb.retrieveDay('Session', next.id);
+          if (!r.exercises) return toast('That session has no exercises in your plan.');
+          ta.value = r.text;
+          check();
+          showFromTop(ta);
+        },
+      }));
+    }
+  } catch {
+    startRow = null;
+  }
   const paintPaste = () => {
     paste.replaceChildren(...(ta.value.trim() ? [icon('trash'), 'Clear'] : [icon('clipboard'), 'Paste']));
+    if (startRow) startRow.hidden = Boolean(ta.value.trim());
   };
 
   let timer = null;
@@ -229,6 +254,7 @@ export function logScreen(ctx) {
     pageHead('Log workout', 'Paste your workout from Notes, or type it: the date and title first, then each exercise with its sets underneath.'),
     // The count and Save float at the bottom of the screen while the text and the check list
     // scroll under them (as on the old Log page), so Save is always one tap away.
+    startRow,
     h('div', { class: 'log-flow' },
       h('div', { class: 'group editor-wrap' },
         h('label', { for: 'workout_text', class: 'sr' }, 'Workout'),
