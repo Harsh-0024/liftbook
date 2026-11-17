@@ -130,6 +130,11 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     Log box, which opens the check, only 16. On touch screens both are now 40 points tall; on a
     computer nothing changes. Checked on the iPhone simulator.
 
+21. **Editing your plan on an iPhone no longer zooms the page in.** iPhone Safari zooms in on a
+    text box smaller than 16px. Phones already got 16px boxes, but the plan editor's own smaller
+    size won, so tapping into the plan zoomed in. It is now 16px on phones too (other boxes were
+    already fine). Checked on the iPhone simulator.
+
 ## Next when resumed
 
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already
