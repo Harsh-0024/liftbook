@@ -87,7 +87,7 @@ export function homeScreen(ctx) {
       })),
       h('div', { class: 'grid-3 home-stats' },
         h('div', { class: 'stat' }, h('span', {}, 'Workouts'), h('b', {}, o.total)),
-        h('div', { class: 'stat' }, h('span', {}, 'Weeks in a row'), h('b', { class: 'gold' }, week.weeks)),
+        h('div', { class: 'stat' }, h('span', {}, 'Week streak'), h('b', { class: 'gold' }, week.weeks)),
         h('div', { class: 'stat' }, h('span', {}, 'Exercises'), h('b', {}, o.exercises))),
       h('a', { class: 'see-all', href: '#/history' }, 'See all workouts')) : null);
 }
