@@ -274,6 +274,9 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     box's edge, the week-strip days, opened exercises, the Log check rows, switches) now uses the gold
     the app already uses for gold text: deep gold `#8a6512` on light (4.8:1), and the same bright gold
     as before on dark, so the dark theme looks unchanged. Looked at with Tab on Profile.
+46. **The Log check line is easier to click.** A sweep of every screen for click targets under
+    24px found one: the line under the Log box ("Nothing to check yet", which opens the check) was a
+    16px-tall button on a computer. It's now 24px, with the same look; on touch it was already 40px.
 
 ## Next when resumed
 
