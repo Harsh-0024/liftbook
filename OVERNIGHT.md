@@ -96,7 +96,8 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     "17/11/26") used to file the workout a year ahead without a word, out of this week and
     the streak. The check now says "This is dated Wed 17 Nov 2027, after today. Check the year
     on the first line." It doesn't stop the save (Bulk import already refused future days).
-    Test added. Checked on desktop.
+    Test added. Checked on desktop and the iPhone simulator (with a little space added under the
+    note there).
 
 16. **Retrieve: a day that isn't in the plan.** Opening a Retrieve day that no longer exists (a
     session removed since, an old link) showed the error text as the workout, and its Copy and
