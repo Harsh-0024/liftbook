@@ -117,6 +117,12 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     they're used. (Muhurta's leftovers only fade or glow, which Reduce Motion allows.) Checked
     that the browser reads the new rules; the movement itself can't be seen in a screenshot.
 
+19. **Keyboard focus on Home's week strip.** Tabbing to a day in "Last 7 days" only gave it
+    hover's faint ring, the same ring today already wears, so on today or a gold (trained) day
+    you couldn't see it. Keyboard focus now draws a clear gold ring. A check that focuses every
+    control on ten main screens and compares its look found nothing else. Checked with real
+    Tab presses on the computer.
+
 ## Next when resumed
 
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already

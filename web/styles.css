@@ -594,6 +594,8 @@ a.avatar.big:hover { box-shadow: 0 0 0 9px var(--gold-soft); }
 .wday.today:not(.on) .dot { border-color: var(--line-gold); box-shadow: 0 0 0 4px var(--gold-soft); }
 a.wday:hover .dot, a.wday:focus-visible .dot { transform: scale(1.08); box-shadow: 0 0 0 4px var(--gold-soft); }
 a.wday:focus-visible { outline: none; }
+/* Keyboard focus: a clear gold ring (hover's soft one is the same as today's, so focus didn't show there). */
+a.wday:focus-visible .dot { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--gold); }
 .home .section + .section { margin-top: 26px; }
 @media (min-width: 760px) { .home { padding-top: 4vh; } }
 
