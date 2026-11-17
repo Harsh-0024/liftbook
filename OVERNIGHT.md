@@ -260,13 +260,14 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     but the green "Copied" that the Copy button shows for two seconds on a plan had white words
     on bright green, 2.3-3.3:1. They are now near-black green, 5.5-8:1 (`styles.css`). Checked in
     the browser after a real tap.
-44. **Checked: how controls stand out (your call on one thing).** Switches, the theme picker and
-    the chosen choices all stand out at 3:1 or more in both themes. The boxes you type into
-    (search, profile, account, coach key, bodyweight, the Stats lists) have soft outlines, about
-    1.2:1 against the page, in both themes. That is the app's look and each has a label above
-    it, so it was left alone; a darker outline (about 3:1) would make every form plainer to
-    see. The big writing boxes on Log and Feedback sit in a card, which shows their edge.
-
+44. **Boxes you type into have a clear, warm outline.** Switches, the theme picker and the chosen
+    choices already stood out at 3:1 or more. The boxes you type into (search, profile, account,
+    coach key, bodyweight, the Stats lists) had outlines of about 1.2:1, hard to find for anyone
+    who sees less well. You asked for both looks and use, so they now have a thin warm line in
+    the app's own tones, not a grey one: bronze `#6e6452` on dark (3:1 or more on every dark
+    surface), taupe `#8f826b` on light (3.2:1 or more), one variable, `--field-line`. Typing in
+    one still turns it gold. The big writing boxes on Log and Feedback keep their card. Looked
+    at in both themes.
 ## Next when resumed
 
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already

@@ -14,6 +14,7 @@
   --hover: rgba(255, 255, 255, 0.03);
   --input: rgba(255, 255, 255, 0.03);
   --line: rgba(255, 255, 255, 0.08);
+  --field-line: #6e6452; /* a box you type into: warm, and 3:1+ on every dark surface */
   --hair: rgba(255, 255, 255, 0.07);
   --line-gold: rgba(212, 175, 55, 0.4);
   --text: #fff;
@@ -60,6 +61,7 @@
     --hover: rgba(0, 0, 0, 0.025);
     --input: #fff;
     --line: rgba(0, 0, 0, 0.08);
+    --field-line: #8f826b; /* 3.2:1+ on every light surface */
     --hair: rgba(0, 0, 0, 0.07);
     --line-gold: rgba(201, 169, 97, 0.45);
     --text: #1a1a1a;
@@ -96,6 +98,7 @@
   --hover: rgba(0, 0, 0, 0.025);
   --input: #fff;
   --line: rgba(0, 0, 0, 0.08);
+  --field-line: #8f826b; /* 3.2:1+ on every light surface */
   --hair: rgba(0, 0, 0, 0.07);
   --line-gold: rgba(201, 169, 97, 0.45);
   --text: #1a1a1a;
@@ -445,7 +448,7 @@ select.status-pick { width: auto; flex: none; min-width: 108px; padding-top: 7px
 .pw-rule .met svg { opacity: 1; }
 input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="date"], input[type="search"], select, textarea {
   width: 100%; padding: 11px 14px; border-radius: 12px;
-  border: 1px solid var(--line); background: var(--input); color: var(--text);
+  border: 1px solid var(--field-line); background: var(--input); color: var(--text);
   font: 16px var(--font);
   transition: border-color var(--fast), box-shadow var(--fast);
 }
