@@ -163,6 +163,18 @@ function sessionPlace(plans, category, id) {
 export function retrieveDayScreen(ctx, category, id) {
   const cat = decodeURIComponent(category);
   const result = ctx.lb.retrieveDay(cat, Number(id));
+  // A day no longer in the plan (a session removed since, an old link): the reason, not a
+  // "workout" whose text is the error, which Copy and Log would have passed on.
+  if (!result.exercises) {
+    const missing = !ctx.lb.planDays().workout?.[cat]?.[`${cat} ${id}`];
+    return h('div', {},
+      pageHead(missing ? `${cat} ${id} isn’t in your plan` : `${cat} ${id} has no exercises`,
+        missing ? 'It may have been removed or renamed since this link was made.' : 'Add some to it in your plan, or pick another day.',
+        { back: '#/retrieve' }),
+      h('div', { class: 'group' },
+        rowItem({ href: '#/retrieve', ico: 'list', title: 'Pick a day', desc: 'Every day in your plan' }),
+        rowItem({ href: '#/settings/plan', ico: 'plan', title: 'Change the plan', desc: 'Your days and the exercises in them' })));
+  }
   const place = sessionPlace(ctx.lb.planDays(), cat, id);
   const picks = ctx.lb.planDayPicks(cat, Number(id));
   // Edit: the same exercises and sets on the Custom page, to add, drop or reorder some for today.

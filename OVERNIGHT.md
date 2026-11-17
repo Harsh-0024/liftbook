@@ -98,6 +98,13 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     on the first line." It doesn't stop the save (Bulk import already refused future days).
     Test added. Checked on desktop.
 
+16. **Retrieve: a day that isn't in the plan.** Opening a Retrieve day that no longer exists (a
+    session removed since, an old link) showed the error text as the workout, and its Copy and
+    Log buttons passed "Day 'Session 99' not found in plan." on to Notes or the Log box. It now
+    says "Session 99 isn't in your plan", with links to pick a day or change the plan.
+    Found by opening every screen (and missing-workout, bad-date and unknown-page links): no other
+    errors. Checked on desktop.
+
 ## Next when resumed
 
 ## Ideas not done yet
