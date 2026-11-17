@@ -223,6 +223,11 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     through `busy()` in `app/ui.js`) is switched off while it works, and switching off a focused
     button drops keyboard focus to the top of the page, so the next Tab started over. Focus now
     comes back to the button when it's done, unless the work moved it somewhere else on purpose.
+37. **Save stays off once saved.** On Workout plan, Save turns itself off when there's nothing new
+    to save, but the "Working…" helper switched every button back on when it finished, so after
+    saving it read "Saved" next to a Save button that was on (the same could happen to Delete in
+    History and Import). `busy()` now keeps whatever the work decided: Save is off after saving,
+    and on again as soon as you type. Tested: save, type, undo the typing.
 
 ## Next when resumed
 

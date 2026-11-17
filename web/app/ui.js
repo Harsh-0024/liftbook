@@ -325,14 +325,19 @@ export function busy(button, fn) {
     // to the button afterwards, unless the work moved it somewhere else.
     const had = document.activeElement === button;
     button.disabled = true;
+    // The work may decide the button should stay off afterwards (Save when nothing is left to
+    // save): it reads as off while working, and what the work set is kept at the end.
+    let after = false;
+    Object.defineProperty(button, 'disabled', { configurable: true, get: () => true, set: (v) => { after = Boolean(v); } });
     button.textContent = 'Working…';
     try {
       await fn(event);
     } catch (err) {
       toast(err && err.message ? err.message : 'Something went wrong.', 5000);
     } finally {
+      delete button.disabled;
+      button.disabled = after;
       if (button.isConnected) {
-        button.disabled = false;
         button.replaceChildren(...label);
         const lost = !document.activeElement || document.activeElement === document.body;
         if (had && lost) button.focus({ preventScroll: true });
