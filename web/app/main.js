@@ -184,6 +184,28 @@ async function start() {
   stopSync = startAutoSync(sync, store);
   lb.refreshShared();
   render();
+  watchNewDay();
+}
+
+// The phone app comes back on the screen it was left on: Home seen last night would still mark
+// yesterday as today in the morning. When the day turns, redraw a screen that only shows data
+// (never one being typed in), on coming back to the app or within a minute if it stays open.
+let newDayWatched = false;
+function watchNewDay() {
+  if (newDayWatched) return;
+  newDayWatched = true;
+  const dayNow = () => new Date().toDateString();
+  let day = dayNow();
+  const check = () => {
+    if (document.visibilityState !== 'visible' || dayNow() === day) return;
+    day = dayNow();
+    if (ctx && current?.live) {
+      show.keepScroll = true;
+      render();
+    }
+  };
+  document.addEventListener('visibilitychange', check);
+  setInterval(check, 60 * 1000);
 }
 
 function paintPill(st) {

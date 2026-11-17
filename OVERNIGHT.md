@@ -148,6 +148,13 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     Stats and Personal bests already read well with no data. Checked on desktop, empty and with
     data.
 
+24. **Home moves on to the new day.** The phone app comes back on the screen it was left on, and
+    only redrew it when a sync brought changes. So Home seen last night still marked yesterday
+    as "Today" in the week strip the next morning. Now, when the day has turned, a screen that
+    only shows data (never one you're typing in) redraws as you come back to the app, or within a
+    minute if it stays open past midnight. Checked on the computer by moving the page's clock a
+    day ahead: the strip moved on, and nothing redraws on the same day.
+
 ## Next when resumed
 
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already
