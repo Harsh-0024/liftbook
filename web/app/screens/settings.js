@@ -247,7 +247,11 @@ function plan(ctx) {
       area.value = lb.text(kind);
       keep();
       mark();
-      area.focus();
+      // Back at the top. On a computer the cursor goes there too (the button it was on is gone);
+      // on a phone that would pop the keyboard up, so it doesn't.
+      area.scrollTop = 0;
+      area.setSelectionRange(0, 0);
+      if (matchMedia('(pointer: fine)').matches) area.focus({ preventScroll: true });
     });
     const was = draft.read();
     if (was && was.base === lb.text(kind) && was.text !== area.value) {
@@ -264,7 +268,7 @@ function plan(ctx) {
       mark();
     }));
     mark();
-    return h('div', { class: 'group' }, kept, area, h('div', { class: 'editor-bar' }, meta, btn));
+    return h('div', {}, kept, h('div', { class: 'group' }, area, h('div', { class: 'editor-bar' }, meta, btn)));
   };
   const refresh = h('button', { class: 'btn small', type: 'button' }, 'Check for updates');
   refresh.addEventListener('click', busy(refresh, async () => {

@@ -169,6 +169,13 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     it. The draft code is now one small helper in `ui.js`, shared with the plan editors. Checked
     on the computer: kept after leaving each screen, Discard and Cancel clear it, a stale edit
     draft is dropped, and the plan editors still behave as in item 25.
+27. **The "changes are back" note, checked on the iPhone.** On the phone it sat inside the white
+    editor card (a box in a box) and Discard wrapped to a second line. It now sits above the card,
+    in one line ("Your unsaved changes are back." and Discard), like the admin note above it.
+    Discard also put the cursor in the plan, which on a phone opened the keyboard and jumped to
+    the plan's last line; it now leaves the box at the top, and only puts the cursor there on a
+    computer. Checked on the iPhone simulator (an edit kept through a reload, the note, Discard)
+    and on the computer.
 
 ## Next when resumed
 

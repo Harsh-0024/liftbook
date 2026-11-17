@@ -277,7 +277,7 @@ export function deviceDraft(key) {
 export function keptNote(onDiscard) {
   const discard = h('button', { class: 'btn small', type: 'button' }, 'Discard');
   const note = h('div', { class: 'notice kept-note', role: 'status', hidden: true },
-    h('span', {}, 'Your unsaved changes from last time are back.'), discard);
+    h('span', {}, 'Your unsaved changes are back.'), discard);
   discard.addEventListener('click', () => { note.hidden = true; onDiscard(); });
   return note;
 }
