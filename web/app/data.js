@@ -50,6 +50,18 @@ const uuid = () => {
 /** "2026-10-31T09:00:00" -> "2026-10-31" (workout dates are the person's own clock, no zone). */
 export const dayOf = (date) => String(date || '').slice(0, 10);
 
+/** Weight × reps added up over a log's sets ({weights, reps}). */
+export function setsVolume(sets) {
+  const weights = Array.isArray(sets?.weights) ? sets.weights : [];
+  const reps = Array.isArray(sets?.reps) ? sets.reps : [];
+  let total = 0;
+  for (let i = 0; i < Math.min(weights.length, reps.length); i += 1) {
+    const v = Number(weights[i]) * Number(reps[i]);
+    if (Number.isFinite(v) && v > 0) total += v;
+  }
+  return total;
+}
+
 // Saved workout times are already the person's own clock time (workout_logs.date), so Stats
 // must not move them. The core's default (+5:30) copies the old Python app, which saved
 // undated workouts in the server's UTC; with it, a workout saved after 6:30 pm showed in
@@ -242,6 +254,8 @@ export class Liftbook {
       }
       return {
         log, isTimed, usesBw, perf,
+        // Weight times reps over every set (bodyweight counted where the exercise uses it); timed holds have none.
+        volume: isTimed ? 0 : setsVolume(effectiveSetsForLog(settings, log)),
         medal: MEDAL_KEYS.has(perf.key),
         first: !prevAll.length,
         setsRanked: todayRanked.map((x) => x.label),

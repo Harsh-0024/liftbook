@@ -420,6 +420,7 @@ export function workoutScreen(ctx, day) {
   const cmp = lb.compareWorkout(day);
   const dir = (d) => cmp.filter((c) => c.trend?.direction === d).length;
   const sets = w.logs.reduce((n, l) => n + (Array.isArray(l.sets?.reps) ? l.sets.reps.length : 0), 0);
+  const lifted = cmp.reduce((n, c) => n + (c.volume || 0), 0);
 
   const del = h('button', { class: 'btn danger', type: 'button' }, icon('trash'), 'Delete');
   del.addEventListener('click', busy(del, async () => {
@@ -468,7 +469,9 @@ export function workoutScreen(ctx, day) {
         h('button', { class: 'icon-btn', type: 'button', 'aria-label': 'Share', title: 'Share', onclick: share }, icon('share')))),
     h('h1', { class: 'wo-title' }, w.title),
     h('p', { class: 'wo-meta' }, h('span', {}, formatDay(day)), h('span', {}, `${w.logs.length} exercise${w.logs.length === 1 ? '' : 's'}`),
-      sets ? h('span', {}, `${sets} set${sets === 1 ? '' : 's'}`) : null, bw ? h('span', {}, `bodyweight ${fmtNum(bw)}`) : null),
+      sets ? h('span', {}, `${sets} set${sets === 1 ? '' : 's'}`) : null,
+      lifted >= 1 ? h('span', { title: 'Weight times reps, added up over every set' }, `${fmtNum(lifted, 0)} kg lifted`) : null,
+      bw ? h('span', {}, `bodyweight ${fmtNum(bw)}`) : null),
     saved ? savedNote(ctx, saved) : null,
     !saved && !lb.profile()?.bodyweight && cmp.some((c) => c.usesBw)
       ? h('p', { class: 'wo-note' }, icon('info'), h('span', {}, 'Set your bodyweight in ', h('a', { href: '#/settings/account' }, 'Settings'),
