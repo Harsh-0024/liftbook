@@ -28,6 +28,7 @@ import {
 } from '../core/renames.js';
 import { parseDate, deviceDay, addDays } from '../core/dates.js';
 import { weekStrip } from '../core/week.js';
+import { nextSessionId } from '../core/sessions.js';
 import { personalBests } from '../core/bests.js';
 import { bodyweightTrend } from '../core/weight_trend.js';
 import { timeKey } from './tables.js';
@@ -455,6 +456,16 @@ export class Liftbook {
   }
 
   /* ---------------- retrieve ---------------- */
+
+  /** The plan's session after the last one logged: { id, title, exercises }, or null. */
+  nextSession() {
+    const plans = this.planDays();
+    const sessions = plans.workout?.Session || {};
+    const ids = Object.keys(sessions).map((n) => Number(n.slice('Session'.length).trim())).filter(Number.isFinite);
+    const id = nextSessionId(this.workouts().slice(0, 10).map((w) => w.title), ids);
+    if (id === null) return null;
+    return { id, title: plans.session_titles?.[String(id)] || '', exercises: (sessions[`Session ${id}`] || []).length };
+  }
 
   planDays() {
     return getWorkoutDays(this.planText());

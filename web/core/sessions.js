@@ -201,3 +201,16 @@ export function splitSessionTitle(title) {
   if (!m) return { session: '', title: text };
   return { session: `Session ${m[1]}`, title: m[2].trim() };
 }
+
+/**
+ * The session after the last one logged: titles are the latest workouts' titles, newest first
+ * ("Session 3 - Back" → 4), ids the plan's session numbers in order. Wraps round after the
+ * last; null when none of the latest ten names a session in the plan.
+ */
+export function nextSessionId(titles, ids) {
+  for (const title of (titles || []).slice(0, 10)) {
+    const m = /\bsession\s*(\d+)/i.exec(String(title || ''));
+    if (m && ids.includes(Number(m[1]))) return ids[(ids.indexOf(Number(m[1])) + 1) % ids.length];
+  }
+  return null;
+}

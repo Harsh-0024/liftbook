@@ -43,6 +43,7 @@ export function homeScreen(ctx) {
   const doneToday = recent[0]?.day === todayIso;
   const o = lb.overview();
   const week = lb.week();
+  const next = workouts.length ? lb.nextSession() : null;
 
   const actions = workouts.length
     ? [doneToday
@@ -60,6 +61,12 @@ export function homeScreen(ctx) {
       doneToday ? h('p', { class: 'note' }, 'Nice work today.')
         : !workouts.length ? h('p', { class: 'note muted' }, 'Your workouts will show up here.') : null),
     h('div', { class: 'home-actions' }, actions),
+    // The plan's next session, with its targets one tap away (not once today's workout is in).
+    next && !doneToday ? h('section', { class: 'section', 'aria-label': 'Up next' },
+      h('div', { class: 'label' }, 'Up next'),
+      h('div', { class: 'group gold' }, rowItem({ href: `#/retrieve/day/Session/${next.id}`, ico: 'list',
+        title: next.title || `Session ${next.id}`, desc: `${next.title ? `Session ${next.id} · ` : ''}${next.exercises} exercise${next.exercises === 1 ? '' : 's'}`,
+        value: 'Targets' }))) : null,
     // The last 7 days, today last: a gold tick on each day trained (a tap opens that workout).
     workouts.length ? h('section', { class: 'section', 'aria-label': 'The last 7 days' },
       h('div', { class: 'label' }, 'Last 7 days', h('span', {}, `${week.count} workout${week.count === 1 ? '' : 's'}`)),
