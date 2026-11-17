@@ -321,6 +321,9 @@ export function busy(button, fn) {
     event?.preventDefault?.();
     if (button.disabled) return;
     const label = [...button.childNodes]; // icon and text, put back as they were
+    // Disabling a focused button drops keyboard focus to the top of the page; it comes back
+    // to the button afterwards, unless the work moved it somewhere else.
+    const had = document.activeElement === button;
     button.disabled = true;
     button.textContent = 'Working…';
     try {
@@ -331,6 +334,8 @@ export function busy(button, fn) {
       if (button.isConnected) {
         button.disabled = false;
         button.replaceChildren(...label);
+        const lost = !document.activeElement || document.activeElement === document.body;
+        if (had && lost) button.focus({ preventScroll: true });
       }
     }
   };

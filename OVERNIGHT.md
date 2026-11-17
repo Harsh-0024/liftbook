@@ -217,6 +217,12 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     a screen reader reads it when the field gets focus (`describe()` in `app/ui.js`, used by both
     `field()` helpers); and the name box on Profile and on the first-run screen now offers your
     name from autofill, as the sign-up page already did.
+36. **Keyboard focus stays on a button after it saves.** Checked how messages reach a screen
+    reader: the toast, sign-in errors, the Log check and the coach thread were already announced.
+    One gap: every button that shows "Working…" (Save, Send, Rename, sign out and the rest, all
+    through `busy()` in `app/ui.js`) is switched off while it works, and switching off a focused
+    button drops keyboard focus to the top of the page, so the next Tab started over. Focus now
+    comes back to the button when it's done, unless the work moved it somewhere else on purpose.
 
 ## Next when resumed
 
