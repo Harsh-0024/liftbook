@@ -176,6 +176,12 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     the plan's last line; it now leaves the box at the top, and only puts the cursor there on a
     computer. Checked on the iPhone simulator (an edit kept through a reload, the note, Discard)
     and on the computer.
+28. **Checked: keyboard focus and text contrast (no change needed).** On 11 screens (Home, Log,
+    Retrieve, Stats, History, Settings, Plan, Exercises, Feedback, a workout and its Edit), every
+    link, button and field shows a focus ring, and all text measures at least 4.5:1 against its
+    background (3:1 when large) in both light and dark. Only the words on gold gradient buttons
+    couldn't be measured; they're dark on gold. The same sweep found real gaps in Muhurta (its
+    items 33 and 34).
 
 ## Next when resumed
 
