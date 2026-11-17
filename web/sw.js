@@ -6,11 +6,12 @@
 // old one, takes over, and the old copy is removed.
 'use strict';
 
-const VERSION = '7d0cbaffa34f';
+const VERSION = 'eaba88f9015a';
 const FILES = [
   './',
   'app/data.js',
   'app/main.js',
+  'app/motion.js',
   'app/native.js',
   'app/online.js',
   'app/paste.js',

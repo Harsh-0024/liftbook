@@ -4,6 +4,7 @@
 import { h, icon, rowItem, pageHead, copyText, busy, toast } from '../ui.js';
 import { DRAFT_KEY } from './log.js';
 import { muscleGroup } from '../../core/coach_tools.js';
+import { scrollBehavior } from '../motion.js';
 
 function dayLabel(plans, category, dayName) {
   const id = dayName.slice(category.length).trim();
@@ -457,7 +458,7 @@ export function retrieveCustomScreen(ctx) {
     holder.replaceChildren(output(ctx, result, null, { kicker: prefill?.kicker || 'Custom workout', number, name, fallback: number ? '' : 'Custom Workout' }));
     // Land the workout just below the app header, not under it.
     const head = document.querySelector('.topbar')?.offsetHeight || 0;
-    window.scrollTo({ top: holder.getBoundingClientRect().top + window.scrollY - head - 12, behavior: 'smooth' });
+    window.scrollTo({ top: holder.getBoundingClientRect().top + window.scrollY - head - 12, behavior: scrollBehavior() });
   }
 
   // Opened from Edit: the groups holding the picks start open.

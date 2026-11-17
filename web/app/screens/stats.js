@@ -6,6 +6,7 @@ import { addDays, deviceDay } from '../../core/dates.js';
 import { overallView } from '../../core/overall_view.js';
 import { sortBests } from '../../core/bests.js';
 import { consistencyYears, yearWindow, consistencyHero, consistencyTiles, yearGrid } from '../../core/consistency.js';
+import { scrollBehavior } from '../motion.js';
 
 const VIEW_KEY = 'liftbook-stats-view';
 const YEAR_KEY = 'liftbook-stats-year';
@@ -176,7 +177,7 @@ export function statsScreen(ctx) {
     search.value = '';
     search.blur();
     paint();
-    body.querySelector('#exercise-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    body.querySelector('#exercise-card')?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
   };
   // A pick from the suggestions fires "input" with the full name; Enter jumps on whatever was typed.
   search.addEventListener('input', () => {
@@ -286,7 +287,7 @@ export function statsScreen(ctx) {
       // Opened from a workout's "Full progress": that exercise, and its chart in view.
       const key = normalizeExerciseName(wanted);
       exercise = opts.find((o) => o.value === wanted || normalizeExerciseName(o.value) === key || normalizeExerciseName(o.label) === key)?.value || null;
-      if (exercise) setTimeout(() => root.querySelector('#exercise')?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 350);
+      if (exercise) setTimeout(() => root.querySelector('#exercise')?.scrollIntoView({ block: 'center', behavior: scrollBehavior() }), 350);
       wanted = null;
     }
     if (!exercise && opts.length) exercise = opts[0].value;

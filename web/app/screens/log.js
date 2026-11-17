@@ -4,6 +4,7 @@
 import { h, icon, pageHead, formatDay, busy, toast, autoGrow, rowItem } from '../ui.js';
 import { attachSuggestions } from '../suggest.js';
 import { attachPasteTidy, tidyPaste, showFromTop } from '../paste.js';
+import { scrollBehavior } from '../motion.js';
 
 export const DRAFT_KEY = 'liftbook-log-draft';
 
@@ -163,7 +164,7 @@ export function logScreen(ctx) {
     if (ta.scrollHeight > ta.clientHeight + 1) ta.scrollTop = Math.max(0, y - lineHeight);
     const top = ta.getBoundingClientRect().top + y - ta.scrollTop;
     // Bring the line a little below the header if it is off the screen.
-    if (top < 90 || top > innerHeight - 140) window.scrollBy({ top: top - Math.min(200, innerHeight / 3), behavior: 'smooth' });
+    if (top < 90 || top > innerHeight - 140) window.scrollBy({ top: top - Math.min(200, innerHeight / 3), behavior: scrollBehavior() });
   };
   const useLine = (lineNo, text) => {
     const lines = ta.value.split('\n');
@@ -193,7 +194,7 @@ export function logScreen(ctx) {
     }
   });
   preview.addEventListener('click', () => {
-    if (!checkBox.hidden) checkBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!checkBox.hidden) checkBox.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
   });
   paste.addEventListener('click', async () => {
     if (ta.value.trim()) {

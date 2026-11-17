@@ -198,6 +198,12 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     (item 20).
 32. **Checked: every screen fits 320px wide (no change needed).** A small phone, or a computer
     zoomed to 400%: none of the 13 screens scrolls sideways.
+33. **Reduce Motion stops the scripted scrolling.** The CSS already calmed its animations when
+    Reduce Motion is on, but ten smooth scrolls started by the app's scripts still glided (to the
+    Log check, an exercise on Stats, a Retrieve result, the newest coach reply, a field above the
+    phone keyboard, the top after a paste): browsers don't apply the setting to those. A small
+    helper (`app/motion.js`) now makes each one jump when it's on. Tested both ways; every screen
+    still loads.
 
 ## Next when resumed
 

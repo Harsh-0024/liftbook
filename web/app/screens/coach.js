@@ -7,6 +7,7 @@ import { h, toast, busy, ago, formatDay, ask } from '../ui.js';
 import { Online, KEY_LINKS } from '../online.js';
 import { coachData, suggestions } from '../../core/coach_tools.js';
 import { rulesReply } from '../../core/history_qa.js';
+import { scrollBehavior } from '../motion.js';
 
 const chat = { messages: [] }; // [{role: user|assistant, text, steps?, links?, answer_id?, model?, rating?, error?}]
 
@@ -142,7 +143,7 @@ export function coachScreen(ctx) {
       input.value = '';
       chat.messages.push({ role: 'user', text: q }, { role: 'assistant', text: local.answer, note: local.note, source: 'rules' });
       paintThread();
-      thread.lastElementChild?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      thread.lastElementChild?.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() });
       return;
     }
     working = true;
@@ -154,7 +155,7 @@ export function coachScreen(ctx) {
     chat.messages.push(reply);
     paintThread();
     reply.el = thread.lastElementChild;
-    reply.el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    reply.el?.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() });
     try {
       const r = await online.ask([...history, { role: 'user', text: q }], {
         context: { page: 'coach' },
@@ -183,7 +184,7 @@ export function coachScreen(ctx) {
       working = false;
       ask.disabled = false;
       paintThread();
-      thread.lastElementChild?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      thread.lastElementChild?.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() });
     }
   }
 

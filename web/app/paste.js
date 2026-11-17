@@ -1,6 +1,7 @@
 // Pasting a workout, as the old Log page did it: some copies (Notes on some phones) put a blank
 // line between every line; those are put back as one blank line above each exercise, its sets
 // straight under it. After pasting a whole workout the box goes back to the top, so the title shows.
+import { scrollBehavior } from './motion.js';
 
 const NUMBERS_LINE = /^\s*(?:bw\b|[+-]?\d)/i;
 
@@ -27,7 +28,7 @@ export function insertAtCursor(ta, text) {
 
 /** Let the paste show for a moment, then glide back up to the title. */
 export function showFromTop(ta) {
-  setTimeout(() => ta.scrollTo({ top: 0, behavior: 'smooth' }), 220);
+  setTimeout(() => ta.scrollTo({ top: 0, behavior: scrollBehavior() }), 220);
 }
 
 export function attachPasteTidy(ta) {

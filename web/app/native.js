@@ -4,6 +4,7 @@
 // back to what the website does.
 
 import { WEB_APP_URL } from '../config.js';
+import { scrollBehavior } from './motion.js';
 
 const cap = globalThis.Capacitor;
 export const isNative = Boolean(cap?.isNativePlatform?.());
@@ -68,7 +69,7 @@ export function startNative({ onLink, onResume, onOnline, onBack }) {
   Keyboard?.addListener('keyboardDidShow', () => {
     document.body.classList.add('keyboard-open');
     const el = document.activeElement;
-    if (el && /^(TEXTAREA|INPUT|SELECT)$/.test(el.tagName)) el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    if (el && /^(TEXTAREA|INPUT|SELECT)$/.test(el.tagName)) el.scrollIntoView({ block: 'center', behavior: scrollBehavior() });
   });
   Keyboard?.addListener('keyboardDidHide', () => document.body.classList.remove('keyboard-open'));
 
