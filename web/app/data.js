@@ -21,6 +21,7 @@ import { formatG as fmtG } from '../core/py.js';
 import { retrieveDay, retrieveCustom, describeRetrieveOutput, picksForPlanLines, oftenTrainedKeys } from '../core/retrieve.js';
 import {
   getChartData, getOverallProgressData, statsExerciseOptions, getAllExercisesSummary, bodyweightWarningExercises,
+  resolveExerciseAliases, setsDisplay,
 } from '../core/stats.js';
 import { normalizeExerciseName, exerciseKey, statsExerciseKey, statsVocabulary, buildNameIndex, namesFor } from '../core/names.js';
 import {
@@ -605,6 +606,23 @@ export class Liftbook {
   /** Every exercise's best estimated max and heaviest set (core/bests.js). */
   bests() {
     return personalBests(this.statsOptions().map((o) => ({ value: o.value, label: o.label, chart: this.chart(o.value) })), deviceDay());
+  }
+
+  /** Every session of one exercise (its other spellings included), newest first: [{ day, title, sets }]. */
+  exerciseSessions(exercise) {
+    const history = this.history();
+    const names = new Set(resolveExerciseAliases(history, exercise));
+    const byDay = new Map();
+    for (const log of history) {
+      if (!names.has(log.exercise)) continue;
+      const day = dayOf(log.date);
+      if (!day) continue;
+      const sets = setsDisplay(log);
+      const row = byDay.get(day) || byDay.set(day, { day, title: this.workout(day)?.title || log.workout_name || 'Workout', parts: [] }).get(day);
+      if (sets) row.parts.push(sets);
+    }
+    return [...byDay.values()].map((r) => ({ day: r.day, title: r.title, sets: r.parts.join(' · ') }))
+      .sort((a, b) => (a.day < b.day ? 1 : a.day > b.day ? -1 : 0));
   }
 
   /** Bodyweight over time from the workouts' own records, or null when there is no trend yet. */

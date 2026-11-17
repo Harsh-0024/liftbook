@@ -83,6 +83,36 @@ function tabs(options, value, onPick) {
     h('button', { type: 'button', class: v === value ? 'on' : '', role: 'tab', 'aria-selected': String(v === value), onclick: () => onPick(v) }, label)));
 }
 
+const SESSIONS_SHOWN = 5;
+let sessionsOpenFor = null; // the exercise whose whole list is open (survives a repaint)
+
+/** Every time the exercise was trained, newest first: the day, its sets, a link to that workout. */
+function sessionList(sessions, chart) {
+  if (!sessions.length) return null;
+  // The day the best score was first reached wears the medal.
+  let bi = -1;
+  (chart.data || []).forEach((v, i) => { if (v > 0 && (bi < 0 || v > chart.data[bi])) bi = i; });
+  const bestDay = bi >= 0 && chart.data.length > 1 ? chart.labels[bi] : null;
+  const box = h('div', { class: 'group', style: 'margin-top:14px' });
+  const draw = () => {
+    const all = sessionsOpenFor === chart.exercise;
+    const rows = (all ? sessions : sessions.slice(0, SESSIONS_SHOWN)).map((s) =>
+      h('a', { class: 'rowi session-row', href: `#/workout/${s.day}` },
+        h('span', { class: 'main' },
+          h('span', { class: 'title' }, formatDay(s.day, { year: s.day.slice(0, 4) !== deviceDay().slice(0, 4) }),
+            s.day === bestDay ? h('span', { class: 'pill best' }, 'Best') : null),
+          h('span', { class: 'desc mono' }, s.sets || '–')),
+        h('span', { class: 'chev-i' }, icon('chev'))));
+    const more = sessions.length > SESSIONS_SHOWN
+      ? h('button', { type: 'button', class: 'rowi more-sessions', onclick: () => { sessionsOpenFor = all ? null : chart.exercise; draw(); } },
+        h('span', { class: 'main' }, h('span', { class: 'title' }, all ? 'Show fewer' : `Show all ${sessions.length} sessions`)))
+      : null;
+    box.replaceChildren(...rows, ...(more ? [more] : []));
+  };
+  draw();
+  return h('div', {}, h('div', { class: 'label', style: 'margin:18px 2px 0' }, 'Sessions'), box);
+}
+
 /** Bodyweight over the chosen range, once two different weights have been logged. */
 function bodyweightCard(lb, from, short) {
   const t = lb.bodyweightTrend();
@@ -278,7 +308,8 @@ export function statsScreen(ctx) {
           tile('Best', fmtNum(st.max_1rm), null, 'gold'),
           tile('Since first', pctText(st.improvement_pct || 0, Math.abs(st.improvement_pct || 0) < 10 ? 1 : 0), null, (st.improvement_pct || 0) < 0 ? '' : '')),
         h('p', { class: 'foot', style: 'margin:12px 2px 0' }, `${c.labels.length} session${c.labels.length === 1 ? '' : 's'}`,
-          c.labels.length ? ` · last ${formatDay(c.labels[c.labels.length - 1])}` : ''));
+          c.labels.length ? ` · last ${formatDay(c.labels[c.labels.length - 1])}` : ''),
+        sessionList(lb.exerciseSessions(exercise), c));
     }
 
     body.replaceChildren(...[

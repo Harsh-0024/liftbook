@@ -1144,3 +1144,8 @@ a.group.rowi.bests-link { margin-bottom: 18px; }
 .pick-move { flex: none; display: inline-flex; color: var(--subtle); }
 .pick-move svg { width: 17px; height: 17px; }
 .pick.move:hover .pick-move { color: var(--gold-text); }
+
+/* Stats: every session of the chosen exercise */
+.session-row .title .pill { margin-left: 8px; vertical-align: 1px; padding: 1px 8px; font-size: 0.66rem; }
+.session-row .desc.mono { font-size: 0.8rem; overflow-wrap: anywhere; }
+button.rowi.more-sessions .title { color: var(--gold-text); font-size: 0.86rem; text-align: center; }
