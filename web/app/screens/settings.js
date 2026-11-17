@@ -226,22 +226,53 @@ function plan(ctx) {
   const planText = h('textarea', { id: 'plan', class: 'editor mono', spellcheck: 'false', 'aria-label': 'Your plan', placeholder: DEFAULT_PLAN.trim() }, lb.text('plan'));
   const repText = h('textarea', { id: 'rep_ranges', class: 'editor mono', spellcheck: 'false', 'aria-label': 'Your rep ranges', placeholder: defaultRepRangesText().trim() }, lb.text('rep_ranges'));
   // Each editor says whether what's in it is saved, as the old plan page did.
+  // Unsaved edits are kept on this device, as the Log box's are: a tap on another tab, or the
+  // website reloading itself for an update while you copy something from Notes, would lose them.
+  // A draft only comes back if the saved text hasn't changed since (another device, Copy).
   const editorGroup = (area, kind, label, done) => {
+    const key = `liftbook-${kind}-draft`;
+    const readKept = () => { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch { return null; } };
+    const keep = () => {
+      try {
+        if (area.value === lb.text(kind)) localStorage.removeItem(key);
+        else localStorage.setItem(key, JSON.stringify({ base: lb.text(kind), text: area.value }));
+      } catch {
+        // storage blocked: nothing kept
+      }
+    };
     const meta = h('span', { class: 'editor-meta' });
     const btn = h('button', { class: 'btn primary small', type: 'button' }, label);
     const mark = () => {
       const saved = area.value === lb.text(kind);
       meta.textContent = saved ? (area.value.trim() ? 'Saved' : 'Using the built-in one') : 'Not saved yet';
       btn.disabled = saved;
+      if (saved) kept.hidden = true;
     };
-    area.addEventListener('input', mark);
+    const discard = h('button', { class: 'btn small', type: 'button' }, 'Discard');
+    const kept = h('div', { class: 'notice kept-note', role: 'status', hidden: true },
+      h('span', {}, 'Your unsaved changes from last time are back.'), discard);
+    discard.addEventListener('click', () => {
+      area.value = lb.text(kind);
+      keep();
+      mark();
+      area.focus();
+    });
+    const draft = readKept();
+    if (draft && draft.base === lb.text(kind) && draft.text !== area.value) {
+      area.value = draft.text;
+      kept.hidden = false;
+    } else if (draft) {
+      try { localStorage.removeItem(key); } catch { /* blocked */ }
+    }
+    area.addEventListener('input', () => { keep(); mark(); });
     btn.addEventListener('click', busy(btn, async () => {
       await lb.setText(kind, area.value);
+      keep();
       toast(done);
       mark();
     }));
     mark();
-    return h('div', { class: 'group' }, area, h('div', { class: 'editor-bar' }, meta, btn));
+    return h('div', { class: 'group' }, kept, area, h('div', { class: 'editor-bar' }, meta, btn));
   };
   const refresh = h('button', { class: 'btn small', type: 'button' }, 'Check for updates');
   refresh.addEventListener('click', busy(refresh, async () => {

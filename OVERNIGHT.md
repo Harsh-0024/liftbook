@@ -154,6 +154,14 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     only shows data (never one you're typing in) redraws as you come back to the app, or within a
     minute if it stays open past midnight. Checked on the computer by moving the page's clock a
     day ahead: the strip moved on, and nothing redraws on the same day.
+25. **Plan and rep-range edits are kept until saved.** Unsaved changes in the two editors were
+    lost by a tap on another tab, or when the website reloaded itself for an update while you
+    were away copying something. Now they're kept on the device like the Log box's draft, and come
+    back with a note and a **Discard** button. A draft only comes back if the saved plan hasn't
+    changed since (from another device, or Copy), so it can't undo newer changes. Saving clears
+    it, and sign-out now clears every draft on the device (the Custom workout drafts were left
+    behind before). Checked on the computer: kept after leaving the screen and after a reload,
+    Discard puts the saved plan back, saving clears it, an out-of-date draft is dropped.
 
 ## Next when resumed
 

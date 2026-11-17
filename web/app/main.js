@@ -256,6 +256,8 @@ async function signOut({ force = false } = {}) {
   await deleteDatabase(dbName(uid)).catch(() => {});
   try {
     localStorage.removeItem(DRAFT_KEY);
+    // The custom workout and plan editors keep drafts too ("liftbook-custom-draft…", "liftbook-plan-draft").
+    for (const k of Object.keys(localStorage)) if (/^liftbook-.*draft/.test(k)) localStorage.removeItem(k);
   } catch {
     // storage blocked: nothing was kept
   }
@@ -341,8 +343,8 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && !isNative) 
   // A new version takes over as soon as it has installed; this page reloads once to run it too.
   // Not on the very first visit, and never under someone's finger: if they've started using the
   // page, the reload waits until the app goes to the background (a switch to another app, a
-  // locked phone), so it's ready next time they look. Nothing typed is lost either way (the log
-  // draft is kept on the device).
+  // locked phone), so it's ready next time they look. Nothing typed is lost either way (the log,
+  // custom workout, plan and rep-range boxes keep drafts on the device).
   const hadVersion = !!navigator.serviceWorker.controller;
   let reloaded = false;
   let used = false;
