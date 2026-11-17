@@ -4,6 +4,7 @@ import { h, icon, pageHead, lineChart, fmtNum, formatDay, toast } from '../ui.js
 import { normalizeExerciseName } from '../../core/names.js';
 import { addDays, deviceDay } from '../../core/dates.js';
 import { overallView } from '../../core/overall_view.js';
+import { sortBests } from '../../core/bests.js';
 import { consistencyYears, yearWindow, consistencyHero, consistencyTiles, yearGrid } from '../../core/consistency.js';
 
 const VIEW_KEY = 'liftbook-stats-view';
@@ -124,7 +125,11 @@ export function statsScreen(ctx) {
     }
   });
   const root = h('div', { dataset: { wide: '1' } }, pageHead('Stats', 'How your lifts are moving.'),
-    h('div', { class: 'search', style: 'margin-bottom:18px' }, icon('search'), search, list), body);
+    h('div', { class: 'search', style: 'margin-bottom:12px' }, icon('search'), search, list),
+    h('a', { class: 'group rowi bests-link', href: '#/stats/bests' }, h('span', { class: 'ico' }, icon('stats')),
+      h('span', { class: 'main' }, h('span', { class: 'title' }, 'Personal bests'), h('span', { class: 'desc' }, 'Every exercise’s best and heaviest set')),
+      h('span', { class: 'chev-i' }, icon('chev'))),
+    body);
 
   const options = () => {
     const list = lb.statsOptions();
@@ -281,4 +286,55 @@ export function statsScreen(ctx) {
   }
   paint();
   return root;
+}
+
+const BEST_SORTS = [['recent', 'Latest'], ['best', 'Highest'], ['alpha', 'A to Z']];
+const BEST_SORT_KEY = 'liftbook-bests-sort';
+
+/** Personal bests: every exercise's best estimated max (or timed score) and heaviest set. */
+export function bestsScreen(ctx) {
+  const { lb } = ctx;
+  const all = lb.bests();
+  let sort = BEST_SORTS.some(([v]) => v === remembered(BEST_SORT_KEY)) ? remembered(BEST_SORT_KEY) : 'recent';
+  const search = h('input', { type: 'search', placeholder: 'Search an exercise', 'aria-label': 'Search an exercise', autocomplete: 'off', autocapitalize: 'off' });
+  const body = h('div', {});
+  const day = (d) => formatDay(d, { weekday: false, year: String(d).slice(0, 4) !== deviceDay().slice(0, 4) });
+
+  const paint = () => {
+    const q = search.value.trim().toLowerCase();
+    const rows = sortBests(q ? all.filter((r) => r.label.toLowerCase().includes(q)) : all, sort);
+    body.replaceChildren(
+      h('div', { class: 'card-head', style: 'margin:0 2px 10px' },
+        h('span', { class: 'foot' }, `${rows.length} exercise${rows.length === 1 ? '' : 's'}`),
+        tabs(BEST_SORTS, sort, (v) => {
+          sort = v;
+          remember(BEST_SORT_KEY, v);
+          paint();
+        })),
+      rows.length
+        ? h('div', { class: 'group' }, rows.map((r) => {
+          const under = r.belowPct >= 1 ? `now ${fmtNum(r.belowPct, r.belowPct < 10 ? 1 : 0)}% under` : r.sessions > 1 ? 'at your best now' : 'first session';
+          return h('a', { class: 'rowi best-row', href: `#/stats?exercise=${encodeURIComponent(r.value)}` },
+            h('span', { class: 'main' },
+              h('span', { class: 'title' }, r.label, r.fresh ? h('span', { class: 'pill best' }, 'New') : null),
+              h('span', { class: 'desc' }, r.top ? `Top set ${r.top} · ${day(r.topDay)}` : `${r.sessions} session${r.sessions === 1 ? '' : 's'}`),
+              h('span', { class: 'desc subtle' }, under)),
+            h('span', { class: 'value' }, h('b', {}, fmtNum(r.best)), h('small', {}, day(r.bestDay))),
+            h('span', { class: 'chev-i' }, icon('chev')));
+        }))
+        : h('div', { class: 'empty' }, icon('stats'), all.length ? 'No exercise matches that.' : 'Log a workout to see your bests here.'));
+  };
+  search.addEventListener('input', paint);
+
+  const fresh = all.filter((r) => r.fresh);
+  const latest = sortBests(all.filter((r) => r.sessions > 1), 'recent')[0] || null;
+  paint();
+  return h('div', {}, pageHead('Personal bests', 'The best each exercise has reached.', { back: '#/stats' }),
+    all.length ? h('div', { class: 'grid-3', style: 'margin-bottom:16px' },
+      tile('Exercises', String(all.length)),
+      tile('New bests', String(fresh.length), 'last 30 days', 'gold'),
+      latest ? tile('Latest best', day(latest.bestDay), latest.label) : tile('Latest best', '–', '')) : null,
+    all.length ? h('div', { class: 'search', style: 'margin-bottom:14px' }, icon('search'), search) : null,
+    body,
+    all.length ? h('p', { class: 'foot', style: 'margin:12px 2px 0' }, 'The number on the right is the best estimated max (a score for timed holds), and the day it was first reached.') : null);
 }

@@ -28,6 +28,7 @@ import {
 } from '../core/renames.js';
 import { parseDate, deviceDay, addDays } from '../core/dates.js';
 import { weekStrip } from '../core/week.js';
+import { personalBests } from '../core/bests.js';
 import { timeKey } from './tables.js';
 
 export const FEEDBACK_KINDS = ['like', 'dislike', 'improve', 'idea'];
@@ -567,6 +568,11 @@ export class Liftbook {
 
   chart(exercise) {
     return getChartData(exercise, { history: this.history(), settings: this.exerciseSettings(), ownRepRanges: this.text('rep_ranges'), ...LOCAL_TIMES });
+  }
+
+  /** Every exercise's best estimated max and heaviest set (core/bests.js). */
+  bests() {
+    return personalBests(this.statsOptions().map((o) => ({ value: o.value, label: o.label, chart: this.chart(o.value) })), deviceDay());
   }
 
   overall(mode = 'index') {

@@ -11,7 +11,7 @@ import { authScreens, welcomeScreen, resetScreen } from './screens/auth.js';
 import { homeScreen, historyScreen, workoutScreen, editScreen } from './screens/home.js';
 import { logScreen, DRAFT_KEY } from './screens/log.js';
 import { retrieveScreen, retrieveDayScreen, retrieveCustomScreen } from './screens/retrieve.js';
-import { statsScreen } from './screens/stats.js';
+import { statsScreen, bestsScreen } from './screens/stats.js';
 import { settingsScreen } from './screens/settings.js';
 import { coachScreen } from './screens/coach.js';
 import { SHARE_PATH, sharedScreen } from './share.js';
@@ -40,6 +40,7 @@ const ROUTES = [
   [/^retrieve\/custom$/, 'retrieve', retrieveCustomScreen],
   [/^retrieve\/day\/([^/]+)\/(\d+)$/, 'retrieve', retrieveDayScreen],
   [/^stats$/, 'stats', statsScreen],
+  [/^stats\/bests$/, 'stats', bestsScreen],
   [/^coach$/, 'coach', coachScreen],
   [/^settings(?:\/([a-z-]+))?$/, 'settings', settingsScreen],
   [/^welcome$/, 'settings', welcomeScreen],

@@ -1117,3 +1117,10 @@ label.rowi { cursor: pointer; }
 .log-bar .editor-bar { position: static; border-top: 0; }
 @media (min-width: 760px) { .log-bar { bottom: 16px; } }
 .log-flow > .section:first-of-type, .log-flow > [role=alert] { margin-top: 0; }
+
+/* Personal bests */
+a.group.rowi.bests-link { margin-bottom: 18px; }
+.best-row .title .pill { margin-left: 8px; vertical-align: 1px; padding: 1px 8px; font-size: 0.66rem; }
+.best-row .value b { display: block; font-size: 1.05rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+.best-row .value small { display: block; font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+.rowi .desc.subtle { color: var(--subtle); font-size: 0.76rem; }
