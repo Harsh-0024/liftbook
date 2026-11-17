@@ -1164,3 +1164,10 @@ button.rowi.more-sessions .title { color: var(--gold-text); font-size: 0.86rem; 
 
 /* Log: a date after today (likely a typo in the year). */
 .log-future { color: var(--gold-text); margin-bottom: 14px; }
+
+/* With Reduce Motion on, the two slide-ins (rise, ex-open) become plain fades wherever they're used:
+   the toast, dialogs, pick lists and the rest, without listing each one. */
+@media (prefers-reduced-motion: reduce) {
+  @keyframes rise { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes ex-open { from { opacity: 0; } to { opacity: 1; } }
+}

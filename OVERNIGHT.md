@@ -111,6 +111,12 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     "text field"). It now reads "Workout title", as on Retrieve days. Muhurta's pages had none.
     Checked on desktop; nothing changes on screen.
 
+18. **Reduce Motion: no slide-ins.** With the phone's Reduce Motion on, screens already stopped
+    rising into place, but the toast, the two dialogs, the pick lists and an opened workout's text
+    still slid in. The two slide-ins now become plain fades whenever Reduce Motion is on, wherever
+    they're used. (Muhurta's leftovers only fade or glow, which Reduce Motion allows.) Checked
+    that the browser reads the new rules; the movement itself can't be seen in a screenshot.
+
 ## Next when resumed
 
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already
