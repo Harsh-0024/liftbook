@@ -182,6 +182,10 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     background (3:1 when large) in both light and dark. Only the words on gold gradient buttons
     couldn't be measured; they're dark on gold. The same sweep found real gaps in Muhurta (its
     items 33 and 34).
+29. **The red Delete button in dark mode is readable.** Measured the confirm dialog and the toast
+    too (they're only on screen when open): all fine except the filled red button (Delete a
+    workout, and others that ask first) in dark mode, white on a light red at 2.8:1. Dark now
+    fills it with a deeper red (#dc2626, 4.8:1); light keeps its red (6.5:1).
 
 ## Next when resumed
 

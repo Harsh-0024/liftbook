@@ -32,6 +32,7 @@
   --bad: #f87171;
   --bad-soft: rgba(248, 113, 113, 0.1);
   --bad-line: rgba(248, 113, 113, 0.3);
+  --bad-solid: #dc2626; /* a filled red button: white on --bad (#f87171) read at 2.8:1 */
   --warn: #fbbf24;
   --new: #60a5fa;
   --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -77,6 +78,7 @@
     --bad: #b91c1c;
     --bad-soft: rgba(220, 38, 38, 0.07);
     --bad-line: rgba(220, 38, 38, 0.26);
+    --bad-solid: #b91c1c;
     --warn: #92400e;
     --new: #1d4ed8;
     --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
@@ -112,6 +114,7 @@
   --bad: #b91c1c;
   --bad-soft: rgba(220, 38, 38, 0.07);
   --bad-line: rgba(220, 38, 38, 0.26);
+  --bad-solid: #b91c1c;
   --warn: #92400e;
   --new: #1d4ed8;
   --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
@@ -1061,8 +1064,8 @@ label.rowi { cursor: pointer; }
 .ask-dialog h2 { margin: 0 0 8px; font: 600 1.3rem/1.25 var(--serif); }
 .ask-dialog p { margin: 0 0 18px; color: var(--text-2); font-size: 0.94rem; line-height: 1.5; }
 .ask-actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
-.btn.danger.solid { background: var(--bad); border-color: var(--bad); color: #fff; }
-.btn.danger.solid:hover { background: var(--bad); color: #fff; filter: brightness(1.08); }
+.btn.danger.solid { background: var(--bad-solid); border-color: var(--bad-solid); color: #fff; }
+.btn.danger.solid:hover { background: var(--bad-solid); color: #fff; filter: brightness(1.08); }
 @media (prefers-reduced-motion: reduce) { .ask-dialog[open], .keys-dialog[open] { animation: none; } }
 
 /* ---------- small polish: sync rows ---------- */
