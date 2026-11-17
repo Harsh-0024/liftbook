@@ -236,6 +236,12 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
 39. **Checked: no errors in the console (no change needed).** Opened 24 screens, including a
     workout, its edit page, a plan session, a share link that doesn't exist and an unknown page,
     and watched for script errors, failed promises and console errors: none.
+40. **App icons are 36 KB smaller, same pixels.** Measured what the app keeps on the phone for
+    offline use: 66 files, 1.16 MB, the largest being the app icons. They had an unused
+    see-through layer and light compression; saved again without it they are pixel-for-pixel
+    identical (checked) and 15% smaller (icon-512 115 KB to 97 KB, maskable 83 KB to 70 KB, the
+    two small ones too). `liftbook/app_icons.py` now saves them that way, so making new icons
+    keeps them small; its tests pass.
 
 ## Next when resumed
 
