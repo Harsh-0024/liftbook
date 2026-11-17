@@ -204,6 +204,12 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     phone keyboard, the top after a paste): browsers don't apply the setting to those. A small
     helper (`app/motion.js`) now makes each one jump when it's on. Tested both ways; every screen
     still loads.
+34. **Section labels are headings for screen readers.** Every screen had a good title and one
+    main heading, but the section labels under it ("Up next", "Last 7 days", "Plan", each month in
+    History, the Stats sections) were plain text, so a screen reader couldn't jump between them.
+    The `h()` helper in `app/ui.js` now marks each label as a level-2 heading; when a label also
+    holds a link or button (Recent's "See all", Plan's "Format"), only its words become the
+    heading. Checked on Home, Log, History, Stats, Settings, Plan and Coach.
 
 ## Next when resumed
 

@@ -15,7 +15,31 @@ export function h(tag, attrs = {}, ...children) {
     else el.setAttribute(k, v === true ? '' : String(v));
   }
   append(el, children);
+  if (tag === 'div' && el.classList.contains('label')) asHeading(el);
   return el;
+}
+
+// A section label ("Up next", "Last 7 days", a month in History) is a heading to a screen
+// reader, so it can jump between sections. A label that also holds a button or link keeps
+// those out: only its leading words become the heading.
+function asHeading(el) {
+  if (el.hasAttribute('role')) return;
+  if (!el.querySelector('a, button, details, summary, input, select, textarea')) {
+    el.setAttribute('role', 'heading');
+    el.setAttribute('aria-level', '2');
+    return;
+  }
+  const words = [];
+  for (const node of el.childNodes) {
+    if (node.nodeType === 3 || (node.nodeType === 1 && !node.matches('a, button, details, summary, input, select, textarea') && !node.querySelector('a, button, details, summary, input, select, textarea'))) words.push(node);
+    else break;
+  }
+  if (!words.some((n) => n.textContent.trim())) return;
+  const head = document.createElement('span');
+  head.setAttribute('role', 'heading');
+  head.setAttribute('aria-level', '2');
+  el.insertBefore(head, words[0]);
+  head.append(...words);
 }
 
 function append(el, children) {
