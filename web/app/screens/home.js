@@ -432,6 +432,18 @@ export function workoutScreen(ctx, day) {
     copyText(text);
   };
 
+  // The workout before and the one after, to walk through them without going back to the list.
+  const all = lb.workouts();
+  const at = all.findIndex((x) => x.day === day);
+  const step = (x, older) => {
+    if (!x) return h('span', {});
+    const name = h('b', { class: 'ellipsis' }, splitSessionTitle(x.title).title);
+    const when = h('small', {}, formatDay(x.day, { weekday: false, year: x.day.slice(0, 4) !== day.slice(0, 4) }));
+    return h('a', { class: `wo-step${older ? '' : ' newer'}`, href: `#/workout/${x.day}`, 'aria-label': `${older ? 'Older' : 'Newer'} workout: ${x.title}, ${formatDay(x.day)}` },
+      older ? icon('back') : null, h('span', {}, name, when), older ? null : h('span', { class: 'flip' }, icon('back')));
+  };
+  const steps = at >= 0 && all.length > 1 ? h('nav', { class: 'wo-steps', 'aria-label': 'Other workouts' }, step(all[at + 1], true), step(all[at - 1], false)) : null;
+
   const link = shareLinkBox(ctx, day, w.title);
   const bests = cmp.filter((c) => c.medal).length;
   const nums = [[bests === 1 ? 'New best' : 'New bests', bests, 'gold'], ['Improving', dir('up'), 'good'], ['Dipping', dir('down'), 'bad'], ['Steady', dir('steady'), '']];
@@ -461,7 +473,8 @@ export function workoutScreen(ctx, day) {
       h('button', { class: 'btn', type: 'button', onclick: () => copyText(lb.workoutText(w)) }, icon('copy'), 'Copy as text'),
       link.button,
       del),
-    link.box);
+    link.box,
+    steps);
 }
 
 export function editScreen(ctx, day) {
