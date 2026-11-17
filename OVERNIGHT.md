@@ -255,6 +255,11 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     Help make it better, with a small keyboard icon) that opens the same list, and says "Or press
     ? on any page". Shown only with a mouse and keyboard, not on phones. Tested: it opens the
     list, and focus returns to the row when it closes.
+43. **"Copied" is readable.** The earlier contrast check couldn't measure text on a gradient, so
+    the gradient buttons were checked by hand: the gold ones already use dark text (about 6-9:1),
+    but the green "Copied" that the Copy button shows for two seconds on a plan had white words
+    on bright green, 2.3-3.3:1. They are now near-black green, 5.5-8:1 (`styles.css`). Checked in
+    the browser after a real tap.
 
 ## Next when resumed
 
