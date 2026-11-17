@@ -458,6 +458,17 @@ export function workoutScreen(ctx, day) {
   };
   const steps = at >= 0 && all.length > 1 ? h('nav', { class: 'wo-steps', 'aria-label': 'Other workouts' }, step(all[at + 1], true), step(all[at - 1], false)) : null;
 
+  // Repeat: the same exercises and set counts on the Custom page, with today's targets from
+  // your latest numbers, ready to adjust, copy or log.
+  const repeatPicks = w.logs
+    .map((l) => [String(l.exercise || '').trim(), (l.sets?.reps || []).length])
+    .filter(([name, n], i, all) => name && n > 0 && all.findIndex(([m]) => m.toLowerCase() === name.toLowerCase()) === i);
+  const repeat = () => {
+    const parts = splitSessionTitle(w.title);
+    ctx.customPrefill = { picks: repeatPicks, number: parts.session, kicker: `Again, as on ${formatDay(day, { weekday: false })}`, title: parts.title };
+    ctx.go('retrieve/custom');
+  };
+
   const link = shareLinkBox(ctx, day, w.title);
   const bests = cmp.filter((c) => c.medal).length;
   const nums = [[bests === 1 ? 'New best' : 'New bests', bests, 'gold'], ['Improving', dir('up'), 'good'], ['Dipping', dir('down'), 'bad'], ['Steady', dir('steady'), '']];
@@ -486,6 +497,7 @@ export function workoutScreen(ctx, day) {
       cmp.map((c) => exerciseRow(ctx, c, day))),
     h('div', { class: 'row', style: 'margin-top:6px' },
       h('a', { class: 'btn', href: `#/workout/${day}/edit` }, icon('edit'), 'Edit'),
+      repeatPicks.length ? h('button', { class: 'btn', type: 'button', onclick: repeat, title: 'Do these exercises again, with targets from your latest numbers' }, icon('log'), 'Repeat') : null,
       h('button', { class: 'btn', type: 'button', onclick: () => copyText(lb.workoutText(w)) }, icon('copy'), 'Copy as text'),
       link.button,
       del),
