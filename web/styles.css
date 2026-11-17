@@ -1173,3 +1173,9 @@ button.rowi.more-sessions .title { color: var(--gold-text); font-size: 0.86rem; 
   @keyframes rise { from { opacity: 0; } to { opacity: 1; } }
   @keyframes ex-open { from { opacity: 0; } to { opacity: 1; } }
 }
+
+/* touch screens: the small chips and the Log check line get a finger-sized height */
+@media (pointer: coarse) {
+  .tabs button { min-height: 40px; }
+  .meta-btn { min-height: 40px; display: inline-flex; align-items: center; }
+}

@@ -123,6 +123,13 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     control on ten main screens and compares its look found nothing else. Checked with real
     Tab presses on the computer.
 
+20. **Easier to tap on a phone: Stats' chips and the Log check line.** Measuring every button
+    and link on the main screens found two that were small for a finger: the chips on Stats
+    (Strength / Rate / Consistency, 1M to All, Estimated max / Top weight / Volume, and the
+    sorting on Personal bests) were 30 points tall, and the "Nothing to check yet" line under the
+    Log box, which opens the check, only 16. On touch screens both are now 40 points tall; on a
+    computer nothing changes. Checked on the iPhone simulator.
+
 ## Next when resumed
 
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already
