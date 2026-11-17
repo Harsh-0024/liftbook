@@ -83,6 +83,25 @@ function tabs(options, value, onPick) {
     h('button', { type: 'button', class: v === value ? 'on' : '', role: 'tab', 'aria-selected': String(v === value), onclick: () => onPick(v) }, label)));
 }
 
+/** Bodyweight over the chosen range, once two different weights have been logged. */
+function bodyweightCard(lb, from, short) {
+  const t = lb.bodyweightTrend();
+  if (!t) return null;
+  let [labels, vals] = clip(t.labels, t.values, from);
+  if (vals.length < 2) [labels, vals] = [t.labels, t.values]; // nothing weighed in the range: show it all
+  const delta = Math.round((vals[vals.length - 1] - vals[0]) * 10) / 10;
+  const signed = (v) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${fmtNum(Math.abs(v))} kg`;
+  return h('div', { class: 'card' },
+    h('div', { class: 'card-head', style: 'margin-bottom:12px' }, h('h2', {}, 'Bodyweight')),
+    lineChart(labels.map(short), vals, { unit: ' kg', tag: `${fmtNum(t.current)} kg`, height: 200 }),
+    h('div', { class: 'grid-3', style: 'margin-top:14px' },
+      tile('Now', `${fmtNum(t.current)} kg`, `since ${formatDay(t.lastChanged, { weekday: false, year: false })}`),
+      tile('Change', signed(delta), `from ${short(labels[0])}`),
+      tile('Range', `${fmtNum(t.min)}–${fmtNum(t.max)}`, 'lowest to highest')),
+    h('p', { class: 'foot', style: 'margin:12px 2px 0' }, 'From the bodyweight saved with each workout. Change it in ',
+      h('a', { href: '#/settings/profile' }, 'Settings'), ' or type it in a workout.'));
+}
+
 export function statsScreen(ctx) {
   const { lb } = ctx;
   const prefs = lb.settings();
@@ -282,7 +301,8 @@ export function statsScreen(ctx) {
       h('div', { class: 'card', id: 'exercise-card', style: 'scroll-margin-top:90px' },
         h('div', { class: 'card-head', style: 'margin-bottom:12px' }, h('h2', {}, 'Exercise'), sortSel),
         opts.length ? h('div', { class: 'field' }, select) : null,
-        exerciseCard)].filter(Boolean)); // replaceChildren would print a null as the word "null"
+        exerciseCard),
+      bodyweightCard(lb, from, short)].filter(Boolean)); // replaceChildren would print a null as the word "null"
   }
   paint();
   return root;

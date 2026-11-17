@@ -29,6 +29,7 @@ import {
 import { parseDate, deviceDay, addDays } from '../core/dates.js';
 import { weekStrip } from '../core/week.js';
 import { personalBests } from '../core/bests.js';
+import { bodyweightTrend } from '../core/weight_trend.js';
 import { timeKey } from './tables.js';
 
 export const FEEDBACK_KINDS = ['like', 'dislike', 'improve', 'idea'];
@@ -573,6 +574,11 @@ export class Liftbook {
   /** Every exercise's best estimated max and heaviest set (core/bests.js). */
   bests() {
     return personalBests(this.statsOptions().map((o) => ({ value: o.value, label: o.label, chart: this.chart(o.value) })), deviceDay());
+  }
+
+  /** Bodyweight over time from the workouts' own records, or null when there is no trend yet. */
+  bodyweightTrend() {
+    return bodyweightTrend(this.history());
   }
 
   overall(mode = 'index') {
