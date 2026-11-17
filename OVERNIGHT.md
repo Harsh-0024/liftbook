@@ -196,6 +196,8 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     iPhone: a tap just below "Format" opens and closes it. The link inside the Stats sentence is
     left as is (links in running text are exempt), and the Log check line already had its 40px
     (item 20).
+32. **Checked: every screen fits 320px wide (no change needed).** A small phone, or a computer
+    zoomed to 400%: none of the 13 screens scrolls sideways.
 
 ## Next when resumed
 
