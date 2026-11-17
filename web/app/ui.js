@@ -19,6 +19,15 @@ export function h(tag, attrs = {}, ...children) {
   return el;
 }
 
+/** Ties a hint under a field to the field, so a screen reader reads it with the field. */
+export function describe(input, note) {
+  if (!input?.id || !note) return note;
+  note.id ||= `${input.id}-hint`;
+  const ids = (input.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+  if (!ids.includes(note.id)) input.setAttribute('aria-describedby', [...ids, note.id].join(' '));
+  return note;
+}
+
 // A section label ("Up next", "Last 7 days", a month in History) is a heading to a screen
 // reader, so it can jump between sections. A label that also holds a button or link keeps
 // those out: only its leading words become the heading.

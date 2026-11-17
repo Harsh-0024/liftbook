@@ -1,6 +1,6 @@
 // Signing in, creating an account, resetting a password, and choosing a username.
 
-import { h, icon, toast, busy } from '../ui.js';
+import { describe, h, icon, toast, busy } from '../ui.js';
 import { linkBackUrl } from '../native.js';
 
 const USERNAME_RE = /^[A-Za-z0-9_.-]{3,50}$/;
@@ -24,7 +24,7 @@ function field(label, input, hint, aside = null) {
   return h('div', { class: 'field' },
     aside ? h('div', { class: 'label-row' }, h('label', { for: input.id }, label), aside) : h('label', { for: input.id }, label),
     control, input.type === 'email' ? domains(input) : null,
-    hint ? (typeof hint === 'string' ? h('div', { class: 'hint' }, hint) : hint) : null);
+    hint ? describe(input, typeof hint === 'string' ? h('div', { class: 'hint' }, hint) : hint) : null);
 }
 
 /**
@@ -223,7 +223,7 @@ export function welcomeScreen(ctx) {
     queueMicrotask(() => ctx.go(''));
     return h('p', {});
   }
-  const name = h('input', { id: 'full_name', type: 'text', value: meta.full_name || '', maxlength: 100 });
+  const name = h('input', { id: 'full_name', type: 'text', autocomplete: 'name', value: meta.full_name || '', maxlength: 100 });
   const username = h('input', { id: 'username', type: 'text', value: meta.username || '', autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false', maxlength: 50 });
   const err = h('p', { class: 'error', role: 'alert' });
   const btn = h('button', { class: 'btn primary block', type: 'submit' }, 'Start logging');

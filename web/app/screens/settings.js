@@ -1,7 +1,7 @@
 // Settings: profile, plan and rep ranges, exercises (timed, bodyweight, renames), feedback,
 // sync and the account.
 
-import { h, icon, rowItem, pageHead, toast, busy, ago, formatDay, fmtNum, copyText, ask, deviceDraft, keptNote } from '../ui.js';
+import { describe, h, icon, rowItem, pageHead, toast, busy, ago, formatDay, fmtNum, copyText, ask, deviceDraft, keptNote } from '../ui.js';
 import { avatar } from './home.js';
 import { Online } from '../online.js';
 import { FEEDBACK_KINDS } from '../data.js';
@@ -138,7 +138,8 @@ function index(ctx) {
 }
 
 function field(label, input, hint) {
-  return h('div', { class: 'field' }, h('label', { for: input.id }, label), input, hint ? h('div', { class: 'hint' }, hint) : null);
+  const note = hint ? describe(input, h('div', { class: 'hint' }, hint)) : null;
+  return h('div', { class: 'field' }, h('label', { for: input.id }, label), input, note);
 }
 
 /* ---------------- profile ---------------- */
@@ -146,7 +147,7 @@ function field(label, input, hint) {
 function profile(ctx) {
   const { lb } = ctx;
   const p = lb.profile() || {};
-  const name = h('input', { id: 'full_name', type: 'text', value: p.full_name || '', maxlength: 100 });
+  const name = h('input', { id: 'full_name', type: 'text', autocomplete: 'name', value: p.full_name || '', maxlength: 100 });
   const username = h('input', { id: 'username', type: 'text', value: p.username || '', maxlength: 50, autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false' });
   const bw = h('input', { id: 'bodyweight', type: 'number', step: '0.1', min: '1', max: '500', inputmode: 'decimal', value: p.bodyweight ?? '' });
   const avatar = h('div', { class: 'avatar' }, (p.full_name || p.username || '?').slice(0, 1).toUpperCase());

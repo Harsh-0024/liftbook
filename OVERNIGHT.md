@@ -210,6 +210,13 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     The `h()` helper in `app/ui.js` now marks each label as a level-2 heading; when a label also
     holds a link or button (Recent's "See all", Plan's "Format"), only its words become the
     heading. Checked on Home, Log, History, Stats, Settings, Plan and Coach.
+35. **Field hints are read with their fields.** Checked every text box, number, search and list
+    on 10 screens for the right phone keyboard and autofill. Most were already right (decimal pad
+    for bodyweight, password and email hints on sign-in). Two fixes: the small hint under a field
+    (bodyweight's "Used for bodyweight exercises", the sign-up hints) is now tied to that field, so
+    a screen reader reads it when the field gets focus (`describe()` in `app/ui.js`, used by both
+    `field()` helpers); and the name box on Profile and on the first-run screen now offers your
+    name from autofill, as the sign-up page already did.
 
 ## Next when resumed
 
