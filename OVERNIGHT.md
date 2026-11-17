@@ -135,6 +135,11 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     size won, so tapping into the plan zoomed in. It is now 16px on phones too (other boxes were
     already fine). Checked on the iPhone simulator.
 
+22. **Usernames and the sign-in email aren't autocorrected on a phone.** The username boxes
+    (sign-up, finishing sign-up, Profile) and the sign-in email box skipped capitals but still let
+    the phone's autocorrect change what you typed. It's off on them now. Every other box
+    already brought up the right keyboard.
+
 ## Next when resumed
 
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already

@@ -147,7 +147,7 @@ function profile(ctx) {
   const { lb } = ctx;
   const p = lb.profile() || {};
   const name = h('input', { id: 'full_name', type: 'text', value: p.full_name || '', maxlength: 100 });
-  const username = h('input', { id: 'username', type: 'text', value: p.username || '', maxlength: 50, autocapitalize: 'off' });
+  const username = h('input', { id: 'username', type: 'text', value: p.username || '', maxlength: 50, autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false' });
   const bw = h('input', { id: 'bodyweight', type: 'number', step: '0.1', min: '1', max: '500', inputmode: 'decimal', value: p.bodyweight ?? '' });
   const avatar = h('div', { class: 'avatar' }, (p.full_name || p.username || '?').slice(0, 1).toUpperCase());
   lb.avatarUrl().then((url) => {

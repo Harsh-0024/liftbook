@@ -98,7 +98,7 @@ export function authScreens({ client, onSignedIn, go }, which) {
 }
 
 function signIn(client, onSignedIn) {
-  const email = h('input', { id: 'email', type: 'text', inputmode: 'email', autocomplete: 'username', required: true, autocapitalize: 'off', spellcheck: 'false' });
+  const email = h('input', { id: 'email', type: 'text', inputmode: 'email', autocomplete: 'username', required: true, autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false' });
   const password = h('input', { id: 'password', type: 'password', autocomplete: 'current-password', required: true });
   const err = h('p', { class: 'error', role: 'alert' });
   const btn = h('button', { class: 'btn primary block', type: 'submit' }, 'Sign in');
@@ -128,7 +128,7 @@ function signIn(client, onSignedIn) {
 
 function signUp(client, onSignedIn) {
   const name = h('input', { id: 'full_name', type: 'text', autocomplete: 'name', maxlength: 100 });
-  const username = h('input', { id: 'username', type: 'text', autocomplete: 'username', autocapitalize: 'off', maxlength: 50 });
+  const username = h('input', { id: 'username', type: 'text', autocomplete: 'username', autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false', maxlength: 50 });
   const email = h('input', { id: 'email', type: 'email', autocomplete: 'email', autocapitalize: 'off' });
   const password = h('input', { id: 'password', type: 'password', autocomplete: 'new-password' });
   const err = h('p', { class: 'error', role: 'alert' });
@@ -224,7 +224,7 @@ export function welcomeScreen(ctx) {
     return h('p', {});
   }
   const name = h('input', { id: 'full_name', type: 'text', value: meta.full_name || '', maxlength: 100 });
-  const username = h('input', { id: 'username', type: 'text', value: meta.username || '', autocapitalize: 'off', maxlength: 50 });
+  const username = h('input', { id: 'username', type: 'text', value: meta.username || '', autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false', maxlength: 50 });
   const err = h('p', { class: 'error', role: 'alert' });
   const btn = h('button', { class: 'btn primary block', type: 'submit' }, 'Start logging');
   const form = h('form', { novalidate: true }, field('Your name', name), field('Username', username), err, btn);
