@@ -1184,3 +1184,13 @@ button.rowi.more-sessions .title { color: var(--gold-text); font-size: 0.86rem; 
   .tabs button { min-height: 40px; }
   .meta-btn { min-height: 40px; display: inline-flex; align-items: center; }
 }
+
+/* Tap areas on touch screens: "See all workouts" (23px tall), "Full progress →" (22), the
+   Last/Best links over a workout's table (14) and Format on the plan page (20) were under the
+   24px minimum. An invisible area around each makes them easy to hit without moving anything. */
+@media (pointer: coarse) {
+  .see-all, .ex-foot a, .ex-table th a, .fmt > summary { position: relative; }
+  .see-all::after, .ex-foot a::after, .ex-table th a::after, .fmt > summary::after {
+    content: ""; position: absolute; inset: -10px -6px;
+  }
+}

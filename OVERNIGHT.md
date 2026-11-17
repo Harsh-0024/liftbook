@@ -189,6 +189,13 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
 30. **Checked: every control has a name for screen readers (no change needed).** On 13 screens
     (History in Select mode and the profile page included), every link, button and field has a
     name a screen reader can say, the icon-only buttons through their aria-labels.
+31. **Small links are easier to tap.** Measured every tap target at phone width against the
+    24px minimum. Under it: "See all workouts" (23px tall), "Full progress →" (22), the Last /
+    Best links over a workout's table (14) and Format on the plan page (20). On touch screens each
+    now has an invisible area around it, about 40px tall, without anything moving. Checked on the
+    iPhone: a tap just below "Format" opens and closes it. The link inside the Stats sentence is
+    left as is (links in running text are exempt), and the Log check line already had its 40px
+    (item 20).
 
 ## Next when resumed
 
