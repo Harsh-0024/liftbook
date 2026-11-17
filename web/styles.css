@@ -1197,3 +1197,14 @@ button.rowi.more-sessions .title { color: var(--gold-text); font-size: 0.86rem; 
     content: ""; position: absolute; inset: -10px -6px;
   }
 }
+
+/* Windows high-contrast (forced colours) drops shadows and custom colours, so the focus marks drawn
+   as a soft shadow or a gold edge vanished there. In that mode only, every keyboard focus gets a
+   ring in the system's own highlight colour; the normal look is untouched. */
+@media (forced-colors: active) {
+  :focus-visible:not(main):not(h1),
+  input:focus, select:focus, textarea:focus {
+    outline: 2px solid Highlight !important;
+    outline-offset: 2px;
+  }
+}

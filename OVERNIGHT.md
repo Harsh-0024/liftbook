@@ -277,6 +277,11 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
 46. **The Log check line is easier to click.** A sweep of every screen for click targets under
     24px found one: the line under the Log box ("Nothing to check yet", which opens the check) was a
     16px-tall button on a computer. It's now 24px, with the same look; on touch it was already 40px.
+47. **Focus shows in Windows high-contrast mode.** That mode removes shadows and custom colours, so
+    the focus marks drawn as a shadow or gold edge (text boxes, opened exercises, the Log check rows,
+    the week-strip days) showed nothing there. In that mode only, every keyboard focus now gets a
+    ring in the system's highlight colour; the normal look is untouched. Checked that the rule is
+    served and off in normal mode (the browser here can't turn that mode on).
 
 ## Next when resumed
 
