@@ -156,7 +156,7 @@ p { margin: 0 0 12px; }
 .mono { font-family: var(--mono); }
 .num { font-variant-numeric: tabular-nums; }
 [hidden] { display: none !important; }
-:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px; }
 svg.i { width: 1.1em; height: 1.1em; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; vertical-align: -0.15em; }
 
 /* ---------- frame: header, tabs, footer ---------- */
@@ -462,7 +462,7 @@ textarea { font: 15px/1.75 var(--mono); min-height: 220px; resize: vertical; }
 /* iPhone zooms the page into any box under 16px when it's tapped; at 16px it stays put. */
 @media (max-width: 759.98px) { textarea, textarea.editor.mono { font-size: 16px; } }
 input::placeholder, textarea::placeholder { color: var(--subtle); opacity: 0.8; }
-input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold-text); box-shadow: 0 0 0 3px var(--gold-soft); }
 .check { display: flex; align-items: flex-start; gap: 10px; font-weight: 500; color: var(--text); font-size: 0.92rem; }
 .check input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--gold); flex: none; }
 .error { color: var(--bad); font-size: 0.9rem; }
@@ -504,7 +504,7 @@ pre.out { white-space: pre-wrap; word-break: break-word; font: 14px/1.75 var(--m
 .rp .page-head > div { flex: 1; min-width: 0; }
 .rp-kicker { margin: 0 0 6px !important; font-size: 0.72rem !important; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--subtle) !important; }
 input.rp-title[type="text"] { display: block; width: 100%; margin: 0 0 8px; padding: 2px 0; border: 0; border-bottom: 1px dashed var(--line); border-radius: 0; background: transparent; color: var(--text); font: 600 clamp(1.9rem, 7vw, 2.4rem)/1.15 var(--serif); letter-spacing: -0.01em; transition: border-color var(--fast); }
-input.rp-title[type="text"]:focus { outline: none; box-shadow: none; border-bottom-color: var(--gold); }
+input.rp-title[type="text"]:focus { outline: none; box-shadow: none; border-bottom-color: var(--gold-text); }
 .rp-title::placeholder { color: var(--subtle); }
 .rp-row { display: flex; align-items: baseline; gap: 14px; padding: 16px 20px; }
 .rp-row + .rp-row { border-top: 1px solid var(--hair); }
@@ -603,7 +603,7 @@ a.avatar.big:hover { box-shadow: 0 0 0 9px var(--gold-soft); }
 a.wday:hover .dot, a.wday:focus-visible .dot { transform: scale(1.08); box-shadow: 0 0 0 4px var(--gold-soft); }
 a.wday:focus-visible { outline: none; }
 /* Keyboard focus: a clear gold ring (hover's soft one is the same as today's, so focus didn't show there). */
-a.wday:focus-visible .dot { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--gold); }
+a.wday:focus-visible .dot { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--gold-text); }
 .home .section + .section { margin-top: 26px; }
 @media (min-width: 760px) { .home { padding-top: 4vh; } }
 
@@ -652,7 +652,7 @@ a.wday:focus-visible .dot { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--gol
 details.ex-open { display: block; padding: 0; }
 details.ex-open > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 16px 18px; -webkit-tap-highlight-color: transparent; transition: background var(--fast); }
 details.ex-open > summary::-webkit-details-marker { display: none; }
-details.ex-open > summary:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--gold-glow); }
+details.ex-open > summary:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--gold-text); }
 @media (hover: hover) { details.ex-open > summary:hover { background: var(--hover); } details.ex-open > summary:hover .ex-chev { opacity: 1; } }
 details.ex-open[open] { background: var(--hover); }
 details.ex-open[open] .title { color: var(--gold-text); }
@@ -864,7 +864,7 @@ input.switch::after {
 }
 input.switch:checked { background: var(--gold) !important; }
 input.switch:checked::after { transform: translateX(18px); }
-input.switch:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+input.switch:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px; }
 label.rowi { cursor: pointer; }
 .editor.mono { font-size: 0.86rem; line-height: 1.6; }
 
@@ -1115,7 +1115,7 @@ label.rowi { cursor: pointer; }
 /* Log check rows: 1, 2, 3 on the left, "3 sets" or "New" on the right; a tap jumps to the line. */
 .rowi.check-row { cursor: pointer; align-items: flex-start; }
 .rowi.check-row:hover { background: var(--hover); }
-.rowi.check-row:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--line-gold); }
+.rowi.check-row:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--gold-text); }
 .rowi .num { flex: none; width: 22px; padding-top: 3px; font-size: 0.72rem; color: var(--subtle); font-variant-numeric: tabular-nums; }
 .rowi .tag { flex: none; padding-top: 3px; font-size: 0.74rem; font-weight: 600; color: var(--subtle); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .rowi .tag.is-new { color: var(--gold-text); }

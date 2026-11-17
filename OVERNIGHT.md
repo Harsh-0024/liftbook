@@ -268,6 +268,13 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     surface), taupe `#8f826b` on light (3.2:1 or more), one variable, `--field-line`. Typing in
     one still turns it gold. The big writing boxes on Log and Feedback keep their card. Looked
     at in both themes.
+45. **Keyboard focus shows in the light theme.** The ring that marks where Tab has landed used the
+    pale gold `#c9a961`, about 2:1 against the light page, and a focused text box turned that same
+    pale gold, so it looked lighter than a box you weren't in. Every focus mark (the ring, a focused
+    box's edge, the week-strip days, opened exercises, the Log check rows, switches) now uses the gold
+    the app already uses for gold text: deep gold `#8a6512` on light (4.8:1), and the same bright gold
+    as before on dark, so the dark theme looks unchanged. Looked at with Tab on Profile.
+
 ## Next when resumed
 
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already
