@@ -141,7 +141,10 @@ export function logScreen(ctx) {
       row.addEventListener('keydown', jump);
       return row;
     }));
-    problems.replaceChildren(c.errors.length ? h('ul', { class: 'errors' }, c.errors.map((e) => h('li', {}, e))) : '');
+    problems.replaceChildren(
+      c.future && c.day ? h('p', { class: 'wo-note log-future' }, icon('calendar'),
+        h('span', {}, `This is dated ${formatDay(c.day)}, after today. Check the year on the first line.`)) : '',
+      c.errors.length ? h('ul', { class: 'errors' }, c.errors.map((e) => h('li', {}, e))) : '');
     if (c.existing) checkHead.textContent += ` · adds to ${c.existing.title} if you choose`;
   };
   // The check reads the text trimmed, so its line 1 is the first line that isn't blank.

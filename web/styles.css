@@ -1161,3 +1161,6 @@ button.rowi.more-sessions .title { color: var(--gold-text); font-size: 0.86rem; 
 /* Log: start from the next session, shown while the box is empty. */
 .log-start { margin-bottom: 14px; }
 .log-start[hidden] { display: none; }
+
+/* Log: a date after today (likely a typo in the year). */
+.log-future { color: var(--gold-text); }

@@ -232,3 +232,13 @@ test('the check says which names are new, and suggests the one you meant', async
   assert.equal(other.notes[2].suggestion, 'Incline Dumbbell Press');
   assert.match(other.notes[1].note, /Also at no\. 1/);
 });
+
+test('a date after today is flagged, but still saves', async () => {
+  const lb = await app();
+  const now = new Date(2026, 10, 17, 9, 0);
+  assert.equal(lb.check('17/11/26 Push\n\nSquat\n100 x 5', { now }).future, false);
+  const ahead = lb.check('17/11/27 Push\n\nSquat\n100 x 5', { now });
+  assert.equal(ahead.future, true);
+  assert.equal(ahead.ok, true);
+  assert.equal(lb.check('18/11/26 Push\n\nSquat\n100 x 5', { now }).future, true);
+});

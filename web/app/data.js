@@ -331,6 +331,9 @@ export class Liftbook {
       }).join(' · ');
     }
     const day = dayOf(parsed.date);
+    // A day after today is almost always a typo in the date line ("17/11/27" for "17/11/26"):
+    // said beside the check, not a reason to stop the save.
+    const future = Boolean(day) && day > deviceDay(now);
     const existing = this.workout(day);
     const notes = nameNotes(exercises, this.knownNames(), {
       lines: clean.split('\n'),
@@ -342,7 +345,7 @@ export class Liftbook {
       // shown as an error in the summary and the rest is saved.
       ok: exercises.length > 0 && invalid.length < exercises.length && !parsed.invalid_date_text
         && !exercises.some((e) => e.missing_name),
-      errors, parsed, day,
+      errors, parsed, day, future,
       exercise_count: exercises.length - invalid.length,
       set_count: exercises.reduce((n, e) => n + (e.valid === false ? 0 : (e.reps || []).length), 0),
       existing: existing ? { day, title: existing.title } : null,

@@ -92,6 +92,12 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     date and targets from your latest numbers, ready to copy or log. Checked on desktop and the
     iPhone simulator.
 
+15. **Log: a date after today is pointed out.** A typo in the date line ("17/11/27" for
+    "17/11/26") used to file the workout a year ahead without a word, out of this week and
+    the streak. The check now says "This is dated Wed 17 Nov 2027, after today. Check the year
+    on the first line." It doesn't stop the save (Bulk import already refused future days).
+    Test added. Checked on desktop.
+
 ## Next when resumed
 
 ## Ideas not done yet
