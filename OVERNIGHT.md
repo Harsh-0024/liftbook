@@ -186,6 +186,9 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     too (they're only on screen when open): all fine except the filled red button (Delete a
     workout, and others that ask first) in dark mode, white on a light red at 2.8:1. Dark now
     fills it with a deeper red (#dc2626, 4.8:1); light keeps its red (6.5:1).
+30. **Checked: every control has a name for screen readers (no change needed).** On 13 screens
+    (History in Select mode and the profile page included), every link, button and field has a
+    name a screen reader can say, the icon-only buttons through their aria-labels.
 
 ## Next when resumed
 
