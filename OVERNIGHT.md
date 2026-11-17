@@ -140,6 +140,14 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     the phone's autocorrect change what you typed. It's off on them now. Every other box
     already brought up the right keyboard.
 
+23. **All workouts, for a new account.** With nothing logged, the page said "0 workouts logged."
+    and then "No workouts yet." beside a search icon, under a search box with nothing to search.
+    It now says "Nothing logged yet.", explains the list will fill in, and offers a "Log workout"
+    button (as Retrieve does for an empty plan); the search box appears with the first workout.
+    Found by signing in to a second, empty stand-in server and reading every screen: Home, Log,
+    Stats and Personal bests already read well with no data. Checked on desktop, empty and with
+    data.
+
 ## Next when resumed
 
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already

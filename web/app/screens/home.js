@@ -175,7 +175,10 @@ export function historyScreen(ctx) {
           });
           return row;
         })));
-    }).concat(more || []) : [h('div', { class: 'group empty' }, icon('search'), q ? `Nothing matches “${search.value.trim()}”.` : 'No workouts yet.')]));
+    }).concat(more || []) : [q ? h('div', { class: 'group empty' }, icon('search'), `Nothing matches “${search.value.trim()}”.`)
+      // A new account: what to do first, not a search icon over nothing (as Retrieve's empty plan).
+      : h('div', { class: 'group empty' }, icon('log'), h('p', {}, 'Your workouts will be listed here, newest first.'),
+        h('a', { class: 'btn primary', href: '#/log' }, 'Log workout'))]));
     paintBar();
   };
   toggle.addEventListener('click', () => {
@@ -220,8 +223,8 @@ export function historyScreen(ctx) {
   });
   paint();
   return h('div', {},
-    pageHead('All workouts', `${workouts.length} workout${workouts.length === 1 ? '' : 's'} logged.`, { back: fromSettings ? '#/settings' : '#/', aside: toggle }),
-    h('div', { class: 'search' }, icon('search'), search),
+    pageHead('All workouts', workouts.length ? `${workouts.length} workout${workouts.length === 1 ? '' : 's'} logged.` : 'Nothing logged yet.', { back: fromSettings ? '#/settings' : '#/', aside: toggle }),
+    workouts.length ? h('div', { class: 'search' }, icon('search'), search) : null,
     body, bar);
 }
 
