@@ -108,4 +108,9 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
 
 ## Next when resumed
 
+- Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already
+  built in this app: unlogged plan exercises in Settings > Exercises, the session name before the
+  exercises in History, and row numbers with "3 sets" on the Log check. Idea 8 (darker gold links in
+  light mode) is also in. Those lines can move to "Done".
+
 ## Ideas not done yet
