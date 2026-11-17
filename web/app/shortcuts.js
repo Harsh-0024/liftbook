@@ -1,6 +1,6 @@
 // Keyboard shortcuts on a computer, as the original app had them (templates/base.html):
 // H home, L log, R retrieve, S settings, G stats, K coach, A admin (admins), 1-9 a session on
-// Retrieve, / search, ? this list.
+// Retrieve, / search, ← → the workout before or after, ? this list.
 // Never while typing, with a modifier held, or from behind an open dialog.
 
 import { h } from './ui.js';
@@ -8,7 +8,8 @@ import { h } from './ui.js';
 const KEYS = [
   ['H', 'Go to home', ''], ['L', 'Log workout', 'log'], ['R', 'Retrieve plan', 'retrieve'],
   ['1-9', 'Pick a session (on Retrieve)'], ['S', 'Settings', 'settings'], ['G', 'View stats', 'stats'],
-  ['K', 'Ask the coach', 'coach'], ['/', 'Search (history or stats)'], ['?', 'Show these shortcuts'],
+  ['K', 'Ask the coach', 'coach'], ['/', 'Search (history or stats)'], ['← →', 'Older or newer workout (on a workout)'],
+  ['?', 'Show these shortcuts'],
 ];
 const ADMIN_KEYS = [['A', 'Admin', 'settings/admin']];
 
@@ -47,6 +48,12 @@ export function installShortcuts({ signedIn, isAdmin = () => false, go }) {
       if (!/^#\/retrieve\/?$/.test(location.hash)) return;
       const target = document.querySelectorAll('main a[href^="#/retrieve/day/"]')[Number(key) - 1];
       if (target) { e.preventDefault(); target.click(); }
+      return;
+    }
+    if (key === 'arrowleft' || key === 'arrowright') {
+      // On a workout: the one before or after it (the links at the bottom of the page).
+      const step = document.querySelector(`main .wo-steps a.wo-step${key === 'arrowright' ? '.newer' : ':not(.newer)'}`);
+      if (step) { e.preventDefault(); step.click(); }
       return;
     }
     if (key === '/') {
