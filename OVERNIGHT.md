@@ -282,6 +282,13 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     the week-strip days) showed nothing there. In that mode only, every keyboard focus now gets a
     ring in the system's highlight colour; the normal look is untouched. Checked that the rule is
     served and off in normal mode (the browser here can't turn that mode on).
+48. **Charts are marked on round numbers.** Every chart's side labels split the range into four
+    equal parts, so an exercise read 67, 77, 88, 98, 109 and bodyweight 77.9, 78.3… Lines now sit
+    on round steps (1, 2, 2.5 or 5 times a power of ten) with four or five lines: the exercise
+    chart reads 60, 80, 100, 120, bodyweight 77, 78, 79, 80 kg, and Overall strength −10%, Start,
+    +10%, +20% (so "Start" is now a gridline of its own). One change in `lineChart` (ui.js), so
+    every chart gets it. Checked on Stats, and over 20,000 random ranges (always 4–5 lines, always
+    covering the data).
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen

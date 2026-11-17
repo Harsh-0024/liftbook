@@ -248,12 +248,23 @@ export function lineChart(labels, values, { unit = '', base = null, tag = null, 
   const span = hi - lo;
   lo -= span * 0.1;
   hi += span * 0.1;
+  // Gridlines on round numbers (70, 80, 90… or 2.5, 5, 7.5…), not on whatever quarters of the
+  // range fall out (67, 77, 88…): about four steps of 1, 2, 2.5 or 5 times a power of ten.
+  const rough = (hi - lo) / 4;
+  const mag = 10 ** Math.floor(Math.log10(rough));
+  const tries = [1, 2, 2.5, 5, 10, 20, 25, 50].map((m) => m * mag).filter((st) => st >= rough);
+  // At most five lines: rounding both ends out can add one, so take the next round step then.
+  const step = tries.find((st) => Math.round((Math.ceil(hi / st) - Math.floor(lo / st))) <= 4) || tries[tries.length - 1];
+  lo = Math.floor(lo / step) * step;
+  hi = Math.ceil(hi / step) * step;
+  const steps = Math.round((hi - lo) / step);
   const n = Math.max(1, values.length - 1);
   const x = (i) => pad.l + (i / n) * (W - pad.l - pad.r);
   const y = (v) => pad.t + (1 - (Number(v) - lo) / (hi - lo)) * (H - pad.t - pad.b);
-  const fmt = format || ((v) => `${fmtNum(v, span < 10 ? 1 : 0)}${unit}`);
-  for (let k = 0; k <= 4; k++) {
-    const v = lo + ((hi - lo) * k) / 4;
+  const places = Number.isInteger(step) ? 0 : Number.isInteger(step * 10) ? 1 : 2;
+  const fmt = format || ((v) => `${fmtNum(v, places)}${unit}`);
+  for (let k = 0; k <= steps; k++) {
+    const v = Number((lo + step * k).toFixed(6)) + 0; // no 0.30000000000000004, no "-0"
     svg.append(s('line', { x1: pad.l, x2: W - pad.r, y1: y(v), y2: y(v), class: 'axis' }));
     const t = s('text', { x: pad.l - 8, y: y(v) + 4, 'text-anchor': 'end' });
     t.textContent = fmt(v);
