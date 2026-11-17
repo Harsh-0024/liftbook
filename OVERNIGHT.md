@@ -233,6 +233,9 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     text on 12 screens was cut off or spilled over anything, and no page grew sideways. Checked at
     computer width; the phone build couldn't be checked this way (the simulator's Safari can't
     take the test styles).
+39. **Checked: no errors in the console (no change needed).** Opened 24 screens, including a
+    workout, its edit page, a plan session, a share link that doesn't exist and an unknown page,
+    and watched for script errors, failed promises and console errors: none.
 
 ## Next when resumed
 
