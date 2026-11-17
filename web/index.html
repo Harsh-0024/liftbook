@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Liftbook</title>
   <meta name="description" content="Log workouts by typing them, see what to lift next, and track your progress.">
-  <meta name="theme-color" content="#000000">
+  <!-- Safari's bars take the top bar's colour: black on the dark theme, warm white on the light. -->
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbf9f6">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -22,6 +24,21 @@
       var t = localStorage.getItem('liftbook-theme');
       if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
     } catch (e) {}
+    // A theme picked in Settings wins over the phone's: both bar colours follow it.
+    (function () {
+      var root = document.documentElement;
+      var bars = document.querySelectorAll('meta[name="theme-color"]');
+      var colour = { dark: '#000000', light: '#fbf9f6' };
+      function paint() {
+        var t = root.dataset.theme;
+        bars.forEach(function (m) {
+          var own = /light/.test(m.media) ? 'light' : 'dark';
+          m.content = colour[t] || colour[own];
+        });
+      }
+      paint();
+      new MutationObserver(paint).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+    })();
   </script>
 </head>
 <body>

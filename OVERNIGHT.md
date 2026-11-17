@@ -242,6 +242,13 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     identical (checked) and 15% smaller (icon-512 115 KB to 97 KB, maskable 83 KB to 70 KB, the
     two small ones too). `liftbook/app_icons.py` now saves them that way, so making new icons
     keeps them small; its tests pass.
+41. **The browser's bars follow the light theme.** Checked the page basics (language set, pinch
+    zoom allowed, install manifest): all fine, except the bar colour given to browsers was always
+    black, so on the light theme Chrome on Android (and Safari on older iPhones) drew a black bar
+    over a white page. There are now two, black for dark and warm white (`#fbf9f6`, the top bar's
+    colour) for light, and a theme picked in Settings sets both (`index.html`). The phone app's
+    own status bar already followed the theme. Tested light, dark and automatic. Today's iPhone
+    Safari colours its bars from the page itself, so it looked right there before as well.
 
 ## Next when resumed
 
