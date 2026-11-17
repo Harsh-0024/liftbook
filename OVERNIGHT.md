@@ -103,7 +103,7 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     Log buttons passed "Day 'Session 99' not found in plan." on to Notes or the Log box. It now
     says "Session 99 isn't in your plan", with links to pick a day or change the plan.
     Found by opening every screen (and missing-workout, bad-date and unknown-page links): no other
-    errors. Checked on desktop.
+    errors. Checked on desktop and the iPhone simulator.
 
 ## Next when resumed
 
