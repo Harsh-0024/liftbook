@@ -292,7 +292,10 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen
-(desktop); sign-in on the iPhone in light mode shows the new outlines.
+(desktop); sign-in on the iPhone in light mode shows the new outlines; Coach (the key box keeps
+password managers and spellcheck off; a question with no key brings the key form up) and Retrieve
+(the next session stands out) look right on desktop; the training calendar already reads well in
+both themes (more = stronger gold, future days and today marked).
 
 ## Next when resumed
 
