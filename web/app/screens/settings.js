@@ -62,16 +62,28 @@ export function setTheme(value) {
   else document.documentElement.dataset.theme = value;
 }
 
+const THEMES = [['dark', 'Dark', 'moon'], ['light', 'Light', 'sun'], ['auto', 'Auto', 'monitor']];
+
 function themeSeg() {
   const seg = h('div', { class: 'seg', role: 'radiogroup', 'aria-label': 'Appearance' });
-  const paint = () => {
+  // One Tab stop (the chosen theme); ← → choose the next, as radio buttons do.
+  const paint = (focus = false) => {
     const now = themeChoice();
-    seg.replaceChildren(...[['dark', 'Dark', 'moon'], ['light', 'Light', 'sun'], ['auto', 'Auto', 'monitor']].map(([v, l, ic]) =>
-      h('button', { type: 'button', role: 'radio', 'aria-checked': String(now === v), class: now === v ? 'on' : '', onclick: () => {
+    seg.replaceChildren(...THEMES.map(([v, l, ic]) =>
+      h('button', { type: 'button', role: 'radio', 'aria-checked': String(now === v), tabindex: now === v ? '0' : '-1', class: now === v ? 'on' : '', dataset: { v }, onclick: () => {
         setTheme(v);
-        paint();
+        paint(true);
       } }, icon(ic), l)));
+    if (focus) seg.querySelector('[aria-checked="true"]')?.focus();
   };
+  seg.addEventListener('keydown', (e) => {
+    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+    if (!step) return;
+    e.preventDefault();
+    const at = THEMES.findIndex(([v]) => v === themeChoice());
+    setTheme(THEMES[(at + step + THEMES.length) % THEMES.length][0]);
+    paint(true);
+  });
   paint();
   return seg;
 }

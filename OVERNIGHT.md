@@ -347,6 +347,10 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     reader to expect the arrow keys to move between them and a panel to switch; neither is true
     (Tab moves between them and they redraw the page). They are now a named group of buttons, the
     chosen one "pressed". Looks the same. Checked on desktop: choosing 3M marks only 3M pressed.
+61. **Appearance answers the arrow keys.** Settings' Dark / Light / Auto is a set of radio buttons,
+    but each was its own Tab stop and ← → did nothing. It is now one Tab stop (the chosen theme),
+    the arrows move the choice, and the focus stays on it as the theme changes. Checked on desktop
+    with real key presses: → from Auto goes round to Dark, ← back to Auto (left on Auto).
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen
