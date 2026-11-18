@@ -297,6 +297,12 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     one height. The dates come from workout titles ("Session 2 - …"), the same way "Next" is
     worked out (`lastDoneBySession` in `web/core/sessions.js`, tested). Checked on desktop against
     the stand-in server. Tests: 111 pass.
+50. **Stats: weights say kg.** An exercise's tiles read "Current est. max 70" and "Best 105", and its
+    chart's end label "70", while bodyweight and "kg lifted" carried their unit. They now read
+    "70 kg", "105 kg" (estimates in whole kilos, which also keeps them inside a phone-width tile);
+    a timed hold like Plank keeps its unitless score and seconds. Bodyweight's Range tile says "kg,
+    low to high" underneath, since "78–79.5 kg" would not fit a phone-width tile. Checked on desktop
+    (bench, squat, pull-ups, plank).
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen

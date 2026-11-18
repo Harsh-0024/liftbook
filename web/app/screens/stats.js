@@ -143,7 +143,7 @@ function bodyweightCard(lb, from, short) {
     h('div', { class: 'grid-3', style: 'margin-top:14px' },
       tile('Now', `${fmtNum(t.current)} kg`, `since ${formatDay(t.lastChanged, { weekday: false, year: false })}`),
       tile('Change', signed(delta), `from ${short(labels[0])}`),
-      tile('Range', `${fmtNum(t.min)}–${fmtNum(t.max)}`, 'low to high')),
+      tile('Range', `${fmtNum(t.min)}–${fmtNum(t.max)}`, 'kg, low to high')),
     h('p', { class: 'foot', style: 'margin:12px 2px 0' }, 'From the bodyweight saved with each workout. Change it in ',
       h('a', { href: '#/settings/profile' }, 'Settings'), ' or type it in a workout.'));
 }
@@ -313,15 +313,20 @@ export function statsScreen(ctx) {
       const [labels, vals] = clip(c.labels, values || [], from);
       const st = c.stats || {};
       const unit = c.is_timed && metric !== 'volume' ? 's' : '';
+      // Weights read as weights, as bodyweight and "kg lifted" do elsewhere; a timed hold's score has no unit.
+      const tagUnit = unit || (c.is_timed ? '' : ' kg');
+      const kg = c.is_timed ? '' : ' kg';
+      // An estimate in whole kilos ("118 kg", not "117.6 kg"), which also keeps it inside a phone-width tile.
+      const withKg = (v) => (v === null || v === undefined || Number.isNaN(v) ? fmtNum(v) : kg ? `${fmtNum(v, 0)}${kg}` : fmtNum(v));
       exerciseCard = h('div', {},
         tabs(METRICS, metric, (v) => {
           metric = v;
           paint();
         }),
-        lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1])}${unit}` : null }),
+        lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1])}${tagUnit}` : null }),
         h('div', { class: 'grid-3', style: 'margin-top:14px' },
-          tile(c.is_timed ? 'Current score' : 'Current est. max', fmtNum(st.current_1rm)),
-          tile('Best', fmtNum(st.max_1rm), null, 'gold'),
+          tile(c.is_timed ? 'Current score' : 'Current est. max', withKg(st.current_1rm)),
+          tile('Best', withKg(st.max_1rm), null, 'gold'),
           tile('Since first', pctText(st.improvement_pct || 0, Math.abs(st.improvement_pct || 0) < 10 ? 1 : 0), null, (st.improvement_pct || 0) < 0 ? '' : '')),
         h('p', { class: 'foot', style: 'margin:12px 2px 0' }, `${c.labels.length} session${c.labels.length === 1 ? '' : 's'}`,
           c.labels.length ? ` · last ${formatDay(c.labels[c.labels.length - 1])}` : ''),
