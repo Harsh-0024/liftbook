@@ -388,6 +388,11 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     (.active, an open info pop, keyboard focus) is untouched and still shows on the phone. Done by
     a small script that kept each rule in its place, so nothing else changes order. Checked on
     desktop (8791): all 29 mouse-only blocks load and hovering a link still underlines it.
+69. **The spinner keeps turning with Reduce Motion.** With the device set to reduce motion, the
+    "Opening…" spinner stopped dead, which looks like the app froze. It now turns slowly (2.4 s a
+    turn, as Muhurta's sync spinner does); the sync dot's pulse and the page slide still stop.
+    Checked on desktop (8791): 0.9 s a turn normally, 2.4 s with the reduce-motion rule applied.
+    Also checked and clean: every other animation already stops or fades under Reduce Motion.
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen

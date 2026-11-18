@@ -290,7 +290,9 @@ main.wide { max-width: 860px; }
 .screen.still { animation: none; }
 .loading-card { display: grid; justify-items: center; gap: 16px; padding: 48px 24px; text-align: center; }
 @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .screen, .sync-pill.busy::before, .spinner { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .screen, .sync-pill.busy::before { animation: none; } }
+/* A spinner that stops looks like the app froze: with Reduce Motion it keeps turning, slowly. */
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2.4s; } }
 
 /* ---------- groups, rows, labels (the original "settings" look, used everywhere) ---------- */
 .label {
