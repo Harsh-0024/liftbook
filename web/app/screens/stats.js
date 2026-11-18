@@ -333,7 +333,9 @@ export function statsScreen(ctx) {
         h('div', { class: 'grid-3', style: 'margin-top:14px' },
           tile(c.is_timed ? 'Current score' : 'Current est. max', withKg(st.current_1rm), c.is_timed ? 'weight × √seconds' : null),
           tile('Best', withKg(st.max_1rm), null, 'gold'),
-          tile('Since first', pctText(st.improvement_pct || 0, Math.abs(st.improvement_pct || 0) < 10 ? 1 : 0), null, (st.improvement_pct || 0) < 0 ? '' : '')),
+          // One session has nothing to be "since": say so instead of a flat 0%.
+          c.labels.length < 2 ? tile('Since first', '–', 'one session so far')
+            : tile('Since first', pctText(st.improvement_pct || 0, Math.abs(st.improvement_pct || 0) < 10 ? 1 : 0))),
         h('p', { class: 'foot', style: 'margin:12px 2px 0' }, `${c.labels.length} session${c.labels.length === 1 ? '' : 's'}`,
           c.labels.length ? ` · last ${formatDay(c.labels[c.labels.length - 1])}` : ''),
         sessionList(lb.exerciseSessions(exercise), c));

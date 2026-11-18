@@ -328,6 +328,10 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     with no meaning on its own (it is weight × √seconds: 79.5 kg held 60 s). The tile now reads
     "616" with "weight × √seconds" under it; Best is a whole number too. Lifts are unchanged.
     Checked on desktop (plank and squat).
+56. **Stats: "Since first" waits for a second session.** An exercise logged once showed "Since first
+    0%", as if it had been tried and stayed flat. With one session the tile now reads "–" and "one
+    session so far"; from the second session on it shows the change as before. Checked on desktop
+    (plank: one session; squat: +34%).
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen
