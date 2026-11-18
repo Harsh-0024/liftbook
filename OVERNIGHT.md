@@ -332,6 +332,9 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     0%", as if it had been tried and stayed flat. With one session the tile now reads "–" and "one
     session so far"; from the second session on it shows the change as before. Checked on desktop
     (plank: one session; squat: +34%).
+57. **Personal bests: the right-hand number says kg.** Each exercise's best read "125.4" or "615.8".
+    It now matches the exercise tiles on Stats (item 50): "125 kg" for a lift, a whole score ("616")
+    for a timed hold. Checked on desktop.
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen
