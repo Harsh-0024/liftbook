@@ -400,6 +400,10 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     2 March to many people; the app reads it as 3 February, and "02/13" isn't a date it takes. The
     hint and the "No days found" message now say "a date, day first: 03/02 or 3 Feb". Checked on
     desktop (8791): both show the new words.
+71. **A month-first date says how to fix it.** "02/13" on the Log page gave only "isn't a date
+    this app can read". It now adds "Write the day first: “13/02”." when the numbers make the swap
+    clear, and "Write the day first, as 13/02 or 13 Feb." otherwise. Tested (data.test.js) and
+    checked on desktop (8791).
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen

@@ -307,7 +307,16 @@ export class Liftbook {
     for (const e of exercises.filter((x) => x.missing_name && x.valid !== false)) {
       errors.push(`Line ${e.line}: sets without an exercise name above them (\u201c${e.exercise_string}\u201d).`);
     }
-    if (parsed.invalid_date_text) errors.push(`\u201c${parsed.invalid_date_text}\u201d isn\u2019t a date this app can read.`);
+    if (parsed.invalid_date_text) {
+      // "02/13" is month first: say the day goes first, and offer the swapped date when the
+      // numbers make that clear.
+      const bad = parsed.invalid_date_text;
+      const m = String(bad).trim().match(/^(\d{1,2})([/.-])(\d{1,2})(.*)$/);
+      const hint = m && Number(m[3]) > 12 && Number(m[1]) >= 1 && Number(m[1]) <= 12
+        ? ` Write the day first: \u201c${m[3]}${m[2]}${m[1]}${m[4]}\u201d.`
+        : ' Write the day first, as 13/02 or 13 Feb.';
+      errors.push(`\u201c${bad}\u201d isn\u2019t a date this app can read.${hint}`);
+    }
     const invalid = exercises.filter((e) => e.valid === false || e.missing_name);
     for (const e of invalid.filter((x) => x.valid === false)) {
       const sets = String(e.exercise_string || '').split('\n').slice(1).join(' ').trim();

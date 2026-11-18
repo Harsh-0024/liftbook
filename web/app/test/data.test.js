@@ -242,3 +242,11 @@ test('a date after today is flagged, but still saves', async () => {
   assert.equal(ahead.ok, true);
   assert.equal(lb.check('18/11/26 Push\n\nSquat\n100 x 5', { now }).future, true);
 });
+
+test('a month-first date gets the day-first fix in its message', async () => {
+  const lb = await app();
+  const swapped = lb.check('02/13 Push\n\nSquat\n100 x 5').errors.find((e) => e.includes('isn’t a date'));
+  assert.match(swapped, /Write the day first: “13\/02”\./);
+  const unclear = lb.check('45/45 Push\n\nSquat\n100 x 5').errors.find((e) => e.includes('isn’t a date'));
+  if (unclear) assert.match(unclear, /Write the day first, as 13\/02 or 13 Feb\./);
+});
