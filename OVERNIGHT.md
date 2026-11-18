@@ -396,6 +396,10 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     Also checked and clean for contrast: every piece of visible text on Home, Log, Retrieve,
     Stats, Settings and a workout page, in dark and light, measured against what is really
     behind it, is at least 4.5:1 (3:1 for large text). Lowest colour token: light --good, 4.5:1.
+70. **Bulk import says the date is day first.** Its hint said "a date like 03/02", which reads as
+    2 March to many people; the app reads it as 3 February, and "02/13" isn't a date it takes. The
+    hint and the "No days found" message now say "a date, day first: 03/02 or 3 Feb". Checked on
+    desktop (8791): both show the new words.
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen

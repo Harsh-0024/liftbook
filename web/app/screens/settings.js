@@ -20,7 +20,7 @@ const SECTIONS = [
   ['shortcuts', 'Apple Shortcuts', 'Log and get workouts from Notes on your iPhone'],
   ['feedback', 'Feedback', 'Tell the developer what works for you, what doesn’t, and what you’d like next.'],
   ['sync', 'Sync and data', 'Sync between devices, a backup file and a spreadsheet of everything you logged.'],
-  ['import', 'Bulk import', 'Paste many workout days at once. Each day starts with a date like 03/02; days you’ve already logged are skipped.'],
+  ['import', 'Bulk import', 'Paste many workout days at once. Each day starts with a date, day first: 03/02 or 3 Feb. Days you’ve already logged are skipped.'],
   ['account', 'Account', 'Password, theme, sign out, delete'],
 ];
 
@@ -822,7 +822,7 @@ function bulkImport(ctx) {
     go.disabled = !ready;
     go.textContent = ready ? `Import ${ready} day${ready === 1 ? '' : 's'}` : 'Import';
     meta.textContent = !ta.value.trim() ? 'Nothing is saved yet'
-      : days.length ? `${days.length} day${days.length === 1 ? '' : 's'} found · nothing saved yet` : 'No days found: start each day with a date like 03/02';
+      : days.length ? `${days.length} day${days.length === 1 ? '' : 's'} found · nothing saved yet` : 'No days found: start each day with a date, day first (03/02 or 3 Feb)';
     if (!days.length) return result.replaceChildren();
     const left = days.filter((d) => d.status === 'ready').reduce((k, d) => k + (d.check.errors?.length || 0), 0);
     const dated = days.filter((d) => d.status !== 'failed').map((d) => d.date).sort();
