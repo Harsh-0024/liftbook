@@ -82,8 +82,10 @@ function tile(label, value, sub, cls = '') {
 /** A row of choices. name: what the row picks, for a screen reader ("Time range"); an option's third
  *  item is its spoken name when the shown one is an abbreviation ("1M" → "1 month"). */
 function tabs(options, value, onPick, name = null) {
-  return h('div', { class: 'tabs', role: 'tablist', 'aria-label': name }, options.map(([v, label, spoken]) =>
-    h('button', { type: 'button', class: v === value ? 'on' : '', role: 'tab', 'aria-selected': String(v === value), 'aria-label': spoken || null, onclick: () => onPick(v) }, label)));
+  // Plain buttons in a named group, the chosen one pressed: they redraw the page below them rather
+  // than switch panels, and Tab moves between them, so "tabs" (which promise arrow keys) was wrong.
+  return h('div', { class: 'tabs', role: 'group', 'aria-label': name }, options.map(([v, label, spoken]) =>
+    h('button', { type: 'button', class: v === value ? 'on' : '', 'aria-pressed': String(v === value), 'aria-label': spoken || null, onclick: () => onPick(v) }, label)));
 }
 
 const SESSIONS_SHOWN = 5;
