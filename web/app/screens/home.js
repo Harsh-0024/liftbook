@@ -6,7 +6,7 @@ import { formatSetsDisplay } from '../../core/logging.js';
 import { attachSuggestions } from '../suggest.js';
 import { attachPasteTidy } from '../paste.js';
 import { shareLinkBox } from '../share.js';
-import { splitSessionTitle } from '../../core/sessions.js';
+import { splitSessionTitle, lastDoneBySession } from '../../core/sessions.js';
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -44,6 +44,9 @@ export function homeScreen(ctx) {
   const o = lb.overview();
   const week = lb.week();
   const next = workouts.length ? lb.nextSession() : null;
+  // When that session was last done ("28 Oct"), as Retrieve shows it.
+  const nextLastDay = next ? lastDoneBySession(workouts).get(next.id) : null;
+  const nextLast = nextLastDay ? softDay(nextLastDay).replace(/^(Today|Yesterday)$/, (w) => w.toLowerCase()) : '';
 
   const actions = workouts.length
     ? [doneToday
@@ -65,7 +68,7 @@ export function homeScreen(ctx) {
     next && !doneToday ? h('section', { class: 'section', 'aria-label': 'Up next' },
       h('div', { class: 'label' }, 'Up next'),
       h('div', { class: 'group gold' }, rowItem({ href: `#/retrieve/day/Session/${next.id}`, ico: 'list',
-        title: next.title || `Session ${next.id}`, desc: `${next.title ? `Session ${next.id} · ` : ''}${next.exercises} exercise${next.exercises === 1 ? '' : 's'}`,
+        title: next.title || `Session ${next.id}`, desc: `${next.title ? `Session ${next.id} · ` : ''}${next.exercises} exercise${next.exercises === 1 ? '' : 's'}${nextLast ? ` · last done ${nextLast}` : ''}`,
         value: 'Targets' }))) : null,
     // The last 7 days, today last: a gold tick on each day trained (a tap opens that workout).
     workouts.length ? h('section', { class: 'section', 'aria-label': 'The last 7 days' },

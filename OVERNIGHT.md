@@ -313,6 +313,11 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     "First" count beside New bests / Improving / Dipping / Steady (three of four exercises in the
     demo's latest workout are firsts) but left it: five columns would cut those labels short on a
     phone. Checked on desktop.
+53. **Home: when the next session was last done.** Home's Up next row now ends with it, as Retrieve
+    shows it (item 49): "Session 3 · 8 exercises · last done 28 Oct" ("last done yesterday",
+    "last done Monday"). A session never done shows nothing extra. Checked on desktop (the demo's
+    next session has never been done, so it shows no date; the date itself is the tested
+    `lastDoneBySession`).
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen
