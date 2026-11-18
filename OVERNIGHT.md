@@ -382,6 +382,12 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     lifted: "BW+20×6 · BW×8 · BW×8" for Pull Ups, "BW×60s · BW×45s" for Plank. The saved text is
     still used if the sets can't be read. Checked on desktop (8791) for a weighted, a bodyweight
     and a timed exercise.
+68. **No stuck highlights after a tap on the phone.** On an iPhone a tapped button, row or link
+    keeps its hover look until you tap somewhere else (a lifted primary button, a grey row, an
+    underline). All 28 hover effects now apply only where there is a mouse; the chosen state
+    (.active, an open info pop, keyboard focus) is untouched and still shows on the phone. Done by
+    a small script that kept each rule in its place, so nothing else changes order. Checked on
+    desktop (8791): all 29 mouse-only blocks load and hovering a link still underlines it.
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen
