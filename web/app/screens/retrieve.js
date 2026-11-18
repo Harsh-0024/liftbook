@@ -1,10 +1,11 @@
 // Retrieve: the next workout's targets from the plan and the last sets, as text to copy into
 // the Log page (or a notes app) at the gym.
 
-import { h, icon, rowItem, pageHead, copyText, busy, toast } from '../ui.js';
+import { h, icon, rowItem, pageHead, copyText, busy, toast, softDay } from '../ui.js';
 import { DRAFT_KEY } from './log.js';
 import { muscleGroup } from '../../core/coach_tools.js';
 import { scrollBehavior } from '../motion.js';
+import { lastDoneBySession } from '../../core/sessions.js';
 
 function dayLabel(plans, category, dayName) {
   const id = dayName.slice(category.length).trim();
@@ -19,6 +20,8 @@ export function retrieveScreen(ctx) {
   const following = lb.settings().follow_shared_plan && !lb.isAdmin();
   const sessions = plans.workout?.Session || {};
   const next = lb.nextSession()?.id ?? null;
+  // When each session was last done, so a long-skipped one stands out ("Today", "Monday", "28 Oct").
+  const lastDone = lastDoneBySession(lb.workouts());
 
   const cell = (category, dayName) => {
     const { id } = dayLabel(plans, category, dayName);
@@ -26,7 +29,8 @@ export function retrieveScreen(ctx) {
     return h('a', { href: `#/retrieve/day/${encodeURIComponent(category)}/${id}`, class: category === 'Session' && Number(id) === next ? 'next' : null,
       title: `${dayName}${title ? ` · ${title}` : ''} (${sessions[dayName]?.length ?? (plans.workout[category][dayName] || []).length} exercises)` },
     h('small', {}, category === 'Session' && Number(id) === next ? `Next · ${dayName}` : dayName),
-    h('b', {}, title || `${(plans.workout[category][dayName] || []).length} exercises`));
+    h('b', {}, title || `${(plans.workout[category][dayName] || []).length} exercises`),
+    category === 'Session' && lastDone.has(Number(id)) ? h('span', { class: 'last-done' }, softDay(lastDone.get(Number(id)))) : null);
   };
 
   const groups = [];

@@ -291,6 +291,12 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     covering the data). The scale itself now lives in `web/core/axis.js` (`chartScale`), with tests
     in `web/core/test/axis.test.js`: the exercise, bodyweight and percent examples above, decimals,
     a single value, and 5,000 random ranges. Tests: 110 pass.
+49. **Retrieve: when each session was last done.** Each session in the plan now shows the day you
+    last trained it under its name ("Today", "Monday", "28 Oct"), so a session skipped for weeks
+    stands out when you choose. A session never done shows nothing extra; the cells in a row keep
+    one height. The dates come from workout titles ("Session 2 - …"), the same way "Next" is
+    worked out (`lastDoneBySession` in `web/core/sessions.js`, tested). Checked on desktop against
+    the stand-in server. Tests: 111 pass.
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen

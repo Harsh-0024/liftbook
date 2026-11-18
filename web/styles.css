@@ -773,6 +773,7 @@ details.ex-open .vs { gap: 14px; }
 .cycle small { display: block; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--subtle); margin-bottom: 3px; }
 .cycle a.next small { color: var(--gold-text); }
 .cycle b { display: block; font-size: 0.9rem; font-weight: 600; line-height: 1.3; }
+.cycle .last-done { display: block; margin-top: 4px; font-size: 0.72rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 @media (max-width: 600px) {
   .cycle { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cycle a:nth-child(odd) { border-left: 0; }

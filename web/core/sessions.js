@@ -214,3 +214,19 @@ export function nextSessionId(titles, ids) {
   }
   return null;
 }
+
+/**
+ * When each plan session was last done: workouts are {day, title}, any order; returns a Map
+ * from session number to its latest day ("2026-11-16"). A title names its session the way
+ * nextSessionId reads it ("Session 3 - Back" → 3).
+ */
+export function lastDoneBySession(workouts) {
+  const out = new Map();
+  for (const w of workouts || []) {
+    const m = /\bsession\s*(\d+)/i.exec(String(w?.title || ''));
+    if (!m || !w.day) continue;
+    const id = Number(m[1]);
+    if (!out.has(id) || out.get(id) < w.day) out.set(id, w.day);
+  }
+  return out;
+}

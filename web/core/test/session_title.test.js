@@ -2,7 +2,7 @@
 // the title (the old list's routes/workouts.py _home_history).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { splitSessionTitle, nextSessionId } from '../sessions.js';
+import { splitSessionTitle, nextSessionId, lastDoneBySession } from '../sessions.js';
 
 test('a session title splits into its session and its name', () => {
   assert.deepEqual(splitSessionTitle('Session 2 - Legs'), { session: 'Session 2', title: 'Legs' });
@@ -25,4 +25,19 @@ test('nextSessionId: the session after the last one logged, wrapping round', () 
   assert.equal(nextSessionId(['Push', 'Pull'], ids), null);
   assert.equal(nextSessionId(['Session 9 - Extra'], ids), null);
   assert.equal(nextSessionId([], ids), null);
+});
+
+test('Retrieve: each session knows the last day it was done', () => {
+  const last = lastDoneBySession([
+    { day: '2026-11-09', title: 'Session 2 - Shoulders & Forearms' },
+    { day: '2026-11-16', title: 'Session 2 – Shoulders & Forearms' },
+    { day: '2026-11-12', title: 'session 3' },
+    { day: '2026-11-14', title: 'Push' },
+    { day: '', title: 'Session 4 - Legs' },
+  ]);
+  assert.equal(last.get(2), '2026-11-16');
+  assert.equal(last.get(3), '2026-11-12');
+  assert.equal(last.has(4), false);
+  assert.equal(last.size, 2);
+  assert.equal(lastDoneBySession(null).size, 0);
 });
