@@ -404,6 +404,10 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     this app can read". It now adds "Write the day first: “13/02”." when the numbers make the swap
     clear, and "Write the day first, as 13/02 or 13 Feb." otherwise. Tested (data.test.js) and
     checked on desktop (8791).
+72. **The bodyweight message says the unit and what was kept.** Typing 900 in Settings said
+    "Bodyweight should be between 1 and 500." and quietly put the old number back. It now says
+    "Bodyweight should be 1–500 kg. Kept 79.5 kg." Checked on desktop (8791): nothing is saved and
+    the box shows 79.5 again.
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen

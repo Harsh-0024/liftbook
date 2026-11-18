@@ -95,8 +95,10 @@ function bodyweightInput(ctx) {
   bw.addEventListener('change', async () => {
     const v = bw.value.trim() === '' ? null : Number(bw.value);
     if (v !== null && !(v >= 1 && v <= 500)) {
-      toast('Bodyweight should be between 1 and 500.');
-      bw.value = lb.profile()?.bodyweight ?? '';
+      // Says the unit, and that the box went back to what was saved.
+      const kept = lb.profile()?.bodyweight ?? null;
+      toast(`Bodyweight should be 1–500 kg.${kept !== null ? ` Kept ${fmtNum(kept)} kg.` : ''}`);
+      bw.value = kept ?? '';
       return;
     }
     await lb.saveProfile({ bodyweight: v });
