@@ -76,9 +76,10 @@ export function toast(message, opts = 3200) {
       } }, action));
     }
   };
-  if (el.hidden) {
-    // A live region that fills in at the moment it appears is often not read out: show it
-    // empty, then put the words in, so a screen reader says each message.
+  if (el.hidden || el.firstChild?.nodeValue === message) {
+    // A live region that fills in at the moment it appears is often not read out, and nor is
+    // the same message again while it is up: show it empty, then put the words in, so a
+    // screen reader says each message.
     el.replaceChildren();
     el.hidden = false;
     setTimeout(fill, 50);

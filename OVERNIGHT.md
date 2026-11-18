@@ -357,6 +357,10 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     said; while empty it stays unseen, and its rise plays when the words arrive. Checked on desktop:
     the box shows empty, then the words; with the animation run to its end it is fully visible.
     (Saved the same bodyweight, 79.5, to see it.)
+63. **The same message twice is said twice.** If a message was still up ("Copied") and the same
+    words came again, nothing in the region changed, so nothing was read out. Now the same words
+    while it is up also empty first and come back a moment later; a different message still goes
+    straight in. Checked on desktop: "Saved", "Saved", "Other" logs "Saved", "", "Saved", "Other".
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen
