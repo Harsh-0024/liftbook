@@ -216,16 +216,28 @@ export function softDay(day, now = new Date()) {
   return formatDay(day, { weekday: false, year: y !== now.getFullYear() });
 }
 
+/** What a chart shows, for a screen reader (the drawing itself is one picture): its name, the dates
+ *  it covers, where it started and ended, and its low and high ("Bodyweight, 23 Aug to 16 Nov: from
+ *  78 kg to 79.5 kg; lowest 78 kg, highest 79.5 kg."). */
+export function chartSummary(name, labels, pts, say) {
+  if (!pts.length) return `${name}: nothing to chart yet.`;
+  const at = (k) => String(labels[pts[k][0]] ?? '');
+  const vals = pts.map((p) => Number(p[1]));
+  if (pts.length === 1) return `${name}, ${at(0)}: ${say(vals[0])}.`;
+  return `${name}, ${at(0)} to ${at(pts.length - 1)}: from ${say(vals[0])} to ${say(vals[vals.length - 1])}; `
+    + `lowest ${say(Math.min(...vals))}, highest ${say(Math.max(...vals))}.`;
+}
+
 let gradientId = 0;
 /** A line chart: soft gold area, values up the side, first and last dates along the bottom.
  *  base: a value drawn as a dashed "start" line; tag: label the last point (e.g. "+14%"). */
-export function lineChart(labels, values, { unit = '', base = null, tag = null, height = 240, format = null } = {}) {
+export function lineChart(labels, values, { unit = '', base = null, tag = null, height = 240, format = null, name = 'Progress chart', say = null } = {}) {
   // Drawn at about the width it shows at, so the labels stay readable on a phone.
   const W = Math.round(Math.max(300, Math.min(640, (globalThis.innerWidth || 640) - 72)));
   const H = W < 480 ? Math.round(height * 0.85) : height;
   const pad = { l: 46, r: tag ? 54 : 14, t: 16, b: 28 };
   const pts = values.map((v, i) => [i, v]).filter(([, v]) => v !== null && v !== undefined && Number.isFinite(Number(v)));
-  const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, class: 'chart', role: 'img', 'aria-label': 'Progress chart', style: `height:${H}px` });
+  const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, class: 'chart', role: 'img', 'aria-label': chartSummary(name, labels, pts, say || ((v) => `${fmtNum(v)}${unit}`)), style: `height:${H}px` });
   if (!pts.length) {
     const t = s('text', { x: W / 2, y: H / 2, 'text-anchor': 'middle' });
     t.textContent = 'Nothing to chart yet';

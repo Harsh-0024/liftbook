@@ -139,7 +139,7 @@ function bodyweightCard(lb, from, short) {
   const signed = (v) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${fmtNum(Math.abs(v))} kg`;
   return h('div', { class: 'card' },
     h('div', { class: 'card-head', style: 'margin-bottom:12px' }, h('h2', {}, 'Bodyweight')),
-    lineChart(labels.map(short), vals, { unit: ' kg', tag: `${fmtNum(t.current)} kg`, height: 200 }),
+    lineChart(labels.map(short), vals, { unit: ' kg', tag: `${fmtNum(t.current)} kg`, height: 200, name: 'Bodyweight' }),
     h('div', { class: 'grid-3', style: 'margin-top:14px' },
       tile('Now', `${fmtNum(t.current)} kg`, `since ${formatDay(t.lastChanged, { weekday: false, year: false })}`),
       tile('Change', signed(delta), `from ${short(labels[0])}`),
@@ -232,13 +232,16 @@ export function statsScreen(ctx) {
         h('span', {}, sinceText),
         view.change ? h('small', { class: `hero-change ${view.change.direction}` },
           view.change.amount ? h('strong', {}, `${view.change.direction === 'down' ? '↓' : '↑'} ${view.change.amount}`) : '', view.change.text) : '');
-      chart = lineChart(view.labels.map(short), view.line, { base: 0, tag: view.headline, format: (v) => (Math.abs(v) < 0.5 ? 'Start' : pctText(v, 0)) });
+      chart = lineChart(view.labels.map(short), view.line, { base: 0, tag: view.headline, format: (v) => (Math.abs(v) < 0.5 ? 'Start' : pctText(v, 0)),
+        name: 'Overall strength against your start', say: (v) => (Math.abs(v) < 0.05 ? 'level with the start' : pctText(v, 1)) });
       tiles = h('div', { class: 'grid-3', style: 'margin-top:14px' },
         view.best ? tile('Best', view.best.text, formatDay(view.best.day, { weekday: false, year: false })) : tile('Best', '–', ''),
         tile('New bests', String(view.newBests), view.rangeText, 'gold'),
         view.top ? tile('Most improved', view.top.text, view.top.name) : tile('Most improved', '–', 'nothing yet'));
     } else {
-      chart = lineChart(oLabels.map(short), oValues, { unit: overall.unit === 'percent' && mode === 'rate' ? '%' : '' });
+      chart = lineChart(oLabels.map(short), oValues, { unit: overall.unit === 'percent' && mode === 'rate' ? '%' : '',
+        name: mode === 'rate' ? 'Overall rate of progress' : 'Overall consistency',
+        say: overall.unit === 'percent' && mode === 'rate' ? (v) => pctText(v, 1) : null });
     }
 
     let yearTabs = null;
@@ -323,7 +326,8 @@ export function statsScreen(ctx) {
           metric = v;
           paint();
         }),
-        lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1])}${tagUnit}` : null }),
+        lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1])}${tagUnit}` : null,
+          name: `${exercise}, ${(METRICS.find(([v]) => v === metric) || METRICS[0])[1].toLowerCase()}`, say: (v) => `${fmtNum(v)}${tagUnit}` }),
         h('div', { class: 'grid-3', style: 'margin-top:14px' },
           tile(c.is_timed ? 'Current score' : 'Current est. max', withKg(st.current_1rm)),
           tile('Best', withKg(st.max_1rm), null, 'gold'),

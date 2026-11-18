@@ -303,6 +303,11 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     a timed hold like Plank keeps its unitless score and seconds. Bodyweight's Range tile says "kg,
     low to high" underneath, since "78–79.5 kg" would not fit a phone-width tile. Checked on desktop
     (bench, squat, pull-ups, plank).
+51. **Screen readers hear what a chart shows.** Every chart was announced as "Progress chart". Each
+    now says what it is and how it went: "Flat Barbell Press, estimated max, 23 Aug to 16 Nov: from
+    72 kg to 70 kg; lowest 70 kg, highest 105 kg", and the same for Overall strength (against your
+    start), the Rate view and Bodyweight. One helper (`chartSummary` in `web/app/ui.js`) builds it
+    for every chart. Checked on desktop against the stand-in server.
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen
