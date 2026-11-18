@@ -45,7 +45,7 @@ export function consistencyHero(dayList, win) {
   const from = startedThisYear ? firstDay : win.start;
   const perWeek = Number((countBetween(dayList, win.start, win.end) / weeksOf(from, win.end)).toFixed(1));
   const caption = startedThisYear
-    ? `workouts a week since ${MONTHS[firstDay.getMonth()]} ${firstDay.getDate()}`
+    ? `workouts a week since ${firstDay.getDate()} ${MONTHS[firstDay.getMonth()]}`
     : `workouts a week in ${win.year}`;
   let change = null;
   const prevStart = new Date(win.year - 1, 0, 1);

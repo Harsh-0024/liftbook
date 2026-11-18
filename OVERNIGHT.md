@@ -335,6 +335,9 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
 57. **Personal bests: the right-hand number says kg.** Each exercise's best read "125.4" or "615.8".
     It now matches the exercise tiles on Stats (item 50): "125 kg" for a lift, a whole score ("616")
     for a timed hold. Checked on desktop.
+58. **Consistency: dates read day first.** The Consistency view said "workouts a week since Aug 23"
+    while every other date in the app reads "23 Aug". It now says "since 23 Aug" (`core/consistency.js`,
+    its test updated). Checked on desktop.
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen

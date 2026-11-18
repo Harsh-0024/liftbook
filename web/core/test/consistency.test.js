@@ -12,7 +12,7 @@ test('headline and tiles match the original page', () => {
   assert.deepEqual(consistencyYears(days, today), [2026]);
   const win = yearWindow(2026, today);
   const hero = consistencyHero(days, win);
-  assert.deepEqual([hero.value, hero.caption, hero.change], ['3.4', 'workouts a week since Aug 23', null]);
+  assert.deepEqual([hero.value, hero.caption, hero.change], ['3.4', 'workouts a week since 23 Aug', null]);
   const t = consistencyTiles(days, win);
   assert.deepEqual([t.workouts.value, t.workouts.sub, t.month.value, t.month.sub, t.day.value, t.day.sub],
     ['36', 'in 2026', 'October', '16 workouts', 'Wednesday', '6 workouts']);
