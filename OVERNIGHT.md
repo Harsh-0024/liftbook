@@ -351,6 +351,12 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     but each was its own Tab stop and ← → did nothing. It is now one Tab stop (the chosen theme),
     the arrows move the choice, and the focus stays on it as the theme changes. Checked on desktop
     with real key presses: → from Auto goes round to Dark, ← back to Auto (left on Auto).
+62. **Messages are read out.** The small message at the bottom ("Bodyweight saved: 79.5 kg.",
+    "Copied") is a live region, but its words went in at the same moment it appeared, which screen
+    readers often skip. It now appears empty and gets its words a moment later, so each message is
+    said; while empty it stays unseen, and its rise plays when the words arrive. Checked on desktop:
+    the box shows empty, then the words; with the animation run to its end it is fully visible.
+    (Saved the same bodyweight, 79.5, to see it.)
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen

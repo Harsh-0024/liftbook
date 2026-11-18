@@ -66,15 +66,23 @@ export function toast(message, opts = 3200) {
   const el = document.getElementById('toast');
   if (!el) return;
   const { ms = opts?.action ? 6000 : 3200, action = null, onAction = null } = typeof opts === 'number' ? { ms: opts } : (opts || {});
-  el.replaceChildren(message);
-  if (action) {
-    el.append(h('button', { type: 'button', class: 'toast-act', onclick: () => {
-      el.hidden = true;
-      clearTimeout(toastTimer);
-      onAction?.();
-    } }, action));
-  }
-  el.hidden = false;
+  const fill = () => {
+    el.replaceChildren(message);
+    if (action) {
+      el.append(h('button', { type: 'button', class: 'toast-act', onclick: () => {
+        el.hidden = true;
+        clearTimeout(toastTimer);
+        onAction?.();
+      } }, action));
+    }
+  };
+  if (el.hidden) {
+    // A live region that fills in at the moment it appears is often not read out: show it
+    // empty, then put the words in, so a screen reader says each message.
+    el.replaceChildren();
+    el.hidden = false;
+    setTimeout(fill, 50);
+  } else fill();
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     el.hidden = true;

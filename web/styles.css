@@ -818,6 +818,9 @@ body.signed-out main { padding-top: calc(16px + var(--safe-top)); }
   animation: rise 0.25s var(--ease) both;
 }
 @media (min-width: 760px) { .toast { bottom: 28px; } }
+/* Shown empty for a moment before its words go in (so screen readers read them): unseen till then,
+   and the rise plays when the words arrive. */
+.toast:empty { opacity: 0; animation: none; }
 
 .skip { position: fixed; top: 8px; left: 8px; z-index: 100; padding: 10px 16px; border-radius: 10px; background: var(--gold); color: #1a1407; font-weight: 600; transform: translateY(-200%); }
 .skip:focus { transform: none; }
