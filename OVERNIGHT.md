@@ -368,6 +368,11 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     Left as it is on purpose: two sets written ("60x10, 65x8") are saved as three with the last
     copied. That is the parser's rule (three sets unless the plan says otherwise) and the check
     shows "3 sets", so it is not hidden.
+65. **Retrieve's sessions say what the date means.** A screen reader heard "Session 2 Shoulders &
+    Forearms Monday": the date's meaning came only from where it sits. Each session now has a
+    full spoken name ("Next: Session 3, Back & Triceps, 8 exercises"; "Session 2, Shoulders &
+    Forearms, 7 exercises, last done Monday"), and the hover text ends with "last done Monday" too.
+    The card looks the same. Checked on desktop (8791).
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen

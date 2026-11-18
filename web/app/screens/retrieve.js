@@ -26,8 +26,15 @@ export function retrieveScreen(ctx) {
   const cell = (category, dayName) => {
     const { id } = dayLabel(plans, category, dayName);
     const title = category === 'Session' ? plans.session_titles?.[id] : null;
-    return h('a', { href: `#/retrieve/day/${encodeURIComponent(category)}/${id}`, class: category === 'Session' && Number(id) === next ? 'next' : null,
-      title: `${dayName}${title ? ` · ${title}` : ''} (${sessions[dayName]?.length ?? (plans.workout[category][dayName] || []).length} exercises)` },
+    const isNext = category === 'Session' && Number(id) === next;
+    const count = sessions[dayName]?.length ?? (plans.workout[category][dayName] || []).length;
+    // The small date on its own ("Monday") says when only by where it sits; spoken and on hover
+    // it is "last done Monday".
+    const when = category === 'Session' && lastDone.has(Number(id)) ? softDay(lastDone.get(Number(id))) : null;
+    const lastWords = when ? `, last done ${/^(Today|Yesterday)$/.test(when) ? when.toLowerCase() : when}` : '';
+    return h('a', { href: `#/retrieve/day/${encodeURIComponent(category)}/${id}`, class: isNext ? 'next' : null,
+      title: `${dayName}${title ? ` · ${title}` : ''} (${count} exercises)${lastWords}`,
+      'aria-label': `${isNext ? 'Next: ' : ''}${dayName}${title ? `, ${title}` : ''}, ${count} exercises${lastWords}` },
     h('small', {}, category === 'Session' && Number(id) === next ? `Next · ${dayName}` : dayName),
     h('b', {}, title || `${(plans.workout[category][dayName] || []).length} exercises`),
     category === 'Session' && lastDone.has(Number(id)) ? h('span', { class: 'last-done' }, softDay(lastDone.get(Number(id)))) : null);
