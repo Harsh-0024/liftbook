@@ -228,6 +228,11 @@ export function chartSummary(name, labels, pts, say) {
     + `lowest ${say(Math.min(...vals))}, highest ${say(Math.max(...vals))}.`;
 }
 
+/** "Click" with a mouse or trackpad, "Tap" on a touch screen, for hints that name the gesture. */
+export function tapWord() {
+  return globalThis.matchMedia?.('(hover: hover) and (pointer: fine)').matches ? 'Click' : 'Tap';
+}
+
 let gradientId = 0;
 /** A line chart: soft gold area, values up the side, first and last dates along the bottom.
  *  base: a value drawn as a dashed "start" line; tag: label the last point (e.g. "+14%"). */

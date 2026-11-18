@@ -1,6 +1,6 @@
 // Stats: overall progress (Strength Index or Improvement Rate) and each exercise's chart.
 
-import { h, icon, pageHead, lineChart, fmtNum, formatDay, toast } from '../ui.js';
+import { h, icon, pageHead, lineChart, fmtNum, formatDay, toast, tapWord } from '../ui.js';
 import { normalizeExerciseName } from '../../core/names.js';
 import { addDays, deviceDay } from '../../core/dates.js';
 import { overallView } from '../../core/overall_view.js';
@@ -269,7 +269,7 @@ export function statsScreen(ctx) {
           remember(YEAR_KEY, y);
           paint();
         });
-        const tip = h('p', { class: 'cal-tip', 'aria-live': 'polite' }, 'Tap a day to see it.');
+        const tip = h('p', { class: 'cal-tip', 'aria-live': 'polite' }, `${tapWord()} a day to see it.`);
         const g = yearGrid(win, dayList, { titles: overall.day_titles || {}, daySets: overall.day_sets || {} });
         chart = h('div', {}, calendar(g, (d) => {
           const when = formatDay(d.iso);

@@ -318,6 +318,12 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     "last done Monday"). A session never done shows nothing extra. Checked on desktop (the demo's
     next session has never been done, so it shows no date; the date itself is the tested
     `lastDoneBySession`).
+54. **"Click" with a mouse, "Tap" on a phone.** Three hints named the touch gesture on the computer
+    too: the training calendar ("Tap a day to see it"), Arrange in the custom workout ("Tap an
+    exercise to move it") and the wrong-password message ("tap “Forgot password?”"). With a mouse or
+    trackpad they now say "Click"; touch screens keep "Tap" (`tapWord` in `web/app/ui.js`). The
+    Apple Shortcuts page, which is about the iPhone, keeps "tap". Checked on desktop (the calendar
+    reads "Click a day to see it."); the same check shows "Tap" on the iPhone in Muhurta (its item 69).
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen

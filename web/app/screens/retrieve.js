@@ -1,7 +1,7 @@
 // Retrieve: the next workout's targets from the plan and the last sets, as text to copy into
 // the Log page (or a notes app) at the gym.
 
-import { h, icon, rowItem, pageHead, copyText, busy, toast, softDay } from '../ui.js';
+import { h, icon, rowItem, pageHead, copyText, busy, toast, softDay, tapWord } from '../ui.js';
 import { DRAFT_KEY } from './log.js';
 import { muscleGroup } from '../../core/coach_tools.js';
 import { scrollBehavior } from '../motion.js';
@@ -346,7 +346,7 @@ export function retrieveCustomScreen(ctx) {
         if (!open.has(g)) return h('div', { class: 'pick-group' }, head);
         if (arranging.has(g)) {
           return h('div', { class: 'pick-group' }, head,
-            h('p', { class: 'pick-hint' }, 'Tap an exercise to move it. Your choice is remembered.'),
+            h('p', { class: 'pick-hint' }, `${tapWord()} an exercise to move it. Your choice is remembered.`),
             h('div', { class: 'pick-sub' }, 'On top'),
             often.length ? h('div', { class: 'pick-list' }, often.map(mover)) : h('p', { class: 'pick-hint' }, 'Nothing here.'),
             h('div', { class: 'pick-sub' }, 'Less often'),

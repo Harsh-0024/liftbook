@@ -1,7 +1,7 @@
 // Settings: profile, plan and rep ranges, exercises (timed, bodyweight, renames), feedback,
 // sync and the account.
 
-import { describe, h, icon, rowItem, pageHead, toast, busy, ago, formatDay, fmtNum, copyText, ask, deviceDraft, keptNote } from '../ui.js';
+import { describe, h, icon, rowItem, pageHead, toast, busy, ago, formatDay, fmtNum, copyText, ask, deviceDraft, keptNote, tapWord } from '../ui.js';
 import { avatar } from './home.js';
 import { toggleHelp } from '../shortcuts.js';
 import { Online } from '../online.js';
@@ -874,7 +874,7 @@ async function confirmPassword(ctx, input) {
     if (err.status === 0) throw new Error('This needs the internet.');
     throw err;
   }
-  if (!ok) throw new Error('That isn’t your current password. Forgot it? Sign out, then tap “Forgot password?”.');
+  if (!ok) throw new Error(`That isn’t your current password. Forgot it? Sign out, then ${tapWord().toLowerCase()} “Forgot password?”.`);
 }
 
 function account(ctx) {
