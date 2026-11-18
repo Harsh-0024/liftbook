@@ -338,6 +338,11 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
 58. **Consistency: dates read day first.** The Consistency view said "workouts a week since Aug 23"
     while every other date in the app reads "23 Aug". It now says "since 23 Aug" (`core/consistency.js`,
     its test updated). Checked on desktop.
+59. **Stats' choice rows have names a screen reader can say.** The rows of choices on Stats (the
+    overall view, the time range, the measure, the year, how bests are sorted) had no name, and the
+    range buttons were read as "1 M", "3 M". Each row now has one ("Time range", "Measure"…) and
+    the ranges say "1 month", "3 months", "6 months", "1 year", "All time"; the chosen one was
+    already marked. Checked on desktop.
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen

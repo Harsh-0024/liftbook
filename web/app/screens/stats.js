@@ -55,7 +55,7 @@ function calendar(grid, onPick) {
   return box;
 }
 
-const RANGES = [['30', '1M'], ['90', '3M'], ['180', '6M'], ['365', '1Y'], ['all', 'All']];
+const RANGES = [['30', '1M', '1 month'], ['90', '3M', '3 months'], ['180', '6M', '6 months'], ['365', '1Y', '1 year'], ['all', 'All', 'All time']];
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const METRICS = [['data', 'Estimated max'], ['weight', 'Top weight'], ['volume', 'Volume']];
 
@@ -79,9 +79,11 @@ function tile(label, value, sub, cls = '') {
   return h('div', { class: 'stat' }, h('span', {}, label), h('b', { class: cls }, value), sub ? h('small', {}, sub) : null);
 }
 
-function tabs(options, value, onPick) {
-  return h('div', { class: 'tabs', role: 'tablist' }, options.map(([v, label]) =>
-    h('button', { type: 'button', class: v === value ? 'on' : '', role: 'tab', 'aria-selected': String(v === value), onclick: () => onPick(v) }, label)));
+/** A row of choices. name: what the row picks, for a screen reader ("Time range"); an option's third
+ *  item is its spoken name when the shown one is an abbreviation ("1M" → "1 month"). */
+function tabs(options, value, onPick, name = null) {
+  return h('div', { class: 'tabs', role: 'tablist', 'aria-label': name }, options.map(([v, label, spoken]) =>
+    h('button', { type: 'button', class: v === value ? 'on' : '', role: 'tab', 'aria-selected': String(v === value), 'aria-label': spoken || null, onclick: () => onPick(v) }, label)));
 }
 
 const SESSIONS_SHOWN = 5;
@@ -214,7 +216,7 @@ export function statsScreen(ctx) {
       range = v;
       lb.setSetting('stats_range', v);
       paint();
-    });
+    }, 'Time range');
 
     // Overall: the Strength Index against your start (100), as the original page showed it
     // (core/overall_view.js): the headline is the 14-day average and doesn't change with the
@@ -268,7 +270,7 @@ export function statsScreen(ctx) {
           year = y;
           remember(YEAR_KEY, y);
           paint();
-        });
+        }, 'Year');
         const tip = h('p', { class: 'cal-tip', 'aria-live': 'polite' }, `${tapWord()} a day to see it.`);
         const g = yearGrid(win, dayList, { titles: overall.day_titles || {}, daySets: overall.day_sets || {} });
         chart = h('div', {}, calendar(g, (d) => {
@@ -327,7 +329,7 @@ export function statsScreen(ctx) {
         tabs(METRICS, metric, (v) => {
           metric = v;
           paint();
-        }),
+        }, 'Measure'),
         lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1])}${tagUnit}` : null,
           name: `${exercise}, ${(METRICS.find(([v]) => v === metric) || METRICS[0])[1].toLowerCase()}`, say: (v) => `${fmtNum(v)}${tagUnit}` }),
         h('div', { class: 'grid-3', style: 'margin-top:14px' },
@@ -350,7 +352,7 @@ export function statsScreen(ctx) {
             mode = v;
             if (v !== 'rate') remember(VIEW_KEY, v === 'consistency' ? 'consistency' : 'strength');
             paint();
-          })),
+          }, 'Overall view')),
         hero,
         mode === 'consistency'
           ? (yearTabs ? h('div', { class: 'card-head', style: 'justify-content:flex-end;margin:4px 0 0' }, yearTabs) : '')
@@ -391,7 +393,7 @@ export function bestsScreen(ctx) {
           sort = v;
           remember(BEST_SORT_KEY, v);
           paint();
-        })),
+        }, 'Sort bests')),
       rows.length
         ? h('div', { class: 'group' }, rows.map((r) => {
           const under = r.belowPct >= 1 ? `now ${fmtNum(r.belowPct, r.belowPct < 10 ? 1 : 0)}% under` : r.sessions > 1 ? 'at your best now' : 'first session';
