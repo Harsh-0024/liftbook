@@ -1114,7 +1114,7 @@ label.rowi { cursor: pointer; }
 
 /* Log check: a name you haven't used, a close misspelling or a repeat. */
 .name-note { font-size: .82rem; color: var(--muted); }
-.name-note.is-suggest, .name-note.is-twice, .name-note.is-dup { color: var(--warn); font-weight: 600; }
+.name-note.is-suggest, .name-note.is-twice, .name-note.is-dup, .name-note.is-short { color: var(--warn); font-weight: 600; }
 .rowi.warn .ico, .rowi.warn .num { color: var(--warn); }
 /* Log check rows: 1, 2, 3 on the left, "3 sets" or "New" on the right; a tap jumps to the line. */
 .rowi.check-row { cursor: pointer; align-items: flex-start; }

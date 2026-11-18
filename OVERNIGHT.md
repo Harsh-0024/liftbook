@@ -361,6 +361,13 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     words came again, nothing in the region changed, so nothing was read out. Now the same words
     while it is up also empty first and come back a moment later; a different message still goes
     straight in. Checked on desktop: "Saved", "Saved", "Other" logs "Saved", "", "Saved", "Other".
+64. **A set typed wrong isn't quietly a new exercise.** A half-typed set line such as "60 x" lost
+    its number (read as a list number) and became an exercise called "X", shown only as "New". A
+    name with under two letters now gets a warning on the Log check: "Too short for a name: is this
+    a set line?", in the warning colour. Tested (name_check.test.js) and checked on desktop.
+    Left as it is on purpose: two sets written ("60x10, 65x8") are saved as three with the last
+    copied. That is the parser's rule (three sets unless the plan says otherwise) and the check
+    shows "3 sets", so it is not hidden.
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen

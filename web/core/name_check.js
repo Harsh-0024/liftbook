@@ -66,6 +66,9 @@ export function nameNotes(exercises, known, { lines = [], dayNames = null } = {}
     if (dayNames && dayNames.has(normalizeExerciseName(name))) return { state: 'dup', note: 'Already in that day’s workout' };
     if (firstAt.get(key) !== number) return { state: 'twice', note: `Also at no. ${firstAt.get(key)}: saved as a second entry` };
     if (known.isKnown(name)) return { state: 'ok' };
+    // "60 x" on a set line loses its number as a list number and comes out as an exercise
+    // called "X": a name with under two letters is almost always a set typed wrong.
+    if ((name.match(/\p{L}/gu) || []).length < 2) return { state: 'short', note: 'Too short for a name: is this a set line?' };
     const suggestion = known.suggestion(name);
     if (!suggestion) return { state: 'new', note: 'New exercise' };
     const raw = lines[(e.line || 0) - 1] ?? '';
