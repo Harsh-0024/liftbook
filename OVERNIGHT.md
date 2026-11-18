@@ -324,6 +324,10 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     trackpad they now say "Click"; touch screens keep "Tap" (`tapWord` in `web/app/ui.js`). The
     Apple Shortcuts page, which is about the iPhone, keeps "tap". Checked on desktop (the calendar
     reads "Click a day to see it."); the same check shows "Tap" on the iPhone in Muhurta (its item 69).
+55. **Stats: a timed hold's score says what it is.** Plank showed "Current score 615.8", a number
+    with no meaning on its own (it is weight × √seconds: 79.5 kg held 60 s). The tile now reads
+    "616" with "weight × √seconds" under it; Best is a whole number too. Lifts are unchanged.
+    Checked on desktop (plank and squat).
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen

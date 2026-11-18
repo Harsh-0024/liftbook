@@ -320,7 +320,9 @@ export function statsScreen(ctx) {
       const tagUnit = unit || (c.is_timed ? '' : ' kg');
       const kg = c.is_timed ? '' : ' kg';
       // An estimate in whole kilos ("118 kg", not "117.6 kg"), which also keeps it inside a phone-width tile.
-      const withKg = (v) => (v === null || v === undefined || Number.isNaN(v) ? fmtNum(v) : kg ? `${fmtNum(v, 0)}${kg}` : fmtNum(v));
+      // A timed hold's score is weight × √seconds (615.8 for 79.5 kg held 60 s): whole numbers, and the
+      // tile says how it is worked out, since the number alone means nothing.
+      const withKg = (v) => (v === null || v === undefined || Number.isNaN(v) ? fmtNum(v) : `${fmtNum(v, 0)}${kg}`);
       exerciseCard = h('div', {},
         tabs(METRICS, metric, (v) => {
           metric = v;
@@ -329,7 +331,7 @@ export function statsScreen(ctx) {
         lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1])}${tagUnit}` : null,
           name: `${exercise}, ${(METRICS.find(([v]) => v === metric) || METRICS[0])[1].toLowerCase()}`, say: (v) => `${fmtNum(v)}${tagUnit}` }),
         h('div', { class: 'grid-3', style: 'margin-top:14px' },
-          tile(c.is_timed ? 'Current score' : 'Current est. max', withKg(st.current_1rm)),
+          tile(c.is_timed ? 'Current score' : 'Current est. max', withKg(st.current_1rm), c.is_timed ? 'weight × √seconds' : null),
           tile('Best', withKg(st.max_1rm), null, 'gold'),
           tile('Since first', pctText(st.improvement_pct || 0, Math.abs(st.improvement_pct || 0) < 10 ? 1 : 0), null, (st.improvement_pct || 0) < 0 ? '' : '')),
         h('p', { class: 'foot', style: 'margin:12px 2px 0' }, `${c.labels.length} session${c.labels.length === 1 ? '' : 's'}`,
