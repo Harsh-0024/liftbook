@@ -79,7 +79,7 @@ export function homeScreen(ctx) {
         const when = d.today ? 'Today' : d.name;
         return d.trained
           ? h('a', { class: cls, href: `#/workout/${d.day}`, 'aria-label': `${when}: ${lb.workout(d.day)?.title || 'workout'}` }, inner)
-          : h('span', { class: cls, role: 'img', 'aria-label': `${when}: no workout` }, inner);
+          : h('span', { class: cls, role: 'img', 'aria-label': `${when}: no workout${d.today ? ' yet' : ''}` }, inner);
       }))) : null,
     workouts.length ? h('section', { class: 'section', 'aria-label': 'Recent workouts' },
       h('div', { class: 'label' }, 'Recent'),

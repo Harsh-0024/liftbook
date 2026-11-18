@@ -373,6 +373,9 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     full spoken name ("Next: Session 3, Back & Triceps, 8 exercises"; "Session 2, Shoulders &
     Forearms, 7 exercises, last done Monday"), and the hover text ends with "last done Monday" too.
     The card looks the same. Checked on desktop (8791).
+66. **Today isn't over yet.** Home's Last 7 days read "Today: no workout" to a screen reader, as if
+    the day were done. Today now says "no workout yet"; past days keep "no workout". Checked on
+    desktop (8791).
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen
