@@ -393,6 +393,9 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     turn, as Muhurta's sync spinner does); the sync dot's pulse and the page slide still stop.
     Checked on desktop (8791): 0.9 s a turn normally, 2.4 s with the reduce-motion rule applied.
     Also checked and clean: every other animation already stops or fades under Reduce Motion.
+    Also checked and clean for contrast: every piece of visible text on Home, Log, Retrieve,
+    Stats, Settings and a workout page, in dark and light, measured against what is really
+    behind it, is at least 4.5:1 (3:1 for large text). Lowest colour token: light --good, 4.5:1.
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen
