@@ -288,7 +288,9 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     chart reads 60, 80, 100, 120, bodyweight 77, 78, 79, 80 kg, and Overall strength −10%, Start,
     +10%, +20% (so "Start" is now a gridline of its own). One change in `lineChart` (ui.js), so
     every chart gets it. Checked on Stats, and over 20,000 random ranges (always 4–5 lines, always
-    covering the data).
+    covering the data). The scale itself now lives in `web/core/axis.js` (`chartScale`), with tests
+    in `web/core/test/axis.test.js`: the exercise, bodyweight and percent examples above, decimals,
+    a single value, and 5,000 random ranges. Tests: 110 pass.
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen
