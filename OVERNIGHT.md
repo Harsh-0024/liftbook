@@ -376,6 +376,12 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
 66. **Today isn't over yet.** Home's Last 7 days read "Today: no workout" to a screen reader, as if
     the day were done. Today now says "no workout yet"; past days keep "no workout". Checked on
     desktop (8791).
+67. **Stats writes sets the way the workout page does.** An exercise's Sessions list showed the
+    saved text ("60 x 5, 60 x 5, 60 x 5"; for bodyweight whatever was typed), while the workout
+    page and the Log check write "60×5 · 60×5 · 60×5". Stats now uses the same form, in the order
+    lifted: "BW+20×6 · BW×8 · BW×8" for Pull Ups, "BW×60s · BW×45s" for Plank. The saved text is
+    still used if the sets can't be read. Checked on desktop (8791) for a weighted, a bodyweight
+    and a timed exercise.
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen

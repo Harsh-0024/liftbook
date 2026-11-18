@@ -630,12 +630,17 @@ export class Liftbook {
   exerciseSessions(exercise) {
     const history = this.history();
     const names = new Set(resolveExerciseAliases(history, exercise));
+    const settings = makeSettings(this.exerciseSettings());
     const byDay = new Map();
     for (const log of history) {
       if (!names.has(log.exercise)) continue;
       const day = dayOf(log.date);
       if (!day) continue;
-      const sets = setsDisplay(log);
+      // Written as the workout page writes them ("60×5 · 60×5", "BW+10×6", "BW×45s"), in the
+      // order lifted; the saved text ("60 x 5, 60 x 5") only if the sets can't be read.
+      const usesBw = inferLogUsesBodyweight(settings, log);
+      const isTimed = Boolean(resolveTimedStatus({ exerciseName: log.exercise, exerciseString: String(log.exercise_string || ''), settings, history }).is_timed);
+      const sets = formatSetsLine(displaySets(log, effectiveSetsForLog(settings, log), usesBw), { usesBodyweight: usesBw, isTimed }) || setsDisplay(log);
       const row = byDay.get(day) || byDay.set(day, { day, title: this.workout(day)?.title || log.workout_name || 'Workout', parts: [] }).get(day);
       if (sets) row.parts.push(sets);
     }
