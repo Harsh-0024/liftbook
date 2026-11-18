@@ -485,7 +485,7 @@ export function workoutScreen(ctx, day) {
     h('p', { class: 'wo-meta' }, h('span', {}, formatDay(day)), h('span', {}, `${w.logs.length} exercise${w.logs.length === 1 ? '' : 's'}`),
       sets ? h('span', {}, `${sets} set${sets === 1 ? '' : 's'}`) : null,
       lifted >= 1 ? h('span', { title: 'Weight times reps, added up over every set' }, `${fmtNum(lifted, 0)} kg lifted`) : null,
-      bw ? h('span', {}, `bodyweight ${fmtNum(bw)}`) : null),
+      bw ? h('span', {}, `bodyweight ${fmtNum(bw)} kg`) : null),
     saved ? savedNote(ctx, saved) : null,
     !saved && !lb.profile()?.bodyweight && cmp.some((c) => c.usesBw)
       ? h('p', { class: 'wo-note' }, icon('info'), h('span', {}, 'Set your bodyweight in ', h('a', { href: '#/settings/account' }, 'Settings'),

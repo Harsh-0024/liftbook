@@ -308,6 +308,11 @@ Checked: `npm test`, desktop browser against the local stand-in server (made-up 
     72 kg to 70 kg; lowest 70 kg, highest 105 kg", and the same for Overall strength (against your
     start), the Rate view and Bodyweight. One helper (`chartSummary` in `web/app/ui.js`) builds it
     for every chart. Checked on desktop against the stand-in server.
+52. **Workout page: bodyweight in kg.** The line under a workout's title read "1,965 kg lifted ·
+    bodyweight 79.5"; it now says "bodyweight 79.5 kg", like the rest of the app. Looked at adding a
+    "First" count beside New bests / Improving / Dipping / Steady (three of four exercises in the
+    demo's latest workout are firsts) but left it: five columns would cut those labels short on a
+    phone. Checked on desktop.
 
 Checked and clean (no change needed): zoom isn't blocked and the page language is set; an
 unknown address goes back to Home; nothing sticks out sideways or is cut off on any screen
