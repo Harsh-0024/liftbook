@@ -416,6 +416,24 @@ password managers and spellcheck off; a question with no key brings the key form
 (the next session stands out) look right on desktop; the training calendar already reads well in
 both themes (more = stronger gold, future days and today marked).
 
+## Checked in the real apps (19 Nov)
+
+- **Android app:** built from this branch (debug build) and installed on a Pixel 8 emulator,
+  which still had an earlier "Testing" sign-in. Only read, nothing saved. Seen working there:
+  Retrieve's spoken labels ("Session 2, Shoulders & Forearms, 7 exercises, last done 1 Nov"),
+  Home's "Today: no workout yet", the Log check's "“02/13” isn’t a date this app can read. Write
+  the day first: “13/02”." and "Too short for a name: is this a set line?" (the Log box was put
+  back as it was), and the sets list on Stats ("30×6 · 27.5×7 · 25×8"). Phones get no hover
+  effects (checked: no mouse).
+- **On start-up the Android app logs one error that isn't ours:** "Error injecting safe area
+  CSS: TypeError: Cannot read properties of null (reading 'style')", from a Capacitor plugin
+  running before the page has a body. The app looks right anyway. Worth a look when Capacitor
+  is next updated. (The other start-up errors were only the emulator being offline.)
+- **iPhone (Safari), signed in to the local stand-in server, no real data:** Home, Log, Retrieve
+  and Stats look right; today shows as an open ring on the week strip; the month-first date
+  message shows under the Log box; a tapped row doesn't stay grey. The draft I typed was
+  cleared.
+
 ## Next when resumed
 
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already
