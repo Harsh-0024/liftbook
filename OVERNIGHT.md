@@ -505,6 +505,14 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/exercise-options` (from `improve/round-4`)
+
+1. **An exercise's switches no longer look switched off.** In Settings > Exercises, opening an
+   exercise shows "Timed" and "Bodyweight" switches; their names were grey (a style meant for
+   Retrieve's tucked-away groups, which this list shares) while "Rename" below was dark, so the
+   switches read as unavailable. Their names are now in full ink there; Retrieve keeps its grey.
+   Checked both pages; 115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
