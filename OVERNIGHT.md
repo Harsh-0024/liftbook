@@ -515,6 +515,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
      old edit page did. The key stops listening once you leave the page.
    Checked in the browser: Cmd+Enter saved an edit and went back to the workout; Enter sent a
    coach question, Shift+Enter didn't. 115 tests pass.
+2. **The workout page's "i" notes close like before.** On the old page only one could be open,
+   and Escape or a tap anywhere else closed it. In the new app they stayed open until their "i"
+   was tapped again, and several could pile up. Now opening one closes the others, and Escape or a
+   tap away closes it. Checked in the browser; 115 tests pass.
 
 ## Waiting list
 

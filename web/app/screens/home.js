@@ -248,9 +248,34 @@ function vsBest(c) {
 
 /** A small "i" that opens a few lines explaining a block. */
 function infoPop(label, items) {
-  return h('details', { class: 'info-pop' },
+  closeInfoPopsOnEscapeOrTapAway();
+  const pop = h('details', { class: 'info-pop' },
     h('summary', { 'aria-label': label }, icon('info')),
     h('div', { class: 'pop' }, h('ul', {}, items.filter(Boolean).map((x) => h('li', {}, x)))));
+  // One open at a time, as on the old workout page.
+  pop.addEventListener('toggle', () => {
+    if (pop.open) document.querySelectorAll('details.info-pop[open]').forEach((d) => { if (d !== pop) d.open = false; });
+  });
+  return pop;
+}
+
+// Escape, or a tap anywhere outside, closes an open "i" (set up once for the whole app).
+let infoPopKeys = false;
+function closeInfoPopsOnEscapeOrTapAway() {
+  if (infoPopKeys) return;
+  infoPopKeys = true;
+  const open = () => [...document.querySelectorAll('details.info-pop[open]')];
+  document.addEventListener('click', (e) => {
+    for (const d of open()) if (!d.contains(e.target)) d.open = false;
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const shown = open();
+    if (!shown.length) return;
+    shown.forEach((d) => { d.open = false; });
+    // Focus goes back to the "i" that was open, so the keyboard doesn't lose its place.
+    if (shown.some((d) => d.contains(document.activeElement))) shown[0].querySelector('summary')?.focus();
+  });
 }
 
 const SVG = 'http://www.w3.org/2000/svg';
