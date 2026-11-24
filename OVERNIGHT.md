@@ -505,6 +505,11 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/workout-page` (from `improve/round-4`)
+
+- c54c39b: the link to the older/newer workout at the foot of a workout page always took half the row, so on the newest (or oldest) workout, with only one neighbour, "Shoulders & Forearms" was cut to "Shoulders & For…" beside an empty half. A lone neighbour now spans the row; with both, they still sit side by side. Checked on the iPhone (dark); tapping it still opens that workout.
+- a6d566a: on a phone the workout's buttons wrap onto two rows (Edit, Repeat / Copy as text, Share link, trash) that ended at different points. Under 560px the buttons grow to fill their row, so both rows line up edge to edge; the trash button stays square. Checked on the iPhone; Copy as text still says "Copied". Tests: 115 pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
