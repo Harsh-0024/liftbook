@@ -505,6 +505,16 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/workout-phone` (from `improve/round-4`)
+
+- **Workout buttons fill their rows on a phone.** On an iPhone the action row wraps to Edit + Repeat
+  and Copy as text + Share link + trash, and the first row stopped short with a gap. Under 560px the
+  buttons now share each row's width (the trash stays a square at the end). Checked on the iPhone
+  18 Pro simulator.
+- **iPhone checks done (simulator, mock data, light mode):** tapping a chart moves the box to the
+  tapped point and tapping the box opens that workout; the exercise card's big number ("70 kg",
+  "↓ 2 kg less than in Aug 2026") fits; the trash button sits at the end of the action row.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
