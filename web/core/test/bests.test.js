@@ -12,6 +12,8 @@ test('topSetText covers weights, bodyweight and timed sets', () => {
   assert.equal(topSetText({ weight: 50, reps: 6, offset: -20 }), 'BW−20 × 6');
   assert.equal(topSetText({ weight: 20, reps: 45, isTimed: true }), '20 × 45s');
   assert.equal(topSetText({ weight: 0, reps: 60, isTimed: true }), '60s');
+  assert.equal(topSetText({ weight: 79.5, reps: 60, offset: 0, isTimed: true }), 'BW × 60s');
+  assert.equal(topSetText({ weight: 89.5, reps: 30, offset: 10, isTimed: true }), 'BW+10 × 30s');
   assert.equal(topSetText({ weight: 0, reps: 0 }), '');
 });
 

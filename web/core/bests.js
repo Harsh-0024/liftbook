@@ -11,14 +11,15 @@ const trim = (n) => {
   return Number.isInteger(r) ? String(r) : r.toFixed(1);
 };
 
-/** "80 × 5", "BW+10 × 8", "BW × 12", "20 × 45s", "60s". */
+/** "80 × 5", "BW+10 × 8", "BW × 12", "20 × 45s", "BW × 60s", "60s". */
 export function topSetText({ weight, reps, offset = null, isTimed = false }) {
   if (!weight && !reps) return '';
-  if (isTimed) return weight ? `${trim(weight)} × ${reps}s` : `${reps}s`;
   let load = trim(weight);
   if (offset !== null && offset !== undefined) {
     load = Math.abs(offset) < 0.05 ? 'BW' : `BW${offset > 0 ? '+' : '−'}${trim(Math.abs(offset))}`;
   }
+  // A timed hold with bodyweight reads "BW × 60s" as it was logged, not the bodyweight's number.
+  if (isTimed) return weight ? `${load} × ${reps}s` : `${reps}s`;
   return reps ? `${load} × ${reps}` : load;
 }
 

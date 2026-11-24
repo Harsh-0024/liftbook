@@ -405,7 +405,7 @@ export function bestsScreen(ctx) {
               h('span', { class: 'desc' }, r.top ? `Top set ${r.top} · ${day(r.topDay)}` : `${r.sessions} session${r.sessions === 1 ? '' : 's'}`),
               h('span', { class: 'desc subtle' }, under)),
             // Whole kilos for an estimated max, a whole score for a timed hold (as the exercise tiles show them).
-            h('span', { class: 'value' }, h('b', {}, r.isTimed ? fmtNum(r.best, 0) : `${fmtNum(r.best, 0)} kg`), h('small', {}, day(r.bestDay))),
+            h('span', { class: 'value' }, h('b', {}, r.isTimed ? `${fmtNum(r.best, 0)} score` : `${fmtNum(r.best, 0)} kg`), h('small', {}, day(r.bestDay))),
             h('span', { class: 'chev-i' }, icon('chev')));
         }))
         : h('div', { class: 'empty' }, icon('stats'), all.length ? 'No exercise matches that.' : 'Log a workout to see your bests here.'));
