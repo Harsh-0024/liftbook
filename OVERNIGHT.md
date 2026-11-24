@@ -536,6 +536,9 @@ moved on to something else meanwhile.
   workout's action row (it wraps with the others on a narrow screen), the Retrieve rows on two
   columns, the Consistency year grid (should scroll sideways at 12px squares, as before), and
   tapping a chart (the box should move to the tapped point; tapping the box opens the workout).
+- **iPhone check of `improve/keyboard-parity`** (waits on: the iOS Simulator): the keyboard's
+  "Search" key should close the keyboard in All workouts, Exercises and Retrieve; in the coach
+  box, return should add a line; a workout's "i" notes should close on a tap elsewhere.
 
 ## Next when resumed
 
