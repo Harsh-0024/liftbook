@@ -514,6 +514,8 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 - **Bodyweight axis without "kg".** Its axis read "77 kg … 80 kg" while the exercise chart's reads
   bare numbers; it now matches, and the tag at the line's end still says "79.5 kg" (as does the
   chart's spoken summary).
+- **Personal bests: status lines.** "at your best now" reads in green, as other good news does;
+  "first session" reads "one session so far", the words the exercise tile already uses.
 
 ## Waiting list
 

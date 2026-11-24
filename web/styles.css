@@ -1177,6 +1177,7 @@ a.group.rowi.bests-link { margin-bottom: 18px; }
 .best-row .title .pill { margin-left: 8px; vertical-align: 1px; padding: 1px 8px; font-size: 0.66rem; }
 .best-row .value b { display: block; font-size: 1.05rem; font-weight: 700; color: var(--text); line-height: 1.2; }
 .best-row .value small { display: block; font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+.rowi.best-row .desc.at-best { color: var(--good); }
 .rowi .desc.subtle { color: var(--subtle); font-size: 0.76rem; }
 
 /* Workout page: the one before and the one after */

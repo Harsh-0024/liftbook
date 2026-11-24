@@ -462,12 +462,14 @@ export function bestsScreen(ctx) {
           // The top set's day shows only when it differs from the best's, which sits beside the number.
           // An exercise left for two months says when it was last done rather than how it stands "now".
           const under = r.lastDay && r.lastDay < resting ? `last done ${day(r.lastDay)}`
-            : r.belowPct >= 1 ? `now ${fmtNum(r.belowPct, r.belowPct < 10 ? 1 : 0)}% under` : r.sessions > 1 ? 'at your best now' : 'first session';
+            : r.belowPct >= 1 ? `now ${fmtNum(r.belowPct, r.belowPct < 10 ? 1 : 0)}% under` : r.sessions > 1 ? 'at your best now' : 'one session so far';
+          // Standing at your best reads in green, as other good news does (the sync dot, "up" pills).
+          const atBest = under === 'at your best now';
           return h('a', { class: 'rowi best-row', href: `#/stats?exercise=${encodeURIComponent(r.value)}` },
             h('span', { class: 'main' },
               h('span', { class: 'title' }, r.label, r.fresh ? h('span', { class: 'pill best' }, 'New') : null),
               h('span', { class: 'desc' }, r.top ? `Top set ${r.top}${r.topDay === r.bestDay ? '' : ` · ${day(r.topDay)}`}` : `${r.sessions} session${r.sessions === 1 ? '' : 's'}`),
-              h('span', { class: 'desc subtle' }, under)),
+              h('span', { class: `desc subtle${atBest ? ' at-best' : ''}` }, under)),
             // Whole kilos for an estimated max, a whole score for a timed hold (as the exercise tiles show them).
             h('span', { class: 'value' }, h('b', {}, r.isTimed ? `${fmtNum(r.best, 0)} score` : `${fmtNum(r.best, 0)} kg`), h('small', {}, day(r.bestDay))),
             h('span', { class: 'chev-i' }, icon('chev')));
