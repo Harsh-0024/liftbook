@@ -319,21 +319,24 @@ export function statsScreen(ctx) {
       const values = metric === 'volume' ? c.volume : metric === 'weight' ? c.weight : c.data;
       const [labels, vals] = clip(c.labels, values || [], from);
       const st = c.stats || {};
-      const unit = c.is_timed && metric !== 'volume' ? 's' : '';
-      // Weights read as weights, as bodyweight and "kg lifted" do elsewhere; a timed hold's score has no unit.
-      const tagUnit = unit || (c.is_timed ? '' : ' kg');
+      // The axis has no unit; the tag at the end does. Weights read as weights, as bodyweight and
+      // "kg lifted" do elsewhere; a timed hold's score (weight × √seconds) has no unit, and its top
+      // weight is still kilos (the seconds are not what this line shows).
+      const unit = '';
+      const tagUnit = c.is_timed && metric !== 'weight' ? '' : ' kg';
+      const metrics = c.is_timed ? METRICS.map(([v, l]) => [v, v === 'data' ? 'Score' : l]) : METRICS;
       const kg = c.is_timed ? '' : ' kg';
       // An estimate in whole kilos ("118 kg", not "117.6 kg"), which also keeps it inside a phone-width tile.
       // A timed hold's score is weight × √seconds (615.8 for 79.5 kg held 60 s): whole numbers, and the
       // tile says how it is worked out, since the number alone means nothing.
       const withKg = (v) => (v === null || v === undefined || Number.isNaN(v) ? fmtNum(v) : `${fmtNum(v, 0)}${kg}`);
       exerciseCard = h('div', {},
-        tabs(METRICS, metric, (v) => {
+        tabs(metrics, metric, (v) => {
           metric = v;
           paint();
         }, 'Measure'),
         lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1])}${tagUnit}` : null,
-          name: `${exercise}, ${(METRICS.find(([v]) => v === metric) || METRICS[0])[1].toLowerCase()}`, say: (v) => `${fmtNum(v)}${tagUnit}` }),
+          name: `${exercise}, ${(metrics.find(([v]) => v === metric) || metrics[0])[1].toLowerCase()}`, say: (v) => `${fmtNum(v)}${tagUnit}` }),
         h('div', { class: 'grid-3', style: 'margin-top:14px' },
           tile(c.is_timed ? 'Current score' : 'Current est. max', withKg(st.current_1rm), c.is_timed ? 'weight × √seconds' : null),
           tile('Best', withKg(st.max_1rm), null, 'gold'),

@@ -268,7 +268,8 @@ export function lineChart(labels, values, { unit = '', base = null, tag = null, 
   if (base !== null) nums.push(base);
   const { lo, hi, places, ticks } = chartScale(nums); // round gridlines (core/axis.js)
   const n = Math.max(1, values.length - 1);
-  const x = (i) => pad.l + (i / n) * (W - pad.l - pad.r);
+  // A single point sits in the middle rather than against the left edge.
+  const x = (i) => (pts.length === 1 ? (pad.l + W - pad.r) / 2 : pad.l + (i / n) * (W - pad.l - pad.r));
   const y = (v) => pad.t + (1 - (Number(v) - lo) / (hi - lo)) * (H - pad.t - pad.b);
   const fmt = format || ((v) => `${fmtNum(v, places)}${unit}`);
   for (const v of ticks) {
@@ -333,8 +334,9 @@ export function lineChart(labels, values, { unit = '', base = null, tag = null, 
   for (let k = 1; k < slots; k += 1) marks.push(Math.round(pts[0][0] + (span * k) / slots));
   if (span > 0) marks.push(pts[pts.length - 1][0]);
   [...new Set(marks)].forEach((i, k, all) => {
-    const anchor = k === 0 ? 'start' : k === all.length - 1 ? 'end' : 'middle';
-    const t = s('text', { x: k === 0 ? pad.l : k === all.length - 1 ? W - pad.r : x(i), y: H - 8, 'text-anchor': anchor });
+    const lone = all.length === 1 && pts.length === 1;
+    const anchor = lone ? 'middle' : k === 0 ? 'start' : k === all.length - 1 ? 'end' : 'middle';
+    const t = s('text', { x: lone ? x(i) : k === 0 ? pad.l : k === all.length - 1 ? W - pad.r : x(i), y: H - 8, 'text-anchor': anchor });
     t.textContent = String(labels[i] ?? '');
     svg.append(t);
   });
