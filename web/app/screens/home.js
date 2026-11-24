@@ -476,6 +476,7 @@ export function workoutScreen(ctx, day) {
   };
 
   const link = shareLinkBox(ctx, day, w.title);
+  const titleParts = splitSessionTitle(w.title);
   const bests = cmp.filter((c) => c.medal).length;
   const nums = [[bests === 1 ? 'New best' : 'New bests', bests, 'gold'], ['Improving', dir('up'), 'good'], ['Dipping', dir('down'), 'bad'], ['Steady', dir('steady'), '']];
   return h('div', {},
@@ -484,7 +485,9 @@ export function workoutScreen(ctx, day) {
       h('div', { class: 'tools' },
         h('a', { class: 'icon-btn', href: `#/workout/${day}/edit`, 'aria-label': 'Edit', title: 'Edit' }, icon('edit')),
         h('button', { class: 'icon-btn', type: 'button', 'aria-label': 'Share', title: 'Share', onclick: share }, icon('share')))),
-    h('h1', { class: 'wo-title' }, w.title),
+    // "Session 2 - Legs" reads as Legs, with its session over it, as Home and All workouts show it.
+    titleParts.session ? h('p', { class: 'wo-kicker' }, titleParts.session) : null,
+    h('h1', { class: 'wo-title' }, titleParts.title || w.title),
     h('p', { class: 'wo-meta' }, h('span', {}, formatDay(day)), h('span', {}, `${w.logs.length} exercise${w.logs.length === 1 ? '' : 's'}`),
       sets ? h('span', {}, `${sets} set${sets === 1 ? '' : 's'}`) : null,
       lifted >= 1 ? h('span', { title: 'Weight times reps, added up over every set' }, `${fmtNum(lifted, 0)} kg lifted`) : null,
