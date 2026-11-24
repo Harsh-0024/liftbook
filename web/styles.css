@@ -1189,6 +1189,9 @@ a.group.rowi.bests-link { margin-bottom: 18px; }
 .wo-step small { display: block; font-size: 0.76rem; margin-top: 1px; }
 .wo-step svg.i { flex: none; width: 16px; height: 16px; color: var(--subtle); }
 .wo-step .flip { display: inline-flex; transform: scaleX(-1); }
+/* Newest or oldest workout: only one neighbour, so it takes the whole row instead of half (no cut-off title) */
+.wo-steps > span:empty { display: none; }
+.wo-steps:has(> span:empty) > a { grid-column: 1 / -1; }
 
 /* Custom workout: arranging a group (keep on top / less often) */
 .pick-tools { display: flex; justify-content: flex-end; gap: 8px; padding: 2px 16px 12px; }
