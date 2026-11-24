@@ -531,7 +531,7 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
 moved on to something else meanwhile.
 
-- **iPhone checks** (waits on: the iOS Simulator working again). Everything in round 4 was checked
+- ~~**iPhone checks**~~ **Done 25 Nov** (the last one, the gold "a new best" note after saving, was checked on the iPhone in dark mode: Pull-Ups 9 reps gave "Saved · a new best" and a 🥇 +8.3% chip; nothing to change. The colour medal emoji stays on purpose: gold/silver/bronze say which set beat the best). Original note: (waits on: the iOS Simulator working again). Everything in round 4 was checked
   on a computer only. To see on an iPhone: the charts' red stretch under the start line and the
   guide line, the gold "a new best" note after saving, the "SESSION 2" kicker on a workout, timed
   exercises' bests and charts, the exercise card's big number, the trash button at the end of a
