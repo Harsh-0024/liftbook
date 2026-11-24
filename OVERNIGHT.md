@@ -509,6 +509,7 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 
 - Chart end tags: the chart kept a fixed 54px on its right for the pill that labels the last point, enough for "+11%" but not "79.5 kg", which ran past the chart into the card's padding on a phone (the bodyweight chart). The right margin now grows with the tag (short tags keep 54px), so the pill ends inside the chart and lines up with the stat cards below. The narrower plot then dropped the middle date ("3 Oct"), so dates are now spaced at 100px instead of 110px and it's back. Checked on the iPhone in light mode, and on the computer (pill ends 4px inside the chart).
 - Bodyweight stat tiles: the Range tile's "kg, low to high" wrapped onto two lines on a phone, so it stood taller than Now and Change. It reads "kg, low–high" now; all three tiles are one height. Checked on the iPhone (light).
+- Serif numbers: Cormorant's default old-style "1" looks like a capital I, so the Stats headline "+11%" read "+II%". The headline and h1–h3 now use lining figures (font-variant-numeric: lining-nums); "+11%" reads plainly. Checked on the iPhone (light).
 
 ## Waiting list
 
