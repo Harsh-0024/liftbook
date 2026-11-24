@@ -516,6 +516,8 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   chart's spoken summary).
 - **Personal bests: status lines.** "at your best now" reads in green, as other good news does;
   "first session" reads "one session so far", the words the exercise tile already uses.
+- Checked in dark mode too: the green is the dark theme's brighter one, and the Stats tiles and
+  captions read cleanly on the dark cards.
 
 ## Waiting list
 
