@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `improve/workout-not-found` (from `improve/round-4`)
+
+1. **A day with no workout says so.** Opening a workout's address for a day with nothing logged
+   said "Workout not found. It may have been deleted on another device." It now reads "No workout
+   that day: Nothing is logged on Wed 1 Jan 2020", keeps the deleted-elsewhere note as a maybe,
+   and offers Log workout beside All workouts.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

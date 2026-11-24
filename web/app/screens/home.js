@@ -423,8 +423,15 @@ export function workoutScreen(ctx, day) {
   const { lb } = ctx;
   const w = lb.workout(day);
   if (!w) {
-    return h('div', {}, pageHead('Workout not found', 'It may have been deleted on another device.', { back: '#/history' }),
-      h('a', { class: 'btn', href: '#/history' }, 'All workouts'));
+    // A real day with nothing on it says which day, and offers to log one; a mistyped address
+    // (or a workout deleted on another device) says so.
+    const real = /^\d{4}-\d{2}-\d{2}$/.test(day) && !Number.isNaN(Date.parse(`${day}T12:00:00`));
+    return h('div', {}, pageHead(real ? 'No workout that day' : 'Workout not found',
+      real ? `Nothing is logged on ${formatDay(day)}. If there was one, it may have been deleted on another device.`
+        : 'This address doesn\'t match a workout.', { back: '#/history' }),
+      h('div', { class: 'row' },
+        h('a', { class: 'btn', href: '#/history' }, icon('calendar'), 'All workouts'),
+        h('a', { class: 'btn', href: '#/log' }, icon('log'), 'Log workout')));
   }
   // Opened from another workout's chart or table: the back arrow goes back there.
   const from = /^\d{4}-\d{2}-\d{2}$/.exec(new URLSearchParams(location.hash.split('?')[1] || '').get('from') || '')?.[0] || null;
