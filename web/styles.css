@@ -377,6 +377,7 @@ input.inline-num { width: 84px; padding: 7px 10px; text-align: right; font-weigh
 .nums .zero b { color: var(--subtle); opacity: 0.8; } /* quieter than a count, still 3:1+ */
 
 /* ---------- buttons ---------- */
+.btn.trash-end { margin-left: auto; padding: 0 15px; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   min-height: 46px; padding: 0 20px; border-radius: 12px;

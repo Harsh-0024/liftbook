@@ -435,7 +435,8 @@ export function workoutScreen(ctx, day) {
   const sets = w.logs.reduce((n, l) => n + (Array.isArray(l.sets?.reps) ? l.sets.reps.length : 0), 0);
   const lifted = cmp.reduce((n, c) => n + (c.volume || 0), 0);
 
-  const del = h('button', { class: 'btn danger', type: 'button' }, icon('trash'), 'Delete');
+  // A trash button at the end of the row (named for screen readers), so the row stays on one line.
+  const del = h('button', { class: 'btn danger trash-end', type: 'button', 'aria-label': 'Delete workout', title: 'Delete workout' }, icon('trash'));
   del.addEventListener('click', busy(del, async () => {
     if (!(await ask('This removes it from all your devices.', { title: `Delete ${w.title} on ${formatDay(day)}?`, yes: 'Delete', danger: true }))) return;
     const ids = await lb.deleteWorkout(day);

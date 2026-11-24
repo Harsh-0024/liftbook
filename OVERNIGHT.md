@@ -481,6 +481,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 13. **Personal bests: resting exercises.** An exercise not done for two months said "at your best
    now" or "now 20% under", as if it were current. It now says "last done 23 Aug". (None in the
    demo data is that old, so this was checked by reading, not on screen.)
+14. **Workout page: Delete stays on the row.** Edit, Repeat, Copy as text, Share link and Delete
+   didn't fit one line on a computer, so Delete sat alone on a second one. It is now a red trash
+   button at the row's far end (named "Delete workout" for screen readers), apart from the others.
 
 ## Next when resumed
 
