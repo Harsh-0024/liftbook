@@ -521,6 +521,11 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 2. **No complaints while only the first line is written.** A box with just the date and title
    showed a red "No exercises found" and a red count before anything else was typed. Those wait
    now until there is a second line; saving still checks everything as before.
+3. **Cursor ready, and no false warning.** The cursor now waits after the date line for the title.
+   Found while doing it: the page is drawn a second time once the data loads, and that second
+   drawing took its own date line for someone's unsaved work and showed "Your unsaved workout is
+   still here". A box already on the asked day is now recognised as such; the note only shows for a
+   draft dated otherwise (checked both).
 
 ## Waiting list
 

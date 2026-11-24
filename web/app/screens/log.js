@@ -53,8 +53,19 @@ export function logScreen(ctx) {
   const askedDay = /[?&]day=(\d{4}-\d{2}-\d{2})(?:&|$)/.exec(location.hash)?.[1];
   if (askedDay && !Number.isNaN(Date.parse(`${askedDay}T12:00:00`))) {
     const [y, m, d] = askedDay.split('-').map(Number);
-    if (!ta.value.trim()) ta.value = `${d}/${m}/${String(y).slice(2)} - `;
-    else setTimeout(() => toast(`Your unsaved workout is still here. Change its first line to ${d}/${m}/${String(y).slice(2)} for that day.`), 0);
+    const dateLine = `${d}/${m}/${String(y).slice(2)}`;
+    if (!ta.value.trim()) ta.value = `${dateLine} - `;
+    // The box already on that day (this page drawn again, or a draft for that day): just place the
+    // cursor at the end. A draft for another day stays as it is, with a word about the date.
+    if (ta.value.trimStart().startsWith(`${dateLine} `)) {
+      setTimeout(() => {
+        if (!ta.isConnected) return;
+        ta.focus({ preventScroll: true });
+        ta.setSelectionRange(ta.value.length, ta.value.length);
+      }, 50);
+    } else {
+      setTimeout(() => { if (ta.isConnected) toast(`Your unsaved workout is still here. Change its first line to ${dateLine} for that day.`); }, 0);
+    }
   }
   const fit = autoGrow(ta);
   const suggest = attachSuggestions(ta, () => lb.exerciseCatalog().map((e) => e.name));
