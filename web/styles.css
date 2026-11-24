@@ -571,8 +571,10 @@ input.rp-title[type="text"]:focus { outline: none; box-shadow: none; border-bott
 .chart .axis { stroke: var(--hair); stroke-dasharray: 3 4; }
 .chart .base { stroke: var(--subtle); stroke-dasharray: 4 4; opacity: 0.6; }
 .chart .line { fill: none; stroke: var(--gold); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(0 2px 6px var(--gold-glow)); }
-.chart .dot { fill: var(--gold); stroke: var(--surface); stroke-width: 1.5; }
-.chart .dot.last { r: 5; }
+.chart .dot { fill: var(--gold); stroke: none; }
+.chart .dot.last { r: 5; stroke: var(--surface); stroke-width: 2; }
+.chart .below { fill: var(--bad-soft); stroke: none; }
+.chart .guide { stroke: var(--gold); stroke-dasharray: 2 4; opacity: 0.45; }
 .chart text { fill: var(--subtle); font: 500 11px var(--font); }
 .chart .tag rect { fill: var(--gold-soft); stroke: var(--gold); }
 .chart .tag text { fill: var(--gold-text); font-weight: 700; }

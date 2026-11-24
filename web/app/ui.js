@@ -288,11 +288,36 @@ export function lineChart(labels, values, { unit = '', base = null, tag = null, 
     path += ` C${cx.toFixed(1)},${y0.toFixed(1)} ${cx.toFixed(1)},${y1.toFixed(1)} ${x1.toFixed(1)},${y1.toFixed(1)}`;
   }
   const bottom = H - pad.b;
-  svg.append(s('path', { d: `${path} L${P[P.length - 1][0]},${bottom} L${P[0][0]},${bottom} Z`, fill: `url(#${id})` }));
+  const area = `${path} L${P[P.length - 1][0]},${bottom} L${P[0][0]},${bottom} Z`;
+  if (base !== null && y(base) < bottom) {
+    // Above the start line the area is gold; where the line dips under it, the stretch between
+    // the line and the start is a soft red, as the old Stats page showed a fall below the start.
+    const top = `clip-top-${gradientId}`;
+    const under = `clip-under-${gradientId}`;
+    const yb = y(base);
+    const clipTop = s('clipPath', { id: top });
+    clipTop.append(s('rect', { x: 0, y: 0, width: W, height: yb }));
+    const clipUnder = s('clipPath', { id: under });
+    clipUnder.append(s('rect', { x: 0, y: yb, width: W, height: H - yb }));
+    defs.append(clipTop, clipUnder);
+    svg.append(s('path', { d: area, fill: `url(#${id})`, 'clip-path': `url(#${top})` }));
+    svg.append(s('path', { d: `${path} L${P[P.length - 1][0]},${yb} L${P[0][0]},${yb} Z`, class: 'below', 'clip-path': `url(#${under})` }));
+  } else {
+    svg.append(s('path', { d: area, fill: `url(#${id})` }));
+  }
+  // Where it is now, carried back to the axis as a faint guide.
+  const [lx, ly] = P[P.length - 1];
+  if (P.length > 1) svg.append(s('line', { x1: pad.l, x2: lx, y1: ly, y2: ly, class: 'guide' }));
   svg.append(s('path', { d: path, class: 'line' }));
-  if (pts.length <= 60) P.forEach(([px, py], k) => svg.append(s('circle', { cx: px, cy: py, r: k === P.length - 1 ? 4.5 : 2.6, class: 'dot' })));
+  // A dot for every point while they have room (a little smaller as they crowd), the latest one larger.
+  const room = (W - pad.l - pad.r) / Math.max(1, P.length);
+  if (room >= 7) {
+    const r = room >= 10 ? 2.6 : 2.1;
+    P.forEach(([px, py], k) => svg.append(s('circle', { cx: px, cy: py, r: k === P.length - 1 ? 4.5 : r, class: k === P.length - 1 ? 'dot last' : 'dot' })));
+  } else {
+    svg.append(s('circle', { cx: lx, cy: ly, r: 4.5, class: 'dot last' }));
+  }
   if (tag) {
-    const [lx, ly] = P[P.length - 1];
     const g = s('g', { class: 'tag' });
     const w = 8 + tag.length * 7;
     g.append(s('rect', { x: lx + 8, y: ly - 11, width: w, height: 22, rx: 11 }));
@@ -301,11 +326,18 @@ export function lineChart(labels, values, { unit = '', base = null, tag = null, 
     g.append(t);
     svg.append(g);
   }
-  const first = s('text', { x: pad.l, y: H - 8 });
-  first.textContent = String(labels[pts[0][0]] ?? '');
-  const last = s('text', { x: W - pad.r, y: H - 8, 'text-anchor': 'end' });
-  last.textContent = String(labels[pts[pts.length - 1][0]] ?? '');
-  svg.append(first, last);
+  // Dates along the bottom: the first and last, and evenly spaced ones between while they fit.
+  const span = pts[pts.length - 1][0] - pts[0][0];
+  const slots = span > 0 ? Math.max(1, Math.min(4, Math.floor((W - pad.l - pad.r) / 110))) : 0;
+  const marks = [pts[0][0]];
+  for (let k = 1; k < slots; k += 1) marks.push(Math.round(pts[0][0] + (span * k) / slots));
+  if (span > 0) marks.push(pts[pts.length - 1][0]);
+  [...new Set(marks)].forEach((i, k, all) => {
+    const anchor = k === 0 ? 'start' : k === all.length - 1 ? 'end' : 'middle';
+    const t = s('text', { x: k === 0 ? pad.l : k === all.length - 1 ? W - pad.r : x(i), y: H - 8, 'text-anchor': anchor });
+    t.textContent = String(labels[i] ?? '');
+    svg.append(t);
+  });
   return svg;
 }
 
