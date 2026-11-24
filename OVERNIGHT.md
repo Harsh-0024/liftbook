@@ -525,6 +525,7 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   (sets, a rep range, or nothing) follows what the plan itself declares, so it is left as is.
   Tip: Safari's cached app on 127.0.0.1 swallows `/__signin`; the Mac's address
   (http://192.168.29.209:8791/__signin?to=/) is a clean origin that works.
+- Nov 25, light mode on iPhone: the Bodyweight row's description looked bold on `design/charts`, which lacks this branch's `.rowi label.main` weight fix. On this branch it is regular, like every other row. Merge this branch to fix it everywhere.
 
 ## Waiting list
 
