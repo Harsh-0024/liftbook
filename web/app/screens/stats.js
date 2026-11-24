@@ -4,7 +4,7 @@ import { h, icon, pageHead, lineChart, fmtNum, formatDay, toast, tapWord } from 
 import { normalizeExerciseName } from '../../core/names.js';
 import { addDays, deviceDay } from '../../core/dates.js';
 import { overallView } from '../../core/overall_view.js';
-import { sortBests } from '../../core/bests.js';
+import { sortBests, exerciseHeadline } from '../../core/bests.js';
 import { consistencyYears, yearWindow, consistencyHero, consistencyTiles, yearGrid } from '../../core/consistency.js';
 import { scrollBehavior } from '../motion.js';
 
@@ -332,21 +332,17 @@ export function statsScreen(ctx) {
       const withKg = (v) => (v === null || v === undefined || Number.isNaN(v) ? fmtNum(v) : `${fmtNum(v, 0)}${kg}`);
       // The latest value as a big number, as the old Stats page showed it, and how far it has come
       // over the range shown ("↑ 33 kg more than in Sep 2026").
-      const shown = vals.map((v, i) => [labels[i], v]).filter(([, v]) => v !== null && v !== undefined && Number.isFinite(Number(v)));
+      const head = exerciseHeadline(labels, vals, { metric, isTimed: c.is_timed });
       let exHero = null;
-      if (shown.length) {
-        const [firstDay, first] = shown[0];
-        const last = Number(shown[shown.length - 1][1]);
-        const what = metric === 'volume' ? 'lifted, latest session' : metric === 'weight' ? 'heaviest set, latest session'
-          : c.is_timed ? 'score, latest session' : 'estimated max, latest session';
-        const diff = last - Number(first);
-        const [fy, fm] = String(firstDay).split('-').map(Number);
-        const unitText = c.is_timed && metric !== 'weight' ? '' : ' kg';
-        const change = shown.length < 2 || !fm ? null
-          : Math.abs(diff) < 0.05 ? h('small', { class: 'hero-change' }, `Level with ${MONTHS[fm - 1]} ${fy}`)
-            : h('small', { class: `hero-change ${diff < 0 ? 'down' : 'up'}` },
-              h('strong', {}, `${diff < 0 ? '↓' : '↑'} ${fmtNum(Math.abs(diff), 0)}${unitText}`), ` ${diff < 0 ? 'less' : 'more'} than in ${MONTHS[fm - 1]} ${fy}`);
-        exHero = h('div', { class: 'hero' }, h('b', {}, `${fmtNum(last, 0)}${unitText}`), h('span', {}, what), change);
+      if (head) {
+        const u = head.unit ? ` ${head.unit}` : '';
+        const ch = head.change;
+        const when = ch ? `${MONTHS[ch.month - 1]} ${ch.year}` : '';
+        const change = !ch ? null
+          : ch.direction === 'level' ? h('small', { class: 'hero-change' }, `Level with ${when}`)
+            : h('small', { class: `hero-change ${ch.direction}` },
+              h('strong', {}, `${ch.direction === 'down' ? '↓' : '↑'} ${fmtNum(ch.amount, 0)}${u}`), ` ${ch.direction === 'down' ? 'less' : 'more'} than in ${when}`);
+        exHero = h('div', { class: 'hero' }, h('b', {}, `${fmtNum(head.value, 0)}${u}`), h('span', {}, head.what), change);
       }
       exerciseCard = h('div', {},
         exHero,

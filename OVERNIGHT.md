@@ -487,6 +487,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 15. **Retrieve: cycle rows line up.** A session done recently shows its date under the name, which
    made that cycle's row taller than the rest (90px against 68px). Once any session has a date, the
    others keep that line empty, so every row is the same height. With no dates at all, nothing changes.
+16. **Exercise headline, tested.** The big number's maths (item 11) moved from the Stats screen into
+   `core/bests.js` (`exerciseHeadline`) with two tests: gaps in the data, one session, timed holds,
+   and a change under half a unit now reading "Level with …" rather than "↑ 0 kg more".
 
 ## Next when resumed
 

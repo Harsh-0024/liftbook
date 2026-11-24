@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { personalBests, sortBests, topSetText } from '../bests.js';
+import { personalBests, sortBests, topSetText, exerciseHeadline } from '../bests.js';
 
 const chart = (labels, data, weight, reps, extra = {}) => ({ labels, data, weight, reps, ...extra });
 
@@ -50,4 +50,27 @@ test('sorting: latest best, highest (timed last) and A to Z', () => {
   assert.deepEqual(sortBests(rows, 'best').map((r) => r.label), ['Squat', 'Curl', 'Plank']);
   assert.deepEqual(sortBests(rows, 'alpha').map((r) => r.label), ['Curl', 'Plank', 'Squat']);
   assert.equal(rows[2].top, '90s');
+});
+
+test('exerciseHeadline: latest value, what it is, and the change since the first shown', () => {
+  const h = exerciseHeadline(['2026-08-23', '2026-09-10', '2026-11-16'], [72, 105, 70]);
+  assert.deepEqual(h, { value: 70, unit: 'kg', what: 'estimated max, latest session', change: { direction: 'down', amount: 2, year: 2026, month: 8 } });
+  const up = exerciseHeadline(['2026-09-12', '2026-11-17'], [72, 105], { metric: 'weight' });
+  assert.equal(up.what, 'heaviest set, latest session');
+  assert.deepEqual(up.change, { direction: 'up', amount: 33, year: 2026, month: 9 });
+  assert.equal(exerciseHeadline(['2026-10-01'], [900], { metric: 'volume' }).what, 'lifted, latest session');
+});
+
+test('exerciseHeadline: gaps, one session, small changes and timed holds', () => {
+  assert.equal(exerciseHeadline([], []), null);
+  assert.equal(exerciseHeadline(['2026-10-01', '2026-10-08'], [null, undefined]), null);
+  // Gaps are skipped: the first and last real numbers are compared.
+  const g = exerciseHeadline(['2026-07-01', '2026-08-01', '2026-09-01', '2026-10-01'], [null, 60, null, 65]);
+  assert.deepEqual(g.change, { direction: 'up', amount: 5, year: 2026, month: 8 });
+  assert.equal(exerciseHeadline(['2026-10-01'], [60]).change, null);
+  assert.equal(exerciseHeadline(['2026-10-01', '2026-10-08'], [60, 60.3]).change.direction, 'level');
+  const timed = exerciseHeadline(['2026-10-01', '2026-11-16'], [600, 616], { isTimed: true });
+  assert.equal(timed.unit, '');
+  assert.equal(timed.what, 'score, latest session');
+  assert.equal(exerciseHeadline(['2026-10-01'], [20], { metric: 'weight', isTimed: true }).unit, 'kg');
 });

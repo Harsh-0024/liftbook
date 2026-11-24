@@ -73,3 +73,28 @@ export function sortBests(rows, by = 'recent') {
   if (by === 'best') return list.sort((a, b) => Number(a.isTimed) - Number(b.isTimed) || b.best - a.best || a.label.localeCompare(b.label));
   return list.sort((a, b) => (b.bestDay > a.bestDay ? 1 : b.bestDay < a.bestDay ? -1 : a.label.localeCompare(b.label)));
 }
+
+/**
+ * The exercise card's headline: the latest value in the range, what it measures, and how it moved
+ * since the first session shown. labels are "YYYY-MM-DD" days, values the chart's numbers (gaps
+ * allowed). Returns null with nothing to show; change is null with a single session, else
+ * { direction: 'up' | 'down' | 'level', amount, year, month } (month 1-12, amount unsigned; under
+ * half a unit is level, since the card shows whole numbers).
+ */
+export function exerciseHeadline(labels, values, { metric = 'data', isTimed = false } = {}) {
+  const shown = values.map((v, i) => [labels[i], v])
+    .filter(([, v]) => v !== null && v !== undefined && v !== '' && Number.isFinite(Number(v)));
+  if (!shown.length) return null;
+  const [firstDay, first] = shown[0];
+  const value = Number(shown[shown.length - 1][1]);
+  const what = metric === 'volume' ? 'lifted, latest session' : metric === 'weight' ? 'heaviest set, latest session'
+    : isTimed ? 'score, latest session' : 'estimated max, latest session';
+  const unit = isTimed && metric !== 'weight' ? '' : 'kg';
+  const [year, month] = String(firstDay).split('-').map(Number);
+  let change = null;
+  if (shown.length > 1 && month >= 1 && month <= 12) {
+    const diff = value - Number(first);
+    change = { direction: Math.abs(diff) < 0.5 ? 'level' : diff < 0 ? 'down' : 'up', amount: Math.abs(diff), year, month };
+  }
+  return { value, unit, what, change };
+}
