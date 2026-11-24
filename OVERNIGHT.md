@@ -495,8 +495,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    redraws once the window settles, for a change of 40px or more. Checked at 700px: 788 → 628 wide.
 18. **Consistency year grid fits its card on a computer.** It was sized for a 1040px column, so on a
    computer it came out 898px wide in a 756px card and scrolled sideways. It is now sized for the
-   860px column less the card's padding: no sideways scroll at 1024px. Phones get the same or a
-   little narrower space than before, so nothing new can overflow there (still to see on an iPhone).
+   card's real inner width (the 860px column less its and the card's padding, less the day names):
+   739px of squares in 756px at 1024px, 11px each, no sideways scroll. On a phone the squares are
+   too small to fit either way, so it scrolls at 12px as before (still to see on an iPhone).
 
 ## Next when resumed
 
