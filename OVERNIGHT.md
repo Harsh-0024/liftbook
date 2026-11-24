@@ -484,6 +484,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 14. **Workout page: Delete stays on the row.** Edit, Repeat, Copy as text, Share link and Delete
    didn't fit one line on a computer, so Delete sat alone on a second one. It is now a red trash
    button at the row's far end (named "Delete workout" for screen readers), apart from the others.
+15. **Retrieve: cycle rows line up.** A session done recently shows its date under the name, which
+   made that cycle's row taller than the rest (90px against 68px). Once any session has a date, the
+   others keep that line empty, so every row is the same height. With no dates at all, nothing changes.
 
 ## Next when resumed
 

@@ -37,7 +37,9 @@ export function retrieveScreen(ctx) {
       'aria-label': `${isNext ? 'Next: ' : ''}${dayName}${title ? `, ${title}` : ''}, ${count} exercises${lastWords}` },
     h('small', {}, category === 'Session' && Number(id) === next ? `Next · ${dayName}` : dayName),
     h('b', {}, title || `${(plans.workout[category][dayName] || []).length} exercises`),
-    category === 'Session' && lastDone.has(Number(id)) ? h('span', { class: 'last-done' }, softDay(lastDone.get(Number(id)))) : null);
+    // Once any session shows a date, the others keep its line empty, so every cycle's row is the same height.
+    when ? h('span', { class: 'last-done' }, when)
+      : category === 'Session' && lastDone.size ? h('span', { class: 'last-done', 'aria-hidden': 'true' }, '\u00a0') : null);
   };
 
   const groups = [];
