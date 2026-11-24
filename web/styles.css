@@ -335,6 +335,10 @@ button.rowi { width: 100%; border: 0; text-align: left; font: inherit; cursor: p
 .blk { padding: 16px 18px 18px; }
 
 a.group.rowi { display: flex; }
+/* A row that is its own card (Settings' profile, Stats' Personal bests link) keeps the card surface:
+   .rowi's transparent background came later and won, so in light mode it showed the darker page
+   through. Two classes, so a hovered link's background (a.rowi:hover) still wins over it. */
+.group.rowi { background: var(--surface); }
 .profile-row { padding: 16px 18px; gap: 16px; }
 .profile-row .desc + .desc { margin-top: 0; }
 .inline-unit { display: inline-flex; align-items: center; gap: 6px; }

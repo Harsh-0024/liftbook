@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `fix/row-card-surface` (from `improve/round-4`)
+
+- **Row cards keep their card colour.** Settings' profile card and Stats' Personal bests link are a
+  row that is its own card; .rowi's transparent background overrode the card surface, so in light
+  mode they showed the darker page and looked greyed out. They now have the surface like every other
+  card, and still change on hover. Checked in light mode.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
