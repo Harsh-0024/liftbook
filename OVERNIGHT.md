@@ -434,6 +434,28 @@ both themes (more = stronger gold, future days and today marked).
   message shows under the Log box; a tapped row doesn't stay grey. The draft I typed was
   cleared.
 
+## Round 4 (branch `improve/round-4`, from 24 Nov 2026)
+
+Started from `improve/round-3`. Nothing here touched `main`, `rewrite/offline-app` or live data.
+Focus: the app looking as good as the old website, or better. Compared side by side with the old
+site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
+
+1. **Week streak counts calendar weeks.** It counted 7-day stretches back from today, with the
+   current one excused, so 13 days without a workout could keep a streak. Now Monday-to-Sunday
+   weeks, this week excused until Sunday ends. Tests updated (`web/core/test/week.test.js`).
+2. **No white flash while the app starts.** `index.html` paints the theme's background itself
+   until `styles.css` arrives (a dark-theme start was a bright white screen first).
+3. **Log box on phones as the old site had it.** 14px mono with 1.6 spacing (was 16px / 1.75),
+   so "24/11/26 - Session 1 - Chest & Biceps" fits on one line. iPhone Safari is told not to zoom
+   into small boxes (`maximum-scale=1`, set on iOS only: iOS still allows pinch-zoom; Android is
+   left alone, as there it would block pinch-zoom). Checked in the simulator: no zoom on tap.
+4. **The tab bar steps aside while typing on a phone's browser**, as it already did in the Android
+   app, and the Save bar sits just above Safari's floating form bar instead of under it.
+5. **Charts like the old Stats page, a little better.** Dates every so often along the bottom
+   (was only first and last), the part under "Start" tinted red, a faint guide at the latest value,
+   and points as small beads whenever they have room (they vanished past 60 points before).
+   Checked on desktop, light and dark. Not yet on the iPhone (the simulator shut down).
+
 ## Next when resumed
 
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already
