@@ -512,6 +512,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   bodyweight exercises" was bold where every other row's note is plain. Appearance's moon icon had
   no fixed slot, so its title sat 4pt left of Bodyweight's. Both now match the rows around them.
   Checked on the iPhone simulator.
+- **Sign out's icon points out.** It was the "sign in" picture (an arrow going into a door on the
+  right); now the arrow leaves a door on the left, as sign-out icons usually do. Only Sign out uses
+  it. Checked on the iPhone simulator. The rest of Settings on the phone looked right.
 
 ## Waiting list
 
