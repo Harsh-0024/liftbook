@@ -512,6 +512,8 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   palette, and the wider label pushed Log to the left. Now "Copied" is a soft wash of the app's
   own green (`--good` 12% on the surface) with deeper green text and a thin green border, and Copy
   keeps one width (7.4em) in both states. Checked on the iPhone: calm, and Log stays still.
+- Dark mode on the iPhone: "Copied" is a deep green chip with light green text, readable and
+  calm. No other loud green fills are left in styles.css (only the `--good` tokens).
 
 ## Waiting list
 
