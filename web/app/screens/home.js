@@ -590,6 +590,15 @@ export function editScreen(ctx, day) {
   for (const el of [title, date, ta]) el.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(check, 200); });
   check();
   const btn = h('button', { class: 'btn primary small', type: 'button' }, 'Save');
+  // Cmd+Enter (Ctrl+Enter elsewhere) saves from anywhere on the page, as the old edit page did.
+  const saveKey = (e) => {
+    if (!btn.isConnected) { document.removeEventListener('keydown', saveKey); return; }
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter' && !e.isComposing) {
+      e.preventDefault();
+      if (!btn.disabled) btn.click();
+    }
+  };
+  document.addEventListener('keydown', saveKey);
   btn.addEventListener('click', busy(btn, async () => {
     if (!date.value) {
       err.replaceChildren(h('p', { class: 'errors' }, 'Pick a date.'));

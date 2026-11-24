@@ -505,6 +505,17 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `improve/keyboard-parity` (from `improve/round-4`)
+
+1. **Keys the old site had.** Two shortcuts were missing against the old Flask pages:
+   - **AI coach:** Enter sends the question again, and Shift+Enter starts a new line (before,
+     only Cmd/Ctrl+Enter sent). On a touch screen the return key still adds a line, since
+     there's no Shift there and Send sits beside the box.
+   - **Edit workout:** Cmd+Enter (Ctrl+Enter elsewhere) saves from anywhere on the page, as the
+     old edit page did. The key stops listening once you leave the page.
+   Checked in the browser: Cmd+Enter saved an edit and went back to the workout; Enter sent a
+   coach question, Shift+Enter didn't. 115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
