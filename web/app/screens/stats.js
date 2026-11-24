@@ -73,6 +73,9 @@ function clip(labels, values, from) {
   return i < 0 ? [[], []] : [labels.slice(i), values.slice(i)];
 }
 
+/** A workout's name for a chart's hover box: "Session 2 · Shoulders & Forearms"; nothing for a bare "Workout". */
+const tipTitle = (t) => (/^workout$/i.test(String(t || '').trim()) ? '' : String(t || '').replace(/\s+[-–—]\s+/g, ' · '));
+
 const pctText = (v, digits = 1) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${fmtNum(Math.abs(v), digits)}%`;
 
 /** New bests in the range (a session beating every earlier one of that exercise), and the most
@@ -145,7 +148,15 @@ function bodyweightCard(lb, from, short) {
   const signed = (v) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${fmtNum(Math.abs(v))} kg`;
   return h('div', { class: 'card' },
     h('div', { class: 'card-head', style: 'margin-bottom:12px' }, h('h2', {}, 'Bodyweight')),
-    lineChart(labels.map(short), vals, { unit: ' kg', tag: `${fmtNum(t.current)} kg`, height: 200, name: 'Bodyweight' }),
+    lineChart(labels.map(short), vals, { unit: ' kg', tag: `${fmtNum(t.current)} kg`, height: 200, name: 'Bodyweight',
+      // Pointing at it: the day, the workout it was saved with, and the weight; a click opens that workout.
+      tip: (i) => {
+        const day = labels[i];
+        if (!day || vals[i] === null || vals[i] === undefined) return null;
+        const w = lb.workout(day);
+        const title = w?.title || '';
+        return { date: formatDay(day), title: tipTitle(title), value: `${fmtNum(vals[i])} kg`, href: w ? `#/workout/${day}` : null };
+      } }),
     h('div', { class: 'grid-3', style: 'margin-top:14px' },
       tile('Now', `${fmtNum(t.current)} kg`, `since ${formatDay(t.lastChanged, { weekday: false, year: false })}`),
       tile('Change', signed(delta), `from ${short(labels[0])}`),
@@ -244,7 +255,7 @@ export function statsScreen(ctx) {
         if (!day || v === null || v === undefined) return null;
         const w = lb.workout(day);
         const title = w?.title || '';
-        return { date: formatDay(day), title: /^workout$/i.test(title) ? '' : title,
+        return { date: formatDay(day), title: tipTitle(title),
           value: Math.abs(v) < 0.05 ? 'Level with the start' : `${pctText(v, 1)} against the start`, href: w ? `#/workout/${day}` : null };
       };
       chart = lineChart(view.labels.map(short), view.line, { base: 0, tag: view.headline, tip: overallTip, format: (v) => (Math.abs(v) < 0.5 ? 'Start' : pctText(v, 0)),
@@ -352,7 +363,7 @@ export function statsScreen(ctx) {
         const set = c.weight?.[k] || c.reps?.[k]
           ? topSetText({ weight: c.weight?.[k] || 0, reps: c.reps?.[k] || 0, offset: c.bodyweight_offset?.[k] ?? null, isTimed: c.is_timed }) : '';
         const title = lb.workout(day)?.title || '';
-        return { date: formatDay(day), title: /^workout$/i.test(title) ? '' : title, value: `${fmtNum(vals[i])}${tagUnit}`,
+        return { date: formatDay(day), title: tipTitle(title), value: `${fmtNum(vals[i])}${tagUnit}`,
           set: set ? `Top set ${set}` : '', href: lb.workout(day) ? `#/workout/${day}` : null };
       };
       const head = exerciseHeadline(labels, vals, { metric, isTimed: c.is_timed });

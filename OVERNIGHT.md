@@ -505,6 +505,16 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `feature/chart-hover` (from `improve/round-4`)
+
+From here on each kind of work has its own branch (design/, fix/, feature/, improve/ + topic),
+as asked on 24 Nov; `improve/round-4` above holds everything before that.
+
+1. **Bodyweight chart: hover box too.** Pointing at it shows the day, the workout the weight was
+   saved with, and the weight; a click opens that workout.
+2. **Workout names in the hover boxes** read "Session 2 · Shoulders & Forearms" (not " - "), and a
+   bare "Workout" is left out.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
