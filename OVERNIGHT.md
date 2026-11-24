@@ -526,6 +526,11 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    drawing took its own date line for someone's unsaved work and showed "Your unsaved workout is
    still here". A box already on the asked day is now recognised as such; the note only shows for a
    draft dated otherwise (checked both).
+4. **A bare date line isn't kept as a draft.** Opening "Log a workout that day" and leaving without
+   typing left "10/11/26 - " saved as unsaved work; the next "Log a workout that day" for another
+   day then kept that line and said "Your unsaved workout is still here". A box holding only a date
+   line is no longer saved, and one already saved that way switches to the day asked for. A real
+   unsaved workout is still kept, with its note (checked both; 115 tests pass).
 
 ## Waiting list
 

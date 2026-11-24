@@ -16,9 +16,12 @@ function readDraft() {
   }
 }
 
+// Only the date line ("20/11/26 - "), as "Log a workout that day" fills in: nothing worth keeping.
+const BARE_DATE = /^\s*\d{1,2}\/\d{1,2}\/\d{2,4}\s*-?\s*$/;
+
 function writeDraft(text) {
   try {
-    if (text.trim()) localStorage.setItem(DRAFT_KEY, text);
+    if (text.trim() && !BARE_DATE.test(text)) localStorage.setItem(DRAFT_KEY, text);
     else localStorage.removeItem(DRAFT_KEY);
   } catch {
     // Private browsing: no draft kept.
@@ -54,7 +57,9 @@ export function logScreen(ctx) {
   if (askedDay && !Number.isNaN(Date.parse(`${askedDay}T12:00:00`))) {
     const [y, m, d] = askedDay.split('-').map(Number);
     const dateLine = `${d}/${m}/${String(y).slice(2)}`;
-    if (!ta.value.trim()) ta.value = `${dateLine} - `;
+    // An empty box, or one holding only a date line from an earlier "Log a workout that day" with
+    // nothing typed after it, starts on the day asked for.
+    if (!ta.value.trim() || BARE_DATE.test(ta.value)) ta.value = `${dateLine} - `;
     // The box already on that day (this page drawn again, or a draft for that day): just place the
     // cursor at the end. A draft for another day stays as it is, with a word about the date.
     if (ta.value.trimStart().startsWith(`${dateLine} `)) {
