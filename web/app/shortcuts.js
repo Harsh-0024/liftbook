@@ -40,6 +40,13 @@ export function toggleHelp(admin) {
 export function installShortcuts({ signedIn, isAdmin = () => false, go }) {
   document.addEventListener('keydown', (e) => {
     if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || e.isComposing) return;
+    // Enter (or "Search" on a phone keyboard) in a search box puts the keyboard away so the
+    // results can be seen, as the old site's search boxes did. The list already filters as you type.
+    if (e.key === 'Enter' && e.target instanceof HTMLInputElement && e.target.type === 'search') {
+      e.preventDefault();
+      e.target.blur();
+      return;
+    }
     if (typing(e.target) || !signedIn()) return;
     if (document.querySelector('dialog[open]:not(.keys-dialog)')) return;
     const key = (e.key || '').toLowerCase();

@@ -519,6 +519,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    and Escape or a tap anywhere else closed it. In the new app they stayed open until their "i"
    was tapped again, and several could pile up. Now opening one closes the others, and Escape or a
    tap away closes it. Checked in the browser; 115 tests pass.
+3. **Enter in a search box puts the keyboard away.** The old site's search boxes (All workouts,
+   Exercises, Retrieve) dropped the keyboard on Enter or a phone's "Search" key, so the filtered
+   list could be seen; the new ones kept it up. Now every search box does this, except Stats,
+   where Enter still jumps to the exercise typed. Checked in All workouts and Stats; 115 tests pass.
 
 ## Waiting list
 
