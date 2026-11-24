@@ -490,6 +490,12 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 
 ## Next when resumed
 
+- **Still to check on an iPhone** (the simulator was down for round 4; everything below was
+  checked on a computer only): the charts' red stretch under the start line and the guide line
+  (item 2 of round 4), the gold "a new best" note after saving, the "SESSION 2" kicker on a
+  workout, timed exercises' bests and charts, the exercise card's big number, the trash button at
+  the end of a workout's action row (it wraps with the others on a narrow screen), and the
+  Retrieve rows on two columns.
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already
   built in this app: unlogged plan exercises in Settings > Exercises, the session name before the
   exercises in History, and row numbers with "3 sets" on the Log check. Idea 8 (darker gold links in
