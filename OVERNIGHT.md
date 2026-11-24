@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/home` (from `improve/round-4`)
+
+- **Avatar initial in Inter, as on the old site.** Home's big avatar (and the small ones in
+  Settings) set the initial in Cormorant, whose thin strokes read faint inside the gold ring; the
+  old site and the "LB" mark use Inter 600. Now the same. One line in styles.css (`.avatar`) if the
+  serif is wanted back. Checked in dark mode next to the old site.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

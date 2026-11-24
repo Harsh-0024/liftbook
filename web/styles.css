@@ -606,7 +606,9 @@ input.rp-title[type="text"]:focus { outline: none; box-shadow: none; border-bott
 .avatar {
   width: 64px; height: 64px; border-radius: 50%; object-fit: cover; flex: none;
   background: var(--gold-soft); border: 1px solid var(--line-gold);
-  display: grid; place-items: center; font: 600 1.6rem var(--serif); color: var(--gold-text); overflow: hidden;
+  display: grid; place-items: center; font: 600 1.6rem var(--font); color: var(--gold-text); overflow: hidden;
+  /* The initial in Inter, as the old site's avatar and the "LB" mark have it: Cormorant's thin
+     strokes read faint inside the gold ring. */
 }
 .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .avatar.small { width: 46px; height: 46px; font-size: 1.25rem; }
