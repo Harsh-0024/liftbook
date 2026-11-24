@@ -523,6 +523,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    Exercises, Retrieve) dropped the keyboard on Enter or a phone's "Search" key, so the filtered
    list could be seen; the new ones kept it up. Now every search box does this, except Stats,
    where Enter still jumps to the exercise typed. Checked in All workouts and Stats; 115 tests pass.
+4. **Reorder a custom workout from the keyboard.** The picked exercises could only be dragged
+   by their handle with a mouse or finger. The handle can now take keyboard focus (it turns gold),
+   and the up and down arrows move the exercise; focus stays with it, and a screen reader hears
+   where it is ("2 of 3"). Checked in the browser; 115 tests pass.
 
 ## Waiting list
 

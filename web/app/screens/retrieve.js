@@ -323,7 +323,9 @@ export function retrieveCustomScreen(ctx) {
       paint();
     };
     return h('div', { class: 'cr-row', dataset: { i: String(i) } },
-      h('span', { class: 'cr-grip', 'aria-hidden': 'true' }, h('i', {}), h('i', {}), h('i', {})),
+      // The handle drags with a finger or mouse; with the keyboard, the up and down arrows move it.
+      h('span', { class: 'cr-grip', tabindex: '0', role: 'button', 'aria-label': `Move ${p.name}, ${i + 1} of ${picks.length}. Up and down arrows move it.` },
+        h('i', {}), h('i', {}), h('i', {})),
       h('span', { class: 'main' }, h('span', { class: 'title' }, p.name), c.reps ? h('span', { class: 'desc' }, repsText(c.reps)) : null),
       h('span', { class: `cr-sets${p.sets !== (c.sets || 3) ? ' changed' : ''}` },
         h('button', { type: 'button', 'aria-label': `Fewer sets of ${p.name}`, disabled: p.sets <= 1, onclick: step(-1) }, '−'),
@@ -448,6 +450,18 @@ export function retrieveCustomScreen(ctx) {
     row.classList.add('dragging');
     pickedList.classList.add('sorting');
     grip.setPointerCapture(e.pointerId);
+  });
+  pickedList.addEventListener('keydown', (e) => {
+    const grip = e.target.closest?.('.cr-grip');
+    if (!grip || drag || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
+    e.preventDefault();
+    const from = [...pickedList.children].indexOf(grip.closest('.cr-row'));
+    const to = from + (e.key === 'ArrowUp' ? -1 : 1);
+    if (from < 0 || to < 0 || to >= picks.length) return;
+    const [moved] = picks.splice(from, 1);
+    picks.splice(to, 0, moved);
+    paint();
+    pickedList.children[to]?.querySelector('.cr-grip')?.focus();
   });
   pickedList.addEventListener('pointermove', onMove);
   pickedList.addEventListener('pointerup', endDrag);
