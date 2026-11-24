@@ -515,6 +515,11 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 - **Sign out's icon points out.** It was the "sign in" picture (an arrow going into a door on the
   right); now the arrow leaves a door on the left, as sign-out icons usually do. Only Sign out uses
   it. Checked on the iPhone simulator. The rest of Settings on the phone looked right.
+- **In dark mode the chosen option in a switch shows.** The chosen Dark/Light/Auto option used the
+  card colour (#0f0f11), which in dark mode is darker than the switch's track, so it looked sunk in
+  and only its gold text marked it. It now sits on a lifted #26262b in dark mode; light mode keeps
+  its white chip. Applies to every `.seg` switch. Checked on the iPhone simulator in dark mode, and
+  tapping Light then Auto still switches the theme.
 
 ## Waiting list
 

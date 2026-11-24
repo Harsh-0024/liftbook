@@ -12,6 +12,7 @@
   --surface: #0f0f11;
   --surface-2: #17171a;
   --hover: rgba(255, 255, 255, 0.03);
+  --seg-on: #26262b; /* the chosen option in a switch: lifted above the card, not sunk into it */
   --input: rgba(255, 255, 255, 0.03);
   --line: rgba(255, 255, 255, 0.08);
   --field-line: #6e6452; /* a box you type into: warm, and 3:1+ on every dark surface */
@@ -58,6 +59,7 @@
     --bg-2: #f0ede9;
     --surface: #fcfaf7;
     --surface-2: #f3efe9;
+    --seg-on: var(--surface);
     --hover: rgba(0, 0, 0, 0.025);
     --input: #fff;
     --line: rgba(0, 0, 0, 0.08);
@@ -95,6 +97,7 @@
   --bg-2: #f0ede9;
   --surface: #fcfaf7;
   --surface-2: #f3efe9;
+  --seg-on: var(--surface);
   --hover: rgba(0, 0, 0, 0.025);
   --input: #fff;
   --line: rgba(0, 0, 0, 0.08);
@@ -565,7 +568,7 @@ input.rp-title[type="text"]:focus { outline: none; box-shadow: none; border-bott
   display: flex; align-items: center; justify-content: center; gap: 6px;
   background: transparent; color: var(--muted); font: 600 0.84rem var(--font); cursor: pointer; white-space: nowrap;
 }
-.seg button.on { background: var(--surface); color: var(--gold-text); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--hair); }
+.seg button.on { background: var(--seg-on); color: var(--gold-text); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--hair); }
 
 .exercise { padding: 12px 0; border-top: 1px solid var(--hair); }
 .exercise:first-child { border-top: 0; }
