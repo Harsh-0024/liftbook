@@ -527,6 +527,11 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    by their handle with a mouse or finger. The handle can now take keyboard focus (it turns gold),
    and the up and down arrows move the exercise; focus stays with it, and a screen reader hears
    where it is ("2 of 3"). Checked in the browser; 115 tests pass.
+5. **The plan's Format note closes the same way.** Settings > Workout plan's "Format" opens a note
+   over the plan text, and it stayed open until "Format" was tapped again. It now shares the "i"
+   notes' behaviour (item 2): Escape or a tap elsewhere closes it, one note open at a time. The
+   closing code moved into one helper (`popover` in `web/app/ui.js`) used by both. Checked both
+   pages; 115 tests pass.
 
 ## Waiting list
 

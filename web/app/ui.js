@@ -529,3 +529,31 @@ export function autoGrow(ta) {
   setTimeout(fit, 0);
   return fit;
 }
+
+/**
+ * A <details> that opens as a small floating note (a workout's "i", the plan's Format): one open at
+ * a time, and Escape or a tap anywhere else closes it, as on the old site. Returns the element.
+ */
+export function popover(details) {
+  details.dataset.popover = '';
+  details.addEventListener('toggle', () => {
+    if (details.open) document.querySelectorAll('details[data-popover][open]').forEach((d) => { if (d !== details) d.open = false; });
+  });
+  if (!popoverKeys) {
+    popoverKeys = true;
+    const open = () => [...document.querySelectorAll('details[data-popover][open]')];
+    document.addEventListener('click', (e) => {
+      for (const d of open()) if (!d.contains(e.target)) d.open = false;
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      const shown = open();
+      if (!shown.length) return;
+      shown.forEach((d) => { d.open = false; });
+      // Focus goes back to the note's own button, so the keyboard doesn't lose its place.
+      if (shown.some((d) => d.contains(document.activeElement))) shown[0].querySelector('summary')?.focus();
+    });
+  }
+  return details;
+}
+let popoverKeys = false;
