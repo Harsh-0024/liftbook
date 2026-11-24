@@ -522,6 +522,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   its number below Best's and New bests'. Each row of tiles now shares its label, number and
   caption lines (CSS subgrid), so the numbers sit level whatever wraps. Desktop is unchanged (all
   tiles 108px, numbers level). Checked on the iPhone 18 Pro simulator.
+- **More iPhone checks passed (from the waiting list):** Retrieve on two columns, the "SESSION 2"
+  kicker, the Consistency year grid (scrolls sideways, opens on recent months), and the Overall
+  chart's red stretch under the start line with its guide line. Still to see on a phone: the gold
+  "a new best" note after saving, and a timed exercise's best and chart.
 
 ## Waiting list
 
