@@ -520,6 +520,11 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   and only its gold text marked it. It now sits on a lifted #26262b in dark mode; light mode keeps
   its white chip. Applies to every `.seg` switch. Checked on the iPhone simulator in dark mode, and
   tapping Light then Auto still switches the theme.
+- Dark-mode pass on the iPhone simulator: sign-in, Home, Settings, Stats (chart, tiles, sessions),
+  Retrieve and a plan page all read well; nothing else needed changing. A plan's right-hand column
+  (sets, a rep range, or nothing) follows what the plan itself declares, so it is left as is.
+  Tip: Safari's cached app on 127.0.0.1 swallows `/__signin`; the Mac's address
+  (http://192.168.29.209:8791/__signin?to=/) is a clean origin that works.
 
 ## Waiting list
 
