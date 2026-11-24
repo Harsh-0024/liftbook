@@ -48,6 +48,14 @@ export function logScreen(ctx) {
     id: 'workout_text', class: 'editor', spellcheck: 'false', autocapitalize: 'sentences', autocomplete: 'off',
     placeholder: `${today} - Session 1 - Chest & Biceps\n\nFlat Barbell Press - [5-8]\n32.5 27.5 25, 6 7 8\n\nBarbell Curl - [6-10]\n20 17.5, 8 10`,
   }, readDraft());
+  // Opened for a given day ("#/log?day=2026-11-20", from a day with no workout): an empty box
+  // starts with that day's date line; an unsaved draft is never replaced.
+  const askedDay = /[?&]day=(\d{4}-\d{2}-\d{2})(?:&|$)/.exec(location.hash)?.[1];
+  if (askedDay && !Number.isNaN(Date.parse(`${askedDay}T12:00:00`))) {
+    const [y, m, d] = askedDay.split('-').map(Number);
+    if (!ta.value.trim()) ta.value = `${d}/${m}/${String(y).slice(2)} - `;
+    else setTimeout(() => toast(`Your unsaved workout is still here. Change its first line to ${d}/${m}/${String(y).slice(2)} for that day.`), 0);
+  }
   const fit = autoGrow(ta);
   const suggest = attachSuggestions(ta, () => lb.exerciseCatalog().map((e) => e.name));
   attachPasteTidy(ta);
@@ -103,8 +111,10 @@ export function logScreen(ctx) {
     }
     const c = lb.check(text);
     const exercises = (c.parsed?.exercises || []);
+    // Only the first line so far (the date and title): still being written, so no complaints yet.
+    const started = text.split('\n').filter((l) => l.trim()).length > 1;
     preview.replaceChildren(c.parsed
-      ? h('span', { class: c.errors.length ? 'error' : 'ok' }, `${c.exercise_count} exercise${c.exercise_count === 1 ? '' : 's'} · ${c.set_count} set${c.set_count === 1 ? '' : 's'}`)
+      ? h('span', { class: c.errors.length && started ? 'error' : 'ok' }, `${c.exercise_count} exercise${c.exercise_count === 1 ? '' : 's'} · ${c.set_count} set${c.set_count === 1 ? '' : 's'}`)
       : 'Nothing to check yet');
     checkHead.textContent = c.parsed ? `${formatDay(c.day)} · ${c.parsed.workout_name || 'Workout'}` : '';
     checkBox.hidden = !exercises.length;
@@ -145,7 +155,7 @@ export function logScreen(ctx) {
     problems.replaceChildren(
       c.future && c.day ? h('p', { class: 'wo-note log-future' }, icon('calendar'),
         h('span', {}, `This is dated ${formatDay(c.day)}, after today. Check the year on the first line.`)) : '',
-      c.errors.length ? h('ul', { class: 'errors' }, c.errors.map((e) => h('li', {}, e))) : '');
+      c.errors.length && started ? h('ul', { class: 'errors' }, c.errors.map((e) => h('li', {}, e))) : '');
     if (c.existing) checkHead.textContent += ` · adds to ${c.existing.title} if you choose`;
   };
   // The check reads the text trimmed, so its line 1 is the first line that isn't blank.

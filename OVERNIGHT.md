@@ -512,6 +512,16 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    that day: Nothing is logged on Wed 1 Jan 2020", keeps the deleted-elsewhere note as a maybe,
    and offers Log workout beside All workouts.
 
+### Branch `feature/log-for-day` (from `improve/workout-not-found`)
+
+1. **Log a workout for a given day.** The no-workout page's button now reads "Log a workout that
+   day" and opens Log with that day's date line ready ("20/11/26 - "), the cursor after it.
+   (`#/log?day=2026-11-20`.) An unsaved workout already in the box is never replaced; a note says
+   to change its first line to that date instead.
+2. **No complaints while only the first line is written.** A box with just the date and title
+   showed a red "No exercises found" and a red count before anything else was typed. Those wait
+   now until there is a second line; saving still checks everything as before.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
