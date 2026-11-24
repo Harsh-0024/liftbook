@@ -378,6 +378,8 @@ input.inline-num { width: 84px; padding: 7px 10px; text-align: right; font-weigh
 
 /* ---------- buttons ---------- */
 .btn.trash-end { margin-left: auto; padding: 0 15px; }
+/* Phone: the workout's buttons wrap onto two rows; each row fills the width so the edges line up */
+@media (max-width: 560px) { .wo-actions > .btn:not(.trash-end) { flex: 1 1 auto; justify-content: center; } }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   min-height: 46px; padding: 0 20px; border-radius: 12px;
