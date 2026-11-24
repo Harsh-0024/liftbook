@@ -498,6 +498,12 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    card's real inner width (the 860px column less its and the card's padding, less the day names):
    739px of squares in 756px at 1024px, 11px each, no sideways scroll. On a phone the squares are
    too small to fit either way, so it scrolls at 12px as before (still to see on an iPhone).
+19. **Charts show a session when you point at them (from the old Stats page).** The old charts had a
+   hover box; the new ones were pictures. Now, on the exercise and overall-strength charts, the
+   nearest point gets a gold guide line and ring, and a box with its day, workout, value and top
+   set ("Thu 22 Oct 2026 · Push · 102 kg · Top set 85 × 6"). A click opens that workout. On a
+   touch screen a tap moves the box and tapping the box opens the workout, as on the old site
+   (the touch part is on the waiting list for the iPhone check).
 
 ## Waiting list
 
@@ -509,7 +515,8 @@ moved on to something else meanwhile.
   guide line, the gold "a new best" note after saving, the "SESSION 2" kicker on a workout, timed
   exercises' bests and charts, the exercise card's big number, the trash button at the end of a
   workout's action row (it wraps with the others on a narrow screen), the Retrieve rows on two
-  columns, and the Consistency year grid (should scroll sideways at 12px squares, as before).
+  columns, the Consistency year grid (should scroll sideways at 12px squares, as before), and
+  tapping a chart (the box should move to the tapped point; tapping the box opens the workout).
 
 ## Next when resumed
 

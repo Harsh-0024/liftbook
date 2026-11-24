@@ -245,7 +245,7 @@ export function tapWord() {
 let gradientId = 0;
 /** A line chart: soft gold area, values up the side, first and last dates along the bottom.
  *  base: a value drawn as a dashed "start" line; tag: label the last point (e.g. "+14%"). */
-export function lineChart(labels, values, { unit = '', base = null, tag = null, height = 240, format = null, name = 'Progress chart', say = null } = {}) {
+export function lineChart(labels, values, { unit = '', base = null, tag = null, height = 240, format = null, name = 'Progress chart', say = null, tip = null } = {}) {
   // Drawn at about the width it shows at, so the labels stay readable on a phone.
   // Charts live in the wide column (860px at most), so a computer's chart fills its card edge to edge.
   const W = Math.round(Math.max(300, Math.min(860, globalThis.innerWidth || 640) - 72));
@@ -341,7 +341,77 @@ export function lineChart(labels, values, { unit = '', base = null, tag = null, 
     t.textContent = String(labels[i] ?? '');
     svg.append(t);
   });
-  return svg;
+  return tip ? chartTips(svg, pts.map(([i], k) => [i, P[k][0], P[k][1]]), { W, H, bottom: H - pad.b, top: pad.t }, tip) : svg;
+}
+
+/**
+ * The old Stats page's hover box, on any line chart: point at the chart and the nearest session
+ * shows its day, workout, value and top set; a click opens that workout. On a touch screen a tap
+ * moves the box, and tapping the box opens the workout. tip(i) gives
+ * { date, title, value, set, href } for the value at index i (or null to show nothing there).
+ */
+function chartTips(svg, points, { W, H, bottom, top }, tip) {
+  const box = h('div', { class: 'chart-box' });
+  const guide = s('line', { class: 'hover-line', x1: 0, x2: 0, y1: top, y2: bottom });
+  const ring = s('circle', { class: 'hover-dot', r: 5.5, cx: 0, cy: 0 });
+  const hover = s('g', { class: 'hover', visibility: 'hidden', 'aria-hidden': 'true' });
+  hover.append(guide, ring);
+  svg.append(hover);
+  const card = h('a', { class: 'chart-tip', hidden: true, tabindex: '-1' },
+    h('span', { class: 'chart-tip-date' }), h('span', { class: 'chart-tip-title' }),
+    h('span', { class: 'chart-tip-value' }), h('span', { class: 'chart-tip-set' }));
+  box.append(svg, card);
+  let shown = null;
+  // Where the drawing sits inside the svg box (the viewBox is scaled to fit, keeping its shape).
+  const frame = () => {
+    const r = svg.getBoundingClientRect();
+    const k = Math.min(r.width / W, r.height / H) || 1;
+    return { r, k, dx: (r.width - W * k) / 2, dy: (r.height - H * k) / 2 };
+  };
+  const hide = () => {
+    shown = null;
+    card.hidden = true;
+    hover.setAttribute('visibility', 'hidden');
+  };
+  const show = (clientX, touch) => {
+    const { r, k, dx, dy } = frame();
+    const vx = (clientX - r.left - dx) / k;
+    let best = points[0];
+    for (const p of points) if (Math.abs(p[1] - vx) < Math.abs(best[1] - vx)) best = p;
+    const info = tip(best[0]);
+    if (!info) return hide();
+    shown = info;
+    const [, px, py] = best;
+    guide.setAttribute('x1', px);
+    guide.setAttribute('x2', px);
+    ring.setAttribute('cx', px);
+    ring.setAttribute('cy', py);
+    hover.setAttribute('visibility', 'visible');
+    const [d, t, v, st] = card.children;
+    d.textContent = info.date || '';
+    t.textContent = info.title || '';
+    v.textContent = info.value || '';
+    st.textContent = info.set || '';
+    if (info.href) card.setAttribute('href', info.href); else card.removeAttribute('href');
+    card.classList.toggle('touch', touch);
+    card.hidden = false;
+    const left = dx + px * k;
+    const topPx = dy + py * k;
+    const w = card.offsetWidth;
+    const hgt = card.offsetHeight;
+    card.style.left = `${Math.max(0, Math.min(left - w / 2, box.clientWidth - w))}px`;
+    card.style.top = `${topPx - hgt - 14 >= 0 ? topPx - hgt - 14 : topPx + 16}px`;
+  };
+  svg.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') show(e.clientX, false); });
+  svg.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') hide(); });
+  svg.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') show(e.clientX, true); });
+  svg.addEventListener('click', (e) => {
+    if (e.pointerType && e.pointerType !== 'mouse') return;
+    show(e.clientX, false);
+    if (shown?.href) location.hash = shown.href.replace(/^#/, '');
+  });
+  if (points.some((p) => tip(p[0])?.href)) svg.style.cursor = 'pointer';
+  return box;
 }
 
 /** Unsaved typing kept on this device, so a tap elsewhere or the app reloading for an update

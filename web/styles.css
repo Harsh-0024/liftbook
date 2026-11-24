@@ -579,6 +579,24 @@ input.rp-title[type="text"]:focus { outline: none; box-shadow: none; border-bott
 .chart text { fill: var(--subtle); font: 500 11px var(--font); }
 .chart .tag rect { fill: var(--gold-soft); stroke: var(--gold); }
 .chart .tag text { fill: var(--gold-text); font-weight: 700; }
+/* The hover box (as on the old Stats page): the nearest session's day, workout, value and top set. */
+.chart-box { position: relative; }
+.chart .hover-line { stroke: var(--gold); stroke-width: 1; opacity: 0.5; }
+.chart .hover-dot { fill: var(--gold); stroke: var(--surface); stroke-width: 2.5; }
+.chart-tip {
+  position: absolute; z-index: 5; top: 0; left: 0; max-width: 240px; padding: 9px 13px;
+  display: flex; flex-direction: column; gap: 1px; line-height: 1.4;
+  border: 1px solid var(--line-gold); border-radius: 12px; background: var(--surface);
+  box-shadow: var(--shadow); color: var(--text); text-decoration: none !important;
+  pointer-events: none; white-space: nowrap;
+}
+.chart-tip[hidden] { display: none; }
+.chart-tip.touch[href] { pointer-events: auto; cursor: pointer; }
+.chart-tip-date { font-size: 0.72rem; font-weight: 600; color: var(--gold-text); }
+.chart-tip-title { font-size: 0.72rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; }
+.chart-tip-value { margin-top: 2px; font-size: 0.95rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.chart-tip-set { font-size: 0.76rem; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.chart-tip span:empty { display: none; }
 
 .picker { max-height: 360px; overflow: auto; border: 1px solid var(--line); border-radius: 12px; padding: 4px 12px; background: var(--input); }
 .picker label { font-weight: 500; color: var(--text); display: flex; gap: 10px; align-items: center; padding: 9px 0; margin: 0; border-top: 1px solid var(--hair); font-size: 0.92rem; }

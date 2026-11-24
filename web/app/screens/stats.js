@@ -4,7 +4,7 @@ import { h, icon, pageHead, lineChart, fmtNum, formatDay, toast, tapWord } from 
 import { normalizeExerciseName } from '../../core/names.js';
 import { addDays, deviceDay } from '../../core/dates.js';
 import { overallView } from '../../core/overall_view.js';
-import { sortBests, exerciseHeadline } from '../../core/bests.js';
+import { sortBests, exerciseHeadline, topSetText } from '../../core/bests.js';
 import { consistencyYears, yearWindow, consistencyHero, consistencyTiles, yearGrid } from '../../core/consistency.js';
 import { scrollBehavior } from '../motion.js';
 
@@ -238,7 +238,16 @@ export function statsScreen(ctx) {
         h('span', {}, sinceText),
         view.change ? h('small', { class: `hero-change ${view.change.direction}` },
           view.change.amount ? h('strong', {}, `${view.change.direction === 'down' ? '↓' : '↑'} ${view.change.amount}`) : '', view.change.text) : '');
-      chart = lineChart(view.labels.map(short), view.line, { base: 0, tag: view.headline, format: (v) => (Math.abs(v) < 0.5 ? 'Start' : pctText(v, 0)),
+      const overallTip = (i) => {
+        const day = view.labels[i];
+        const v = view.line[i];
+        if (!day || v === null || v === undefined) return null;
+        const w = lb.workout(day);
+        const title = w?.title || '';
+        return { date: formatDay(day), title: /^workout$/i.test(title) ? '' : title,
+          value: Math.abs(v) < 0.05 ? 'Level with the start' : `${pctText(v, 1)} against the start`, href: w ? `#/workout/${day}` : null };
+      };
+      chart = lineChart(view.labels.map(short), view.line, { base: 0, tag: view.headline, tip: overallTip, format: (v) => (Math.abs(v) < 0.5 ? 'Start' : pctText(v, 0)),
         name: 'Overall strength against your start', say: (v) => (Math.abs(v) < 0.05 ? 'level with the start' : pctText(v, 1)) });
       tiles = h('div', { class: 'grid-3', style: 'margin-top:14px' },
         view.best ? tile('Best', view.best.text, formatDay(view.best.day, { weekday: false, year: false })) : tile('Best', '–', ''),
@@ -334,6 +343,18 @@ export function statsScreen(ctx) {
       const withKg = (v) => (v === null || v === undefined || Number.isNaN(v) ? fmtNum(v) : `${fmtNum(v, 0)}${kg}`);
       // The latest value as a big number, as the old Stats page showed it, and how far it has come
       // over the range shown ("↑ 33 kg more than in Sep 2026").
+      // Pointing at the chart: that session's day, workout, value and top set; a click opens it.
+      const shift = c.labels.length - labels.length; // the range cut sessions off the front
+      const exerciseTip = (i) => {
+        const day = c.labels[i + shift];
+        if (!day || vals[i] === null || vals[i] === undefined) return null;
+        const k = i + shift;
+        const set = c.weight?.[k] || c.reps?.[k]
+          ? topSetText({ weight: c.weight?.[k] || 0, reps: c.reps?.[k] || 0, offset: c.bodyweight_offset?.[k] ?? null, isTimed: c.is_timed }) : '';
+        const title = lb.workout(day)?.title || '';
+        return { date: formatDay(day), title: /^workout$/i.test(title) ? '' : title, value: `${fmtNum(vals[i])}${tagUnit}`,
+          set: set ? `Top set ${set}` : '', href: lb.workout(day) ? `#/workout/${day}` : null };
+      };
       const head = exerciseHeadline(labels, vals, { metric, isTimed: c.is_timed });
       let exHero = null;
       if (head) {
@@ -352,7 +373,7 @@ export function statsScreen(ctx) {
           metric = v;
           paint();
         }, 'Measure'),
-        lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1])}${tagUnit}` : null,
+        lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1])}${tagUnit}` : null, tip: exerciseTip,
           name: `${exercise}, ${(metrics.find(([v]) => v === metric) || metrics[0])[1].toLowerCase()}`, say: (v) => `${fmtNum(v)}${tagUnit}` }),
         h('div', { class: 'grid-3', style: 'margin-top:14px' },
           tile('Best', withKg(st.max_1rm), c.is_timed ? 'weight × √seconds' : null, 'gold'),
