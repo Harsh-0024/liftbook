@@ -466,6 +466,11 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 9. **Timed exercise charts.** A plank's chart labelled its score in seconds ("614s", "615.8s").
    No unit on the axis now, the first tab reads "Score" for timed exercises (as the tile does), and a
    chart with a single session puts its point in the middle.
+10. **Stats charts fill their card on a computer.** Charts were drawn 640 wide inside a 786px card,
+   so they sat in the middle with blank space either side and looked small next to the old Stats
+   page. They are now drawn at the wide column's width (phones unchanged), and the gridlines are
+   solid hairlines, as on the old site, instead of near-invisible dashes. The Retrieve day page
+   was compared too: it already matches the old one (and adds Log and "View as text").
 
 ## Next when resumed
 
