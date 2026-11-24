@@ -476,6 +476,8 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    over the range ("↓ 2 kg less than in Aug 2026"), following the Est. max / Top weight / Volume tabs.
    The "Current est. max" tile repeated it, so the tiles are now Best, Since first and Sessions
    (with the last date), which replaces the line of text under them.
+12. **Personal bests: one date per row.** Each row read "Top set 40 × 6 · 16 Nov" with "16 Nov"
+   again under the number. The top set's day now shows only when it differs from the best's day.
 
 ## Next when resumed
 

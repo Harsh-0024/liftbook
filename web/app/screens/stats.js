@@ -418,11 +418,12 @@ export function bestsScreen(ctx) {
         }, 'Sort bests')),
       rows.length
         ? h('div', { class: 'group' }, rows.map((r) => {
+          // The top set's day shows only when it differs from the best's, which sits beside the number.
           const under = r.belowPct >= 1 ? `now ${fmtNum(r.belowPct, r.belowPct < 10 ? 1 : 0)}% under` : r.sessions > 1 ? 'at your best now' : 'first session';
           return h('a', { class: 'rowi best-row', href: `#/stats?exercise=${encodeURIComponent(r.value)}` },
             h('span', { class: 'main' },
               h('span', { class: 'title' }, r.label, r.fresh ? h('span', { class: 'pill best' }, 'New') : null),
-              h('span', { class: 'desc' }, r.top ? `Top set ${r.top} · ${day(r.topDay)}` : `${r.sessions} session${r.sessions === 1 ? '' : 's'}`),
+              h('span', { class: 'desc' }, r.top ? `Top set ${r.top}${r.topDay === r.bestDay ? '' : ` · ${day(r.topDay)}`}` : `${r.sessions} session${r.sessions === 1 ? '' : 's'}`),
               h('span', { class: 'desc subtle' }, under)),
             // Whole kilos for an estimated max, a whole score for a timed hold (as the exercise tiles show them).
             h('span', { class: 'value' }, h('b', {}, r.isTimed ? `${fmtNum(r.best, 0)} score` : `${fmtNum(r.best, 0)} kg`), h('small', {}, day(r.bestDay))),
