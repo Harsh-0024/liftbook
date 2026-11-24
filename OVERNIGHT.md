@@ -490,6 +490,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 16. **Exercise headline, tested.** The big number's maths (item 11) moved from the Stats screen into
    `core/bests.js` (`exerciseHeadline`) with two tests: gaps in the data, one session, timed holds,
    and a change under half a unit now reading "Level with …" rather than "↑ 0 kg more".
+17. **Stats charts follow the window.** Charts are drawn for the window's width when Stats opens, so
+   a window made narrower left them too wide for their cards (and wider, too small). Stats now
+   redraws once the window settles, for a change of 40px or more. Checked at 700px: 788 → 628 wide.
 
 ## Next when resumed
 

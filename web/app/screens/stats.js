@@ -386,6 +386,20 @@ export function statsScreen(ctx) {
       bodyweightCard(lb, from, short)].filter(Boolean)); // replaceChildren would print a null as the word "null"
   }
   paint();
+  // Charts are drawn for the window's width, so a window made wider or narrower redraws them (once
+  // it settles, and only for a real change). Leaving the page drops the listener.
+  let drawnAt = globalThis.innerWidth || 0;
+  let settle = null;
+  const onResize = () => {
+    clearTimeout(settle);
+    settle = setTimeout(() => {
+      if (!root.isConnected) return globalThis.removeEventListener('resize', onResize);
+      if (Math.abs((globalThis.innerWidth || 0) - drawnAt) < 40) return;
+      drawnAt = globalThis.innerWidth || 0;
+      paint();
+    }, 200);
+  };
+  globalThis.addEventListener?.('resize', onResize);
   return root;
 }
 
