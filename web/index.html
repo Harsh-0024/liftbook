@@ -26,6 +26,13 @@
   </style>
   <link rel="stylesheet" href="styles.css">
   <script>
+    // iPhone and iPad Safari zoom into a text box under 16px when it's tapped, and stay zoomed.
+    // maximum-scale stops that; iOS still lets people pinch to zoom. (Android ignores the zoom-on-tap
+    // and would lose pinch-zoom, so it is left alone.)
+    if (/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+      var vp = document.querySelector('meta[name="viewport"]');
+      if (vp && !/maximum-scale/.test(vp.content)) vp.content += ', maximum-scale=1';
+    }
     // The theme before anything is drawn, so the page never flashes the wrong colours.
     try {
       var t = localStorage.getItem('liftbook-theme');

@@ -15,7 +15,7 @@ import { statsScreen, bestsScreen } from './screens/stats.js';
 import { settingsScreen } from './screens/settings.js';
 import { coachScreen } from './screens/coach.js';
 import { SHARE_PATH, sharedScreen } from './share.js';
-import { isNative, startNative, wantsApp, appHandOff } from './native.js';
+import { isNative, startNative, wantsApp, appHandOff, watchKeyboard } from './native.js';
 import { installShortcuts } from './shortcuts.js';
 
 const main = document.getElementById('app');
@@ -310,6 +310,7 @@ async function boot() {
     toast('Your sign-in has expired. Sign in again.', 5000);
     render();
   });
+  watchKeyboard();
   startNative({
     // An emailed link opened the app: start again from it, the way the website does.
     onLink(url) {

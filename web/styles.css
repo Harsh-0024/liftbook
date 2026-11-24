@@ -234,7 +234,10 @@ svg.i { width: 1.1em; height: 1.1em; flex: none; fill: none; stroke: currentColo
 .tabbar a:active { background: var(--gold-soft); }
 body.signed-out .tabbar, body.signed-out .topnav, body.signed-out .top-actions { display: none !important; }
 body.signed-out { padding-bottom: 0; }
-/* The Android app, while the keyboard is up (web/app/native.js). */
+/* While the on-screen keyboard is up, in the Android app and on phones in a browser (web/app/native.js). */
+body.keyboard-open { --tabbar-h: 0px; --safe-bottom: 0px; } /* bars that sat on the tab bar sit on the keyboard */
+/* In a phone's browser, iPhone Safari's own form bar (^ v Done) floats over the page just above the keyboard: leave it room. */
+body.keyboard-open.kb-web { --tabbar-h: 60px; }
 body.keyboard-open .tabbar { display: none; }
 body.keyboard-open { padding-bottom: 0; }
 
@@ -462,8 +465,13 @@ select {
 }
 select option { background: var(--surface); color: var(--text); }
 textarea { font: 15px/1.75 var(--mono); min-height: 220px; resize: vertical; }
-/* iPhone zooms the page into any box under 16px when it's tapped; at 16px it stays put. */
-@media (max-width: 759.98px) { textarea, textarea.editor.mono { font-size: 16px; } }
+/* Phones: the workout text a little smaller and tighter, as on the old site, so a line like
+   "24/11/26 - Session 1 - Chest & Biceps" fits on one line. iPhone Safari would zoom into a box
+   under 16px when it's tapped; index.html tells it not to (pinch-zoom still works there). */
+@media (max-width: 759.98px) {
+  textarea, textarea.editor.mono { font-size: 14px; line-height: 1.6; }
+  textarea.chat-input { font-size: 16px; line-height: 1.5; }
+}
 input::placeholder, textarea::placeholder { color: var(--subtle); opacity: 0.8; }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold-text); box-shadow: 0 0 0 3px var(--gold-soft); }
 .check { display: flex; align-items: flex-start; gap: 10px; font-weight: 500; color: var(--text); font-size: 0.92rem; }

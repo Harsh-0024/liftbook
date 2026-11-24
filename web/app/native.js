@@ -47,6 +47,32 @@ export function appHandOff(h, hash, carryOn) {
  * Wires the app to Android: links back from emails, the back button, coming back to the front,
  * the network returning, the keyboard and the status bar colours. Does nothing on the website.
  */
+/**
+ * Phones in a browser (the iPhone above all): the tab bar steps aside while the on-screen keyboard
+ * is up, as it does in the Android app, so it doesn't sit on the keyboard covering the box being
+ * typed in. The keyboard is up when a text box has focus and the visible part of the page is
+ * clearly shorter than the window (a hardware keyboard leaves it as it is).
+ */
+export function watchKeyboard(win = globalThis) {
+  const vv = win.visualViewport;
+  if (isNative || !vv || !win.matchMedia?.('(pointer: coarse)').matches) return;
+  const doc = win.document;
+  const typing = () => {
+    const el = doc.activeElement;
+    if (!el) return false;
+    if (el.tagName === 'TEXTAREA' || el.isContentEditable) return true;
+    return el.tagName === 'INPUT' && !/^(checkbox|radio|button|submit|reset|range|color|file|image|hidden)$/i.test(el.type);
+  };
+  const check = () => {
+    const up = typing() && win.innerHeight - vv.height > 150;
+    doc.body.classList.toggle('keyboard-open', up);
+    doc.body.classList.toggle('kb-web', up);
+  };
+  vv.addEventListener('resize', check);
+  doc.addEventListener('focusin', () => setTimeout(check, 50));
+  doc.addEventListener('focusout', () => setTimeout(check, 50));
+}
+
 export function startNative({ onLink, onResume, onOnline, onBack }) {
   if (!isNative) return;
   const { App, Network, Keyboard, SystemBars } = plugins;
