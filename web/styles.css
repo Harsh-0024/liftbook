@@ -629,11 +629,13 @@ input.rp-title[type="text"]:focus { outline: none; box-shadow: none; border-bott
 .week-strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); padding: 14px 10px 16px; }
 .wday { display: grid; justify-items: center; gap: 9px; color: var(--subtle); text-decoration: none !important; -webkit-tap-highlight-color: transparent; }
 .wday small { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; }
-.wday .dot { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; color: transparent; transition: transform var(--fast), box-shadow var(--fast); }
+/* Day rings from the muted ink rather than the divider line, which was 8% black on cream and
+   left the light theme's week row nearly blank; today's ring in full gold so it is found at a glance. */
+.wday .dot { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--subtle) 30%, transparent); display: grid; place-items: center; color: transparent; transition: transform var(--fast), box-shadow var(--fast); }
 .wday .dot svg.i { width: 15px; height: 15px; stroke-width: 2.6; }
 .wday.on .dot { background: var(--gold-fill); border-color: transparent; color: var(--on-gold); }
 .wday.today small { color: var(--gold-text); }
-.wday.today:not(.on) .dot { border-color: var(--line-gold); box-shadow: 0 0 0 4px var(--gold-soft); }
+.wday.today:not(.on) .dot { border-color: var(--gold); box-shadow: 0 0 0 4px var(--gold-soft); }
 a.wday:focus-visible .dot { transform: scale(1.08); box-shadow: 0 0 0 4px var(--gold-soft); }
 @media (hover: hover) { a.wday:hover .dot { transform: scale(1.08); box-shadow: 0 0 0 4px var(--gold-soft); } }
 a.wday:focus-visible { outline: none; }

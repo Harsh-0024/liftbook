@@ -511,6 +511,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   Settings) set the initial in Cormorant, whose thin strokes read faint inside the gold ring; the
   old site and the "LB" mark use Inter 600. Now the same. One line in styles.css (`.avatar`) if the
   serif is wanted back. Checked in dark mode next to the old site.
+- **The week row reads in light mode.** Home's Last 7 days rings used the divider line (8% black on
+  cream) and today's a pale gold, so in light mode the row looked empty. Day rings now come from
+  the muted ink at 30% and today's ring is full gold. Checked in light and dark.
 
 ## Waiting list
 
