@@ -515,7 +515,7 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 ### Branch `feature/log-for-day` (from `improve/workout-not-found`)
 
 1. **Log a workout for a given day.** The no-workout page's button now reads "Log a workout that
-   day" and opens Log with that day's date line ready ("20/11/26 - "), the cursor after it.
+   day" and opens Log with that day's date line ready ("20/11/26 - ").
    (`#/log?day=2026-11-20`.) An unsaved workout already in the box is never replaced; a note says
    to change its first line to that date instead.
 2. **No complaints while only the first line is written.** A box with just the date and title
