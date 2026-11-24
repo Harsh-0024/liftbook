@@ -373,14 +373,14 @@ function chartTips(svg, points, { W, H, bottom, top }, tip) {
     card.hidden = true;
     hover.setAttribute('visibility', 'hidden');
   };
-  const show = (clientX, touch) => {
-    const { r, k, dx, dy } = frame();
-    const vx = (clientX - r.left - dx) / k;
-    let best = points[0];
-    for (const p of points) if (Math.abs(p[1] - vx) < Math.abs(best[1] - vx)) best = p;
-    const info = tip(best[0]);
+  let at = -1; // which point the box is on
+  const showPoint = (n, touch) => {
+    const { k, dx, dy } = frame();
+    const best = points[n];
+    const info = best && tip(best[0]);
     if (!info) return hide();
     shown = info;
+    at = n;
     const [, px, py] = best;
     guide.setAttribute('x1', px);
     guide.setAttribute('x2', px);
@@ -402,6 +402,33 @@ function chartTips(svg, points, { W, H, bottom, top }, tip) {
     card.style.left = `${Math.max(0, Math.min(left - w / 2, box.clientWidth - w))}px`;
     card.style.top = `${topPx - hgt - 14 >= 0 ? topPx - hgt - 14 : topPx + 16}px`;
   };
+  const show = (clientX, touch) => {
+    const { r, k, dx } = frame();
+    const vx = (clientX - r.left - dx) / k;
+    let n = 0;
+    points.forEach((p, i) => { if (Math.abs(p[1] - vx) < Math.abs(points[n][1] - vx)) n = i; });
+    showPoint(n, touch);
+  };
+  // From the keyboard: Tab to the chart, arrows (or Home/End) step through the sessions, Enter opens
+  // one, Escape closes the box. The box is read out as it changes.
+  svg.setAttribute('tabindex', '0');
+  card.setAttribute('aria-live', 'polite');
+  svg.addEventListener('keydown', (e) => {
+    const step = { ArrowLeft: -1, ArrowDown: -1, ArrowRight: 1, ArrowUp: 1 }[e.key];
+    if (step || e.key === 'Home' || e.key === 'End') {
+      e.preventDefault();
+      const n = e.key === 'Home' ? 0 : e.key === 'End' || at < 0 ? points.length - 1 : Math.max(0, Math.min(points.length - 1, at + step));
+      showPoint(n, false);
+    } else if (e.key === 'Enter' && shown?.href) {
+      e.preventDefault();
+      location.hash = shown.href.replace(/^#/, '');
+    } else if (e.key === 'Escape' && at >= 0) {
+      e.preventDefault();
+      hide();
+      at = -1;
+    }
+  });
+  svg.addEventListener('blur', () => { hide(); at = -1; });
   svg.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') show(e.clientX, false); });
   svg.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') hide(); });
   svg.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') show(e.clientX, true); });
