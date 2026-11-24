@@ -505,6 +505,14 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/settings` (from `improve/round-4`)
+
+- **Settings' Preferences card lines up and reads right.** The Bodyweight row's text is a `<label>`
+  (so tapping it focuses the kg box), and it took label's bold type into its note: "Used for
+  bodyweight exercises" was bold where every other row's note is plain. Appearance's moon icon had
+  no fixed slot, so its title sat 4pt left of Bodyweight's. Both now match the rows around them.
+  Checked on the iPhone simulator.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

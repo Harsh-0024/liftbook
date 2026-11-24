@@ -324,9 +324,13 @@ main.wide { max-width: 860px; }
 @media (hover: hover) { a.rowi:hover, button.rowi:hover { background: var(--hover); color: var(--text); } }
 a.rowi:active, button.rowi:active { background: var(--gold-soft); }
 button.rowi { width: 100%; border: 0; text-align: left; font: inherit; cursor: pointer; }
-.rowi .ico { flex: none; width: 22px; display: grid; place-items: center; color: var(--gold-text); }
-.rowi .ico svg.i { width: 20px; height: 20px; }
+/* A block's heading icon (Appearance in Settings) takes the same 22px slot as a row's, so its title
+   lines up with the row titles above it. */
+.rowi .ico, .blk > .row > .ico { flex: none; width: 22px; display: grid; place-items: center; color: var(--gold-text); }
+.rowi .ico svg.i, .blk > .row > .ico svg.i { width: 20px; height: 20px; }
 .rowi .main { flex: 1; min-width: 0; }
+/* A row whose text is a <label> (Bodyweight) would take label's small bold muted type into its note. */
+.rowi label.main { font-weight: 400; font-size: inherit; }
 .rowi .title { display: block; font-size: 0.95rem; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
 .rowi .desc { display: block; font-size: 0.8rem; color: var(--muted); line-height: 1.4; margin-top: 2px; }
 .rowi .value { flex: none; font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
