@@ -367,6 +367,9 @@ export function statsScreen(ctx) {
               h('strong', {}, `${ch.direction === 'down' ? '↓' : '↑'} ${fmtNum(ch.amount, 0)}${u}`), ` ${ch.direction === 'down' ? 'less' : 'more'} than in ${when}`);
         exHero = h('div', { class: 'hero' }, h('b', {}, `${fmtNum(head.value, 0)}${u}`), h('span', {}, head.what), change);
       }
+      // The session with the highest estimated max, for the Best tile's date.
+      const bestAt = (c.data || []).reduce((b, v, i) => (v !== null && v !== undefined && (b < 0 || v > c.data[b]) ? i : b), -1);
+      const bestDay = bestAt >= 0 ? c.labels[bestAt] : null;
       exerciseCard = h('div', {},
         exHero,
         tabs(metrics, metric, (v) => {
@@ -376,10 +379,13 @@ export function statsScreen(ctx) {
         lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1])}${tagUnit}` : null, tip: exerciseTip,
           name: `${exercise}, ${(metrics.find(([v]) => v === metric) || metrics[0])[1].toLowerCase()}`, say: (v) => `${fmtNum(v)}${tagUnit}` }),
         h('div', { class: 'grid-3', style: 'margin-top:14px' },
-          tile('Best', withKg(st.max_1rm), c.is_timed ? 'weight × √seconds' : null, 'gold'),
+          // Every tile has its line underneath, as the Overall tiles do: the day of the best, and the
+          // day "since first" counts from. A timed hold's best says how its score is worked out instead.
+          tile('Best', withKg(st.max_1rm), c.is_timed ? 'weight × √seconds' : bestDay ? formatDay(bestDay, { weekday: false, year: false }) : null, 'gold'),
           // One session has nothing to be "since": say so instead of a flat 0%.
           c.labels.length < 2 ? tile('Since first', '–', 'one session so far')
-            : tile('Since first', pctText(st.improvement_pct || 0, Math.abs(st.improvement_pct || 0) < 10 ? 1 : 0)),
+            : tile('Since first', pctText(st.improvement_pct || 0, Math.abs(st.improvement_pct || 0) < 10 ? 1 : 0),
+              `from ${formatDay(c.labels[0], { weekday: false, year: false })}`),
           tile('Sessions', String(c.labels.length), c.labels.length ? `last ${formatDay(c.labels[c.labels.length - 1], { weekday: false, year: false })}` : null)),
         sessionList(lb.exerciseSessions(exercise), c));
     }

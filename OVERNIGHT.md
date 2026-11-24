@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/stats-tiles` (from `improve/round-4`)
+
+- **Every Stats tile has its caption.** Under an exercise's chart, Best and Since first had no line
+  underneath while Sessions did, so the three tiles sat uneven and the Overall tiles above all had
+  one. Best now gives the day of the best ("28 Oct"; a timed hold keeps "weight × √seconds"), and
+  Since first the day it counts from ("from 23 Aug"). Checked on the mock data.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
