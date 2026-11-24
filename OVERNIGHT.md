@@ -455,6 +455,17 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    (was only first and last), the part under "Start" tinted red, a faint guide at the latest value,
    and points as small beads whenever they have room (they vanished past 60 points before).
    Checked on desktop, light and dark. Not yet on the iPhone (the simulator shut down).
+6. **Workout page: the session as a small gold label over the title.** "Session 2 - Shoulders &
+   Forearms" reads as Shoulders & Forearms with SESSION 2 above it, as Home and All workouts show it.
+7. **Saving a workout with new bests says so.** The note after Save reads "Saved · a new best"
+   (or "2 new bests") naming the exercises, on a soft gold card with the medal, which settles in
+   with a small turn (held still for Reduce Motion). Checked light and dark.
+8. **Personal bests: timed holds.** A bodyweight plank's top set read "79.5 × 60s" (the bodyweight's
+   number); it now reads "BW × 60s" as logged. Its best showed a bare "616" beside rows in kg; it
+   now says "616 score". Tests added.
+9. **Timed exercise charts.** A plank's chart labelled its score in seconds ("614s", "615.8s").
+   No unit on the axis now, the first tab reads "Score" for timed exercises (as the tile does), and a
+   chart with a single session puts its point in the middle.
 
 ## Next when resumed
 
