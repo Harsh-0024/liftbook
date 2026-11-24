@@ -879,9 +879,13 @@ details.card[open] > summary::after { transform: rotate(-135deg); }
 .msg { max-width: 100%; overflow-wrap: anywhere; }
 .msg.me { align-self: flex-end; max-width: 85%; background: var(--gold-soft); border: 1px solid var(--line-gold); border-radius: var(--radius) var(--radius) 4px var(--radius); padding: 10px 14px; white-space: pre-wrap; }
 .msg.coach { margin-bottom: 0; }
+/* Whatever ends an answer (an error, a note, the last paragraph) adds no gap under it, so the card's
+   padding is even top and bottom. */
+.msg.coach > :last-child { margin-bottom: 0; }
 .msg-foot { margin-top: 12px; border-top: 1px solid var(--hair); padding-top: 10px; }
 .answer p { margin: 0 0 8px; }
 .answer ul { margin: 0 0 8px; padding-left: 20px; }
+.answer > :last-child { margin-bottom: 0; }
 .answer li + li { margin-top: 4px; }
 .answer strong { color: var(--gold-text); }
 .steps { list-style: none; margin: 0 0 10px; padding: 0; font-size: 0.8rem; color: var(--subtle); }
