@@ -499,14 +499,20 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    739px of squares in 756px at 1024px, 11px each, no sideways scroll. On a phone the squares are
    too small to fit either way, so it scrolls at 12px as before (still to see on an iPhone).
 
+## Waiting list
+
+Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
+moved on to something else meanwhile.
+
+- **iPhone checks** (waits on: the iOS Simulator working again). Everything in round 4 was checked
+  on a computer only. To see on an iPhone: the charts' red stretch under the start line and the
+  guide line, the gold "a new best" note after saving, the "SESSION 2" kicker on a workout, timed
+  exercises' bests and charts, the exercise card's big number, the trash button at the end of a
+  workout's action row (it wraps with the others on a narrow screen), the Retrieve rows on two
+  columns, and the Consistency year grid (should scroll sideways at 12px squares, as before).
+
 ## Next when resumed
 
-- **Still to check on an iPhone** (the simulator was down for round 4; everything below was
-  checked on a computer only): the charts' red stretch under the start line and the guide line
-  (item 2 of round 4), the gold "a new best" note after saving, the "SESSION 2" kicker on a
-  workout, timed exercises' bests and charts, the exercise card's big number, the trash button at
-  the end of a workout's action row (it wraps with the others on a narrow screen), and the
-  Retrieve rows on two columns.
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already
   built in this app: unlogged plan exercises in Settings > Exercises, the session name before the
   exercises in History, and row numbers with "3 sets" on the Log check. Idea 8 (darker gold links in
