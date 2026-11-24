@@ -366,6 +366,12 @@ input.inline-num { width: 84px; padding: 7px 10px; text-align: right; font-weigh
 .stat b { display: block; font: 700 clamp(1.05rem, 4.8vw, 1.5rem)/1.15 var(--font); color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; letter-spacing: -0.01em; }
 .stat b.gold { color: var(--gold-text); }
 .stat small { display: block; margin-top: 4px; font-size: 0.78rem; color: var(--muted); }
+/* A row of tiles shares its lines: label, number, caption. On a phone "MOST IMPROVED" wraps to two
+   lines, which pushed that tile's number below its neighbours'; with a subgrid every number sits on
+   the same line. Browsers without subgrid keep the plain tiles. */
+@supports (grid-template-rows: subgrid) {
+  .grid-3 > .stat { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 0; align-content: start; }
+}
 .nums { display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); padding: 18px 6px; }
 .nums > div { text-align: center; padding: 0 4px; min-width: 0; }
 .nums > div + div { border-left: 1px solid var(--hair); }

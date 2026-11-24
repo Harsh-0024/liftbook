@@ -518,6 +518,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   "first session" reads "one session so far", the words the exercise tile already uses.
 - Checked in dark mode too: the green is the dark theme's brighter one, and the Stats tiles and
   captions read cleanly on the dark cards.
+- **Tile numbers line up on a phone.** On the iPhone "MOST IMPROVED" wraps to two lines and pushed
+  its number below Best's and New bests'. Each row of tiles now shares its label, number and
+  caption lines (CSS subgrid), so the numbers sit level whatever wraps. Desktop is unchanged (all
+  tiles 108px, numbers level). Checked on the iPhone 18 Pro simulator.
 
 ## Waiting list
 
