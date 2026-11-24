@@ -330,7 +330,26 @@ export function statsScreen(ctx) {
       // A timed hold's score is weight × √seconds (615.8 for 79.5 kg held 60 s): whole numbers, and the
       // tile says how it is worked out, since the number alone means nothing.
       const withKg = (v) => (v === null || v === undefined || Number.isNaN(v) ? fmtNum(v) : `${fmtNum(v, 0)}${kg}`);
+      // The latest value as a big number, as the old Stats page showed it, and how far it has come
+      // over the range shown ("↑ 33 kg more than in Sep 2026").
+      const shown = vals.map((v, i) => [labels[i], v]).filter(([, v]) => v !== null && v !== undefined && Number.isFinite(Number(v)));
+      let exHero = null;
+      if (shown.length) {
+        const [firstDay, first] = shown[0];
+        const last = Number(shown[shown.length - 1][1]);
+        const what = metric === 'volume' ? 'lifted, latest session' : metric === 'weight' ? 'heaviest set, latest session'
+          : c.is_timed ? 'score, latest session' : 'estimated max, latest session';
+        const diff = last - Number(first);
+        const [fy, fm] = String(firstDay).split('-').map(Number);
+        const unitText = c.is_timed && metric !== 'weight' ? '' : ' kg';
+        const change = shown.length < 2 || !fm ? null
+          : Math.abs(diff) < 0.05 ? h('small', { class: 'hero-change' }, `Level with ${MONTHS[fm - 1]} ${fy}`)
+            : h('small', { class: `hero-change ${diff < 0 ? 'down' : 'up'}` },
+              h('strong', {}, `${diff < 0 ? '↓' : '↑'} ${fmtNum(Math.abs(diff), 0)}${unitText}`), ` ${diff < 0 ? 'less' : 'more'} than in ${MONTHS[fm - 1]} ${fy}`);
+        exHero = h('div', { class: 'hero' }, h('b', {}, `${fmtNum(last, 0)}${unitText}`), h('span', {}, what), change);
+      }
       exerciseCard = h('div', {},
+        exHero,
         tabs(metrics, metric, (v) => {
           metric = v;
           paint();
@@ -338,13 +357,11 @@ export function statsScreen(ctx) {
         lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1])}${tagUnit}` : null,
           name: `${exercise}, ${(metrics.find(([v]) => v === metric) || metrics[0])[1].toLowerCase()}`, say: (v) => `${fmtNum(v)}${tagUnit}` }),
         h('div', { class: 'grid-3', style: 'margin-top:14px' },
-          tile(c.is_timed ? 'Current score' : 'Current est. max', withKg(st.current_1rm), c.is_timed ? 'weight × √seconds' : null),
-          tile('Best', withKg(st.max_1rm), null, 'gold'),
+          tile('Best', withKg(st.max_1rm), c.is_timed ? 'weight × √seconds' : null, 'gold'),
           // One session has nothing to be "since": say so instead of a flat 0%.
           c.labels.length < 2 ? tile('Since first', '–', 'one session so far')
-            : tile('Since first', pctText(st.improvement_pct || 0, Math.abs(st.improvement_pct || 0) < 10 ? 1 : 0))),
-        h('p', { class: 'foot', style: 'margin:12px 2px 0' }, `${c.labels.length} session${c.labels.length === 1 ? '' : 's'}`,
-          c.labels.length ? ` · last ${formatDay(c.labels[c.labels.length - 1])}` : ''),
+            : tile('Since first', pctText(st.improvement_pct || 0, Math.abs(st.improvement_pct || 0) < 10 ? 1 : 0)),
+          tile('Sessions', String(c.labels.length), c.labels.length ? `last ${formatDay(c.labels[c.labels.length - 1], { weekday: false, year: false })}` : null)),
         sessionList(lb.exerciseSessions(exercise), c));
     }
 

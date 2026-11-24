@@ -471,6 +471,11 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    page. They are now drawn at the wide column's width (phones unchanged), and the gridlines are
    solid hairlines, as on the old site, instead of near-invisible dashes. The Retrieve day page
    was compared too: it already matches the old one (and adds Log and "View as text").
+11. **Exercise card leads with the number.** As on the old exercise page, the card now opens with
+   the latest value in large serif ("70 kg", estimated max, latest session) and how far it has come
+   over the range ("↓ 2 kg less than in Aug 2026"), following the Est. max / Top weight / Volume tabs.
+   The "Current est. max" tile repeated it, so the tiles are now Best, Since first and Sessions
+   (with the last date), which replaces the line of text under them.
 
 ## Next when resumed
 
