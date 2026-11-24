@@ -511,6 +511,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   underneath while Sessions did, so the three tiles sat uneven and the Overall tiles above all had
   one. Best now gives the day of the best ("28 Oct"; a timed hold keeps "weight × √seconds"), and
   Since first the day it counts from ("from 23 Aug"). Checked on the mock data.
+- **Bodyweight axis without "kg".** Its axis read "77 kg … 80 kg" while the exercise chart's reads
+  bare numbers; it now matches, and the tag at the line's end still says "79.5 kg" (as does the
+  chart's spoken summary).
 
 ## Waiting list
 

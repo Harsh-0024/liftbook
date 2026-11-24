@@ -145,7 +145,8 @@ function bodyweightCard(lb, from, short) {
   const signed = (v) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${fmtNum(Math.abs(v))} kg`;
   return h('div', { class: 'card' },
     h('div', { class: 'card-head', style: 'margin-bottom:12px' }, h('h2', {}, 'Bodyweight')),
-    lineChart(labels.map(short), vals, { unit: ' kg', tag: `${fmtNum(t.current)} kg`, height: 200, name: 'Bodyweight' }),
+    // Bare numbers on the axis, as the exercise chart has; the tag at the end says "kg".
+    lineChart(labels.map(short), vals, { tag: `${fmtNum(t.current)} kg`, height: 200, name: 'Bodyweight', say: (v) => `${fmtNum(v)} kg` }),
     h('div', { class: 'grid-3', style: 'margin-top:14px' },
       tile('Now', `${fmtNum(t.current)} kg`, `since ${formatDay(t.lastChanged, { weekday: false, year: false })}`),
       tile('Change', signed(delta), `from ${short(labels[0])}`),
