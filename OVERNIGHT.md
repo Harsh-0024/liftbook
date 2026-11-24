@@ -505,6 +505,14 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/plan-page` (from `improve/round-4`)
+
+- Retrieve and a plan page on the iPhone (light mode): both look good, and Copy works. But
+  "Copied" turned the button into a loud lime-green slab (#16a34a to #22c55e), off the warm gold
+  palette, and the wider label pushed Log to the left. Now "Copied" is a soft wash of the app's
+  own green (`--good` 12% on the surface) with deeper green text and a thin green border, and Copy
+  keeps one width (7.4em) in both states. Checked on the iPhone: calm, and Log stays still.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
