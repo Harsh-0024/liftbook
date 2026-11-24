@@ -516,6 +516,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   "That day already has a workout" → Add to that day works. Just after the keyboard closes, Safari
   briefly leaves the floating Save bar where it sat above the keyboard, over the check card; the
   next scroll puts it back. A Safari quirk, left as is.
+- Test: joining a day returns `added` with only the new exercise (data.test.js).
+- Day page lower half on the iPhone: the uneven Edit/Repeat/Copy/Share buttons and the clipped
+  lone "previous workout" link are both already fixed on `design/workout-page`.
 
 ## Waiting list
 
