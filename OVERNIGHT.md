@@ -505,6 +505,14 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `fix/busy-icon-button` (from `improve/round-4`)
+
+1. **The trash button no longer swells while you're asked.** Tapping the trash on a workout
+   turned the small icon button into a wide "Working…" pill behind the "Delete this workout?"
+   question, shifting the row. Buttons with only an icon now keep their icon and just dim while
+   working (and tell screen readers they're busy); text buttons still say "Working…". Found while
+   saving and deleting a test workout end to end on the mock server (both worked). 115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
