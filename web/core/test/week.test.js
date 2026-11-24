@@ -13,20 +13,22 @@ test('the last 7 days, today last, with the trained ones marked', () => {
   assert.equal(w.count, 3); // the 10th is 8 days back
 });
 
-test('weeks in a row: 7-day stretches back from today that each had a workout', () => {
-  // This stretch (11-17), the one before (4-10), the one before that (28 Oct-3 Nov), then a gap.
-  assert.equal(weekStrip(['2026-11-17', '2026-11-05', '2026-10-28', '2026-10-10'], '2026-11-17').weeks, 3);
+test('weeks in a row: calendar weeks, Monday to Sunday, that each had a workout', () => {
+  // 17 Nov 2026 is a Tuesday. This week (16-22), the week before (9-15), 2-8 Nov, then a gap.
+  assert.equal(weekStrip(['2026-11-17', '2026-11-09', '2026-11-08', '2026-10-10'], '2026-11-17').weeks, 3);
   assert.equal(weekStrip(['2026-11-17'], '2026-11-17').weeks, 1);
   assert.equal(weekStrip([], '2026-11-17').weeks, 0);
+  // Sunday and the next Monday are two weeks.
+  assert.equal(weekStrip(['2026-11-15', '2026-11-16'], '2026-11-16').weeks, 2);
 });
 
-test('an empty current stretch does not end the run until it is over', () => {
-  // Nothing in the last 7 days, but the two stretches before both had one.
-  const w = weekStrip(['2026-11-09', '2026-11-01'], '2026-11-17');
+test('this week with nothing yet does not end the run until Sunday is over', () => {
+  // Tuesday 17 Nov, nothing since Monday, but the two weeks before both had one.
+  const w = weekStrip(['2026-11-09', '2026-11-03'], '2026-11-17');
   assert.equal(w.count, 0);
   assert.equal(w.weeks, 2);
-  // Two empty stretches: the run is over.
-  assert.equal(weekStrip(['2026-11-01'], '2026-11-17').weeks, 0);
+  // A whole week missed (9-15 Nov): the run is over, even though 8 Nov is only 9 days back.
+  assert.equal(weekStrip(['2026-11-08', '2026-11-01'], '2026-11-17').weeks, 0);
 });
 
 test('month and year ends', () => {

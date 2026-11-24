@@ -17,6 +17,13 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png">
   <link rel="preload" href="fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/cormorant-garamond-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- The page's own colour while styles.css is still on its way, so a slow start is never a white flash. -->
+  <style>
+    html { background: #000; color-scheme: dark; }
+    @media (prefers-color-scheme: light) { html { background: #f5f3f0; color-scheme: light; } }
+    html[data-theme="dark"] { background: #000; color-scheme: dark; }
+    html[data-theme="light"] { background: #f5f3f0; color-scheme: light; }
+  </style>
   <link rel="stylesheet" href="styles.css">
   <script>
     // The theme before anything is drawn, so the page never flashes the wrong colours.

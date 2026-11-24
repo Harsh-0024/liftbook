@@ -14,9 +14,9 @@ const weekdayOf = (day) => {
 /**
  * workoutDays: the days with a workout ('YYYY-MM-DD', any order). today: the device's day.
  * Returns {days: [{day, letter, name, trained, today}], count, weeks}: the 7 days ending today,
- * how many of them were trained, and the run of 7-day stretches (counted back from today) that
- * each had a workout. A week with nothing yet doesn't end the run until it is over, so the run
- * is counted from last week when the current stretch is still empty.
+ * how many of them were trained, and the run of calendar weeks (Monday to Sunday) in a row that
+ * each had a workout. This week counts once it has one; until then it doesn't end the run, since
+ * there is still time, so the run is counted from last week.
  */
 export function weekStrip(workoutDays, today) {
   const trained = new Set(workoutDays);
@@ -26,8 +26,9 @@ export function weekStrip(workoutDays, today) {
     const wd = weekdayOf(day);
     days.push({ day, letter: LETTERS[wd], name: NAMES[wd], trained: trained.has(day), today: i === 0 });
   }
+  const monday = addDays(today, -((weekdayOf(today) + 6) % 7));
   const has = (k) => {
-    for (let i = 0; i < 7; i += 1) if (trained.has(addDays(today, -(7 * k + i)))) return true;
+    for (let i = 0; i < 7; i += 1) if (trained.has(addDays(monday, i - 7 * k))) return true;
     return false;
   };
   let weeks = 0;
