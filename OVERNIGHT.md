@@ -505,6 +505,18 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `fix/added-day-bests` (from `improve/round-4`)
+
+- Adding exercises to a day that already had a workout ("Add to that day") opened the day with
+  "Added to this day · a new best — Pull-Ups. Well lifted.", though Pull-Ups was logged earlier
+  and only Flat Barbell Press was added. The note now names only bests among the exercises just
+  added (`saveWorkout` returns `added`); a plain save is unchanged. Checked in the browser:
+  adding Barbell Curl to that day now says just "Added to this day".
+- Log screen on the iPhone (light mode): looks right, the check updates as you type, and Save →
+  "That day already has a workout" → Add to that day works. Just after the keyboard closes, Safari
+  briefly leaves the floating Save bar where it sat above the keyboard, over the check card; the
+  next scroll puts it back. A Safari quirk, left as is.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

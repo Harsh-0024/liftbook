@@ -500,7 +500,9 @@ export function workoutScreen(ctx, day) {
       sets ? h('span', {}, `${sets} set${sets === 1 ? '' : 's'}`) : null,
       lifted >= 1 ? h('span', { title: 'Weight times reps, added up over every set' }, `${fmtNum(lifted, 0)} kg lifted`) : null,
       bw ? h('span', {}, `bodyweight ${fmtNum(bw)} kg`) : null),
-    saved ? savedNote(ctx, saved, cmp.filter((c) => c.medal).map((c) => c.log.exercise)) : null,
+    // Added to a day that already had a workout: only what was just added counts as news.
+    saved ? savedNote(ctx, saved, cmp.filter((c) => c.medal && (!saved.appended || !saved.added || saved.added.includes(c.log.exercise)))
+      .map((c) => c.log.exercise)) : null,
     !saved && !lb.profile()?.bodyweight && cmp.some((c) => c.usesBw)
       ? h('p', { class: 'wo-note' }, icon('info'), h('span', {}, 'Set your bodyweight in ', h('a', { href: '#/settings/account' }, 'Settings'),
         ` for accurate comparisons on ${[...new Set(cmp.filter((c) => c.usesBw).map((c) => c.log.exercise))].sort().join(', ')}.`))
