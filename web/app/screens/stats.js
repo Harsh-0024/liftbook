@@ -15,7 +15,8 @@ const remember = (key, v) => { try { localStorage.setItem(key, String(v)); } cat
 
 /** One year of days as squares (Monday first), as the original Stats page drew it. */
 function calendar(grid, onPick) {
-  const W = Math.max(280, Math.min(1040, (globalThis.innerWidth || 640) - 88));
+  // The room inside the card: the wide column (860px at most) less its and the card's padding.
+  const W = Math.max(280, Math.min(860, globalThis.innerWidth || 640) - 104);
   const weeks = grid.weeks.length;
   const gap = 3;
   const daysW = 30;

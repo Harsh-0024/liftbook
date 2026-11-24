@@ -493,6 +493,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 17. **Stats charts follow the window.** Charts are drawn for the window's width when Stats opens, so
    a window made narrower left them too wide for their cards (and wider, too small). Stats now
    redraws once the window settles, for a change of 40px or more. Checked at 700px: 788 → 628 wide.
+18. **Consistency year grid fits its card on a computer.** It was sized for a 1040px column, so on a
+   computer it came out 898px wide in a 756px card and scrolled sideways. It is now sized for the
+   860px column less the card's padding: no sideways scroll at 1024px. Phones get the same or a
+   little narrower space than before, so nothing new can overflow there (still to see on an iPhone).
 
 ## Next when resumed
 
