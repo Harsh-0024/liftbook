@@ -250,7 +250,10 @@ export function lineChart(labels, values, { unit = '', base = null, tag = null, 
   // Charts live in the wide column (860px at most), so a computer's chart fills its card edge to edge.
   const W = Math.round(Math.max(300, Math.min(860, globalThis.innerWidth || 640) - 72));
   const H = W < 480 ? Math.round(height * 0.85) : height;
-  const pad = { l: 46, r: tag ? 54 : 14, t: 16, b: 28 };
+  // Room on the right for the end tag: its pill is 8px off the last point and 8 + 7px a character wide,
+  // so a long one ("79.5 kg") no longer runs into the card's edge. Short tags keep the old 54px.
+  const tagW = tag ? 8 + String(tag).length * 7 : 0;
+  const pad = { l: 46, r: tag ? Math.max(54, 8 + tagW + 4) : 14, t: 16, b: 28 };
   const pts = values.map((v, i) => [i, v]).filter(([, v]) => v !== null && v !== undefined && Number.isFinite(Number(v)));
   const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, class: 'chart', role: 'img', 'aria-label': chartSummary(name, labels, pts, say || ((v) => `${fmtNum(v)}${unit}`)), style: `height:${H}px` });
   if (!pts.length) {
@@ -321,7 +324,7 @@ export function lineChart(labels, values, { unit = '', base = null, tag = null, 
   }
   if (tag) {
     const g = s('g', { class: 'tag' });
-    const w = 8 + tag.length * 7;
+    const w = tagW;
     g.append(s('rect', { x: lx + 8, y: ly - 11, width: w, height: 22, rx: 11 }));
     const t = s('text', { x: lx + 8 + w / 2, y: ly + 4, 'text-anchor': 'middle' });
     t.textContent = tag;
@@ -330,7 +333,7 @@ export function lineChart(labels, values, { unit = '', base = null, tag = null, 
   }
   // Dates along the bottom: the first and last, and evenly spaced ones between while they fit.
   const span = pts[pts.length - 1][0] - pts[0][0];
-  const slots = span > 0 ? Math.max(1, Math.min(4, Math.floor((W - pad.l - pad.r) / 110))) : 0;
+  const slots = span > 0 ? Math.max(1, Math.min(4, Math.floor((W - pad.l - pad.r) / 100))) : 0;
   const marks = [pts[0][0]];
   for (let k = 1; k < slots; k += 1) marks.push(Math.round(pts[0][0] + (span * k) / slots));
   if (span > 0) marks.push(pts[pts.length - 1][0]);

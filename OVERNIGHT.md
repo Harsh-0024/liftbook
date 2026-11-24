@@ -505,6 +505,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/charts` (from `improve/round-4`)
+
+- Chart end tags: the chart kept a fixed 54px on its right for the pill that labels the last point, enough for "+11%" but not "79.5 kg", which ran past the chart into the card's padding on a phone (the bodyweight chart). The right margin now grows with the tag (short tags keep 54px), so the pill ends inside the chart and lines up with the stat cards below. The narrower plot then dropped the middle date ("3 Oct"), so dates are now spaced at 100px instead of 110px and it's back. Checked on the iPhone in light mode, and on the computer (pill ends 4px inside the chart).
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
