@@ -659,6 +659,10 @@ a.wday:focus-visible .dot { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--gol
 .saved-note strong { color: var(--text); font-weight: 600; }
 .saved-note p { margin: 4px 0 0; }
 .saved-note a { color: var(--gold-text); font-weight: 600; }
+.saved-note.best { border-color: var(--gold); border-color: color-mix(in srgb, var(--gold) 45%, transparent); background: linear-gradient(135deg, var(--gold-soft), var(--surface) 70%); }
+.saved-note.best > svg.i { color: var(--gold-text); animation: best-glint 900ms var(--ease) 200ms both; }
+.saved-note.best strong { color: var(--gold-text); }
+@keyframes best-glint { 0% { transform: scale(0.6) rotate(-12deg); opacity: 0; } 60% { transform: scale(1.15) rotate(4deg); opacity: 1; } 100% { transform: none; } }
 .saved-note .ask { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--hair); }
 .wo-note { display: flex; gap: 8px; align-items: flex-start; margin: 14px 0 0; font-size: 0.8rem; color: var(--muted); }
 .wo-note svg.i { flex: none; width: 15px; height: 15px; margin-top: 2px; }
@@ -751,9 +755,9 @@ details.ex-open[open] .ex-body { animation: ex-open 220ms var(--ease); }
 .ex-table .delta.steady { color: var(--muted); font-weight: 500; }
 .ex-foot { display: flex; justify-content: flex-end; margin-top: 12px; }
 .ex-foot a { font-size: 0.85rem; font-weight: 600; color: var(--gold-text); text-decoration: none; white-space: nowrap; }
-@media (prefers-reduced-motion: reduce) { details.ex-open[open] .ex-body, .info-pop .pop, .saved-note { animation: none; } }
+@media (prefers-reduced-motion: reduce) { details.ex-open[open] .ex-body, .info-pop .pop, .saved-note, .saved-note.best > svg.i { animation: none; } }
 /* A synced redraw changes the page in place: nothing slides in again. */
-.screen.still .saved-note, .screen.still details.ex-open[open] .ex-body { animation: none; }
+.screen.still .saved-note, .screen.still .saved-note.best > svg.i, .screen.still details.ex-open[open] .ex-body { animation: none; }
 /* Exercise | vs recent | vs best | chevron: the header and the rows share one column width. */
 .ex-cols, details.ex-open > summary { --col: 84px; gap: 14px; }
 .ex-cols span + span, details.ex-open .vs > * { flex: none; width: var(--col); min-width: 0; }

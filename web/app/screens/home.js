@@ -341,10 +341,17 @@ function sparkChart(ctx, sp, first, today) {
 }
 
 /** Just saved: a short note (the rows below already show what was saved), and anything to answer. */
-function savedNote(ctx, saved) {
-  const note = h('div', { class: 'saved-note', role: 'status' }, icon('check'),
+/** "A and B" / "A, B and C". */
+const andList = (names) => (names.length < 2 ? names.join('') : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`);
+
+function savedNote(ctx, saved, bests = []) {
+  // A workout with new bests says so as it's saved, in gold, naming them.
+  const proud = bests.length > 0;
+  const head = saved.appended ? 'Added to this day' : 'Saved';
+  const note = h('div', { class: `saved-note${proud ? ' best' : ''}`, role: 'status' }, icon(proud ? 'medal' : 'check'),
     h('div', { class: 'main' },
-      h('strong', {}, saved.appended ? 'Added to this day' : 'Saved'),
+      h('strong', {}, proud ? `${head} · ${bests.length === 1 ? 'a new best' : `${bests.length} new bests`}` : head),
+      proud ? h('p', { class: 'best-names' }, `${andList(bests)}. Well lifted.`) : null,
       (saved.skipped || []).map((line) => h('p', {}, String(line).replace("won't be saved", "wasn't saved"))),
       saved.needsBodyweight ? h('p', {}, 'Set your bodyweight in ', h('a', { href: '#/settings/account' }, 'Settings'), ' so BW sets are counted correctly.') : null,
       (saved.timedPrompts || []).map((name) => {
@@ -492,7 +499,7 @@ export function workoutScreen(ctx, day) {
       sets ? h('span', {}, `${sets} set${sets === 1 ? '' : 's'}`) : null,
       lifted >= 1 ? h('span', { title: 'Weight times reps, added up over every set' }, `${fmtNum(lifted, 0)} kg lifted`) : null,
       bw ? h('span', {}, `bodyweight ${fmtNum(bw)} kg`) : null),
-    saved ? savedNote(ctx, saved) : null,
+    saved ? savedNote(ctx, saved, cmp.filter((c) => c.medal).map((c) => c.log.exercise)) : null,
     !saved && !lb.profile()?.bodyweight && cmp.some((c) => c.usesBw)
       ? h('p', { class: 'wo-note' }, icon('info'), h('span', {}, 'Set your bodyweight in ', h('a', { href: '#/settings/account' }, 'Settings'),
         ` for accurate comparisons on ${[...new Set(cmp.filter((c) => c.usesBw).map((c) => c.log.exercise))].sort().join(', ')}.`))
