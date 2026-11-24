@@ -478,6 +478,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    (with the last date), which replaces the line of text under them.
 12. **Personal bests: one date per row.** Each row read "Top set 40 × 6 · 16 Nov" with "16 Nov"
    again under the number. The top set's day now shows only when it differs from the best's day.
+13. **Personal bests: resting exercises.** An exercise not done for two months said "at your best
+   now" or "now 20% under", as if it were current. It now says "last done 23 Aug". (None in the
+   demo data is that old, so this was checked by reading, not on screen.)
 
 ## Next when resumed
 

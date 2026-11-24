@@ -404,6 +404,7 @@ export function bestsScreen(ctx) {
   const search = h('input', { type: 'search', placeholder: 'Search an exercise', 'aria-label': 'Search an exercise', autocomplete: 'off', autocapitalize: 'off' });
   const body = h('div', {});
   const day = (d) => formatDay(d, { weekday: false, year: String(d).slice(0, 4) !== deviceDay().slice(0, 4) });
+  const resting = addDays(deviceDay(), -56);
 
   const paint = () => {
     const q = search.value.trim().toLowerCase();
@@ -419,7 +420,9 @@ export function bestsScreen(ctx) {
       rows.length
         ? h('div', { class: 'group' }, rows.map((r) => {
           // The top set's day shows only when it differs from the best's, which sits beside the number.
-          const under = r.belowPct >= 1 ? `now ${fmtNum(r.belowPct, r.belowPct < 10 ? 1 : 0)}% under` : r.sessions > 1 ? 'at your best now' : 'first session';
+          // An exercise left for two months says when it was last done rather than how it stands "now".
+          const under = r.lastDay && r.lastDay < resting ? `last done ${day(r.lastDay)}`
+            : r.belowPct >= 1 ? `now ${fmtNum(r.belowPct, r.belowPct < 10 ? 1 : 0)}% under` : r.sessions > 1 ? 'at your best now' : 'first session';
           return h('a', { class: 'rowi best-row', href: `#/stats?exercise=${encodeURIComponent(r.value)}` },
             h('span', { class: 'main' },
               h('span', { class: 'title' }, r.label, r.fresh ? h('span', { class: 'pill best' }, 'New') : null),
