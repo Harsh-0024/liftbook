@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## design/retrieve-plan (from improve/round-4)
+
+- Retrieve, a plan never logged (Session 5 in the demo): "No history yet" sat in italics under all
+  eight exercises. Now the header line says it once ("8 exercises · 20 sets · Bodyweight 79.5 kg ·
+  Nothing logged yet") and the rows are just the names and targets. A plan with some history
+  (Session 3) is unchanged. Checked on iPhone 18 Pro; 115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
