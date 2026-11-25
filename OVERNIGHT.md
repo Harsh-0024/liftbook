@@ -527,6 +527,12 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   (http://192.168.29.209:8791/__signin?to=/) is a clean origin that works.
 - Nov 25, light mode on iPhone: the Bodyweight row's description looked bold on `design/charts`, which lacks this branch's `.rowi label.main` weight fix. On this branch it is regular, like every other row. Merge this branch to fix it everywhere.
 
+## design/settings: checked on the iPhone (25 Nov)
+
+- Bodyweight's note is plain (not the form labels' semibold) and Appearance lines up with the rows
+  above, on the iPhone too. The rest of Settings (Training, Account, Help make it better, Sign out)
+  reads evenly. Nothing to change.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
