@@ -284,7 +284,7 @@ export class Liftbook {
   }
 
   /** Read typed text without saving: what would be saved, and what's wrong with it. */
-  check(text, { now = new Date(), date = null } = {}) {
+  check(text, { now = new Date(), date = null, replaceDay = null } = {}) {
     const clean = String(text || '').replace(/\r\n?/g, '\n').trim();
     if (!clean) return { ok: false, errors: ['Type your workout first.'], parsed: null };
     let parsed;
@@ -344,9 +344,10 @@ export class Liftbook {
     // said beside the check, not a reason to stop the save.
     const future = Boolean(day) && day > deviceDay(now);
     const existing = this.workout(day);
+    // Editing a workout: its own exercises aren't "already in that day's workout".
     const notes = nameNotes(exercises, this.knownNames(), {
       lines: clean.split('\n'),
-      dayNames: existing ? new Set(existing.logs.map((l) => normalizeExerciseName(l.exercise))) : null,
+      dayNames: existing && day !== replaceDay ? new Set(existing.logs.map((l) => normalizeExerciseName(l.exercise))) : null,
     });
     return {
       notes,
