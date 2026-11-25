@@ -658,8 +658,11 @@ a.wday:focus-visible .dot { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--gol
 .wo-head .tools { display: flex; gap: 8px; }
 .wo-title { margin-bottom: 4px; }
 .wo-kicker { margin: 0 0 2px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-text); }
-.wo-meta { color: var(--muted); font-size: 0.88rem; }
-.wo-meta span + span::before { content: "·"; margin: 0 7px; opacity: 0.6; }
+/* Each fact wraps whole ("3,693 kg lifted" never splits over two lines). The dots sit in the gaps,
+   so one in front of a line's first fact falls outside the line and is clipped. */
+.wo-meta { display: flex; flex-wrap: wrap; column-gap: 16px; overflow: hidden; color: var(--muted); font-size: 0.88rem; }
+.wo-meta span { position: relative; white-space: nowrap; }
+.wo-meta span + span::before { content: "·"; position: absolute; left: -10px; opacity: 0.6; }
 .ex-row { display: flex; align-items: center; gap: 12px; padding: 16px 18px; }
 .ex-row + .ex-row { border-top: 1px solid var(--hair); }
 .ex-row .main { flex: 1; min-width: 0; }
