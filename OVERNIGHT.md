@@ -526,3 +526,6 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## design/settings-align (from improve/round-4)
+- Settings → Preferences: the Appearance icon now sits in the same 22px column as the row icons, so "Appearance" lines up with "Bodyweight" (it was 4px left) and its moon is the same 20px size. Checked on the iPhone.
