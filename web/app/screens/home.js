@@ -112,7 +112,9 @@ export function historyScreen(ctx) {
   const pick = ctx.redrawing && ctx.historyPick ? ctx.historyPick : { on: fromSettings, days: new Set(), limit: PAGE };
   ctx.historyPick = pick;
   for (const d of [...pick.days]) if (!lb.workout(d)) pick.days.delete(d);
-  const search = h('input', { type: 'search', placeholder: 'Search workouts or exercises', 'aria-label': 'Search workouts', autocomplete: 'off' });
+  // Exercise names ("RDL", "EZ-Bar") are not words: no autocorrect or capitals on a phone.
+  const search = h('input', { type: 'search', placeholder: 'Search workouts or exercises', 'aria-label': 'Search workouts', autocomplete: 'off',
+    autocorrect: 'off', autocapitalize: 'none', spellcheck: 'false' });
   const body = h('div', {});
   const toggle = h('button', { class: 'btn small ghost', type: 'button' });
   const count = h('span', { class: 'count', 'aria-live': 'polite' });

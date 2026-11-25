@@ -375,7 +375,7 @@ function exercises(ctx) {
   const loggedKeys = new Set([...counts.keys()].map((n) => normalizeExerciseName(n)));
   for (const it of lb.exerciseCatalog()) if (!loggedKeys.has(it.key) && !counts.has(it.name)) counts.set(it.name, 0);
   const names = [...counts.keys()].sort((a, b) => a.localeCompare(b));
-  const search = h('input', { id: 'ex-search', type: 'search', placeholder: 'Search your exercises', autocapitalize: 'off', 'aria-label': 'Search your exercises' });
+  const search = h('input', { id: 'ex-search', type: 'search', placeholder: 'Search your exercises', autocapitalize: 'off', 'aria-label': 'Search your exercises', autocorrect: 'off', spellcheck: 'false' });
   const group = h('div', { class: 'group pick-group' });
   const kind = (s) => [s.is_timed ? 'Timed' : null, s.is_bodyweight ? 'Bodyweight added' : null].filter(Boolean).join(' · ') || 'Weight and reps';
   // The switch shows what the app does now, built-in bodyweight exercises included.

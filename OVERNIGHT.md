@@ -512,6 +512,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    not see why it matched. While searching, matching exercises now come first in each row and in
    the text colour: "Session 3 · **Barbell Curl** · Pull-Ups · Incli…". No search: unchanged.
    Checked on the iPhone.
+2. **No autocorrect in exercise searches.** On the iPhone, typing "curl" in All workouts became
+   "Curl" with a "Curls" suggestion; names like "RDL" or "EZ-Bar" could be "corrected" away. The
+   four exercise searches (All workouts, Retrieve, Stats, Settings → Exercises) now turn off
+   autocorrect, spell check and capitals. Checked on the iPhone in All workouts.
 
 ## Waiting list
 
