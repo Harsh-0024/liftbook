@@ -504,6 +504,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    set ("Thu 22 Oct 2026 · Push · 102 kg · Top set 85 × 6"). A click opens that workout. On a
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
+20. **Log help examples are code chips (branch `design/log-help`, a567b57).** Under "How to write
+   sets" the examples to type (`100 x 5, 5, 4`, `bw+10 x 6`...) were loose grey monospace inside the
+   sentence. They now sit in small gold-tinted chips with dark text, so what to type stands apart
+   from what it means. Checked on the iPhone; 115 tests pass.
 
 ## Waiting list
 
