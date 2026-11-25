@@ -505,6 +505,12 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## Log's "How to write sets" (branch `design/log-guide`, 25 Nov 2026)
+
+- The guide's examples ("100 x 5, 5, 4", "bw+10 x 6", "Bodyweight - 72") were grey monospace text
+  running straight into grey explanations. Each example now sits on a soft chip in the text colour,
+  so it reads apart from what it means. Checked on the iPhone 18 Pro in dark and light. 115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
