@@ -505,6 +505,14 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/shortcut-links` (26 Nov)
+
+- **Apple Shortcuts, "Links for your own shortcut": the bits of code stay whole.** The help line
+  broke "?key=" across two lines, leaving "?" alone at the end of one. `workout_text`, `?key=`
+  and `?list=1` are now small monospace chips on a soft gold ground that never break (a new
+  `code` style in styles.css; nothing else in the app used `<code>`). Checked on the iPhone;
+  115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
