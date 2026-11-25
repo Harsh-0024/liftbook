@@ -327,6 +327,7 @@ button.rowi { width: 100%; border: 0; text-align: left; font: inherit; cursor: p
 .rowi .ico, .blk .ico { flex: none; width: 22px; display: grid; place-items: center; color: var(--gold-text); }
 .rowi .ico svg.i, .blk .ico svg.i { width: 20px; height: 20px; }
 .rowi .main { flex: 1; min-width: 0; }
+.rowi label.main { font-weight: 400; } /* a row whose text is a <label> keeps the plain description, not the form-label bold */
 .rowi .title { display: block; font-size: 0.95rem; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
 .rowi .desc { display: block; font-size: 0.8rem; color: var(--muted); line-height: 1.4; margin-top: 2px; }
 .rowi .value { flex: none; font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
