@@ -533,3 +533,7 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+- Log parser: "120, 10x" reads as 3 sets of 120 × 1 (the trailing "x" makes 10 drop to 1), where
+  "120, 10" reads as 120 × 10. Seen 26 Nov. Rare to type; check against the Python parser on main
+  before changing, since the web parser mirrors it. (A short list filling up to 3 sets is on purpose.)
