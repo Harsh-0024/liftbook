@@ -511,6 +511,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   the day's workout by its full title, "Session 3 - Back & Triceps", and on a phone broke it after
   "Back". It now says "Back & Triceps", as Home and All workouts name it, and each fact wraps whole.
   Checked on the iPhone.
+- The check line said "· adds to Back & Triceps if you choose", which was hard to follow. It now
+  says "· also on this day: Back & Triceps"; Save still asks whether to add to it or open it.
+  Checked on the iPhone.
 
 ## Waiting list
 

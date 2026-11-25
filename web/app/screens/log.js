@@ -149,8 +149,9 @@ export function logScreen(ctx) {
       c.future && c.day ? h('p', { class: 'wo-note log-future' }, icon('calendar'),
         h('span', {}, `This is dated ${formatDay(c.day)}, after today. Check the year on the first line.`)) : '',
       c.errors.length ? h('ul', { class: 'errors' }, c.errors.map((e) => h('li', {}, e))) : '');
-    // The workout already on that day, by its name as Home and All workouts show it.
-    if (c.existing) checkHead.append(' · adds to ', whole(splitSessionTitle(c.existing.title).title || c.existing.title), ' if you choose');
+    // The workout already on that day, by its name as Home and All workouts show it. Save then
+    // asks whether to add to it or open it.
+    if (c.existing) checkHead.append(' · ', whole(`also on this day: ${splitSessionTitle(c.existing.title).title || c.existing.title}`));
   };
   // The check reads the text trimmed, so its line 1 is the first line that isn't blank.
   const lineIndex = (lineNo) => lineNo - 1 + (ta.value.match(/^\s*/)[0].match(/\n/g) || []).length;
