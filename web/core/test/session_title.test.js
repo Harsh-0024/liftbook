@@ -2,7 +2,7 @@
 // the title (the old list's routes/workouts.py _home_history).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { splitSessionTitle, nextSessionId, lastDoneBySession } from '../sessions.js';
+import { splitSessionTitle, sessionTitleText, nextSessionId, lastDoneBySession } from '../sessions.js';
 
 test('a session title splits into its session and its name', () => {
   assert.deepEqual(splitSessionTitle('Session 2 - Legs'), { session: 'Session 2', title: 'Legs' });
@@ -40,4 +40,11 @@ test('Retrieve: each session knows the last day it was done', () => {
   assert.equal(last.has(4), false);
   assert.equal(last.size, 2);
   assert.equal(lastDoneBySession(null).size, 0);
+});
+
+test('a session title in a sentence takes the app\'s dot', () => {
+  assert.equal(sessionTitleText('Session 3 - Back & Triceps'), 'Session 3 · Back & Triceps');
+  assert.equal(sessionTitleText('session 12: Legs'), 'Session 12 · Legs');
+  assert.equal(sessionTitleText('Push'), 'Push');
+  assert.equal(sessionTitleText(''), '');
 });

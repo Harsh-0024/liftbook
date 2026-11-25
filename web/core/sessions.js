@@ -203,6 +203,15 @@ export function splitSessionTitle(title) {
 }
 
 /**
+ * A title to show in a sentence: "Session 3 - Back" -> "Session 3 · Back", the dot the app uses
+ * between a session and its name. Other titles come back whole.
+ */
+export function sessionTitleText(title) {
+  const { session, title: rest } = splitSessionTitle(title);
+  return session ? `${session} · ${rest}` : rest;
+}
+
+/**
  * The session after the last one logged: titles are the latest workouts' titles, newest first
  * ("Session 3 - Back" → 4), ids the plan's session numbers in order. Wraps round after the
  * last; null when none of the latest ten names a session in the plan.

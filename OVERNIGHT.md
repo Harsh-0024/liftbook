@@ -505,6 +505,16 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/session-dot` (26 Nov)
+
+- **Workout titles in sentences take the app's dot.** Saved titles are "Session 3 - Back &
+  Triceps"; Home splits them, but sentences printed them raw with the hyphen, beside the app's own
+  "Session 4 · Legs". A new `sessionTitleText()` in core/sessions.js (with a test) gives
+  "Session 3 · Back & Triceps", used by the Log check heading ("adds to …"), the "already logged"
+  box, the delete question, the Stats calendar tip and Bulk import's "already logged" reason.
+  Shares and saved text keep the title as written. Checked in the page ("adds to Session 3 · Back
+  & Triceps") and on the iPhone; 116 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

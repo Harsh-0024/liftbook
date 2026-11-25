@@ -5,6 +5,7 @@ import { h, icon, pageHead, formatDay, busy, toast, autoGrow, rowItem } from '..
 import { attachSuggestions } from '../suggest.js';
 import { attachPasteTidy, tidyPaste, showFromTop } from '../paste.js';
 import { scrollBehavior } from '../motion.js';
+import { sessionTitleText } from '../../core/sessions.js';
 
 export const DRAFT_KEY = 'liftbook-log-draft';
 
@@ -146,7 +147,7 @@ export function logScreen(ctx) {
       c.future && c.day ? h('p', { class: 'wo-note log-future' }, icon('calendar'),
         h('span', {}, `This is dated ${formatDay(c.day)}, after today. Check the year on the first line.`)) : '',
       c.errors.length ? h('ul', { class: 'errors' }, c.errors.map((e) => h('li', {}, e))) : '');
-    if (c.existing) checkHead.textContent += ` · adds to ${c.existing.title} if you choose`;
+    if (c.existing) checkHead.textContent += ` · adds to ${sessionTitleText(c.existing.title)} if you choose`;
   };
   // The check reads the text trimmed, so its line 1 is the first line that isn't blank.
   const lineIndex = (lineNo) => lineNo - 1 + (ta.value.match(/^\s*/)[0].match(/\n/g) || []).length;
@@ -227,7 +228,7 @@ export function logScreen(ctx) {
         icon('calendar'),
         h('div', {},
           h('strong', {}, 'That day already has a workout.'),
-          h('p', { style: 'margin:4px 0 10px' }, `${r.existing.title} is logged on ${formatDay(r.existing.day)}. Add these exercises to it, or open it.`),
+          h('p', { style: 'margin:4px 0 10px' }, `${sessionTitleText(r.existing.title)} is logged on ${formatDay(r.existing.day)}. Add these exercises to it, or open it.`),
           h('div', { class: 'row' },
             h('button', { class: 'btn primary small', type: 'button', onclick: (e) => busy(e.currentTarget, () => doSave(true))(e) }, 'Add to that day'),
             h('a', { class: 'btn small', href: `#/workout/${r.existing.day}` }, 'Open it')))));

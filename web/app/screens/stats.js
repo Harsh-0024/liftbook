@@ -2,6 +2,7 @@
 
 import { h, icon, pageHead, lineChart, fmtNum, formatDay, toast, tapWord } from '../ui.js';
 import { normalizeExerciseName } from '../../core/names.js';
+import { sessionTitleText } from '../../core/sessions.js';
 import { addDays, deviceDay } from '../../core/dates.js';
 import { overallView } from '../../core/overall_view.js';
 import { sortBests, exerciseHeadline, topSetText } from '../../core/bests.js';
@@ -289,7 +290,7 @@ export function statsScreen(ctx) {
         chart = h('div', {}, calendar(g, (d) => {
           const when = formatDay(d.iso);
           tip.replaceChildren(...(d.on
-            ? [h('b', {}, d.title), ` · ${when}${d.sets ? ` · ${d.sets} set${d.sets === 1 ? '' : 's'}` : ''} `, h('a', { href: `#/workout/${d.iso}` }, 'Open')]
+            ? [h('b', {}, sessionTitleText(d.title)), ` · ${when}${d.sets ? ` · ${d.sets} set${d.sets === 1 ? '' : 's'}` : ''} `, h('a', { href: `#/workout/${d.iso}` }, 'Open')]
             : [`${when} · Rest day`]));
         }), tip);
         const narrow = (globalThis.innerWidth || 640) < 480;
