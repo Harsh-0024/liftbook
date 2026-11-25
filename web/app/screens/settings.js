@@ -763,7 +763,7 @@ function sync(ctx) {
   const paint = (st) => {
     status.replaceChildren(
       h('span', { class: 'title' }, st.running ? 'Syncing now…' : st.error === 'offline' ? 'Offline. Changes are kept on this device.' : st.error ? `Problem: ${st.error}` : 'Up to date'),
-      h('span', { class: 'desc' }, `Last synced ${ago(st.last_sync)} · ${st.pending} change${st.pending === 1 ? '' : 's'} waiting to upload`));
+      h('span', { class: 'desc' }, `Last synced ${ago(st.last_sync)}${st.pending ? ` · ${st.pending} change${st.pending === 1 ? '' : 's'} waiting to upload` : ''}`));
   };
   paint(ctx.sync.status());
   const off = ctx.sync.onStatus((st) => (status.isConnected ? paint(st) : off()));

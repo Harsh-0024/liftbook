@@ -505,6 +505,12 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## improve/settings-copy (25 Nov)
+
+- Settings > Sync and data: the status line always ended "· 0 changes waiting to upload". It now
+  just says "Last synced just now"; the waiting count appears only when something is waiting.
+  Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
