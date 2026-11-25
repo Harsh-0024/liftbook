@@ -510,6 +510,8 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 - Settings > Sync and data: the status line always ended "· 0 changes waiting to upload". It now
   just says "Last synced just now"; the waiting count appears only when something is waiting.
   Checked on the iPhone.
+- Settings > Account: the subtitle said "Password, theme, sign out, delete" but the first card on
+  the page is Email. It now reads "Email, password, theme, sign out, delete". Checked on the iPhone.
 
 ## Waiting list
 
