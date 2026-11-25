@@ -505,6 +505,12 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## design/selects (25 Nov)
+
+- Every picker (Stats: Recently trained, the exercise; Settings and elsewhere) drew a small filled
+  triangle, which read as a plain OS default. It is now a thin chevron, like the old site's
+  Bootstrap pickers, in each theme's quiet grey. Checked on the iPhone in dark and light.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
