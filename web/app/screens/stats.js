@@ -444,7 +444,8 @@ export function bestsScreen(ctx) {
     const rows = sortBests(q ? all.filter((r) => r.label.toLowerCase().includes(q)) : all, sort);
     body.replaceChildren(
       h('div', { class: 'card-head', style: 'margin:0 2px 10px' },
-        h('span', { class: 'foot' }, `${rows.length} exercise${rows.length === 1 ? '' : 's'}`),
+        // The Exercises tile above already gives the count; here it shows only what a search leaves.
+        h('span', { class: 'foot' }, q ? `${rows.length} of ${all.length}` : 'Sort by'),
         tabs(BEST_SORTS, sort, (v) => {
           sort = v;
           remember(BEST_SORT_KEY, v);

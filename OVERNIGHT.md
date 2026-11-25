@@ -510,6 +510,8 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 - Personal bests: the "22 exercises" count beside Latest / Highest / A to Z sat about 9px above the
   buttons' middle (the quiet-note style's own margins pulled it up). In a card head it now has none,
   so it sits level with them. Checked on the iPhone.
+- The line beside the sort buttons said "22 exercises", right under the Exercises 22 tile. It now
+  reads "Sort by", and "3 of 22" while a search narrows the list. Checked on the iPhone.
 
 ## Waiting list
 
