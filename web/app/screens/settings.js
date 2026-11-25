@@ -389,7 +389,7 @@ function exercises(ctx) {
     const head = h('button', { class: `rowi${open === n ? ' open' : ''}`, type: 'button', 'aria-expanded': String(open === n) },
       h('span', { class: 'ico' }, icon('dumbbell')),
       h('span', { class: 'main' }, h('span', { class: 'title' }, n), desc),
-      h('span', { class: 'value' }, counts.get(n) ? `${counts.get(n)} logged` : 'In your plan'),
+      h('span', { class: 'value' }, counts.get(n) ? `${counts.get(n)} session${counts.get(n) === 1 ? '' : 's'}` : 'In your plan'),
       h('span', { class: 'chev-i' }, icon('chev')));
     head.addEventListener('click', () => { open = open === n ? null : n; paint(); });
     if (open !== n) return [head];

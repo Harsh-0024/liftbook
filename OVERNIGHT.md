@@ -526,3 +526,7 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## improve/exercise-counts (26 Nov)
+
+1. Settings → Exercises: each row said "12 logged" without saying 12 of what. The number counts the workouts that include the exercise, which Stats calls "Sessions", so the rows now say "12 sessions" ("1 session" for one). Checked on the iPhone 18 Pro simulator.
