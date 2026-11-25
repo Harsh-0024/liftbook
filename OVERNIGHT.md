@@ -505,6 +505,14 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `improve/shortcuts-copy` (26 Nov)
+
+- **Apple Shortcuts: the Log Workout line fits on one line.** "Pick one of your newest workout
+  notes and log it" left "it" alone on a second line on an iPhone. It now reads "Log one of your
+  newest workout notes", one line like Get Workout's. Checked on the iPhone; 115 tests pass.
+  Also looked at: Bulk import (fine), the "1." / "3." step numbers (old-style figures, already
+  fixed on `design/lining-figures`) and the footer (same "2026 Liftbook" as the old site).
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
