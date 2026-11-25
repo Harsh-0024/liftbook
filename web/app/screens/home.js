@@ -7,6 +7,7 @@ import { attachSuggestions } from '../suggest.js';
 import { attachPasteTidy } from '../paste.js';
 import { shareLinkBox } from '../share.js';
 import { splitSessionTitle, lastDoneBySession } from '../../core/sessions.js';
+import { exerciseMatches } from '../../core/search.js';
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -135,7 +136,7 @@ export function historyScreen(ctx) {
     const q = search.value.trim().toLowerCase();
     shown = q
       // The day matches as it reads too: "9 nov", "november", "mon 9 nov 2026" (and 2026-11-09).
-      ? workouts.filter((w) => w.title.toLowerCase().includes(q) || w.logs.some((l) => String(l.exercise).toLowerCase().includes(q)) || w.day.includes(q)
+      ? workouts.filter((w) => w.title.toLowerCase().includes(q) || w.logs.some((l) => exerciseMatches(l.exercise, q)) || w.day.includes(q)
         || dayWords(w.day).includes(q))
       : workouts;
     const months = new Map();

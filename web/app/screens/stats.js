@@ -7,6 +7,7 @@ import { overallView } from '../../core/overall_view.js';
 import { sortBests, exerciseHeadline, topSetText } from '../../core/bests.js';
 import { consistencyYears, yearWindow, consistencyHero, consistencyTiles, yearGrid } from '../../core/consistency.js';
 import { scrollBehavior } from '../motion.js';
+import { exerciseMatches } from '../../core/search.js';
 
 const VIEW_KEY = 'liftbook-stats-view';
 const YEAR_KEY = 'liftbook-stats-year';
@@ -176,7 +177,7 @@ export function statsScreen(ctx) {
     if (!q) return;
     const opts = lb.statsOptions();
     const hit = opts.find((o) => o.label.toLowerCase() === q) || opts.find((o) => o.label.toLowerCase().startsWith(q))
-      || opts.find((o) => o.label.toLowerCase().includes(q));
+      || opts.find((o) => o.label.toLowerCase().includes(q)) || opts.find((o) => exerciseMatches(o.label, q));
     if (!hit) return toast(`No exercise called “${search.value.trim()}” in your workouts.`);
     exercise = hit.value;
     lb.countView(exercise);
@@ -441,7 +442,7 @@ export function bestsScreen(ctx) {
 
   const paint = () => {
     const q = search.value.trim().toLowerCase();
-    const rows = sortBests(q ? all.filter((r) => r.label.toLowerCase().includes(q)) : all, sort);
+    const rows = sortBests(q ? all.filter((r) => exerciseMatches(r.label, q)) : all, sort);
     body.replaceChildren(
       h('div', { class: 'card-head', style: 'margin:0 2px 10px' },
         h('span', { class: 'foot' }, `${rows.length} exercise${rows.length === 1 ? '' : 's'}`),

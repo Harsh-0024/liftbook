@@ -505,6 +505,16 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `feature/search-short-names` (from `improve/round-4`)
+
+- Searching "rdl" found nothing, though Romanian Deadlift is logged most Legs days. The exercise
+  searches (All workouts, Retrieve, Settings > Exercises, Stats, Personal bests) now know gym short
+  names (web/core/search.js): rdl, sldl, ohp, bp, dl, bss, lpd, pullups/chinups/pushups for a whole
+  lift; db, bb, kb, ez, bw, ext, tri, bi, incl, decl for one word. Words typed may come in any
+  order ("press incl db"), and a short word matches from the start of a word in the name, so "bb"
+  doesn't find Dumbbell. Plain text still matches as before. New test file search.test.js (3
+  tests); 118 pass. Checked on iPhone 18 Pro: "rdl" on All workouts lists the Legs days.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
