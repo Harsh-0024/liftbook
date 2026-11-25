@@ -52,7 +52,15 @@ function calendar(grid, onPick) {
   if (slides) {
     // A phone can't fit the year: open on the latest weeks.
     const col = Math.max(0, grid.weeks.findIndex((w) => w.some((d) => d.today)));
-    setTimeout(() => { scroll.scrollLeft = Math.max(0, (col + 1) * (cell + gap) - scroll.clientWidth + cell * 2); }, 0);
+    // The side with more weeks past it fades out, so a cut square or month name reads as
+    // "more this way" rather than as a mistake.
+    const edges = () => {
+      const max = scroll.scrollWidth - scroll.clientWidth;
+      scroll.classList.toggle('more-l', scroll.scrollLeft > 2);
+      scroll.classList.toggle('more-r', scroll.scrollLeft < max - 2);
+    };
+    scroll.addEventListener('scroll', edges, { passive: true });
+    setTimeout(() => { scroll.scrollLeft = Math.max(0, (col + 1) * (cell + gap) - scroll.clientWidth + cell * 2); edges(); }, 0);
   }
   return box;
 }

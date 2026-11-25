@@ -512,6 +512,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 - The card's heading repeated the chosen tab ("Consistency" over the Consistency tab). It now reads
   "Training days", the way the Strength tab is headed "Overall strength".
 - Checked on the iPhone.
+- On a phone the year grid scrolls sideways and opened cut mid-word ("De" for Dec) and mid-square
+  at its edge. The side with more weeks past it now fades out over 28px, so the cut reads as "more
+  this way"; at either end that side is sharp. Checked on the iPhone, both scrolled in and at the end.
 
 ## Waiting list
 

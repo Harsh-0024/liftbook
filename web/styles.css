@@ -1037,6 +1037,9 @@ label.rowi { cursor: pointer; }
 .cal-days span { height: var(--cal-cell); line-height: var(--cal-cell); overflow: visible; }
 .cal-scroll { overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; padding-bottom: 2px; }
 .cal-scroll::-webkit-scrollbar { display: none; }
+.cal-scroll.more-r { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+.cal-scroll.more-l { -webkit-mask-image: linear-gradient(to right, transparent, #000 28px); mask-image: linear-gradient(to right, transparent, #000 28px); }
+.cal-scroll.more-l.more-r { -webkit-mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent); }
 .cal-months { position: relative; height: 20px; font-size: 0.66rem; color: var(--muted); }
 .cal-months span { position: absolute; top: 0; }
 .cal-grid { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, var(--cal-cell)); grid-auto-columns: var(--cal-cell); gap: var(--cal-gap); }
