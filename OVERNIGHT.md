@@ -513,7 +513,8 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   lift; db, bb, kb, ez, bw, ext, tri, bi, incl, decl for one word. Words typed may come in any
   order ("press incl db"), and a short word matches from the start of a word in the name, so "bb"
   doesn't find Dumbbell. Plain text still matches as before. New test file search.test.js (3
-  tests); 118 pass. Checked on iPhone 18 Pro: "rdl" on All workouts lists the Legs days.
+  tests); 118 pass. Checked on iPhone 18 Pro: "rdl" on All workouts lists the Legs days;
+  "db press" in Retrieve > Custom workout lists Incline, Flat and Seated Dumbbell (Overhead) Press.
 
 ## Waiting list
 
