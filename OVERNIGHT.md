@@ -505,6 +505,11 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/curly-apostrophes` (26 Nov)
+
+- Stats → Muscle balance note: "exercise's" now uses the curly apostrophe (’) like the rest of the app. Checked in the page.
+- Left as they are: the rename message ("That's already its name.") and the coach's built-in answers. They are checked against fixtures from the Python site, so changing them needs both sides changed.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
