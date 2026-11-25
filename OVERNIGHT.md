@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/bests-icon` (26 Nov)
+
+- **Stats: Personal bests has its own icon.** The Personal bests row used the chart icon, the same
+  one as the Stats tab right below it, so it didn't say "bests". It now uses the medal icon that
+  already marks a new personal best on shared workouts. Checked on the iPhone in dark mode;
+  115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

@@ -197,7 +197,7 @@ export function statsScreen(ctx) {
   });
   const root = h('div', { dataset: { wide: '1' } }, pageHead('Stats', 'How your lifts are moving.'),
     h('div', { class: 'search', style: 'margin-bottom:12px' }, icon('search'), search, list),
-    h('a', { class: 'group rowi bests-link', href: '#/stats/bests' }, h('span', { class: 'ico' }, icon('stats')),
+    h('a', { class: 'group rowi bests-link', href: '#/stats/bests' }, h('span', { class: 'ico' }, icon('medal')),
       h('span', { class: 'main' }, h('span', { class: 'title' }, 'Personal bests'), h('span', { class: 'desc' }, 'Every exercise’s best and heaviest set')),
       h('span', { class: 'chev-i' }, icon('chev'))),
     body);
