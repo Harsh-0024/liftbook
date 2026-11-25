@@ -1253,3 +1253,9 @@ button.rowi.more-sessions .title { color: var(--gold-text); font-size: 0.86rem; 
     outline-offset: 2px;
   }
 }
+
+/* Workout page actions on a phone: each wrapped row fills the width instead of
+   leaving a ragged gap after "Edit · Repeat"; the trash button keeps its size. */
+@media (max-width: 600px) {
+  .wo-actions > .btn:not(.trash-end) { flex: 1 1 auto; }
+}
