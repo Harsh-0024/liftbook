@@ -526,3 +526,7 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## improve/account-subtitle (26 Nov)
+
+1. The Account page's subtitle said "Password, theme, sign out, delete". The page opens with an Email card, and its theme card is headed "Appearance", so the subtitle now reads "Email, password, appearance, sign out, delete" (fits one line on the iPhone 18 Pro). The Settings row that opens it already started with "Email".
