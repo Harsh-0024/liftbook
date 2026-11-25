@@ -18,7 +18,7 @@ import {
   shortDate, longDate, formatSetsLine,
 } from '../core/insights.js';
 import { formatG as fmtG } from '../core/py.js';
-import { retrieveDay, retrieveCustom, describeRetrieveOutput, picksForPlanLines, oftenTrainedKeys } from '../core/retrieve.js';
+import { retrieveDay, retrieveCustom, describeRetrieveOutput, picksForPlanLines, oftenTrainedKeys, isRetrievePlaceholder } from '../core/retrieve.js';
 import {
   getChartData, getOverallProgressData, statsExerciseOptions, getAllExercisesSummary, bodyweightWarningExercises,
   resolveExerciseAliases, setsDisplay,
@@ -302,6 +302,13 @@ export class Liftbook {
       parsed.invalid_date_text = null;
     }
     const exercises = parsed.exercises || [];
+    // Retrieve's "1, 1" under an exercise you haven't filled in is left out, as the old check did.
+    for (const e of exercises) {
+      if (e.valid !== false && !e.missing_name && isRetrievePlaceholder(e.exercise_string)) {
+        e.valid = false;
+        e.placeholder = true;
+      }
+    }
     const errors = [];
     if (!exercises.length) errors.push('No exercises found. Put each exercise on its own line, its sets on the next.');
     for (const e of exercises.filter((x) => x.missing_name && x.valid !== false)) {
@@ -319,6 +326,10 @@ export class Liftbook {
     }
     const invalid = exercises.filter((e) => e.valid === false || e.missing_name);
     for (const e of invalid.filter((x) => x.valid === false)) {
+      if (e.placeholder) {
+        errors.push(`“${e.name}” still has Retrieve’s 1, 1: fill in your sets, or it won’t be saved.`);
+        continue;
+      }
       const sets = String(e.exercise_string || '').split('\n').slice(1).join(' ').trim();
       // A name with nothing under it has no sets to quote.
       errors.push(sets ? `“${e.name}”: couldn’t read its sets (“${sets}”).` : `“${e.name}”: no sets under it.`);
