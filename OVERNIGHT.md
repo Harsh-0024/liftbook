@@ -524,6 +524,11 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   the tapped point, the Retrieve rows sit two to a row, the Consistency year grid scrolls sideways
   ending near today, and a plan's "SESSION 3 · CYCLE 1" kicker shows. All fine.
 
+- The links to the workout before and after: the first or the latest workout has only one, which
+  now takes the whole row instead of cutting "Shoulders & Forearms" to "Shoulders & For..." beside
+  an empty half. With both, a long name wraps to two lines before it is cut. Checked on the iPhone
+  (25 Nov: one link; 16 Nov: both).
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
