@@ -526,3 +526,6 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## fix/exercise-label (from improve/round-4)
+- Stats lists named an exercise typed two ways by whichever spelling sorted first, so Personal bests said "Pull Ups" while workouts say "Pull-Ups". Now the spelling used most recently names it (list still A–Z). New test; 116 pass. Checked on the iPhone.

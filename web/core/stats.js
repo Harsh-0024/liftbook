@@ -591,18 +591,22 @@ export function statsExerciseOptions({ history = [], views = {}, tzOffsetMinutes
     if (!usage.has(key)) usage.set(key, new Set());
     usage.get(key).add(localDay(log.date, tzOffsetMinutes));
   }
-  const exercises = sortBy([...new Set(logs.map((l) => l.exercise).filter(Boolean))], codePoints);
-  const options = [];
-  const seen = new Set();
-  for (const ex of exercises) {
+  // One option per exercise, named the way it was last written: logs run newest first, so a
+  // later "Pull-Ups" names it rather than whichever old spelling sorts first ("Pull Ups").
+  const labelByKey = new Map();
+  for (const log of logs) {
+    const ex = log.exercise;
+    if (!ex) continue;
     const label = strip(re('^\\s*\\d+\\s*[\\.)]\\s*').sub('', ex)) || ex;
     const key = statsExerciseKey(label, vocabulary);
-    if (!key || seen.has(key)) continue;
-    seen.add(key);
+    if (key && !labelByKey.has(key)) labelByKey.set(key, label);
+  }
+  const options = [];
+  for (const [key, label] of labelByKey) {
     const days = usage.get(key) || new Set();
     options.push({ value: label, label, sessions: days.size, views: views[key] || 0, last: days.size ? [...days].sort().pop() : '' });
   }
-  return options;
+  return sortBy(options, (o) => codePoints(o.label));
 }
 
 /** Exercises written with "bw" while no bodyweight is set (the Stats page warns about them). */
