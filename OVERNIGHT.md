@@ -505,6 +505,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## design/custom-picker (25 Nov)
+- Custom workout picker on the iPhone: unpicked exercises had nothing on the right, so a row didn't look tappable; the tick only appeared after picking.
+- Now every row ends in an empty ring (the field-line colour, 3:1 contrast) that fills gold with a check when picked. Checked in light and dark on the simulator.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
