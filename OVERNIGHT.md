@@ -526,3 +526,7 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## design/signout-icon (26 Nov)
+
+1. "Sign out of this device" in Settings used an arrow pointing into a door frame on the right, the usual sign-in symbol. The `logout` icon in web/app/ui.js is mirrored: frame on the left, arrow leaving it. Only that row uses the icon. Checked on the iPhone 18 Pro simulator in dark mode.
