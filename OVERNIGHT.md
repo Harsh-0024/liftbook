@@ -536,7 +536,3 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
-
-- Sign-in on the iPhone (Safari): the card drops about 40 pt when a box is tapped, because Safari
-  changes its top safe-area inset as the keyboard opens (`--safe-top` feeds `main`'s top padding).
-  Seen 25 Nov. Small and Safari-made; a fix would pin the signed-out page's top gap.
