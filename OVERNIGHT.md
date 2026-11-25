@@ -514,6 +514,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   Log keeps its capital at the start of a line (exercise names), which reads fine ("Bw" works).
   Checked on iPhone 18 Pro: "bw bw, 30 30" stays as typed and is read without an error. Tests: 115
   pass.
+- The same for the boxes that take an exercise name: the searches on All workouts, Retrieve,
+  Settings > Exercises, Stats and Personal bests, and the Rename box. Autocorrect and spell-check
+  are off there too; All workouts' search also stops capitalising the first letter, as the others
+  already did. Checked on iPhone 18 Pro: "bw rdl" stays "bw rdl". Tests: 115 pass.
 
 ## Waiting list
 

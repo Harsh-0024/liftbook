@@ -220,7 +220,7 @@ export function retrieveCustomScreen(ctx) {
   const byName = new Map(catalog.map((c) => [c.name.toLowerCase(), c]));
   const info = (name) => byName.get(name.toLowerCase()) || { name, sets: 3, reps: '' };
   const title = h('input', { id: 'title', type: 'text', placeholder: 'Custom Workout', maxlength: 80, autocomplete: 'off', 'aria-label': 'Workout title' });
-  const search = h('input', { id: 'search', type: 'search', placeholder: 'Search exercises', autocapitalize: 'off', 'aria-label': 'Search exercises' });
+  const search = h('input', { id: 'search', type: 'search', autocorrect: 'off', spellcheck: 'false', placeholder: 'Search exercises', autocapitalize: 'off', 'aria-label': 'Search exercises' });
   const prefill = ctx.customPrefill;
   ctx.customPrefill = null;
   // A plan session being edited keeps its own draft, so an unfinished custom pick isn't lost.
