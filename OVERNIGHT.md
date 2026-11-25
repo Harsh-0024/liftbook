@@ -505,6 +505,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## design/gold-edges (25 Nov)
+- Same flaw as Muhurta: gradient fills (primary buttons, active tabs, done-day dots, "Copied") have a transparent border, and the gradient repeated underneath it, leaving a faint sliver of the far-end colour at the edges.
+- All four now use `background-origin: border-box`. Checked on the iPhone simulator (Home: Today's workout, the week dots).
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
