@@ -526,3 +526,7 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## improve/coach-no-key (26 Nov)
+
+1. AI coach with no key turned on: the question box was hidden, but the six suggested questions still showed, and each tap only failed. The "AI keys" button did nothing either, since the key card was already showing. A new `canAsk(on)` in web/app/screens/coach.js now shows or hides the question box, the suggested questions and the "AI keys" button together, so the screen shows only the key card and Earlier answers until a key is on. Checked on the iPhone 18 Pro simulator with no key. Not checked with a key on, because the mock's coach bridge isn't running; that path calls the same `canAsk(true)`.
