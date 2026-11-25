@@ -513,6 +513,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   why it is there. Checked on the iPhone and in the browser (no console errors).
 - Also on the iPhone: Home (light mode) looks right; Week streak 15 checked against the dates
   (weeks run Monday to Sunday, and 9, 16 and 25 Nov fall in three weeks in a row).
+- All workouts' "Select" sat about 6pt above "40 workouts logged." beside it (the header lined up
+  box bottoms, and the button's padding lifted its text). A page head with a text button now
+  lines up on the text baseline: both end at the same line (measured in the browser, seen on the
+  iPhone). A search with no match shows a calm "Nothing matches …" card: fine as it is.
 
 ## Waiting list
 
