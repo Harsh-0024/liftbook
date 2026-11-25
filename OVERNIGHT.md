@@ -509,6 +509,7 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 
 - c54c39b: the link to the older/newer workout at the foot of a workout page always took half the row, so on the newest (or oldest) workout, with only one neighbour, "Shoulders & Forearms" was cut to "Shoulders & For…" beside an empty half. A lone neighbour now spans the row; with both, they still sit side by side. Checked on the iPhone (dark); tapping it still opens that workout.
 - a6d566a: on a phone the workout's buttons wrap onto two rows (Edit, Repeat / Copy as text, Share link, trash) that ended at different points. Under 560px the buttons grow to fill their row, so both rows line up edge to edge; the trash button stays square. Checked on the iPhone; Copy as text still says "Copied". Tests: 115 pass.
+- The line under a workout's title (date · exercises · sets · kg lifted · bodyweight) wrapped on the phone inside "3,693 kg lifted", leaving "lifted" alone at the start of the second line; kept whole, the second line then began with a dot. Now each item stays whole, lines break only between items, and no line starts with a dot (each item carries its dot; the first one on a line is clipped). Checked on iPhone 18 Pro. Tests: 115 pass.
 
 ## Waiting list
 
