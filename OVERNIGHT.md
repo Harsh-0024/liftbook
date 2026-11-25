@@ -520,6 +520,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 - "See all workouts" sat under the three totals (Workouts, Week streak, Exercises), apart from the
   Recent list it continues. It now comes right under that list, as on the old site's home page, and
   the totals follow with a little more room above them. Checked on the iPhone.
+- Home totals: "Workouts 40", "Week streak 15", "Exercises 22" were bare numbers over an empty
+  line, unlike the Stats tiles. Each now says what it counts: "since 23 Aug" (with the year when
+  the first workout was in another year), "weeks in a row" ("none this week yet" at 0),
+  "different lifts". Checked on iPhone 18 Pro.
 
 ## Waiting list
 

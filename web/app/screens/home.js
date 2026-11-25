@@ -90,10 +90,14 @@ export function homeScreen(ctx) {
       })),
       // The link right under the list it continues, as on the old site; the totals after it.
       h('a', { class: 'see-all', href: '#/history' }, 'See all workouts'),
+      // Each total says what it counts, as the Stats tiles do: no bare number over an empty line.
       h('div', { class: 'grid-3 home-stats' },
-        h('div', { class: 'stat' }, h('span', {}, 'Workouts'), h('b', {}, o.total)),
-        h('div', { class: 'stat' }, h('span', {}, 'Week streak'), h('b', { class: 'gold' }, week.weeks)),
-        h('div', { class: 'stat' }, h('span', {}, 'Exercises'), h('b', {}, o.exercises)))) : null);
+        h('div', { class: 'stat' }, h('span', {}, 'Workouts'), h('b', {}, o.total),
+          h('small', {}, `since ${formatDay(workouts[workouts.length - 1].day, { weekday: false, year: workouts[workouts.length - 1].day.slice(0, 4) !== todayIso.slice(0, 4) })}`)),
+        h('div', { class: 'stat' }, h('span', {}, 'Week streak'), h('b', { class: 'gold' }, week.weeks),
+          h('small', {}, week.weeks ? `week${week.weeks === 1 ? '' : 's'} in a row` : 'none this week yet')),
+        h('div', { class: 'stat' }, h('span', {}, 'Exercises'), h('b', {}, o.exercises),
+          h('small', {}, 'different lifts')))) : null);
 }
 
 const LONG_MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
