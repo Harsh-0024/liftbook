@@ -106,7 +106,9 @@ export function logScreen(ctx) {
     preview.replaceChildren(c.parsed
       ? h('span', { class: c.errors.length ? 'error' : 'ok' }, `${c.exercise_count} exercise${c.exercise_count === 1 ? '' : 's'} · ${c.set_count} set${c.set_count === 1 ? '' : 's'}`)
       : 'Nothing to check yet');
-    checkHead.textContent = c.parsed ? `${formatDay(c.day)} · ${c.parsed.workout_name || 'Workout'}` : '';
+    // No title typed and the day has a workout: it joins that one's title, so don't say "Workout".
+    const name = c.parsed?.workout_name || (c.existing ? '' : 'Workout');
+    checkHead.textContent = c.parsed ? [formatDay(c.day), name].filter(Boolean).join(' · ') : '';
     checkBox.hidden = !exercises.length;
     // Rows count the exercises 1, 2, 3 and say how many sets each has, as the old check did.
     let order = 0;
