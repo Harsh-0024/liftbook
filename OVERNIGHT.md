@@ -512,6 +512,19 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   Nothing logged yet") and the rows are just the names and targets. A plan with some history
   (Session 3) is unchanged. Checked on iPhone 18 Pro; 115 tests pass.
 
+## Merging the design branches together (checked 25 Nov)
+
+All 31 Liftbook branches off improve/round-4 were merged into one throwaway copy (not pushed).
+25 merge cleanly together (OVERNIGHT.md and web/sw.js aside: rebuild sw.js after) and 115 tests
+pass on the result. Six pairs touch the same lines and need a hand merge:
+
+- design/plan-page with design/gold-edges: web/styles.css
+- design/workout-phone with design/workout-page: web/styles.css
+- feature/chart-hover with design/stats-tiles: web/app/screens/stats.js
+- feature/log-for-day with design/log-check: web/app/screens/log.js
+- fix/first-line-exercise with design/log-check: web/app/screens/log.js
+- improve/history-search with design/page-head: web/styles.css
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
