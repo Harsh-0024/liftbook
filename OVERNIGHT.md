@@ -534,3 +534,6 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+- Sync and data: the backup line said "22 exercises" while Settings → Exercises lists 65 (that list
+  also has the lifts only in your plan). The 22 are the different lifts you have logged, so it now
+  says "22 different lifts", the words Home uses for the same count. Checked on the iPhone.

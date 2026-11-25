@@ -792,7 +792,7 @@ function sync(ctx) {
       h('p', { class: 'foot', style: 'margin-top:10px' }, 'Everything is kept on this device and works offline. Changes go to your account when you’re online, and your other devices pick them up when they open or come back online.')),
     h('section', { class: 'section' }, h('div', { class: 'label' }, 'Your data'),
       h('div', { class: 'group' },
-        row('download', 'Backup file', `${counts.total} workouts, ${lb.history().length} exercise logs, ${counts.exercises} exercises`,
+        row('download', 'Backup file', `${counts.total} workouts, ${lb.history().length} exercise logs, ${counts.exercises} different lifts`,
           h('button', { class: 'btn small', type: 'button', onclick: backup }, 'Download')),
         row('clipboard', 'Spreadsheet', 'Every exercise you logged, one row each, for Excel, Numbers or Google Sheets',
           h('button', { class: 'btn small', type: 'button', onclick: spreadsheet }, 'Download')),
