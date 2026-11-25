@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/light-tabbar` (26 Nov)
+
+- The bottom tab bar's shadow was 25% black in both themes. On the light theme that showed as a grey
+  band over the page above the bar, heaviest on the "Opening…" screen. It is now a theme token
+  (`--tab-shadow`): unchanged on dark, a light 5% on light, in step with the light theme's other shadows
+  (8%). Checked on the iPhone in light mode.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
