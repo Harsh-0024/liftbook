@@ -505,6 +505,12 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## design/bests (25 Nov)
+
+- Personal bests: the "22 exercises" count beside Latest / Highest / A to Z sat about 9px above the
+  buttons' middle (the quiet-note style's own margins pulled it up). In a card head it now has none,
+  so it sits level with them. Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
