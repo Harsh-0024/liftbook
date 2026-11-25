@@ -526,3 +526,6 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## improve/home-stat-links (from improve/round-4)
+- Home: the three number tiles now open where the number comes from: Workouts → All workouts, Week streak → Stats, Exercises → Personal bests (same 22). Gold border on hover, gold tint on tap. Checked on the iPhone.
