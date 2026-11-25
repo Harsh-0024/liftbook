@@ -515,6 +515,12 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   cream) and today's a pale gold, so in light mode the row looked empty. Day rings now come from
   the muted ink at 30% and today's ring is full gold. Checked in light and dark.
 
+## design/home: See all workouts (25 Nov)
+
+- "See all workouts" sat under the three totals (Workouts, Week streak, Exercises), apart from the
+  Recent list it continues. It now comes right under that list, as on the old site's home page, and
+  the totals follow with a little more room above them. Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
