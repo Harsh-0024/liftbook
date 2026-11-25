@@ -535,5 +535,6 @@ moved on to something else meanwhile.
 ## Ideas not done yet
 
 - Log parser: "120, 10x" reads as 3 sets of 120 × 1 (the trailing "x" makes 10 drop to 1), where
-  "120, 10" reads as 120 × 10. Seen 26 Nov. Rare to type; check against the Python parser on main
-  before changing, since the web parser mirrors it. (A short list filling up to 3 sets is on purpose.)
+  "120, 10" reads as 120 × 10. Seen 26 Nov. Checked: the Python parser on main reads it the same
+  way (and "120, 10x 8x" as 10 × 8 in both), so this is how Liftbook has always read it. Changing it
+  means changing both parsers and their tests; your call. (A short list filling up to 3 sets is on purpose.)
