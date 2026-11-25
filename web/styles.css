@@ -1252,3 +1252,6 @@ button.rowi.more-sessions .title { color: var(--gold-text); font-size: 0.86rem; 
     outline-offset: 2px;
   }
 }
+
+/* All workouts, while searching: the exercises that match, first and in the ink colour. */
+.rowi .desc mark.hit { background: none; color: var(--text); font-weight: 500; }

@@ -99,6 +99,17 @@ const LONG_MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'ju
 /** A day as someone would type it when searching: "mon 9 nov 2026 november". */
 const dayWords = (day) => `${formatDay(day).toLowerCase()} ${LONG_MONTHS[Number(day.slice(5, 7)) - 1] || ''}`;
 
+/**
+ * A workout's exercises for its row. While searching, the ones that match come first, marked,
+ * so a row found by "curl" shows its Barbell Curl rather than cutting it off at the end.
+ */
+function exerciseList(names, q) {
+  if (!q) return names.join(' · ');
+  const hit = (n) => String(n).toLowerCase().includes(q);
+  const ordered = [...names.filter(hit), ...names.filter((n) => !hit(n))];
+  return ordered.flatMap((n, i) => [i ? ' · ' : null, hit(n) ? h('mark', { class: 'hit' }, n) : n]).filter((x) => x !== null);
+}
+
 // A long history is drawn a page at a time; "Show more" adds the next page.
 const PAGE = 60;
 
@@ -163,7 +174,7 @@ export function historyScreen(ctx) {
             // "Session 2 - Legs" reads as Legs, with the session in front of its exercises.
             h('span', { class: 'main' }, h('span', { class: 'title' }, split.title),
               h('span', { class: 'desc ellipsis' }, split.session ? [h('span', { class: 'session' }, split.session), ' · '] : null,
-                w.logs.map((l) => l.exercise).join(' · ')))];
+                exerciseList(w.logs.map((l) => l.exercise), q)))];
           if (!pick.on) return h('a', { class: 'rowi', href: `#/workout/${w.day}` }, ...inner, h('span', { class: 'chev-i' }, icon('chev')));
           const on = pick.days.has(w.day);
           const row = h('button', { class: `rowi${on ? ' picked' : ''}`, type: 'button', role: 'checkbox', 'aria-checked': String(on) },

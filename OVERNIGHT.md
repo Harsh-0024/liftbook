@@ -505,6 +505,15 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `improve/history-search` (from `improve/round-4`)
+
+- All workouts, searching "curl": Back & Triceps matched, but its row read "Session 3 · Pull-Ups ·
+  Incline EZ-Bar Sku…", cutting off the Barbell Curl it matched on. While searching, the exercises
+  that match now come first in each row, in the ink colour (`mark.hit`), so every result shows
+  why it is there. Checked on the iPhone and in the browser (no console errors).
+- Also on the iPhone: Home (light mode) looks right; Week streak 15 checked against the dates
+  (weeks run Monday to Sunday, and 9, 16 and 25 Nov fall in three weeks in a row).
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
