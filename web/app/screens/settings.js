@@ -377,7 +377,7 @@ function exercises(ctx) {
   const names = [...counts.keys()].sort((a, b) => a.localeCompare(b));
   const search = h('input', { id: 'ex-search', type: 'search', placeholder: 'Search your exercises', autocapitalize: 'off', 'aria-label': 'Search your exercises' });
   const group = h('div', { class: 'group pick-group' });
-  const kind = (s) => [s.is_timed ? 'Timed' : null, s.is_bodyweight ? 'Bodyweight added' : null].filter(Boolean).join(' · ') || 'Weight and reps';
+  const kind = (s) => [s.is_timed ? 'Timed' : null, s.is_bodyweight ? 'Bodyweight added' : null].filter(Boolean).join(' · ');
   // The switch shows what the app does now, built-in bodyweight exercises included.
   const state = (n) => ({ ...(lb.exerciseSetting(n) || {}), is_bodyweight: lb.bodyweightOn(n) });
   let open = null;
@@ -385,7 +385,9 @@ function exercises(ctx) {
   // One row per exercise; tap it to set timed or bodyweight, or rename it, in place.
   const row = (n) => {
     const s = state(n);
-    const desc = h('span', { class: 'desc' }, kind(s));
+    // Only the kinds that change how sets read are said: "Weight and reps" under nearly every name
+    // was noise that hid the timed and bodyweight ones.
+    const desc = h('span', { class: 'desc', hidden: !kind(s) }, kind(s));
     const head = h('button', { class: `rowi${open === n ? ' open' : ''}`, type: 'button', 'aria-expanded': String(open === n) },
       h('span', { class: 'ico' }, icon('dumbbell')),
       h('span', { class: 'main' }, h('span', { class: 'title' }, n), desc),
@@ -400,6 +402,7 @@ function exercises(ctx) {
         s[key] = on;
         input.checked = on;
         desc.textContent = kind(s);
+        desc.hidden = !desc.textContent;
       };
       input.addEventListener('change', async () => {
         // Turning bodyweight off with logs that count it: ask what those numbers meant, as before.

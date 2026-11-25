@@ -554,3 +554,7 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+- Settings → Exercises: every row said "Weight and reps" under the name, which hid the few that are
+  timed or have bodyweight added. Now only those say what they are ("Timed", "Bodyweight added");
+  plain lifts show just the name, and the list is shorter to scroll. Checked on the iPhone.
