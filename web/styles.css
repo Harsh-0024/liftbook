@@ -660,7 +660,9 @@ a.wday:focus-visible .dot { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--gol
 .wo-title { margin-bottom: 4px; }
 .wo-kicker { margin: 0 0 2px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-text); }
 .wo-meta { color: var(--muted); font-size: 0.88rem; }
-.wo-meta span + span::before { content: "·"; margin: 0 7px; opacity: 0.6; }
+/* Each item stays whole ("3,693 kg lifted" never splits); on a wrap the dot ends the line above. */
+.wo-meta span { display: inline-block; }
+.wo-meta span:not(:last-child)::after { content: "·"; margin: 0 7px; opacity: 0.6; }
 .ex-row { display: flex; align-items: center; gap: 12px; padding: 16px 18px; }
 .ex-row + .ex-row { border-top: 1px solid var(--hair); }
 .ex-row .main { flex: 1; min-width: 0; }

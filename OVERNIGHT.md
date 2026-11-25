@@ -532,3 +532,5 @@ moved on to something else meanwhile.
 - No more single short word alone on the last line (Apple Shortcuts: "…paste your key when asked" used to leave "it" by itself).
 - Checked on the iPhone 18 Pro simulator. Browsers without support just wrap as before.
 - Note: the mock server on 8791 stopped answering the phone (white page; it still answers curl). A second copy runs on 8793 for phone checks.
+
+- Workout page meta line: each item ("3,693 kg lifted", "bodyweight 79.5 kg") now stays whole on a phone; when the line wraps, the dot ends the line above. Checked on the iPhone.
