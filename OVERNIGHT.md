@@ -526,3 +526,7 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## design/bests-count-align (26 Nov)
+
+1. Personal bests: the "22 exercises" count sat about 9pt above the middle of the Latest / Highest / A to Z pills, because `.foot` kept its own 14px bottom margin inside the header row. `.card-head .foot { margin: 0; }` centres it and lines its left edge up with the search box and list. The same rule fixes "sets a week" beside the Muscle balance heading. Checked on the iPhone 18 Pro simulator.
