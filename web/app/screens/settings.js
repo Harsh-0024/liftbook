@@ -928,7 +928,8 @@ function account(ctx) {
   // Delete: on the page, as the old app had it (no pop-up): what goes, a pointer to keep a copy,
   // and the username typed to unlock the button.
   const name = ctx.lb.profile()?.username || ctx.user.email;
-  const confirmBox = h('input', { id: 'delete-confirm', type: 'text', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', placeholder: name });
+  // No placeholder: a grey username in the box looked already typed, and Delete then seemed broken.
+  const confirmBox = h('input', { id: 'delete-confirm', type: 'text', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false' });
   const del = h('button', { class: 'btn danger', type: 'button', disabled: true }, 'Delete my account');
   confirmBox.addEventListener('input', () => { del.disabled = confirmBox.value.trim() !== name; });
   del.addEventListener('click', busy(del, async () => {

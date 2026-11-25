@@ -526,3 +526,7 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## improve/delete-confirm (26 Nov)
+
+1. Delete my account: the confirm box had the username as its placeholder, so it read "demo" in grey, which looks already typed, and the faded Delete button then seemed broken. The placeholder is gone; the label above still says which username to type. Checked on the iPhone 18 Pro simulator. Nothing was typed in or deleted.
