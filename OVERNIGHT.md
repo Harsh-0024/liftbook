@@ -526,3 +526,7 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## design/plan-label (26 Nov)
+
+1. Workout plan: the "Plan" label (the one with the Format link beside it) showed in small sentence case, while "REP RANGES" below it showed as an uppercase section label. ui.js wraps a label's leading words in `<span role="heading">` when the label also holds a link, and the broad `.label span` rule (meant for counts like "1 workout") then un-capitalised it. A new rule, `.label > span[role="heading"]`, gives that span the label's own look back. Checked on the iPhone 18 Pro simulator. On Home, Stats, Retrieve, Settings, Sync and data, Shortcuts, Personal bests and Log no label gets such a span, so they don't change.
