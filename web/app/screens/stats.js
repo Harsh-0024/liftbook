@@ -279,11 +279,14 @@ export function statsScreen(ctx) {
         hero = h('div', { class: 'hero' }, h('b', {}, c.value), h('span', {}, c.caption),
           c.change ? h('small', { class: `hero-change ${c.change.direction}` },
             c.change.amount ? h('strong', {}, `${c.change.direction === 'down' ? '↓' : '↑'} ${c.change.amount}`) : '', c.change.text) : '');
-        yearTabs = tabs(years.map((y) => [y, String(y)]), year, (y) => {
-          year = y;
-          remember(YEAR_KEY, y);
-          paint();
-        }, 'Year');
+        // A switch with one choice is just a lone gold button: show it once there are two years.
+        if (years.length > 1) {
+          yearTabs = tabs(years.map((y) => [y, String(y)]), year, (y) => {
+            year = y;
+            remember(YEAR_KEY, y);
+            paint();
+          }, 'Year');
+        }
         const tip = h('p', { class: 'cal-tip', 'aria-live': 'polite' }, `${tapWord()} a day to see it.`);
         const g = yearGrid(win, dayList, { titles: overall.day_titles || {}, daySets: overall.day_sets || {} });
         chart = h('div', {}, calendar(g, (d) => {
@@ -388,7 +391,7 @@ export function statsScreen(ctx) {
       warnings.length ? h('div', { class: 'notice' }, icon('info'), h('div', {},
         'Set your bodyweight in ', h('a', { href: '#/settings/profile' }, 'Settings'), ` so ${warnings.slice(0, 3).join(', ')}${warnings.length > 3 ? '…' : ''} count your bodyweight.`)) : null,
       h('div', { class: 'card' },
-        h('div', { class: 'card-head' }, h('h2', {}, mode === 'index' ? 'Overall strength' : mode === 'rate' ? 'Improvement rate' : 'Consistency'),
+        h('div', { class: 'card-head' }, h('h2', {}, mode === 'index' ? 'Overall strength' : mode === 'rate' ? 'Improvement rate' : 'Training days'),
           tabs([['index', 'Strength'], ['rate', 'Rate'], ['consistency', 'Consistency']], mode, (v) => {
             mode = v;
             if (v !== 'rate') remember(VIEW_KEY, v === 'consistency' ? 'consistency' : 'strength');

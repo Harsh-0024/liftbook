@@ -505,6 +505,14 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## design/stats-consistency (25 Nov)
+
+- Stats, Consistency: the year switch showed as a lone gold "2026" button on its own line when
+  there is only one year to pick. It now appears once there are two years.
+- The card's heading repeated the chosen tab ("Consistency" over the Consistency tab). It now reads
+  "Training days", the way the Strength tab is headed "Overall strength".
+- Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
