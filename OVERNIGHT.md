@@ -508,6 +508,7 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 ## design/custom-picker (25 Nov)
 - Custom workout picker on the iPhone: unpicked exercises had nothing on the right, so a row didn't look tappable; the tick only appeared after picking.
 - Now every row ends in an empty ring (the field-line colour, 3:1 contrast) that fills gold with a check when picked. Checked in light and dark on the simulator.
+- Then matched it to the ring All workouts already uses when picking workouts (24px, the soft line colour, 14px check), so the app has one selection ring, not two.
 
 ## Waiting list
 
