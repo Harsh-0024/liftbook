@@ -64,6 +64,14 @@ export function homeScreen(ctx) {
       doneToday ? h('p', { class: 'note' }, 'Nice work today.')
         : !workouts.length ? h('p', { class: 'note muted' }, 'Your workouts will show up here.') : null),
     h('div', { class: 'home-actions' }, actions),
+    // Before the first workout, the page says how the three parts fit instead of leaving blank space.
+    !workouts.length ? h('section', { class: 'section', 'aria-label': 'How Liftbook works' },
+      h('div', { class: 'label' }, 'How it works'),
+      h('div', { class: 'group' },
+        rowItem({ href: '#/settings/plan', ico: 'plan', title: 'Set up your plan', desc: 'Your days, exercises and target reps' }),
+        rowItem({ href: '#/retrieve', ico: 'list', title: 'Retrieve a session', desc: 'Targets and your bests, ready for Notes' }),
+        rowItem({ href: '#/log', ico: 'log', title: 'Log what you lifted', desc: 'Paste it back after the gym' })),
+      h('a', { class: 'see-all', href: '#/settings/import' }, 'Have old workouts? Bulk import them')) : null,
     // The plan's next session, with its targets one tap away (not once today's workout is in).
     next && !doneToday ? h('section', { class: 'section', 'aria-label': 'Up next' },
       h('div', { class: 'label' }, 'Up next'),

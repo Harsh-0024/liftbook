@@ -524,6 +524,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   line, unlike the Stats tiles. Each now says what it counts: "since 23 Aug" (with the year when
   the first workout was in another year), "weeks in a row" ("none this week yet" at 0),
   "different lifts". Checked on iPhone 18 Pro.
+- Home before the first workout: a greeting, two buttons, then empty page. Now a short "How it
+  works" list under the buttons: Set up your plan, Retrieve a session, Log what you lifted (each a
+  link, one line each on the phone), and "Have old workouts? Bulk import them". Gone once a
+  workout is logged. Checked on iPhone 18 Pro with an empty demo account.
 
 ## Waiting list
 
