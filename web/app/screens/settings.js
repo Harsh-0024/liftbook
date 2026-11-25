@@ -386,8 +386,11 @@ function exercises(ctx) {
   const row = (n) => {
     const s = state(n);
     const desc = h('span', { class: 'desc' }, kind(s));
+    // The icon shows the kind at a glance: a stopwatch for timed, a figure for bodyweight.
+    const glyph = (st) => icon(st.is_timed ? 'timer' : st.is_bodyweight ? 'scale' : 'dumbbell');
+    const ico = h('span', { class: 'ico' }, glyph(s));
     const head = h('button', { class: `rowi${open === n ? ' open' : ''}`, type: 'button', 'aria-expanded': String(open === n) },
-      h('span', { class: 'ico' }, icon('dumbbell')),
+      ico,
       h('span', { class: 'main' }, h('span', { class: 'title' }, n), desc),
       h('span', { class: 'value' }, counts.get(n) ? `${counts.get(n)} logged` : 'In your plan'),
       h('span', { class: 'chev-i' }, icon('chev')));
@@ -400,6 +403,7 @@ function exercises(ctx) {
         s[key] = on;
         input.checked = on;
         desc.textContent = kind(s);
+        ico.replaceChildren(glyph(s));
       };
       input.addEventListener('change', async () => {
         // Turning bodyweight off with logs that count it: ask what those numbers meant, as before.
