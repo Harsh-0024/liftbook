@@ -505,6 +505,11 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## design/footer (25 Nov)
+
+- The footer read "2026 Liftbook", a bare year that looks like a slip (the old site had the same).
+  It now reads "© 2026 Liftbook". Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
