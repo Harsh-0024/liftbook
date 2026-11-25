@@ -131,7 +131,7 @@ function balanceCard(lb, from, range) {
       h('div', { class: 'balance-row', role: 'listitem', 'aria-label': `${r.group}: ${fmtNum(r.perWeek)} sets a week` },
         h('span', { class: 'balance-name' }, r.group),
         h('span', { class: 'balance-track', 'aria-hidden': 'true' }, h('i', { style: `width:${Math.max(2, r.share * 100).toFixed(1)}%` })),
-        h('b', { 'aria-hidden': 'true' }, fmtNum(r.perWeek))))),
+        h('b', { 'aria-hidden': 'true' }, r.perWeek.toFixed(1))))),
     h('p', { class: 'foot', style: 'margin:12px 2px 0' }, `Average sets each week over ${rangeText}, by the muscle an exercise's name points to. The range buttons above change it.`));
 }
 

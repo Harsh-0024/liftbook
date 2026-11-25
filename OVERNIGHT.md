@@ -527,6 +527,12 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   chart's red stretch under the start line with its guide line. Still to see on a phone: the gold
   "a new best" note after saving, and a timed exercise's best and chart.
 
+## Muscle balance numbers (branch `design/stats-tiles`, 25 Nov 2026)
+
+- Every muscle's sets-a-week figure now shows one decimal (6.0, 9.0, 2.9, 10.6), so the column lines up instead of mixing whole numbers and decimals.
+- A card header's small note (Muscle balance's "sets a week") sits on the title's baseline, with no stray margin below it.
+- Checked on the iPhone 18 Pro (light): Stats > Muscle balance, and the Personal bests header (unchanged look). 115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
