@@ -505,6 +505,16 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `fix/phone-autocorrect` (from `improve/round-4`)
+
+- On an iPhone, typing "bw/4" in Log became "Be/4 be/4": iOS autocorrect still ran in the workout
+  box (only spell-check and, elsewhere, capitals were off), and Liftbook then could not read the
+  line ("“Hyper Extension”: no sets under it."). Autocorrect is now off in every box that takes
+  workout text: Log, a workout's Edit, Bulk import, and the plan and rep-range boxes in Settings.
+  Log keeps its capital at the start of a line (exercise names), which reads fine ("Bw" works).
+  Checked on iPhone 18 Pro: "bw bw, 30 30" stays as typed and is read without an error. Tests: 115
+  pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
