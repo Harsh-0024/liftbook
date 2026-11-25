@@ -563,3 +563,7 @@ moved on to something else meanwhile.
   said "Weight and reps". New `lb.timedOn(name)` uses the same rule as logging (your choice, the
   built-in list, or times in its logs), as `bodyweightOn` already did for bodyweight. Plank now says
   "Timed" with its switch on. Test added (116 pass); checked on the iPhone.
+- Profile: Name, Username and Bodyweight sat with each box right on the next field's label. A rule
+  for a lone field in a card (`.group > .blk .field { margin: 0 }`) also removed the space between
+  stacked fields. Neighbouring fields in a card now have 16px between them; a card with one field
+  is unchanged. Checked on the iPhone.
