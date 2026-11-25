@@ -515,6 +515,15 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   tapped point and tapping the box opens that workout; the exercise card's big number ("70 kg",
   "↓ 2 kg less than in Aug 2026") fits; the trash button sits at the end of the action row.
 
+## design/workout-phone: the facts under a workout's title (25 Nov)
+
+- On a phone, the line under the title (day · exercises · sets · kg lifted · bodyweight) broke inside a
+  fact ("3,693 kg" / "lifted"). Each fact now wraps whole, and the separating dot sits in the gap, so
+  a wrapped line never starts with a dot. Checked on the iPhone.
+- Also checked on the iPhone from the Waiting list's round-4 items: tapping a chart moves the box to
+  the tapped point, the Retrieve rows sit two to a row, the Consistency year grid scrolls sideways
+  ending near today, and a plan's "SESSION 3 · CYCLE 1" kicker shows. All fine.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
