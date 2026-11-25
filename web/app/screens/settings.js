@@ -761,9 +761,11 @@ function sync(ctx) {
   const { lb, store } = ctx;
   const status = h('span', { class: 'sync-lines' });
   const paint = (st) => {
+    // "Up to date" only when nothing is waiting; the count shows only when there is one.
+    const waiting = st.pending ? `${st.pending} change${st.pending === 1 ? '' : 's'} waiting to upload` : '';
     status.replaceChildren(
-      h('span', { class: 'title' }, st.running ? 'Syncing now…' : st.error === 'offline' ? 'Offline. Changes are kept on this device.' : st.error ? `Problem: ${st.error}` : 'Up to date'),
-      h('span', { class: 'desc' }, `Last synced ${ago(st.last_sync)} · ${st.pending} change${st.pending === 1 ? '' : 's'} waiting to upload`));
+      h('span', { class: 'title' }, st.running ? 'Syncing now…' : st.error === 'offline' ? 'Offline. Changes are kept on this device.' : st.error ? `Problem: ${st.error}` : waiting ? 'Changes waiting to upload' : 'Up to date'),
+      h('span', { class: 'desc' }, `Last synced ${ago(st.last_sync)}${waiting ? ` · ${waiting}` : ''}`));
   };
   paint(ctx.sync.status());
   const off = ctx.sync.onStatus((st) => (status.isConnected ? paint(st) : off()));
