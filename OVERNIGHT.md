@@ -534,3 +534,4 @@ moved on to something else meanwhile.
 - Note: the mock server on 8791 stopped answering the phone (white page; it still answers curl). A second copy runs on 8793 for phone checks.
 
 - Workout page meta line: each item ("3,693 kg lifted", "bodyweight 79.5 kg") now stays whole on a phone; when the line wraps, the dot ends the line above. Checked on the iPhone.
+- Older/newer workout links under a workout: a lone link (newest or oldest workout) now takes the whole row instead of half, and long names wrap to two lines before being cut ("Shoulders & For…" → "Shoulders & Forearms"). Checked on the iPhone.
