@@ -511,6 +511,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    "25 kg" above a chart tagged "25.3 kg"; both now say 25 kg. The Top weight view no longer rounds a
    real plate load: 107.5 kg showed as "108 kg" and now stays 107.5 kg, with the change ("↑ 27.5 kg")
    kept to the half kilo too. Checked with the demo data in the browser; 115 tests pass.
+2. Charts: the end tag ("107.5 kg") ran into the card's right edge, since the chart kept a fixed
+   54 px for it. The room on the right now grows with the tag's text. Checked on the iPhone, along
+   with entry 1 (125 kg headline and tag agree; Back Squat top weight shows 107.5 kg).
 
 ## Waiting list
 

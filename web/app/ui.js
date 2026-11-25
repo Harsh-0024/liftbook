@@ -250,7 +250,10 @@ export function lineChart(labels, values, { unit = '', base = null, tag = null, 
   // Charts live in the wide column (860px at most), so a computer's chart fills its card edge to edge.
   const W = Math.round(Math.max(300, Math.min(860, globalThis.innerWidth || 640) - 72));
   const H = W < 480 ? Math.round(height * 0.85) : height;
-  const pad = { l: 46, r: tag ? 54 : 14, t: 16, b: 28 };
+  // Room on the right for the end tag: as wide as its text ("107.5 kg" needs more than "+9%"), so it
+  // never runs into the card's edge.
+  const tagW = tag ? 8 + String(tag).length * 7 : 0;
+  const pad = { l: 46, r: tag ? Math.max(54, tagW + 14) : 14, t: 16, b: 28 };
   const pts = values.map((v, i) => [i, v]).filter(([, v]) => v !== null && v !== undefined && Number.isFinite(Number(v)));
   const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, class: 'chart', role: 'img', 'aria-label': chartSummary(name, labels, pts, say || ((v) => `${fmtNum(v)}${unit}`)), style: `height:${H}px` });
   if (!pts.length) {
@@ -321,7 +324,7 @@ export function lineChart(labels, values, { unit = '', base = null, tag = null, 
   }
   if (tag) {
     const g = s('g', { class: 'tag' });
-    const w = 8 + tag.length * 7;
+    const w = tagW;
     g.append(s('rect', { x: lx + 8, y: ly - 11, width: w, height: 22, rx: 11 }));
     const t = s('text', { x: lx + 8 + w / 2, y: ly + 4, 'text-anchor': 'middle' });
     t.textContent = tag;
