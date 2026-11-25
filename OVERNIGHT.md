@@ -507,7 +507,7 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 20. **Log help examples are code chips (branch `design/log-help`, a567b57).** Under "How to write
    sets" the examples to type (`100 x 5, 5, 4`, `bw+10 x 6`...) were loose grey monospace inside the
    sentence. They now sit in small gold-tinted chips with dark text, so what to type stands apart
-   from what it means. Checked on the iPhone; 115 tests pass.
+   from what it means. Checked on the iPhone in light and dark; 115 tests pass.
 
 ## Waiting list
 
