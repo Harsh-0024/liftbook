@@ -542,3 +542,8 @@ moved on to something else meanwhile.
 - The 1M…All (and year) row under the Stats chart sat at the right, while on a phone the Strength / Rate / Consistency tabs wrap under the heading at the left: two rows of pills that didn't line up.
 - On screens up to 560px wide it now starts at the left, in line with the tabs and the big number; wider screens keep it at the right. The inline style became a `range-row` class.
 - Checked on the iPhone 18 Pro simulator and at 1024px on the Mac.
+
+## Muscle balance numbers (branch `design/stats-consistency`)
+- The sets-a-week column mixed "6" and "9" with "2.9" and "10.6". When any row has tenths, every row now shows one decimal ("6.0", "2.9"), so the figures line up.
+- The "sets a week" note sits on the heading's baseline instead of floating above it.
+- Checked on the iPhone 18 Pro simulator.
