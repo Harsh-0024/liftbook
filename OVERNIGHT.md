@@ -505,6 +505,14 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `improve/session-names` (26 Nov)
+
+- **Session names: labels and examples fit each session.** The page showed "Session 1 - Chest &
+  Biceps" with a plain hyphen, and every box suggested "e.g. push", even Legs. It now shows
+  "Session 1 · Chest & Biceps" like the rest of the app, and each box suggests that session's
+  first word ("e.g. chest", "e.g. legs"; "e.g. push" when a session has no title). The label
+  Get Workout lists is unchanged. Checked on the iPhone; 115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
