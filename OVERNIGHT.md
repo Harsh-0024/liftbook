@@ -526,3 +526,8 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## Page not found (branch `fix/unknown-route`)
+- A link to a page Liftbook doesn't have (old bookmark, typo) used to quietly show Home, as if it had worked.
+- It now shows "Page not found" with a "Go to Home" button, in the same style as "Workout not found". No tab is highlighted.
+- Checked on the iPhone 18 Pro simulator (#/nope, then the button back to Home).

@@ -6,7 +6,7 @@ import { createClient } from './supabase.js';
 import { Store, idbBackend, deleteDatabase } from './store.js';
 import { createSync, startAutoSync } from './sync.js';
 import { Liftbook } from './data.js';
-import { h, toast, ago, ask } from './ui.js';
+import { h, toast, ago, ask, pageHead } from './ui.js';
 import { authScreens, welcomeScreen, resetScreen } from './screens/auth.js';
 import { homeScreen, historyScreen, workoutScreen, editScreen } from './screens/home.js';
 import { logScreen, DRAFT_KEY } from './screens/log.js';
@@ -80,7 +80,10 @@ async function render() {
       return show(h('div', { class: 'card' }, h('h2', {}, 'Something went wrong'), h('p', { class: 'muted' }, String(err.message || err))), nav);
     }
   }
-  return go('');
+  // A mistyped or old link says so, instead of quietly showing Home as if it had worked.
+  current = { nav: '', live: false };
+  return show(h('div', {}, pageHead('Page not found', 'That link doesn’t go to anything in Liftbook.'),
+    h('a', { class: 'btn', href: '#/' }, 'Go to Home')), '');
 }
 
 let shownPath = null;
