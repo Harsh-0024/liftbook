@@ -537,6 +537,8 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 - Personal bests before the first workout said "0 exercises" beside Latest / Highest / A to Z
   buttons over an empty list. Now the same kind of card as Stats: "No bests yet", what will land
   there, and a Log a workout button. Checked on iPhone 18 Pro with the empty account.
+- Those cards' two buttons, stacked on the phone, were each as wide as their words. They now
+  share one width (up to 230 px, side by side on wider screens). Checked in dark mode too.
 
 ## Waiting list
 
