@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## improve/log-messages (26 Nov)
+
+1. Log: typing an exercise and its sets with no title line first ("Back Squat", then "100 100, 5 5")
+   made the exercise the workout's title and said only "Line 2: sets without an exercise name above
+   them". It now says line 1 was read as the date and title and to put a title such as "Legs" first.
+   Sets further down keep the plain message. New test; 116 tests pass. Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
