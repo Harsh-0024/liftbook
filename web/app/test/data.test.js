@@ -250,3 +250,11 @@ test('a month-first date gets the day-first fix in its message', async () => {
   const unclear = lb.check('45/45 Push\n\nSquat\n100 x 5').errors.find((e) => e.includes('isn’t a date'));
   if (unclear) assert.match(unclear, /Write the day first, as 13\/02 or 13 Feb\./);
 });
+
+test('timedOn: the built-in list, your own choice, and plain lifts', async () => {
+  const lb = await app();
+  assert.equal(lb.timedOn('Plank'), true);
+  assert.equal(lb.timedOn('Barbell Curl'), false);
+  await lb.setExerciseSetting('Barbell Curl', { is_timed: true });
+  assert.equal(lb.timedOn('Barbell Curl'), true);
+});

@@ -443,6 +443,11 @@ export class Liftbook {
     return isBodyweightEnabled(makeSettings(this.exerciseSettings()), name, '');
   }
 
+  /** Whether an exercise is timed: your choice, the built-in list (plank, dead hang…), or times in its logs. */
+  timedOn(name) {
+    return Boolean(resolveTimedStatus({ exerciseName: name, settings: makeSettings(this.exerciseSettings()), history: this.history() }).is_timed);
+  }
+
   /**
    * Before bodyweight is turned off for an exercise: its logs, and how many count bodyweight now
    * (services.bodyweight.get_bodyweight_conflict_info). With any, the old page asked what to do.

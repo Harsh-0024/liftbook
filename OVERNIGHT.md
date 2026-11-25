@@ -558,3 +558,8 @@ moved on to something else meanwhile.
 - Settings → Exercises: every row said "Weight and reps" under the name, which hid the few that are
   timed or have bodyweight added. Now only those say what they are ("Timed", "Bodyweight added");
   plain lifts show just the name, and the list is shorter to scroll. Checked on the iPhone.
+- Settings → Exercises read only the saved timed choice, so Plank (timed by the built-in list, and
+  logged in seconds) showed its Timed switch off and no "Timed" line. Before the change above it even
+  said "Weight and reps". New `lb.timedOn(name)` uses the same rule as logging (your choice, the
+  built-in list, or times in its logs), as `bodyweightOn` already did for bodyweight. Plank now says
+  "Timed" with its switch on. Test added (116 pass); checked on the iPhone.
