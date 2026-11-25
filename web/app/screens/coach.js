@@ -81,7 +81,8 @@ export function coachScreen(ctx) {
   }, question, { page: 'coach' }, note);
 
   function paintStarters() {
-    if (chat.messages.length) {
+    // Starter questions need a key that is on, like the Ask box: without one each tap only failed.
+    if (chat.messages.length || !keys?.some((k) => k.is_active)) {
       starters.replaceChildren();
       return;
     }
@@ -242,6 +243,7 @@ export function coachScreen(ctx) {
     ', copy it, and paste it here. Add both and the coach uses whichever is free.');
 
   function paintKeys() {
+    paintStarters();
     if (keys === null) {
       keysCard.replaceChildren(h('div', { class: 'card subtle' }, navigator.onLine ? 'Loading your keys…' : 'You’re offline. The coach needs a connection.'));
       askArea.hidden = true;

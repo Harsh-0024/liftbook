@@ -505,6 +505,12 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## improve/coach (25 Nov)
+
+- With no AI key turned on, the Coach page hid its Ask box but still showed six starter questions;
+  tapping one only gave an error, since the built-in answers can't handle any of them. They now
+  appear once a key is on, like the Ask box. Checked on the iPhone without a key.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
