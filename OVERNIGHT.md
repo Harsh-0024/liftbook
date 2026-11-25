@@ -515,6 +515,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    Checked on the iPhone with the demo data; 115 tests pass.
    Same branch: the Bodyweight Range tile's note "kg, low to high" wrapped onto two lines on a
    phone, making that tile taller than Now and Change; it reads "kg, low–high" now, one line.
+   Same branch, Personal bests: the Exercises tile gets a note too ("in 40 workouts"), and the
+   "22 exercises" count beside the sort buttons, which sat 9px high (it kept the footnote margins),
+   is level with them.
 
 ## Waiting list
 
