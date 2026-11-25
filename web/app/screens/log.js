@@ -270,7 +270,7 @@ export function logScreen(ctx) {
         h('div', { class: 'editor-bar' }, preview, h('div', { class: 'row' }, undo, paste, save)))),
     h('details', { class: 'card', style: 'margin-top:14px' },
       h('summary', {}, 'How to write sets'),
-      h('div', { class: 'stack muted', style: 'margin-top:12px;font-size:.9rem' },
+      h('div', { class: 'stack muted howto', style: 'margin-top:12px;font-size:.9rem' },
         h('p', {}, h('span', { class: 'mono' }, '100 x 5, 5, 4'), ' — three sets of 100 for 5, 5 and 4 reps.'),
         h('p', {}, h('span', { class: 'mono' }, '32.5 27.5 25, 6 7 8'), ' — weights, then the reps for each.'),
         h('p', {}, h('span', { class: 'mono' }, 'bw x 8, 8'), ' or ', h('span', { class: 'mono' }, 'bw+10 x 6'), ' — bodyweight exercises.'),

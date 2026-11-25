@@ -1252,3 +1252,16 @@ button.rowi.more-sessions .title { color: var(--gold-text); font-size: 0.86rem; 
     outline-offset: 2px;
   }
 }
+
+/* Log help: the set examples read as small code chips, not loose grey text */
+.howto .mono {
+  display: inline-block;
+  padding: 1px 7px;
+  margin: 1px 0;
+  border-radius: 6px;
+  background: var(--gold-soft);
+  border: 1px solid var(--line-gold);
+  color: var(--text);
+  font-size: 0.85em;
+  white-space: nowrap;
+}
