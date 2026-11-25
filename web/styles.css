@@ -150,6 +150,10 @@ h1 { font-size: clamp(1.9rem, 7vw, 2.4rem); margin: 0 0 8px; }
 h2 { font-size: 1.55rem; margin: 0 0 12px; }
 h3 { font-size: 1.25rem; margin: 0 0 8px; }
 p { margin: 0 0 12px; }
+/* No single word left alone on the last line: headings even out their lines, and running text
+   and row descriptions pull a word down when the last line would be one short word ("it"). */
+h1, h2, h3 { text-wrap: balance; }
+p, .desc, .muted, li { text-wrap: pretty; }
 .muted { color: var(--muted); }
 .subtle { color: var(--subtle); font-size: 0.875rem; }
 .center { text-align: center; }

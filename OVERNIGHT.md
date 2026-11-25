@@ -526,3 +526,9 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## Even line breaks (branch `design/text-wrap`)
+- Headings use `text-wrap: balance`; paragraphs, row descriptions and muted notes use `text-wrap: pretty`.
+- No more single short word alone on the last line (Apple Shortcuts: "…paste your key when asked" used to leave "it" by itself).
+- Checked on the iPhone 18 Pro simulator. Browsers without support just wrap as before.
+- Note: the mock server on 8791 stopped answering the phone (white page; it still answers curl). A second copy runs on 8793 for phone checks.
