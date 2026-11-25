@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## fix/stats-rounding (25 Nov)
+
+1. Stats, Exercise card: the big number and the chart's end tag now agree. An estimated max showed
+   "25 kg" above a chart tagged "25.3 kg"; both now say 25 kg. The Top weight view no longer rounds a
+   real plate load: 107.5 kg showed as "108 kg" and now stays 107.5 kg, with the change ("↑ 27.5 kg")
+   kept to the half kilo too. Checked with the demo data in the browser; 115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
