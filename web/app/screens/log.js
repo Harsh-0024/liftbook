@@ -5,6 +5,7 @@ import { h, icon, pageHead, formatDay, busy, toast, autoGrow, rowItem } from '..
 import { attachSuggestions } from '../suggest.js';
 import { attachPasteTidy, tidyPaste, showFromTop } from '../paste.js';
 import { scrollBehavior } from '../motion.js';
+import { splitSessionTitle } from '../../core/sessions.js';
 
 export const DRAFT_KEY = 'liftbook-log-draft';
 
@@ -106,7 +107,9 @@ export function logScreen(ctx) {
     preview.replaceChildren(c.parsed
       ? h('span', { class: c.errors.length ? 'error' : 'ok' }, `${c.exercise_count} exercise${c.exercise_count === 1 ? '' : 's'} · ${c.set_count} set${c.set_count === 1 ? '' : 's'}`)
       : 'Nothing to check yet');
-    checkHead.textContent = c.parsed ? `${formatDay(c.day)} · ${c.parsed.workout_name || 'Workout'}` : '';
+    // Each fact stays whole when the line wraps ("Back & Triceps" never splits after "Back").
+    const whole = (t) => h('span', { class: 'whole' }, t);
+    checkHead.replaceChildren(...(c.parsed ? [whole(formatDay(c.day)), ' · ', whole(c.parsed.workout_name || 'Workout')] : []));
     checkBox.hidden = !exercises.length;
     // Rows count the exercises 1, 2, 3 and say how many sets each has, as the old check did.
     let order = 0;
@@ -146,7 +149,8 @@ export function logScreen(ctx) {
       c.future && c.day ? h('p', { class: 'wo-note log-future' }, icon('calendar'),
         h('span', {}, `This is dated ${formatDay(c.day)}, after today. Check the year on the first line.`)) : '',
       c.errors.length ? h('ul', { class: 'errors' }, c.errors.map((e) => h('li', {}, e))) : '');
-    if (c.existing) checkHead.textContent += ` · adds to ${c.existing.title} if you choose`;
+    // The workout already on that day, by its name as Home and All workouts show it.
+    if (c.existing) checkHead.append(' · adds to ', whole(splitSessionTitle(c.existing.title).title || c.existing.title), ' if you choose');
   };
   // The check reads the text trimmed, so its line 1 is the first line that isn't blank.
   const lineIndex = (lineNo) => lineNo - 1 + (ta.value.match(/^\s*/)[0].match(/\n/g) || []).length;
