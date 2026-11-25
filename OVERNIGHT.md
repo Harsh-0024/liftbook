@@ -508,6 +508,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    arrow's usual 10px bottom margin, meant for pages where it sits over a title, lifted it 5px above
    the edit and share buttons in the workout header row. It is now centred with them. Checked on the
    iPhone; 115 tests pass.
+21. **Workout page: action buttons fill each row on a phone (same branch).** "Edit · Repeat" wrapped
+   onto a row with a gap after them, and "Copy as text · Share link" left a different gap below.
+   Under 600px the labelled buttons now grow to fill their row; the trash button keeps its size.
+   Checked on the iPhone with the demo data; 115 tests pass.
 
 ## Waiting list
 
