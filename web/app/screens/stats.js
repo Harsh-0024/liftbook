@@ -340,7 +340,7 @@ export function statsScreen(ctx) {
       // An estimate in whole kilos ("118 kg", not "117.6 kg"), which also keeps it inside a phone-width tile.
       // A timed hold's score is weight × √seconds (615.8 for 79.5 kg held 60 s): whole numbers, and the
       // tile says how it is worked out, since the number alone means nothing.
-      const withKg = (v) => (v === null || v === undefined || Number.isNaN(v) ? fmtNum(v) : `${fmtNum(v, 0)}${kg}`);
+      const withKg = (v) => (v === null || v === undefined || Number.isNaN(v) ? fmtNum(v) : `${fmtNum(v)}${kg}`);
       // The latest value as a big number, as the old Stats page showed it, and how far it has come
       // over the range shown ("↑ 33 kg more than in Sep 2026").
       // Pointing at the chart: that session's day, workout, value and top set; a click opens it.
