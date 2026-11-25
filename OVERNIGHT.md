@@ -505,6 +505,14 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/settings-icons` (26 Nov)
+
+- "Sign out of this device" drew a sign-in icon: the arrow went into the door. It now leaves it
+  (the door on the left, the arrow pointing out).
+- The clipboard icon (Bulk import, Spreadsheet export, the Log page's Paste button, the share page)
+  had a 1px clip that didn't show at 18px, so it looked the same as the plan sheet beside it in
+  Settings. It has a real clip now. Checked both on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

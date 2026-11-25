@@ -166,7 +166,8 @@ const ICONS = {
   search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
   check: '<path d="m5 12 5 5L20 7"/>',
-  clipboard: '<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h4"/>',
+  // A clip that reads as one at 18px: the old 1px nub left it the same sheet as "plan".
+  clipboard: '<rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2.5" width="6" height="3.5" rx="1"/><path d="M9 11h6M9 15h4"/>',
   calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
   heart: '<path d="M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3 4.8 4.8 0 0 1 9 3c-2 4.6-9 9-9 9z"/>',
   thumbdown: '<path d="M10 15v4a2.5 2.5 0 0 0 2.5 2.5L16 14V3H6.7a2 2 0 0 0-2 1.7L3.3 12a2 2 0 0 0 2 2.3H10zM16 3h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/>',
@@ -174,7 +175,8 @@ const ICONS = {
   bulb: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.3 1 2.2h5.2c0-.9.4-1.7 1-2.2A6 6 0 0 0 12 3z"/>',
   send: '<path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/>',
   medal: '<circle cx="12" cy="15" r="6"/><path d="M8.5 3 12 9l3.5-6M12 12.5v5M10.5 14l1.5-1.5"/>',
-  logout: '<path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 17l5-5-5-5M15 12H3"/>',
+  // The door on the left and the arrow leaving it: the arrow had gone into it, as a sign-in icon does.
+  logout: '<path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4M16 17l5-5-5-5M21 12H9"/>',
   download: '<path d="M12 3v12M7 10l5 5 5-5M4 20h16"/>',
   mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
   lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
