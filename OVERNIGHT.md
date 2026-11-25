@@ -526,3 +526,11 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+### Branch `design/edit-page` (from improve/round-4)
+
+- **Edit workout on a phone: the title was cut off.** Title and date shared one row, the date taking
+  150px, so "Session 2 - Shoulders & Forearms" showed as "Session 2 - Shoulders &". Up to 480px wide
+  the title now has the whole line and the date sits under it, with the same 18px between them as
+  between other fields. Wider screens keep the two side by side. Checked on the iPhone 18 Pro
+  simulator; 115 tests pass.
