@@ -505,6 +505,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## design/page-head (25 Nov)
+- All workouts on the iPhone: the Select button beside "40 workouts logged." sat a few points higher than that line (the header bottom-aligns its children, and the button has padding).
+- A page header with a button directly beside it now aligns on the last baseline. Only All workouts uses that; Coach's button row is untouched. Checked on the simulator.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
