@@ -658,8 +658,13 @@ a.wday:focus-visible .dot { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--gol
 .wo-head .back { margin-bottom: 0; } /* the row centres it; its usual bottom margin lifted it 5px above the edit and share buttons */
 .wo-title { margin-bottom: 4px; }
 .wo-kicker { margin: 0 0 2px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-text); }
-.wo-meta { color: var(--muted); font-size: 0.88rem; }
-.wo-meta span + span::before { content: "·"; margin: 0 7px; opacity: 0.6; }
+/* Each item a solid piece, so a wrap falls between items ("3,693 kg" had ended one line, "lifted"
+   started the next). Every item carries its "·" and is pulled left by its width, so the dot of the
+   first item on each line sits outside the box and is clipped: no line starts with a dot. */
+.wo-meta { color: var(--muted); font-size: 0.88rem; overflow: hidden; }
+.wo-meta span { display: inline-block; margin-left: -18px; margin-right: 18px; }
+.wo-meta span::before { content: "·"; display: inline-block; width: 18px; text-align: center; opacity: 0.6; }
+.wo-meta span:last-child { margin-right: 0; }
 .ex-row { display: flex; align-items: center; gap: 12px; padding: 16px 18px; }
 .ex-row + .ex-row { border-top: 1px solid var(--hair); }
 .ex-row .main { flex: 1; min-width: 0; }

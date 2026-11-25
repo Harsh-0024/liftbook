@@ -518,7 +518,11 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 - Workout page: the Share icon was 15px beside Edit's 18px. Icons size to the text, and a `<button>`
   (Share) has a smaller font than a link (Edit). Icon buttons now draw their icon at 18px, so both
   match. Measured in the browser (Edit 18, Share 18); no other page shows these buttons apart from the
-  coach's reply row (34px buttons). Not yet seen on the iPhone; the phone kept showing a blank page while it updated.
+  coach's reply row (34px buttons). Checked on the iPhone: equal, and level with the back arrow.
+- The line under the title (date · exercises · sets · kg lifted · bodyweight) keeps each item whole
+  when it wraps. On the iPhone "3,693 kg" ended one line and "lifted" started the next. A wrapped
+  line also no longer starts with a "·" (each item's dot is clipped when it starts a line). Checked
+  on the iPhone: "Wed 25 Nov 2026 · 10 exercises · 25 sets" then "3,693 kg lifted · bodyweight 79.5 kg".
 
 ## Waiting list
 
