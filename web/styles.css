@@ -1192,6 +1192,11 @@ a.group.rowi.bests-link { margin-bottom: 18px; }
 .wo-step.newer { justify-content: flex-end; text-align: right; }
 .wo-step > span:not(.flip) { display: block; min-width: 0; }
 .wo-step b { display: block; font-size: 0.9rem; font-weight: 600; color: var(--text); }
+/* The first or the latest workout has only one neighbour: it takes the whole row, rather than
+   cutting its name short beside an empty half. A long name wraps to two lines before it is cut. */
+.wo-steps > span:empty { display: none; }
+.wo-steps:has(> span:empty) { grid-template-columns: minmax(0, 1fr); }
+.wo-step b.ellipsis { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
 .wo-step small { display: block; font-size: 0.76rem; margin-top: 1px; }
 .wo-step svg.i { flex: none; width: 16px; height: 16px; color: var(--subtle); }
 .wo-step .flip { display: inline-flex; transform: scaleX(-1); }
