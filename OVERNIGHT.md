@@ -528,6 +528,12 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   works" list under the buttons: Set up your plan, Retrieve a session, Log what you lifted (each a
   link, one line each on the phone), and "Have old workouts? Bulk import them". Gone once a
   workout is logged. Checked on iPhone 18 Pro with an empty demo account.
+- Stats before the first workout showed the search box, Personal bests, the Strength / Rate /
+  Consistency and 1M–All pills over an empty chart ("Nothing to chart yet"), and an empty Exercise
+  card. Now one card: "Your charts start here", a line on what Stats will show, and two buttons,
+  Log a workout and Import old workouts. Everything comes back with the first workout. Checked on
+  iPhone 18 Pro with the empty account, and with the demo data (unchanged). Retrieve needed nothing:
+  a new account already sees the default plan to pick from.
 
 ## Waiting list
 

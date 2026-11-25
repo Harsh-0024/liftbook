@@ -211,7 +211,26 @@ export function statsScreen(ctx) {
   };
   const short = (l) => formatDay(l, { weekday: false, year: false });
 
+  // A new account has nothing to chart: one card that says how charts start, in place of empty
+  // charts, range pills and an empty Exercise card.
+  const searchBox = root.querySelector('.search');
+  const bestsLink = root.querySelector('.bests-link');
+  function paintEmpty() {
+    searchBox.hidden = true;
+    bestsLink.hidden = true;
+    body.replaceChildren(h('div', { class: 'card stats-empty' },
+      h('div', { class: 'empty' }, icon('stats'),
+        h('h2', {}, 'Your charts start here'),
+        h('p', {}, 'Log a workout and Stats shows how each lift is moving, your bests and the days you trained.')),
+      h('div', { class: 'stats-empty-actions' },
+        h('a', { class: 'btn primary', href: '#/log' }, 'Log a workout'),
+        h('a', { class: 'btn', href: '#/settings/import' }, 'Import old workouts'))));
+  }
+
   function paint() {
+    if (!lb.workouts().length) return paintEmpty();
+    searchBox.hidden = false;
+    bestsLink.hidden = false;
     const from = since(range);
     const overall = lb.overall(mode === 'rate' ? 'rate' : 'index');
     const [oLabels, oValues] = clip(overall.labels, overall.data, from);
