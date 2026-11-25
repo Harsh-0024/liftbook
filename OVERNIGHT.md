@@ -505,6 +505,12 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## fix/stats-numbers (25 Nov)
+
+- Stats > exercise: the big number said "25 kg" but the chart's end tag right under it said
+  "25.3 kg". The tag now rounds as the big number does; pointing at a session still shows the
+  exact value. Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
