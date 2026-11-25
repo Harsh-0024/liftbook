@@ -161,6 +161,10 @@ function field(label, input, hint) {
   return h('div', { class: 'field' }, h('label', { for: input.id }, label), input, note);
 }
 
+/** On an iPhone or iPad (an iPad says it is a Mac, but has touch), where shortcuts install directly. */
+const onIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent)
+  || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
 /* ---------------- profile ---------------- */
 
 function profile(ctx) {
@@ -703,7 +707,9 @@ function shortcuts(ctx) {
           h('div', { class: 'row' }, make, remove)) : make),
       h('div', { class: 'card' },
         h('h2', {}, '2. Add the shortcuts'),
-        h('p', { class: 'subtle' }, 'Open this page on your iPhone, tap a shortcut to add it, and paste your key when asked.'),
+        h('p', { class: 'subtle' }, onIOS()
+          ? 'Tap a shortcut to add it, and paste your key when asked.'
+          : 'Open this page on your iPhone, tap a shortcut to add it, and paste your key when asked.'),
         h('ul', { class: 'list' }, SHORTCUT_FILES.map(([name, sub]) => h('li', {},
           h('a', { class: 'item chev', href: `shortcuts/${encodeURIComponent(name)}.shortcut`, download: `${name}.shortcut` },
             h('div', {}, h('div', { style: 'font-weight:600' }, name), h('div', { class: 'meta' }, sub))))))),

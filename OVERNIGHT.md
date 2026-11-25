@@ -537,3 +537,7 @@ moved on to something else meanwhile.
 - Sync and data: the backup line said "22 exercises" while Settings → Exercises lists 65 (that list
   also has the lifts only in your plan). The 22 are the different lifts you have logged, so it now
   says "22 different lifts", the words Home uses for the same count. Checked on the iPhone.
+- Apple Shortcuts: step 2 told you to "Open this page on your iPhone" even when you already had. On
+  an iPhone or iPad (an iPad that reports itself as a Mac counts, by its touch screen) it now just
+  says "Tap a shortcut to add it, and paste your key when asked."; a computer keeps the full
+  sentence. Checked on the iPhone.
