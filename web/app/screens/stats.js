@@ -479,7 +479,7 @@ export function bestsScreen(ctx) {
   paint();
   return h('div', {}, pageHead('Personal bests', 'The best each exercise has reached.', { back: '#/stats' }),
     all.length ? h('div', { class: 'grid-3', style: 'margin-bottom:16px' },
-      tile('Exercises', String(all.length)),
+      tile('Exercises', String(all.length), (n => `in ${n} workout${n === 1 ? '' : 's'}`)(lb.workouts().length)),
       tile('New bests', String(fresh.length), 'last 30 days', 'gold'),
       latest ? tile('Latest best', day(latest.bestDay), latest.label) : tile('Latest best', '–', '')) : null,
     all.length ? h('div', { class: 'search', style: 'margin-bottom:14px' }, icon('search'), search) : null,
