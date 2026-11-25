@@ -513,6 +513,8 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    when it was set ("on 8 Nov", the same session the Best badge marks) and Since first where it
    started ("from 32 kg"), like the Bodyweight tiles. Timed exercises keep "weight × √seconds".
    Checked on the iPhone with the demo data; 115 tests pass.
+   Same branch: the Bodyweight Range tile's note "kg, low to high" wrapped onto two lines on a
+   phone, making that tile taller than Now and Change; it reads "kg, low–high" now, one line.
 
 ## Waiting list
 
