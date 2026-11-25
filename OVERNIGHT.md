@@ -504,6 +504,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    set ("Thu 22 Oct 2026 · Push · 102 kg · Top set 85 × 6"). A click opens that workout. On a
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
+20. **Serif numbers use lining figures (branch `design/lining-figures`).** Cormorant Garamond
+   defaults to old-style figures, so the Stats headline "+10%" read as "+IO%". Headings, the Stats
+   hero, the workout-title field and the avatar now use lining figures (full-height digits).
+   Checked on the iPhone with the demo data; 115 tests pass.
 
 ## Waiting list
 
