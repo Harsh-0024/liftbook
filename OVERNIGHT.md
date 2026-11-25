@@ -526,3 +526,7 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## improve/csv-dates (26 Nov)
+
+1. Sync and data: the From / To dates sit under both Backup file and Spreadsheet, but only the spreadsheet uses them. The hint "Leave the dates empty for all of it." is now "Spreadsheet only. Leave empty for everything." (one line on the iPhone 18 Pro). Checked on the simulator.
