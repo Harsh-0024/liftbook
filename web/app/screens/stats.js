@@ -365,7 +365,8 @@ export function statsScreen(ctx) {
           : ch.direction === 'level' ? h('small', { class: 'hero-change' }, `Level with ${when}`)
             : h('small', { class: `hero-change ${ch.direction}` },
               h('strong', {}, `${ch.direction === 'down' ? '↓' : '↑'} ${fmtNum(ch.amount, 0)}${u}`), ` ${ch.direction === 'down' ? 'less' : 'more'} than in ${when}`);
-        exHero = h('div', { class: 'hero' }, h('b', {}, `${fmtNum(head.value, 0)}${u}`), h('span', {}, head.what), change);
+        // The same rounding as the chart's tags (82.2 kg on both), but volume stays in whole kilos.
+        exHero = h('div', { class: 'hero' }, h('b', {}, `${fmtNum(head.value, metric === 'volume' ? 0 : 1)}${u}`), h('span', {}, head.what), change);
       }
       exerciseCard = h('div', {},
         exHero,

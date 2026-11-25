@@ -526,3 +526,6 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## design/exercise-headline (from improve/round-4)
+- Stats → Exercise: the big headline rounded to whole kilos ("82 kg") while the chart's tag for the same session said "82.2 kg". Now both say 82.2 kg; volume stays whole. Checked on the iPhone.
