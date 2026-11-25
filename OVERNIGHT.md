@@ -505,6 +505,16 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `fix/autocorrect-off` (26 Nov)
+
+- **Workout boxes no longer let the iPhone autocorrect sets.** The Log box, the workout edit box,
+  the plan and rep-range boxes and Bulk import turned spellcheck off but left iOS autocorrect on,
+  so "bw" could become "be" or "by" as you type (the demo draft held a "Be/4 be/4" line, which
+  the check read as a new exercise). They now also have `autocorrect="off"`, as the sign-in and
+  username boxes already did. Seen in the page (all five boxes carry it) and the Log page loads
+  on the iPhone; the keyboard's own behaviour can't be tested in the simulator, since its
+  typing skips autocorrect. 115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
