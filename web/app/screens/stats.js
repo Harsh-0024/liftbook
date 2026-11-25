@@ -305,7 +305,8 @@ export function statsScreen(ctx) {
       // Opened from a workout's "Full progress": that exercise, and its chart in view.
       const key = normalizeExerciseName(wanted);
       exercise = opts.find((o) => o.value === wanted || normalizeExerciseName(o.value) === key || normalizeExerciseName(o.label) === key)?.value || null;
-      if (exercise) setTimeout(() => root.querySelector('#exercise')?.scrollIntoView({ block: 'center', behavior: scrollBehavior() }), 350);
+      // The card's top under the header, so its picker, headline and chart are all in view.
+      if (exercise) setTimeout(() => root.querySelector('#exercise-card')?.scrollIntoView({ block: 'start', behavior: scrollBehavior() }), 350);
       wanted = null;
     }
     if (!exercise && opts.length) exercise = opts[0].value;

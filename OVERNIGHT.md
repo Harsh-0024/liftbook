@@ -526,3 +526,6 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## improve/bests-jump (from improve/round-4)
+- Opening an exercise from Personal bests (or a workout's Full progress) centred the exercise picker, leaving the chart half off a phone screen. Now the Exercise card's top lands under the header, so picker, headline and chart are all in view. Checked on the iPhone.
