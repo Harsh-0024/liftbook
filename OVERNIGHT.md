@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## design/log-check (25 Nov)
+
+- The line over the Log page's check ("Wed 25 Nov 2026 · Legs · adds to ... if you choose") named
+  the day's workout by its full title, "Session 3 - Back & Triceps", and on a phone broke it after
+  "Back". It now says "Back & Triceps", as Home and All workouts name it, and each fact wraps whole.
+  Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
