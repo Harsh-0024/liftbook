@@ -88,11 +88,12 @@ export function homeScreen(ctx) {
         const split = splitSessionTitle(w.title);
         return rowItem({ href: `#/workout/${w.day}`, title: split.title, desc: split.session || undefined, value: softDay(w.day, today) });
       })),
+      // The link right under the list it continues, as on the old site; the totals after it.
+      h('a', { class: 'see-all', href: '#/history' }, 'See all workouts'),
       h('div', { class: 'grid-3 home-stats' },
         h('div', { class: 'stat' }, h('span', {}, 'Workouts'), h('b', {}, o.total)),
         h('div', { class: 'stat' }, h('span', {}, 'Week streak'), h('b', { class: 'gold' }, week.weeks)),
-        h('div', { class: 'stat' }, h('span', {}, 'Exercises'), h('b', {}, o.exercises))),
-      h('a', { class: 'see-all', href: '#/history' }, 'See all workouts')) : null);
+        h('div', { class: 'stat' }, h('span', {}, 'Exercises'), h('b', {}, o.exercises)))) : null);
 }
 
 const LONG_MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
