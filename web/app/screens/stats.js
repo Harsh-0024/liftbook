@@ -461,6 +461,13 @@ export function bestsScreen(ctx) {
   const paint = () => {
     const q = search.value.trim().toLowerCase();
     const rows = sortBests(q ? all.filter((r) => r.label.toLowerCase().includes(q)) : all, sort);
+    // Nothing logged: no "0 exercises" or sort buttons over an empty list, just a way to start.
+    if (!all.length) {
+      return body.replaceChildren(h('div', { class: 'card stats-empty' },
+        h('div', { class: 'empty' }, icon('stats'), h('h2', {}, 'No bests yet'),
+          h('p', {}, 'Each exercise’s best estimated max and heaviest set land here after your first workout.')),
+        h('div', { class: 'stats-empty-actions' }, h('a', { class: 'btn primary', href: '#/log' }, 'Log a workout'))));
+    }
     body.replaceChildren(
       h('div', { class: 'card-head', style: 'margin:0 2px 10px' },
         h('span', { class: 'foot' }, `${rows.length} exercise${rows.length === 1 ? '' : 's'}`),

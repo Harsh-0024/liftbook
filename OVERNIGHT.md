@@ -534,6 +534,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   Log a workout and Import old workouts. Everything comes back with the first workout. Checked on
   iPhone 18 Pro with the empty account, and with the demo data (unchanged). Retrieve needed nothing:
   a new account already sees the default plan to pick from.
+- Personal bests before the first workout said "0 exercises" beside Latest / Highest / A to Z
+  buttons over an empty list. Now the same kind of card as Stats: "No bests yet", what will land
+  there, and a Log a workout button. Checked on iPhone 18 Pro with the empty account.
 
 ## Waiting list
 
