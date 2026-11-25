@@ -149,7 +149,7 @@ function bodyweightCard(lb, from, short) {
     h('div', { class: 'grid-3', style: 'margin-top:14px' },
       tile('Now', `${fmtNum(t.current)} kg`, `since ${formatDay(t.lastChanged, { weekday: false, year: false })}`),
       tile('Change', signed(delta), `from ${short(labels[0])}`),
-      tile('Range', `${fmtNum(t.min)}–${fmtNum(t.max)}`, 'kg, low to high')),
+      tile('Range', `${fmtNum(t.min)}–${fmtNum(t.max)}`, 'kg, low–high')),
     h('p', { class: 'foot', style: 'margin:12px 2px 0' }, 'From the bodyweight saved with each workout. Change it in ',
       h('a', { href: '#/settings/profile' }, 'Settings'), ' or type it in a workout.'));
 }
