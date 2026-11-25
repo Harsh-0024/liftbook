@@ -250,3 +250,13 @@ test('a month-first date gets the day-first fix in its message', async () => {
   const unclear = lb.check('45/45 Push\n\nSquat\n100 x 5').errors.find((e) => e.includes('isn’t a date'));
   if (unclear) assert.match(unclear, /Write the day first, as 13\/02 or 13 Feb\./);
 });
+
+test('a typo in a sets line is quoted as that exercise’s sets, not “no sets under it”', async () => {
+  const lb = await app();
+  const c = lb.check('1/9/26 Legs\n\nHyper Extension\nBe/4 be/4, 1 1\n\nPlank\nBw bw, 30 30');
+  assert.deepEqual(c.errors, ['“Hyper Extension”: couldn’t read its sets (“Be/4 be/4, 1 1”).']);
+  assert.equal(c.exercise_count, 1, 'the typo line is not an exercise of its own');
+  await lb.log('1/9/26 Legs\n\nHyper Extension\nBe/4 be/4, 1 1\n\nPlank\nBw bw, 30 30');
+  assert.deepEqual(lb.workout('2026-09-01').logs.map((l) => l.exercise), ['Plank']);
+  assert.ok(lb.check('1/9/26 Legs\n\nHyper Extension\n\nPlank\nBw bw, 30 30').errors.includes('“Hyper Extension”: no sets under it.'));
+});

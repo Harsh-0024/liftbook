@@ -526,3 +526,7 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+### Branch `fix/log-sets-typo` (from improve/round-4)
+
+- **A typo in a sets line saved a junk exercise.** "Hyper Extension" followed by "Be/4 be/4, 1 1" (iOS had turned "bw" into "Be") was read as two exercises: Hyper Extension with "no sets under it", and a new exercise called "Be/4 Be/4" with sets 1 1, which Save kept. Now that line counts as Hyper Extension's sets: the error reads `"Hyper Extension": couldn't read its sets ("Be/4 be/4, 1 1").`, the count leaves it out, and nothing is saved under the typo's name. A name with truly nothing under it still says "no sets under it". Test added (116 pass); checked on the iPhone 18 Pro simulator.
