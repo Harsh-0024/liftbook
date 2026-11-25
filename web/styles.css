@@ -418,6 +418,8 @@ input.inline-num { width: 84px; padding: 7px 10px; text-align: right; font-weigh
   color: var(--muted); cursor: pointer; text-decoration: none !important;
   transition: color var(--fast), background var(--fast), border-color var(--fast);
 }
+/* Icons are 1.1em; a <button> has a smaller font than a link, so Share drew 15px beside Edit's 18px. */
+.icon-btn svg.i { width: 18px; height: 18px; }
 @media (hover: hover) { .icon-btn:hover { color: var(--gold-text); border-color: var(--line-gold); background: var(--gold-soft); } }
 @media (hover: hover) { .icon-btn.danger:hover { color: var(--bad); border-color: var(--bad-line); background: var(--bad-soft); } }
 .linkish { background: none; border: 0; padding: 0; color: var(--gold-text); font: 600 inherit; font-size: inherit; cursor: pointer; text-decoration: none; }

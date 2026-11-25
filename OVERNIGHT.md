@@ -513,6 +513,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    Under 600px the labelled buttons now grow to fill their row; the trash button keeps its size.
    Checked on the iPhone with the demo data; 115 tests pass.
 
+### Branch `design/workout-head`, more (26 Nov)
+
+- Workout page: the Share icon was 15px beside Edit's 18px. Icons size to the text, and a `<button>`
+  (Share) has a smaller font than a link (Edit). Icon buttons now draw their icon at 18px, so both
+  match. Measured in the browser (Edit 18, Share 18); no other page shows these buttons apart from the
+  coach's reply row (34px buttons). Not yet seen on the iPhone; the phone kept showing a blank page while it updated.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
