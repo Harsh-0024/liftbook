@@ -547,3 +547,7 @@ moved on to something else meanwhile.
 - The sets-a-week column mixed "6" and "9" with "2.9" and "10.6". When any row has tenths, every row now shows one decimal ("6.0", "2.9"), so the figures line up.
 - The "sets a week" note sits on the heading's baseline instead of floating above it.
 - Checked on the iPhone 18 Pro simulator.
+
+## Bodyweight Range tile (branch `design/stats-consistency`)
+- The Range tile's note "kg, low to high" wrapped to two lines on a phone, making it taller than Now and Change. It now says "kg" (the label already says Range), so the three tiles match.
+- Checked on the iPhone 18 Pro simulator.
