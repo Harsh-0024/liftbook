@@ -124,7 +124,8 @@ export function logScreen(ctx) {
       const row = h('div', { class: `rowi check-row${flagged && n.state !== 'new' ? ' warn' : ''}`, role: 'button', tabindex: '0' },
         bad ? h('span', { class: 'ico', style: 'color:var(--bad)' }, icon('info')) : h('span', { class: 'num', 'aria-hidden': 'true' }, String(order += 1)),
         h('span', { class: 'main' }, h('span', { class: 'title' }, e.name),
-          h('span', { class: 'desc mono' }, !bad ? e.sets_label
+          // Sets read as code; a problem reads as a sentence, in the warning's red.
+          h('span', bad ? { class: 'desc', style: 'color:var(--bad)' } : { class: 'desc mono' }, !bad ? e.sets_label
             : String(e.exercise_string || '').split('\n').slice(1).join('').trim() ? 'Couldn’t read these sets' : 'No sets under it'),
           // "New" is said by the tag on the right.
           flagged && tag !== 'New' ? h('span', { class: `desc name-note is-${n.state}` }, n.note) : null),

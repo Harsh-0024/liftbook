@@ -505,6 +505,14 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/log-check-messages` (26 Nov)
+
+- **Log check: a problem reads as a sentence, not as sets.** Under an exercise with a red info
+  icon, "No sets under it" / "Couldn't read these sets" used the spaced monospace font meant for
+  sets ("120×10 · 120×10"), so it looked like data. It is now in the normal font, in the same red
+  as the icon; real sets keep the monospace look. Checked on the iPhone in dark mode; 115 tests
+  pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
