@@ -640,7 +640,7 @@ export function cleanExerciseName(name) {
  * `now` is when the workout is saved, as "YYYY-MM-DDTHH:MM:SS" (the person's own clock);
  * dates come back in that form too.
  */
-export function workoutParser(text, { bodyweight = null, preserveBodyweightOffsets = false, now } = {}) {
+export function workoutParser(text, { bodyweight = null, preserveBodyweightOffsets = false, now, exerciseFirst = false } = {}) {
   if (!text || !strip(text)) return null;
 
   const rawLines = [];
@@ -759,7 +759,14 @@ export function workoutParser(text, { bodyweight = null, preserveBodyweightOffse
   });
   lineNumbers = keptNumbers;
 
+  // exerciseFirst (the app; off for Python parity): no date on the first line and sets right under it
+  // ("Squat" then "60 70 80, 8 6 5") make the first line an exercise, not a title. Kept as a title,
+  // the sets below it would have no name: an error.
   let i = 1;
+  if (exerciseFirst && !dateFound && !invalidDateText && lines.length > 1 && !isDataLine(lines[0]) && isDataLine(lines[1])) {
+    workoutDay.workout_name = '';
+    i = 0;
+  }
   while (i < lines.length) {
     const cleanLine = lines[i];
     let name = '';

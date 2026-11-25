@@ -67,6 +67,18 @@ test('text that can’t be read is refused with a reason', async () => {
   assert.equal(lb.history().length, 0);
 });
 
+test('with no date line, a name over sets is an exercise, not the title', async () => {
+  const lb = await app();
+  const c = lb.check('Squat\n60 70 80, 8 6 5');
+  assert.deepEqual(c.errors, []);
+  assert.equal(c.parsed.workout_name, '');
+  assert.deepEqual(c.parsed.exercises.map((e) => e.name), ['Squat']);
+  // A title line over an exercise name stays a title.
+  const titled = lb.check('Leg day\nSquat\n60 70 80, 8 6 5');
+  assert.equal(titled.parsed.workout_name, 'Leg day');
+  assert.deepEqual(titled.parsed.exercises.map((e) => e.name), ['Squat']);
+});
+
 test('a bodyweight line updates the profile', async () => {
   const lb = await app();
   await lb.log('31/10/26 Session 1\nBodyweight - 72\n\nPull ups\nbw x 8, 8, 8');
