@@ -124,7 +124,7 @@ function index(ctx) {
           h('label', { class: 'main', for: 'bw-inline', style: 'margin:0;color:inherit' }, h('span', { class: 'title' }, 'Bodyweight'), h('span', { class: 'desc' }, 'Used for bodyweight exercises')),
           bodyweightInput(ctx)),
         h('div', { class: 'blk' },
-          h('div', { class: 'row', style: 'gap:14px;margin-bottom:12px' }, h('span', { class: 'ico', style: 'color:var(--gold-text)' }, icon('moon')), h('b', { style: 'font-size:.95rem' }, 'Appearance')),
+          h('div', { class: 'row', style: 'gap:14px;margin-bottom:12px' }, h('span', { class: 'ico' }, icon('moon')), h('span', { class: 'title' }, 'Appearance')),
           themeSeg()))),
 
     h('section', { class: 'section' }, h('div', { class: 'label' }, 'Training'),

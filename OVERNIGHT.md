@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/settings-rows` (26 Nov)
+
+- Settings → Preferences: the Bodyweight note ("Used for bodyweight exercises") was semi-bold, because it sits
+  inside a label. It is now regular, like every other note. "Appearance" was a bold `<b>` 4px left
+  of "Bodyweight". It now uses the same title style and icon column, so both titles line up and match.
+  Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
