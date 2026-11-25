@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/shortcuts-layout` (26 Nov)
+
+- **Apple Shortcuts: Session names joins step 2.** The Session names link had a card of its own
+  between steps 2 and 3, tall and unbalanced (card padding plus row padding) and breaking the
+  1-2-3 flow. It is now the third row in step 2's list, under Get Workout, which it belongs
+  with. Checked on the iPhone; 115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
