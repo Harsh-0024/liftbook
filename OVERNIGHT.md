@@ -505,6 +505,14 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## improve/search-hits (25 Nov)
+
+1. **Search shows what matched.** In All workouts, searching "curl" found the right workouts, but
+   a row like "Session 3 · Pull-Ups · Incline EZ-Bar Sku…" cut off before the curl, so you could
+   not see why it matched. While searching, matching exercises now come first in each row and in
+   the text colour: "Session 3 · **Barbell Curl** · Pull-Ups · Incli…". No search: unchanged.
+   Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
