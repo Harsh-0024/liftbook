@@ -504,6 +504,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    set ("Thu 22 Oct 2026 · Push · 102 kg · Top set 85 × 6"). A click opens that workout. On a
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
+20. **Workout page: back arrow level with the buttons (branch `design/workout-head`).** The back
+   arrow's usual 10px bottom margin, meant for pages where it sits over a title, lifted it 5px above
+   the edit and share buttons in the workout header row. It is now centred with them. Checked on the
+   iPhone; 115 tests pass.
 
 ## Waiting list
 
