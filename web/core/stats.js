@@ -608,8 +608,14 @@ export function statsExerciseOptions({ history = [], views = {}, tzOffsetMinutes
 /** Exercises written with "bw" while no bodyweight is set (the Stats page warns about them). */
 export function bodyweightWarningExercises({ history = [], bodyweight = null } = {}) {
   if (bodyweight !== null && bodyweight !== undefined) return [];
-  return sortBy([...new Set(history.filter((log) => (log.exercise_string || '').toLowerCase().includes('bw')
-    || (setsDisplay(log) || '').toLowerCase().includes('bw')).map((log) => log.exercise))], codePoints);
+  // One name per exercise: "Pull Ups" and "Pull-Ups" are the same lift, so the notice names it once.
+  const names = new Map();
+  for (const log of history) {
+    if (!((log.exercise_string || '').toLowerCase().includes('bw') || (setsDisplay(log) || '').toLowerCase().includes('bw'))) continue;
+    const key = statsExerciseKey(log.exercise);
+    if (!names.has(key)) names.set(key, log.exercise);
+  }
+  return sortBy([...names.values()], codePoints);
 }
 
 /**

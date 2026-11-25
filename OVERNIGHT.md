@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## fix/bodyweight-notice (from improve/round-4)
+
+- Stats, with no bodyweight set: the notice read "so Hyper Extension, Pull Ups, Pull-Ups count your
+  bodyweight": one lift logged under two spellings, named twice. It now names each exercise once
+  (matched the way Stats matches names), keeping the first spelling. New test; 116 pass. Checked on
+  iPhone 18 Pro: "so Hyper Extension, Pull Ups count your bodyweight."
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
