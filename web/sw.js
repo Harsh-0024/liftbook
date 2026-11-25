@@ -6,7 +6,7 @@
 // old one, takes over, and the old copy is removed.
 'use strict';
 
-const VERSION = '7a1b4d868297';
+const VERSION = 'b730e004ebc2';
 const FILES = [
   './',
   'app/data.js',

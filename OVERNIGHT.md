@@ -537,3 +537,8 @@ moved on to something else meanwhile.
   light mode) is also in. Those lines can move to "Done".
 
 ## Ideas not done yet
+
+## Stats range row on a phone (branch `design/stats-consistency`)
+- The 1M…All (and year) row under the Stats chart sat at the right, while on a phone the Strength / Rate / Consistency tabs wrap under the heading at the left: two rows of pills that didn't line up.
+- On screens up to 560px wide it now starts at the left, in line with the tabs and the big number; wider screens keep it at the right. The inline style became a `range-row` class.
+- Checked on the iPhone 18 Pro simulator and at 1024px on the Mac.

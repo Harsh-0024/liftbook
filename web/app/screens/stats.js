@@ -407,8 +407,8 @@ export function statsScreen(ctx) {
           }, 'Overall view')),
         hero,
         mode === 'consistency'
-          ? (yearTabs ? h('div', { class: 'card-head', style: 'justify-content:flex-end;margin:4px 0 0' }, yearTabs) : '')
-          : h('div', { class: 'card-head', style: 'justify-content:flex-end;margin:4px 0 0' }, rangeTabs),
+          ? (yearTabs ? h('div', { class: 'card-head range-row' }, yearTabs) : '')
+          : h('div', { class: 'card-head range-row' }, rangeTabs),
         chart,
         tiles || '',
         h('p', { class: 'foot', style: 'margin:12px 2px 0' }, foot)),
