@@ -677,6 +677,7 @@ a.wday:focus-visible .dot { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--gol
 .datebox small { display: block; margin-top: 4px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--subtle); }
 .ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .label span { font-weight: 500; letter-spacing: 0; text-transform: none; font-size: 0.78rem; }
+.label .whole { white-space: nowrap; }
 
 /* ---------- workout ---------- */
 .wo-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }

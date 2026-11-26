@@ -758,6 +758,16 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
 - The line beside the sort buttons said "22 exercises", right under the Exercises 22 tile. It now
   reads "Sort by", and "3 of 22" while a search narrows the list. Checked on the iPhone.
 
+## design/log-check (25 Nov)
+
+- The line over the Log page's check ("Wed 25 Nov 2026 · Legs · adds to ... if you choose") named
+  the day's workout by its full title, "Session 3 - Back & Triceps", and on a phone broke it after
+  "Back". It now says "Back & Triceps", as Home and All workouts name it, and each fact wraps whole.
+  Checked on the iPhone.
+- The check line said "· adds to Back & Triceps if you choose", which was hard to follow. It now
+  says "· also on this day: Back & Triceps"; Save still asks whether to add to it or open it.
+  Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

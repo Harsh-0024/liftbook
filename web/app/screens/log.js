@@ -5,6 +5,7 @@ import { h, icon, pageHead, formatDay, busy, toast, autoGrow, rowItem } from '..
 import { attachSuggestions } from '../suggest.js';
 import { attachPasteTidy, tidyPaste, showFromTop } from '../paste.js';
 import { scrollBehavior } from '../motion.js';
+import { splitSessionTitle } from '../../core/sessions.js';
 
 export const DRAFT_KEY = 'liftbook-log-draft';
 
@@ -132,9 +133,11 @@ export function logScreen(ctx) {
     preview.replaceChildren(c.parsed
       ? h('span', { class: c.errors.length && started ? 'error' : 'ok' }, `${c.exercise_count} exercise${c.exercise_count === 1 ? '' : 's'} · ${c.set_count} set${c.set_count === 1 ? '' : 's'}`)
       : 'Nothing to check yet');
+    // Each fact stays whole when the line wraps ("Back & Triceps" never splits after "Back").
+    const whole = (t) => h('span', { class: 'whole' }, t);
     // No title typed and the day has a workout: it joins that one's title, so don't say "Workout".
     const name = c.parsed?.workout_name || (c.existing ? '' : 'Workout');
-    checkHead.textContent = c.parsed ? [formatDay(c.day), name].filter(Boolean).join(' · ') : '';
+    checkHead.replaceChildren(...(c.parsed ? [whole(formatDay(c.day)), ...(name ? [' · ', whole(name)] : [])] : []));
     checkBox.hidden = !exercises.length;
     // Rows count the exercises 1, 2, 3 and say how many sets each has, as the old check did.
     let order = 0;
@@ -174,7 +177,9 @@ export function logScreen(ctx) {
       c.future && c.day ? h('p', { class: 'wo-note log-future' }, icon('calendar'),
         h('span', {}, `This is dated ${formatDay(c.day)}, after today. Check the year on the first line.`)) : '',
       c.errors.length && started ? h('ul', { class: 'errors' }, c.errors.map((e) => h('li', {}, e))) : '');
-    if (c.existing) checkHead.textContent += ` · adds to ${c.existing.title} if you choose`;
+    // The workout already on that day, by its name as Home and All workouts show it. Save then
+    // asks whether to add to it or open it.
+    if (c.existing) checkHead.append(' · ', whole(`also on this day: ${splitSessionTitle(c.existing.title).title || c.existing.title}`));
   };
   // The check reads the text trimmed, so its line 1 is the first line that isn't blank.
   const lineIndex = (lineNo) => lineNo - 1 + (ta.value.match(/^\s*/)[0].match(/\n/g) || []).length;
