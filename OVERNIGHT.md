@@ -505,6 +505,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/log-bar` (26 Nov)
+- Log: the floating Save bar lay over the bottom of the text box, and the box's rounded edge showed through as a second outline. The bar now has a raised face, a gold-tinted rim and a shadow cast upward, so it reads as floating above what scrolls under it. Checked on the iPhone simulator.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
