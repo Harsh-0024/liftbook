@@ -865,6 +865,10 @@ details.ex-open .vs { gap: 14px; }
 .card-head h2 { margin: 0; }
 .card-head .tabs { margin: 0; }
 .card-head .foot { margin: 0; } /* a count beside the sort buttons sits on their middle, not 9px above it */
+/* The range (1M…All) or year row under a chart: at the right, under the view tabs, on a wide
+   screen; on a phone those tabs wrap under the heading at the left, so the range follows them there. */
+.card-head.range-row { justify-content: flex-end; margin: 4px 0 0; }
+@media (max-width: 560px) { .card-head.range-row { justify-content: flex-start; } }
 
 .auth { max-width: 420px; margin: 6vh auto 0; }
 .auth .card { padding: 32px 28px 28px; border-radius: 22px; box-shadow: var(--shadow); }
@@ -1082,6 +1086,9 @@ label.rowi { cursor: pointer; }
 .cal-days span { height: var(--cal-cell); line-height: var(--cal-cell); overflow: visible; }
 .cal-scroll { overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; padding-bottom: 2px; }
 .cal-scroll::-webkit-scrollbar { display: none; }
+.cal-scroll.more-r { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+.cal-scroll.more-l { -webkit-mask-image: linear-gradient(to right, transparent, #000 28px); mask-image: linear-gradient(to right, transparent, #000 28px); }
+.cal-scroll.more-l.more-r { -webkit-mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent); }
 .cal-months { position: relative; height: 20px; font-size: 0.66rem; color: var(--muted); }
 .cal-months span { position: absolute; top: 0; }
 .cal-grid { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, var(--cal-cell)); grid-auto-columns: var(--cal-cell); gap: var(--cal-gap); }

@@ -791,6 +791,17 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
 - Settings > Account: the subtitle said "Password, theme, sign out, delete" but the first card on
   the page is Email. It now reads "Email, password, theme, sign out, delete". Checked on the iPhone.
 
+## design/stats-consistency (25 Nov)
+
+- Stats, Consistency: the year switch showed as a lone gold "2026" button on its own line when
+  there is only one year to pick. It now appears once there are two years.
+- The card's heading repeated the chosen tab ("Consistency" over the Consistency tab). It now reads
+  "Training days", the way the Strength tab is headed "Overall strength".
+- Checked on the iPhone.
+- On a phone the year grid scrolls sideways and opened cut mid-word ("De" for Dec) and mid-square
+  at its edge. The side with more weeks past it now fades out over 28px, so the cut reads as "more
+  this way"; at either end that side is sharp. Checked on the iPhone, both scrolled in and at the end.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
@@ -881,3 +892,16 @@ moved on to something else meanwhile.
   an iPhone or iPad (an iPad that reports itself as a Mac counts, by its touch screen) it now just
   says "Tap a shortcut to add it, and paste your key when asked."; a computer keeps the full
   sentence. Checked on the iPhone.
+## Stats range row on a phone (branch `design/stats-consistency`)
+- The 1M…All (and year) row under the Stats chart sat at the right, while on a phone the Strength / Rate / Consistency tabs wrap under the heading at the left: two rows of pills that didn't line up.
+- On screens up to 560px wide it now starts at the left, in line with the tabs and the big number; wider screens keep it at the right. The inline style became a `range-row` class.
+- Checked on the iPhone 18 Pro simulator and at 1024px on the Mac.
+
+## Muscle balance numbers (branch `design/stats-consistency`)
+- The sets-a-week column mixed "6" and "9" with "2.9" and "10.6". When any row has tenths, every row now shows one decimal ("6.0", "2.9"), so the figures line up.
+- The "sets a week" note sits on the heading's baseline instead of floating above it.
+- Checked on the iPhone 18 Pro simulator.
+
+## Bodyweight Range tile (branch `design/stats-consistency`)
+- The Range tile's note "kg, low to high" wrapped to two lines on a phone, making it taller than Now and Change. It now says "kg" (the label already says Range), so the three tiles match.
+- Checked on the iPhone 18 Pro simulator.

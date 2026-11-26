@@ -53,7 +53,15 @@ function calendar(grid, onPick) {
   if (slides) {
     // A phone can't fit the year: open on the latest weeks.
     const col = Math.max(0, grid.weeks.findIndex((w) => w.some((d) => d.today)));
-    setTimeout(() => { scroll.scrollLeft = Math.max(0, (col + 1) * (cell + gap) - scroll.clientWidth + cell * 2); }, 0);
+    // The side with more weeks past it fades out, so a cut square or month name reads as
+    // "more this way" rather than as a mistake.
+    const edges = () => {
+      const max = scroll.scrollWidth - scroll.clientWidth;
+      scroll.classList.toggle('more-l', scroll.scrollLeft > 2);
+      scroll.classList.toggle('more-r', scroll.scrollLeft < max - 2);
+    };
+    scroll.addEventListener('scroll', edges, { passive: true });
+    setTimeout(() => { scroll.scrollLeft = Math.max(0, (col + 1) * (cell + gap) - scroll.clientWidth + cell * 2); edges(); }, 0);
   }
   return box;
 }
@@ -129,13 +137,16 @@ function balanceCard(lb, from, range) {
   const b = lb.muscleBalance(from);
   if (!b) return null;
   const rangeText = { 30: 'the last month', 90: 'the last 3 months', 180: 'the last 6 months', 365: 'the last year', all: 'all your workouts' }[range] || 'this range';
+  // One way of writing the numbers down the column: "6.0" beside "2.9", not "6" beside "2.9".
+  const tenths = b.rows.some((r) => Math.round(r.perWeek * 10) % 10 !== 0);
+  const num = (v) => (tenths ? (Math.round(v * 10) / 10).toFixed(1) : String(Math.round(v)));
   return h('div', { class: 'card' },
-    h('div', { class: 'card-head', style: 'margin-bottom:12px' }, h('h2', {}, 'Muscle balance'), h('span', { class: 'foot' }, 'sets a week')),
+    h('div', { class: 'card-head', style: 'margin-bottom:12px;align-items:baseline' }, h('h2', {}, 'Muscle balance'), h('span', { class: 'foot' }, 'sets a week')),
     h('div', { class: 'balance', role: 'list' }, b.rows.map((r) =>
       h('div', { class: 'balance-row', role: 'listitem', 'aria-label': `${r.group}: ${fmtNum(r.perWeek)} sets a week` },
         h('span', { class: 'balance-name' }, r.group),
         h('span', { class: 'balance-track', 'aria-hidden': 'true' }, h('i', { style: `width:${Math.max(2, r.share * 100).toFixed(1)}%` })),
-        h('b', { 'aria-hidden': 'true' }, fmtNum(r.perWeek))))),
+        h('b', { 'aria-hidden': 'true' }, num(r.perWeek))))),
     h('p', { class: 'foot', style: 'margin:12px 2px 0' }, `Average sets each week over ${rangeText}, by the muscle an exercise's name points to. The range buttons above change it.`));
 }
 
@@ -161,7 +172,7 @@ function bodyweightCard(lb, from, short) {
     h('div', { class: 'grid-3', style: 'margin-top:14px' },
       tile('Now', `${fmtNum(t.current)} kg`, `since ${formatDay(t.lastChanged, { weekday: false, year: false })}`),
       tile('Change', signed(delta), `from ${short(labels[0])}`),
-      tile('Range', `${fmtNum(t.min)}–${fmtNum(t.max)}`, 'kg, low to high')),
+      tile('Range', `${fmtNum(t.min)}–${fmtNum(t.max)}`, 'kg')),
     h('p', { class: 'foot', style: 'margin:12px 2px 0' }, 'From the bodyweight saved with each workout. Change it in ',
       h('a', { href: '#/settings/profile' }, 'Settings'), ' or type it in a workout.'));
 }
@@ -291,11 +302,14 @@ export function statsScreen(ctx) {
         hero = h('div', { class: 'hero' }, h('b', {}, c.value), h('span', {}, c.caption),
           c.change ? h('small', { class: `hero-change ${c.change.direction}` },
             c.change.amount ? h('strong', {}, `${c.change.direction === 'down' ? '↓' : '↑'} ${c.change.amount}`) : '', c.change.text) : '');
-        yearTabs = tabs(years.map((y) => [y, String(y)]), year, (y) => {
-          year = y;
-          remember(YEAR_KEY, y);
-          paint();
-        }, 'Year');
+        // A switch with one choice is just a lone gold button: show it once there are two years.
+        if (years.length > 1) {
+          yearTabs = tabs(years.map((y) => [y, String(y)]), year, (y) => {
+            year = y;
+            remember(YEAR_KEY, y);
+            paint();
+          }, 'Year');
+        }
         const tip = h('p', { class: 'cal-tip', 'aria-live': 'polite' }, `${tapWord()} a day to see it.`);
         const g = yearGrid(win, dayList, { titles: overall.day_titles || {}, daySets: overall.day_sets || {} });
         chart = h('div', {}, calendar(g, (d) => {
@@ -404,7 +418,7 @@ export function statsScreen(ctx) {
       warnings.length ? h('div', { class: 'notice' }, icon('info'), h('div', {},
         'Set your bodyweight in ', h('a', { href: '#/settings/profile' }, 'Settings'), ` so ${warnings.slice(0, 3).join(', ')}${warnings.length > 3 ? '…' : ''} count your bodyweight.`)) : null,
       h('div', { class: 'card' },
-        h('div', { class: 'card-head' }, h('h2', {}, mode === 'index' ? 'Overall strength' : mode === 'rate' ? 'Improvement rate' : 'Consistency'),
+        h('div', { class: 'card-head' }, h('h2', {}, mode === 'index' ? 'Overall strength' : mode === 'rate' ? 'Improvement rate' : 'Training days'),
           tabs([['index', 'Strength'], ['rate', 'Rate'], ['consistency', 'Consistency']], mode, (v) => {
             mode = v;
             if (v !== 'rate') remember(VIEW_KEY, v === 'consistency' ? 'consistency' : 'strength');
@@ -412,8 +426,8 @@ export function statsScreen(ctx) {
           }, 'Overall view')),
         hero,
         mode === 'consistency'
-          ? (yearTabs ? h('div', { class: 'card-head', style: 'justify-content:flex-end;margin:4px 0 0' }, yearTabs) : '')
-          : h('div', { class: 'card-head', style: 'justify-content:flex-end;margin:4px 0 0' }, rangeTabs),
+          ? (yearTabs ? h('div', { class: 'card-head range-row' }, yearTabs) : '')
+          : h('div', { class: 'card-head range-row' }, rangeTabs),
         chart,
         tiles || '',
         h('p', { class: 'foot', style: 'margin:12px 2px 0' }, foot)),
