@@ -802,6 +802,30 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   at its edge. The side with more weeks past it now fades out over 28px, so the cut reads as "more
   this way"; at either end that side is sharp. Checked on the iPhone, both scrolled in and at the end.
 
+### Branch `design/workout-phone` (from `improve/round-4`)
+
+- **Workout buttons fill their rows on a phone.** On an iPhone the action row wraps to Edit + Repeat
+  and Copy as text + Share link + trash, and the first row stopped short with a gap. Under 560px the
+  buttons now share each row's width (the trash stays a square at the end). Checked on the iPhone
+  18 Pro simulator.
+- **iPhone checks done (simulator, mock data, light mode):** tapping a chart moves the box to the
+  tapped point and tapping the box opens that workout; the exercise card's big number ("70 kg",
+  "↓ 2 kg less than in Aug 2026") fits; the trash button sits at the end of the action row.
+
+## design/workout-phone: the facts under a workout's title (25 Nov)
+
+- On a phone, the line under the title (day · exercises · sets · kg lifted · bodyweight) broke inside a
+  fact ("3,693 kg" / "lifted"). Each fact now wraps whole, and the separating dot sits in the gap, so
+  a wrapped line never starts with a dot. Checked on the iPhone.
+- Also checked on the iPhone from the Waiting list's round-4 items: tapping a chart moves the box to
+  the tapped point, the Retrieve rows sit two to a row, the Consistency year grid scrolls sideways
+  ending near today, and a plan's "SESSION 3 · CYCLE 1" kicker shows. All fine.
+
+- The links to the workout before and after: the first or the latest workout has only one, which
+  now takes the whole row instead of cutting "Shoulders & Forearms" to "Shoulders & For..." beside
+  an empty half. With both, a long name wraps to two lines before it is cut. Checked on the iPhone
+  (25 Nov: one link; 16 Nov: both).
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
