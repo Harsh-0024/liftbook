@@ -716,6 +716,14 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
 - Day page lower half on the iPhone: the uneven Edit/Repeat/Copy/Share buttons and the clipped
   lone "previous workout" link are both already fixed on `design/workout-page`.
 
+## A name over sets, with no date line (branch `fix/first-line-exercise`, 25 Nov 2026)
+
+- Typing just "Squat" then "60 70 80, 8 6 5" on Log was refused: with no date, the first line was always taken as the title, so the sets had "no exercise name above them" while the check line said "Squat · adds to …".
+- Now, on the app's Log screen, a dateless first line with sets right under it is the exercise. The workout takes the day's existing title, or "Workout". A title over an exercise name ("Leg day" / "Squat" / sets) is unchanged.
+- The parser keeps its Python behaviour by default (option `exerciseFirst`, which only `Liftbook.check` turns on), so the 3411 parity cases still match. New test in data.test.js; 116 tests pass.
+- Checked on the iPhone 18 Pro: "1 exercise · 3 sets", Squat 60×8 · 70×6 · 80×5. Draft cleared afterwards, nothing saved.
+- Then: with no title typed and a workout already on that day, the check line no longer says "Workout" (a title that wouldn't be used). It reads "Wed 25 Nov 2026 · adds to Session 3 - Back & Triceps if you choose". Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
