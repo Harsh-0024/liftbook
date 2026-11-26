@@ -1046,6 +1046,20 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
 - Settings: the Bodyweight box was meant to be narrow, but the general `input[type=number] { width: 100% }` rule further down won, so the box took 92 px and pushed "Used for bodyweight exercises" onto two lines. The box's own rule now carries `[type]` and wins (72 px, its own padding), and the line reads "For bodyweight exercises". One line on the iPhone simulator.
 - Settings: "For bodyweight exercises" was set heavier than every other row's description, because that row is a <label> and the app's label style is semibold. `.rowi .desc` now sets its own regular weight, so no wrapper can make a description heavy. Checked on the iPhone (light mode); 115/115 tests pass.
 
+### Branch `design/settings-icons` (26 Nov)
+
+- "Sign out of this device" drew a sign-in icon: the arrow went into the door. It now leaves it
+  (the door on the left, the arrow pointing out).
+- The clipboard icon (Bulk import, Spreadsheet export, the Log page's Paste button, the share page)
+  had a 1px clip that didn't show at 18px, so it looked the same as the plan sheet beside it in
+  Settings. It has a real clip now. Checked both on the iPhone.
+- Stats, "Personal bests": its icon was the Stats tab's chart, twice on one screen. It is the medal
+  now, the app's sign for a best everywhere else. Checked on the iPhone.
+- Settings, Exercises: every row had the same dumbbell. The icon now says the kind, as the line
+  under the name does: a dumbbell for weight and reps, a stopwatch (new "timer" icon) for timed, the
+  bodyweight figure for bodyweight. It changes with the switches. Checked in the browser, with the
+  demo user's Barbell Curl switched to Timed and back.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
