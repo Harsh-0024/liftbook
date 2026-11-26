@@ -247,15 +247,23 @@ export function coachScreen(ctx) {
     ' (Gemini) or ', h('a', { href: KEY_LINKS.groq, target: '_blank', rel: 'noopener' }, 'Groq'),
     ', copy it, and paste it here. Add both and the coach uses whichever is free.');
 
+  // With no key turned on, nothing can be asked: the suggested questions would only fail, and the key
+  // card is already showing, so the "AI keys" button would do nothing either.
+  function canAsk(on) {
+    askArea.hidden = !on;
+    starters.hidden = !on;
+    keysButton.hidden = !on;
+  }
+
   function paintKeys() {
     paintStarters();
     if (keys === null) {
       keysCard.replaceChildren(h('div', { class: 'card subtle' }, navigator.onLine ? 'Loading your keys…' : 'You’re offline. The coach needs a connection.'));
-      askArea.hidden = true;
+      canAsk(false);
       return;
     }
     const active = keys.filter((k) => k.is_active);
-    askArea.hidden = !active.length;
+    canAsk(active.length > 0);
     if (!active.length) {
       keysCard.replaceChildren(h('div', { class: 'card gold' },
         h('h2', {}, keys.length ? 'Turn a key on' : 'Add your AI key'),
@@ -286,7 +294,7 @@ export function coachScreen(ctx) {
       keys = null;
       keysCard.replaceChildren(h('div', { class: 'card' }, h('p', { class: 'error' }, err.offline
         ? 'You’re offline. The coach needs a connection.' : err.message)));
-      askArea.hidden = true;
+      canAsk(false);
       return;
     }
     paintKeys();
