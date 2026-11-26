@@ -78,7 +78,7 @@ export function homeScreen(ctx) {
       h('div', { class: 'label' }, 'Up next'),
       h('div', { class: 'group gold' }, rowItem({ href: `#/retrieve/day/Session/${next.id}`, ico: 'list',
         title: next.title || `Session ${next.id}`, desc: `${next.title ? `Session ${next.id} · ` : ''}${next.exercises} exercise${next.exercises === 1 ? '' : 's'}${nextLast ? ` · last done ${nextLast}` : ''}`,
-        value: 'Targets' }))) : null,
+        value: 'Targets', cls: 'next-row' }))) : null,
     // The last 7 days, today last: a gold tick on each day trained (a tap opens that workout).
     workouts.length ? h('section', { class: 'section', 'aria-label': 'The last 7 days' },
       h('div', { class: 'label' }, 'Last 7 days', h('span', {}, `${week.count} workout${week.count === 1 ? '' : 's'}`)),
