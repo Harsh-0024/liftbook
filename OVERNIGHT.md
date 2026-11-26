@@ -971,6 +971,13 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   `code` style in styles.css; nothing else in the app used `<code>`). Checked on the iPhone;
   115 tests pass.
 
+### Branch `design/shortcuts-layout` (26 Nov)
+
+- **Apple Shortcuts: Session names joins step 2.** The Session names link had a card of its own
+  between steps 2 and 3, tall and unbalanced (card padding plus row padding) and breaking the
+  1-2-3 flow. It is now the third row in step 2's list, under Get Workout, which it belongs
+  with. Checked on the iPhone; 115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
