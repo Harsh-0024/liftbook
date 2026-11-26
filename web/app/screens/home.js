@@ -89,9 +89,10 @@ export function homeScreen(ctx) {
         return rowItem({ href: `#/workout/${w.day}`, title: split.title, desc: split.session || undefined, value: softDay(w.day, today) });
       })),
       h('div', { class: 'grid-3 home-stats' },
-        h('div', { class: 'stat' }, h('span', {}, 'Workouts'), h('b', {}, o.total)),
-        h('div', { class: 'stat' }, h('span', {}, 'Week streak'), h('b', { class: 'gold' }, week.weeks)),
-        h('div', { class: 'stat' }, h('span', {}, 'Exercises'), h('b', {}, o.exercises))),
+        // Each number opens where it comes from.
+        h('a', { class: 'stat', href: '#/history', 'aria-label': `${o.total} workouts: see all` }, h('span', {}, 'Workouts'), h('b', {}, o.total)),
+        h('a', { class: 'stat', href: '#/stats', 'aria-label': `${week.weeks} week streak: see stats` }, h('span', {}, 'Week streak'), h('b', { class: 'gold' }, week.weeks)),
+        h('a', { class: 'stat', href: '#/stats/bests', 'aria-label': `${o.exercises} exercises: see your bests` }, h('span', {}, 'Exercises'), h('b', {}, o.exercises))),
       h('a', { class: 'see-all', href: '#/history' }, 'See all workouts')) : null);
 }
 

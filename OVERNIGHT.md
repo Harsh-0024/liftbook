@@ -671,3 +671,5 @@ moved on to something else meanwhile.
 - Checked on the iPhone 18 Pro simulator (#/nope, then the button back to Home).
 ## improve/bests-jump (from improve/round-4)
 - Opening an exercise from Personal bests (or a workout's Full progress) centred the exercise picker, leaving the chart half off a phone screen. Now the Exercise card's top lands under the header, so picker, headline and chart are all in view. Checked on the iPhone.
+## improve/home-stat-links (from improve/round-4)
+- Home: the three number tiles now open where the number comes from: Workouts → All workouts, Week streak → Stats, Exercises → Personal bests (same 22). Gold border on hover, gold tint on tap. Checked on the iPhone.

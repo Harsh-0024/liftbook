@@ -369,6 +369,9 @@ input.inline-num { width: 84px; padding: 7px 10px; text-align: right; font-weigh
 .stat span { display: block; font-size: 0.64rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
 .stat b { display: block; font: 700 clamp(1.05rem, 4.8vw, 1.5rem)/1.15 var(--font); color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; letter-spacing: -0.01em; }
 .stat b.gold { color: var(--gold-text); }
+a.stat { display: block; text-decoration: none !important; color: inherit; transition: border-color var(--fast), background var(--fast); }
+@media (hover: hover) { a.stat:hover { border-color: var(--line-gold); } }
+a.stat:active { background: var(--gold-soft); }
 .stat small { display: block; margin-top: 4px; font-size: 0.78rem; color: var(--muted); }
 .nums { display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); padding: 18px 6px; }
 .nums > div { text-align: center; padding: 0 4px; min-width: 0; }
