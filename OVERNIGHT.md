@@ -584,6 +584,10 @@ as asked on 24 Nov; `improve/round-4` above holds everything before that.
    notes' behaviour (item 2): Escape or a tap elsewhere closes it, one note open at a time. The
    closing code moved into one helper (`popover` in `web/app/ui.js`) used by both. Checked both
    pages; 115 tests pass.
+## design/footer (25 Nov)
+
+- The footer read "2026 Liftbook", a bare year that looks like a slip (the old site had the same).
+  It now reads "© 2026 Liftbook". Checked on the iPhone.
 
 ## Waiting list
 
