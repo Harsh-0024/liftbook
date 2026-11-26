@@ -158,6 +158,9 @@ body {
   font: 400 16px/1.6 var(--font);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  /* The visible height: Safari's 100vh counts the hidden toolbar too, which pushed a short page's
+     footer ("© Liftbook") down under the tab bar. */
+  min-height: 100dvh;
   display: flex; flex-direction: column;
   padding-bottom: calc(var(--tabbar-h) + var(--safe-bottom));
   -webkit-tap-highlight-color: transparent;
