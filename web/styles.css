@@ -384,6 +384,13 @@ input.inline-num { width: 84px; padding: 7px 10px; text-align: right; font-weigh
 .row.spread { justify-content: space-between; }
 .stack > * + * { margin-top: 12px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+/* Label, number and note share rows across a row of tiles, so the numbers line up when one label
+   wraps ("Most improved" took two lines on a phone and dropped its number below the others'). */
+@supports (grid-template-rows: subgrid) {
+  .grid-3 > .stat { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 0; align-content: start; }
+  .grid-3 > .stat > span { align-self: start; }
+  .grid-3 > .stat > b { align-self: end; }
+}
 
 /* numbers: quiet tiles and the original "stat cards" */
 .stat {

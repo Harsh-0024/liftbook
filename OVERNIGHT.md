@@ -978,6 +978,13 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   1-2-3 flow. It is now the third row in step 2's list, under Get Workout, which it belongs
   with. Checked on the iPhone; 115 tests pass.
 
+### Branch `design/stat-tiles` (26 Nov)
+
+- A row of three number tiles (Stats, Home, Personal bests, Bulk import) shares its rows now: label,
+  number, note. On a phone "Most improved" took two lines and dropped its number and note below the
+  other two tiles'; now all three numbers sit on one line. CSS subgrid, behind @supports. Checked on
+  the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
