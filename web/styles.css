@@ -658,7 +658,7 @@ input.rp-title[type="text"]:focus { outline: none; box-shadow: none; border-bott
 .chart .dot.last { r: 5; stroke: var(--surface); stroke-width: 2; }
 .chart .below { fill: var(--bad-soft); stroke: none; }
 .chart .guide { stroke: var(--chart-line); stroke-dasharray: 2 4; opacity: 0.45; }
-.chart text { fill: var(--subtle); font: 500 11px var(--font); }
+.chart text { fill: var(--subtle); font: 500 11px var(--font); font-variant-numeric: tabular-nums; } /* +10% under +20% lines up */
 .chart .tag rect { fill: var(--gold-soft); stroke: var(--gold); }
 .chart .tag text { fill: var(--gold-text); font-weight: 700; }
 /* The hover box (as on the old Stats page): the nearest session's day, workout, value and top set. */
