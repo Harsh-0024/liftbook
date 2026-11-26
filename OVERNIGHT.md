@@ -599,6 +599,12 @@ as asked on 24 Nov; `improve/round-4` above holds everything before that.
   bodyweight": one lift logged under two spellings, named twice. It now names each exercise once
   (matched the way Stats matches names), keeping the first spelling. New test; 116 pass. Checked on
   iPhone 18 Pro: "so Hyper Extension, Pull Ups count your bodyweight."
+### Branch `fix/row-card-surface` (from `improve/round-4`)
+
+- **Row cards keep their card colour.** Settings' profile card and Stats' Personal bests link are a
+  row that is its own card; .rowi's transparent background overrode the card surface, so in light
+  mode they showed the darker page and looked greyed out. They now have the surface like every other
+  card, and still change on hover. Checked in light mode.
 
 ## Waiting list
 
