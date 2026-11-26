@@ -650,6 +650,10 @@ as asked on 24 Nov; `improve/round-4` above holds everything before that.
 - Same flaw as Muhurta: gradient fills (primary buttons, active tabs, done-day dots, "Copied") have a transparent border, and the gradient repeated underneath it, leaving a faint sliver of the far-end colour at the edges.
 - All four now use `background-origin: border-box`. Checked on the iPhone simulator (Home: Today's workout, the week dots).
 
+## design/page-head (25 Nov)
+- All workouts on the iPhone: the Select button beside "40 workouts logged." sat a few points higher than that line (the header bottom-aligns its children, and the button has padding).
+- A page header with a button directly beside it now aligns on the last baseline. Only All workouts uses that; Coach's button row is untouched. Checked on the simulator.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
