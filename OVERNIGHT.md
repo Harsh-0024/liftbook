@@ -925,6 +925,14 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   (`--tab-shadow`): unchanged on dark, a light 5% on light, in step with the light theme's other shadows
   (8%). Checked on the iPhone in light mode.
 
+### Branch `design/log-check-messages` (26 Nov)
+
+- **Log check: a problem reads as a sentence, not as sets.** Under an exercise with a red info
+  icon, "No sets under it" / "Couldn't read these sets" used the spaced monospace font meant for
+  sets ("120×10 · 120×10"), so it looked like data. It is now in the normal font, in the same red
+  as the icon; real sets keep the monospace look. Checked on the iPhone in dark mode; 115 tests
+  pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
