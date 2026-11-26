@@ -1168,6 +1168,15 @@ moved on to something else meanwhile.
   both lines in the all-branches preview, and light mode got the dark mode's black 50% shade over
   the editor again. Keep the two lines when resolving.
 
+- **Estimated max of a single rep** (waits on: your call, since it moves every number). Epley,
+  weight × (1 + reps / 30), is used for every set, single reps too, so a 1-rep set scores 3.3% above
+  its own weight: Hyper Extension BW × 1 at 79.5 kg shows a best of 82 kg. The usual fix is to score
+  a 1-rep set as its weight. It isn't done because the same formula is in web/core/scoring.js,
+  web/core/coach_tools.js and the Flask services (helpers.py, parsing.py, workout_quality.py,
+  coach_tools.py), and the tests check the two sides agree: changing it shifts estimated maxes,
+  medals and charts for every past single, on both sides at once. The Personal bests row now says
+  "with BW" under such numbers (design/bests-with-bw), which explains the bodyweight but not the 3%.
+
 ## Next when resumed
 
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already
@@ -1434,3 +1443,10 @@ Settings and Stats (headline and end tag agree, tile lines).
 - Retrieve's session tiles broke "Shoulders & Forearms" as "Shoulders &" / "Forearms", leaving the ampersand hanging at the line's end. A no-break space after "&" now carries it down with the next word: "Shoulders" / "& Forearms". One-line titles are unchanged.
 - Also looked at this round: Log (Save dimmed while empty, today's date in the example) and the rest of Retrieve; nothing else to change.
 - sw.js rebuilt; npm test 128 pass. Checked on the iPhone.
+
+## improve/waiting-single-rep
+- Workout page check (Back & Triceps, 25 Nov) and Settings on the iPhone: nothing to change; the
+  "vs best" column's "−52%" already uses a true minus.
+- Found that a 1-rep set's estimated max is 3.3% over its weight (Epley at reps = 1). Put on the
+  Waiting list rather than changed: the formula is shared with the Flask services and every past
+  number would move.
