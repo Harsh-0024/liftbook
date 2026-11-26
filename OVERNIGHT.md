@@ -512,6 +512,8 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   the answer inside it, now adds no gap. Checked on the iPhone simulator with the "local coach is
   not running" error (the mock has no coach); the rest of Coach on the phone looked right.
 
+- Coach, Earlier answers: the date no longer wraps ("9 Nov / 2026" on long questions). The year is left off for this year's answers and the date stays on one line. Checked on the phone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

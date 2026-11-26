@@ -897,6 +897,7 @@ textarea.chat-input { min-height: 64px; font-family: var(--font); line-height: 1
 .past summary { cursor: pointer; font-weight: 600; }
 .past .list summary { cursor: pointer; font-weight: 500; padding: 10px 0; }
 .past .answer { padding: 0 2px 12px; font-size: 0.95rem; }
+.past .item .meta { white-space: nowrap; } /* "9 Nov" on one line, however long the question */
 
 /* ---------- switch (a checkbox drawn as a toggle) ---------- */
 input.switch {
