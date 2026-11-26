@@ -1292,3 +1292,26 @@ moved on to something else meanwhile.
   "120, 10" reads as 120 × 10. Seen 26 Nov. Checked: the Python parser on main reads it the same
   way (and "120, 10x 8x" as 10 × 8 in both), so this is how Liftbook has always read it. Changing it
   means changing both parsers and their tests; your call. (A short list filling up to 3 sets is on purpose.)
+
+## Merge of the run's branches (26 Nov, approved by you)
+
+All 84 topic branches of this run are now merged into `improve/round-4` (never `main`; every
+branch is kept). Left out as older work: `claude/workouts-per-week-stat-ultwmn`,
+`harsh024/redesign-work`, `harsh024/affectionate-brown-l39qhv`, `feature/reminders`, `feature/widget`.
+Many conflicts were two branches making the same fix; there the base's version stayed. Where they differed:
+- design/plan-page: Copied button kept plan-page's soft green over the solid green
+- design/log-check: check headline combines both: whole-word spans and 'also on this day' (log-check) with no 'Workout' when joining a day and errors only once a second line is typed (base)
+- design/log-help: same job as design/log-guide; kept log-guide's neutral chips (gold reads as 'chosen' here), dropped the .howto rule
+- design/workout-page: meta line kept the base's simpler fix (dot ends the line above) over the clip-path one
+- design/stats-tiles: bodyweight chart keeps the hover tip and gets bare axis numbers
+- design/home: Home totals stay links and gain their caption lines; avatar initial in Inter (old site); Bests empty state kept with the base's search matcher
+- design/home-all-time: totals under their own 'Overall' label, still links with caption lines
+- fix/retrieve-placeholders: combined with the log-check work (placeholders quiet, real problems red, 'also on this day')
+- improve/history-search: Clear button and match count kept; the base's exerciseLine highlight kept over its own exerciseList
+- fix/stats-rounding: its rounding (places) for the exercise headline and end tag
+- improve/log-messages + fix/first-line-exercise: a lone first line over sets is now read as the
+  exercise, so the test for the "Line 1 is read as the title" message now checks that instead.
+- `web/sw.js` was rebuilt once at the end.
+Tests: 127 of 127 pass. Checked on the iPhone 18 Pro simulator: Home (avatar, Recent, See all,
+Overall tiles), Log check (typo in red, Retrieve's 1, 1 as a quiet note, "also on this day"),
+Settings and Stats (headline and end tag agree, tile lines).
