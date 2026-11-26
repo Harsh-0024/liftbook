@@ -911,6 +911,7 @@ details.ex-open .vs { gap: 14px; }
 .cycle a.next small { color: var(--gold-text); }
 .cycle b { display: block; font: 600 1.18rem/1.2 var(--serif); letter-spacing: 0.005em; }
 .cycle .last-done { display: block; margin-top: 4px; font-size: 0.72rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.cycle .last-done.never { color: var(--subtle); }
 /* Home's "Up next" names the session in the serif, as the Retrieve tiles do. */
 .rowi.next-row .title { font: 600 1.32rem/1.15 var(--serif); letter-spacing: 0.005em; }
 /* Workout lists (Home's Recent, All workouts): the session name in the serif, as everywhere else. */
