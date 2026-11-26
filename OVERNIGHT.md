@@ -712,3 +712,6 @@ moved on to something else meanwhile.
   for a lone field in a card (`.group > .blk .field { margin: 0 }`) also removed the space between
   stacked fields. Neighbouring fields in a card now have 16px between them; a card with one field
   is unchanged. Checked on the iPhone.
+## design/exercise-headline (from improve/round-4)
+- Stats → Exercise: the big headline rounded to whole kilos ("82 kg") while the chart's tag for the same session said "82.2 kg". Now both say 82.2 kg; volume stays whole. Checked on the iPhone.
+- The Best tile under the chart rounded to whole kilos too ("82 kg"); now 82.2 kg like the headline and chart tag. Checked on the iPhone.
