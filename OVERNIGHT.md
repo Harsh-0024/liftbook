@@ -610,6 +610,11 @@ as asked on 24 Nov; `improve/round-4` above holds everything before that.
 - Stats > exercise: the big number said "25 kg" but the chart's end tag right under it said
   "25.3 kg". The tag now rounds as the big number does; pointing at a session still shows the
   exact value. Checked on the iPhone.
+## improve/coach (25 Nov)
+
+- With no AI key turned on, the Coach page hid its Ask box but still showed six starter questions;
+  tapping one only gave an error, since the built-in answers can't handle any of them. They now
+  appear once a key is on, like the Ask box. Checked on the iPhone without a key.
 
 ## Waiting list
 
