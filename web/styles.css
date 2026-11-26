@@ -1014,7 +1014,10 @@ details.card[open] > summary::after { transform: rotate(-135deg); }
 textarea.chat-input { min-height: 64px; font-family: var(--font); line-height: 1.5; }
 .key-row { flex-wrap: wrap; }
 .past summary { cursor: pointer; font-weight: 600; }
-.past .list summary { cursor: pointer; font-weight: 500; padding: 10px 0; }
+/* The card's title matches the other card titles (serif); the questions under it sit a step smaller. */
+.past > summary { font: 600 1.4rem/1.2 var(--serif); font-variant-numeric: lining-nums; letter-spacing: -0.01em; }
+.past .list summary { cursor: pointer; font-weight: 500; font-size: 0.95rem; line-height: 1.4; padding: 10px 0; }
+.past .list details[open] > summary { color: var(--gold-text); }
 .past .answer { padding: 0 2px 12px; font-size: 0.95rem; }
 .past .item .meta { white-space: nowrap; } /* "9 Nov" on one line, however long the question */
 

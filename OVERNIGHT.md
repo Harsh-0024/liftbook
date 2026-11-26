@@ -1450,3 +1450,8 @@ Settings and Stats (headline and end tag agree, tile lines).
 - Found that a 1-rep set's estimated max is 3.3% over its weight (Epley at reps = 1). Put on the
   Waiting list rather than changed: the formula is shared with the Flask services and every past
   number would move.
+
+## design/coach-earlier-answers (27 Nov)
+- Coach → "Earlier answers": the card's title was plain sans while every other card title is serif, and the questions under it were as large as the title.
+- The title now uses the serif card-title style; questions are 0.95rem, and the open question turns gold so you can see which answer you're reading.
+- Checked on the iPhone (closed and open). npm test 128 pass.
