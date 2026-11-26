@@ -750,6 +750,14 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
    four exercise searches (All workouts, Retrieve, Stats, Settings → Exercises) now turn off
    autocorrect, spell check and capitals. Checked on the iPhone in All workouts.
 
+## design/bests (25 Nov)
+
+- Personal bests: the "22 exercises" count beside Latest / Highest / A to Z sat about 9px above the
+  buttons' middle (the quiet-note style's own margins pulled it up). In a card head it now has none,
+  so it sits level with them. Checked on the iPhone.
+- The line beside the sort buttons said "22 exercises", right under the Exercises 22 tile. It now
+  reads "Sort by", and "3 of 22" while a search narrows the list. Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
