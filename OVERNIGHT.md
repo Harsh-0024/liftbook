@@ -523,6 +523,13 @@ moved on to something else meanwhile.
   columns, the Consistency year grid (should scroll sideways at 12px squares, as before), and
   tapping a chart (the box should move to the tapped point; tapping the box opens the workout).
 
+- **Merging this branch: keep the light-mode bar tokens** (waits on: the merge). The light theme
+  sets `--bar-face` and `--bar-lift` on the line after `--gold-fill`, in both the
+  `prefers-color-scheme: light` block and `[data-theme="light"]`. Branches that change `--gold-fill`
+  (it gained `border-box` elsewhere) conflict on that spot; an automatic "theirs" merge dropped
+  both lines in the all-branches preview, and light mode got the dark mode's black 50% shade over
+  the editor again. Keep the two lines when resolving.
+
 ## Next when resumed
 
 - Your "Suggestions/Workout Logger/To Be Done" list, section 7 ("Small leftovers"), is already
