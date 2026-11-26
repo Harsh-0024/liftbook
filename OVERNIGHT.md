@@ -1124,3 +1124,6 @@ moved on to something else meanwhile.
 ## fix/sync-status (26 Nov)
 
 1. Sync and data: the status title said "Up to date" whenever sync wasn't running and had no error, even with changes still waiting to upload. It now says "Changes waiting to upload" then. The line under it dropped "· 0 changes waiting to upload" when nothing waits (it only made the line wrap); with changes waiting it still shows "· N changes waiting to upload". Checked on the iPhone 18 Pro simulator with nothing waiting. Not seen with changes waiting (the mock syncs straight away).
+## improve/account-subtitle (26 Nov)
+
+1. The Account page's subtitle said "Password, theme, sign out, delete". The page opens with an Email card, and its theme card is headed "Appearance", so the subtitle now reads "Email, password, appearance, sign out, delete" (fits one line on the iPhone 18 Pro). The Settings row that opens it already started with "Email".

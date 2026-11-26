@@ -22,7 +22,7 @@ const SECTIONS = [
   ['feedback', 'Feedback', 'Tell the developer what works for you, what doesn’t, and what you’d like next.'],
   ['sync', 'Sync and data', 'Sync between devices, a backup file and a spreadsheet of everything you logged.'],
   ['import', 'Bulk import', 'Paste many workout days at once. Each day starts with a date, day first: 03/02 or 3 Feb. Days you’ve already logged are skipped.'],
-  ['account', 'Account', 'Email, password, theme, sign out, delete'],
+  ['account', 'Account', 'Email, password, appearance, sign out, delete'],
 ];
 
 // Pages inside a section: [key, title, back to]. The admin page shows only to admins.
