@@ -919,6 +919,8 @@ details.ex-open .vs { gap: 14px; }
 .rowi.next-row .title { font: 600 1.32rem/1.15 var(--serif); letter-spacing: 0.005em; }
 /* Workout lists (Home's Recent, All workouts): the session name in the serif, as everywhere else. */
 .rowi.w-row .title { font: 600 1.2rem/1.2 var(--serif); letter-spacing: 0.005em; }
+/* A workout without a session line ("Push") keeps the height of one with it, so a list's rows match. */
+.rowi.w-row { min-height: 72px; }
 /* Settings: your name in the serif, as Home greets you. */
 .profile-row .title { font: 600 1.45rem/1.15 var(--serif); letter-spacing: 0.005em; }
 @media (max-width: 600px) {

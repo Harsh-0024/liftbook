@@ -1460,3 +1460,8 @@ Settings and Stats (headline and end tag agree, tile lines).
 - Settings: the ACCOUNT section's first row was titled "Account" too, which said nothing.
 - The row and its page are now "Email and password". The row's line reads "Change them, sign out, delete the account". The page's line no longer lists "appearance" first, and it says "sign out" (that button signs out of this device only).
 - Checked on the iPhone (the row and the page). npm test 128 pass.
+
+## design/workout-rows-even (27 Nov)
+- Home → Recent (and All workouts): a workout with no session line ("Push") made a shorter row than its neighbours (about 62 vs 72 px).
+- Workout rows now share a 72px minimum height, so the list reads as even rows.
+- Checked on the iPhone (Back & Triceps, Shoulders & Forearms, Push all the same height). npm test 128 pass.
