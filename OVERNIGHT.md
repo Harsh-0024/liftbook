@@ -1315,3 +1315,11 @@ Many conflicts were two branches making the same fix; there the base's version s
 Tests: 127 of 127 pass. Checked on the iPhone 18 Pro simulator: Home (avatar, Recent, See all,
 Overall tiles), Log check (typo in red, Retrieve's 1, 1 as a quiet note, "also on this day"),
 Settings and Stats (headline and end tag agree, tile lines).
+
+## fix/log-typo-row (26 Nov)
+
+1. Log's check list: a sets line with a typo under an exercise ("Hyper Extension" then "be/4, 12")
+   was already reported right in the red box, but the list showed two rows: "Hyper Extension · No
+   sets under it" and "Be/4 · No sets under it". Now there is one row, "Hyper Extension ·
+   Couldn't read "Be/4, 12"", and the typo line gets no row of its own. Test added; 127 pass.
+   Checked on the iPhone 18 Pro simulator. Merged back into `improve/round-4` once checked.
