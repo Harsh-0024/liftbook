@@ -1392,3 +1392,8 @@ Settings and Stats (headline and end tag agree, tile lines).
   was a plain grey card. It now uses the gold card (gold edge, soft wash and glow) so the next
   session looks the same wherever it is offered.
 - Checked on the iPhone simulator (dark); sw.js rebuilt; tests 127/127.
+
+## design/profile-name-serif (26 Nov)
+- Settings' profile card shows your name in the serif (1.45rem), as Home's greeting does, so
+  the name reads the same on both pages; @username and email stay in Inter.
+- Checked on the iPhone simulator (dark); sw.js rebuilt; tests 127/127.
