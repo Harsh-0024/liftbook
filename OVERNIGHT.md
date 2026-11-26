@@ -985,6 +985,16 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   other two tiles'; now all three numbers sit on one line. CSS subgrid, behind @supports. Checked on
   the iPhone.
 
+### Branch `fix/autocorrect-off` (26 Nov)
+
+- **Workout boxes no longer let the iPhone autocorrect sets.** The Log box, the workout edit box,
+  the plan and rep-range boxes and Bulk import turned spellcheck off but left iOS autocorrect on,
+  so "bw" could become "be" or "by" as you type (the demo draft held a "Be/4 be/4" line, which
+  the check read as a new exercise). They now also have `autocorrect="off"`, as the sign-in and
+  username boxes already did. Seen in the page (all five boxes carry it) and the Log page loads
+  on the iPhone; the keyboard's own behaviour can't be tested in the simulator, since its
+  typing skips autocorrect. 115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
