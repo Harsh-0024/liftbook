@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/home-all-time` (26 Nov)
+
+- Home: the three totals (Workouts, Week streak, Exercises) sat unlabelled under "Recent", just
+  below "Last 7 days · 1 workout", so "40 workouts" could read as this week's. They are a section of
+  their own now, "Overall", and "See all workouts" sits right under the Recent list it belongs to.
+  Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

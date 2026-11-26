@@ -622,7 +622,6 @@ input.rp-title[type="text"]:focus { outline: none; box-shadow: none; border-bott
 .home-actions { display: grid; gap: 12px; margin-top: 34px; }
 .home .section { margin-top: 42px; }
 .see-all { display: block; margin-top: 16px; text-align: center; font-weight: 600; font-size: 0.88rem; }
-.home-stats { margin-top: 14px; }
 /* Home: the last 7 days, a gold tick on each day trained. */
 .week-strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); padding: 14px 10px 16px; }
 .wday { display: grid; justify-items: center; gap: 9px; color: var(--subtle); text-decoration: none !important; -webkit-tap-highlight-color: transparent; }
