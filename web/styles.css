@@ -308,6 +308,8 @@ main.wide { max-width: 860px; }
 .page-head p { margin: 0; color: var(--muted); font-size: 0.92rem; max-width: 34rem; }
 /* A small button beside the heading (All workouts: Select) sits on the quiet line's baseline, not above it. */
 .page-head:has(> .btn) { align-items: last baseline; }
+/* A borderless button's word lines up with the right edge below it (search, cards), not 14px in. */
+.page-head > .btn.ghost { margin-right: -14px; }
 .back {
   width: 38px; height: 38px; margin: 0 0 10px -8px; border-radius: 50%;
   display: inline-grid; place-items: center; color: var(--muted); text-decoration: none !important;

@@ -1503,3 +1503,10 @@ Settings and Stats (headline and end tag agree, tile lines).
 - Checked on the iPhone 18 Pro (402pt): Edit, share icon, "⊕ Log", Copy fit with even padding.
   Not checked on a 380-400pt screen; by the widths measured it should fit.
 - Checks: diff --check, marker grep, sw.js rebuilt, npm test 128 pass.
+
+## design/select-lines-up
+- All workouts' "Select" sat about 15pt in from the right edge (the ghost button's padding), out of line with
+  the search field, the month's "5 workouts" and the cards below it.
+- A borderless button in a page head now pulls out by its padding (web/styles.css `.page-head > .btn.ghost`),
+  so its word lines up with the "5 workouts" count. Only All workouts has one. Desktop hover still shows its tint.
+- Checked on the iPhone at 127.0.0.1:8794/?v=r28#/history.
