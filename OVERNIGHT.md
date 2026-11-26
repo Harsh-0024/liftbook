@@ -844,3 +844,6 @@ moved on to something else meanwhile.
 ## design/exercise-headline (from improve/round-4)
 - Stats → Exercise: the big headline rounded to whole kilos ("82 kg") while the chart's tag for the same session said "82.2 kg". Now both say 82.2 kg; volume stays whole. Checked on the iPhone.
 - The Best tile under the chart rounded to whole kilos too ("82 kg"); now 82.2 kg like the headline and chart tag. Checked on the iPhone.
+## design/settings-align (from improve/round-4)
+- Settings → Preferences: the Appearance icon now sits in the same 22px column as the row icons, so "Appearance" lines up with "Bodyweight" (it was 4px left) and its moon is the same 20px size. Checked on the iPhone.
+- Settings → Preferences: the Bodyweight note "Used for bodyweight exercises" was bold, because the row text is a <label> and took the form-label weight; it is plain now like every other row note. Checked on the iPhone with the demo data; 115 tests pass.
