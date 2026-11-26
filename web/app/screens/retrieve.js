@@ -91,7 +91,7 @@ function output(ctx, result, back, { kicker = '', number = '', name = '', fallba
   });
   title.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); title.blur(); } });
 
-  const copyBtn = h('button', { class: 'btn primary small', type: 'button' }, icon('copy'), 'Copy');
+  const copyBtn = h('button', { class: 'btn primary small rp-copy', type: 'button' }, icon('copy'), 'Copy');
   let doneTimer = null;
   const copy = async () => {
     await copyText(text, { quiet: true });
