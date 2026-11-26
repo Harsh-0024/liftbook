@@ -125,18 +125,20 @@ export function logScreen(ctx) {
         ? h('button', { class: 'btn small', type: 'button', 'aria-label': `Use it: ${n.suggestion} on line ${e.line}`, onclick: () => useLine(e.line, n.fixLine) }, 'Use it')
         : null;
       const sets = (e.reps || []).length;
-      const tag = bad || fix ? null : n?.state === 'new' ? 'New' : `${sets} set${sets === 1 ? '' : 's'}`;
+      // Retrieve's 1, 1 not filled in yet: a quiet "To fill in", not a red warning on every row.
+      const tag = e.placeholder ? 'To fill in' : bad || fix ? null : n?.state === 'new' ? 'New' : `${sets} set${sets === 1 ? '' : 's'}`;
       // A tap on the row puts the cursor on that exercise's line in the box.
       const row = h('div', { class: `rowi check-row${flagged && n.state !== 'new' ? ' warn' : ''}`, role: 'button', tabindex: '0' },
-        bad ? h('span', { class: 'ico', style: 'color:var(--bad)' }, icon('info')) : h('span', { class: 'num', 'aria-hidden': 'true' }, String(order += 1)),
+        e.placeholder ? h('span', { class: 'num', 'aria-hidden': 'true' }, '–')
+          : bad ? h('span', { class: 'ico', style: 'color:var(--bad)' }, icon('info')) : h('span', { class: 'num', 'aria-hidden': 'true' }, String(order += 1)),
         h('span', { class: 'main' }, h('span', { class: 'title' }, e.name),
           h('span', { class: `desc${e.placeholder ? '' : ' mono'}` }, !bad ? e.sets_label
-            : e.placeholder ? 'Still Retrieve’s 1, 1: fill in your sets, or it won’t be saved'
+            : e.placeholder ? 'Left out when you save'
               : String(e.exercise_string || '').split('\n').slice(1).join('').trim() ? 'Couldn’t read these sets' : 'No sets under it'),
           // "New" is said by the tag on the right.
           flagged && tag !== 'New' ? h('span', { class: `desc name-note is-${n.state}` }, n.note) : null),
         fix,
-        tag ? h('span', { class: `tag${tag === 'New' ? ' is-new' : ''}` }, tag) : null);
+        tag ? h('span', { class: `tag${tag === 'New' ? ' is-new' : tag === 'To fill in' ? ' is-todo' : ''}` }, tag) : null);
       const jump = (ev) => {
         if (ev.target.closest('button')) return;
         if (ev.type === 'keydown') {
@@ -149,10 +151,15 @@ export function logScreen(ctx) {
       row.addEventListener('keydown', jump);
       return row;
     }));
+    const realErrors = c.errors.filter((m) => !m.includes('still has Retrieve’s 1, 1'));
     problems.replaceChildren(
       c.future && c.day ? h('p', { class: 'wo-note log-future' }, icon('calendar'),
         h('span', {}, `This is dated ${formatDay(c.day)}, after today. Check the year on the first line.`)) : '',
-      c.errors.length ? h('ul', { class: 'errors' }, c.errors.map((e) => h('li', {}, e))) : '');
+      // Retrieve's 1, 1 under several exercises is one quiet note, not a red line for each.
+      realErrors.length ? h('ul', { class: 'errors' }, realErrors.map((e) => h('li', {}, e))) : '',
+      toFill ? h('p', { class: 'wo-note', style: 'margin-bottom:22px' }, icon('info'), h('span', {}, toFill === 1
+        ? 'One exercise still has Retrieve’s 1, 1. Fill in its sets, or it won’t be saved.'
+        : `${toFill} exercises still have Retrieve’s 1, 1. Fill in their sets, or they won’t be saved.`)) : '');
     if (c.existing) checkHead.textContent += ` · adds to ${c.existing.title} if you choose`;
   };
   // The check reads the text trimmed, so its line 1 is the first line that isn't blank.

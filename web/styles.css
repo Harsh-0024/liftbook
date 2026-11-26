@@ -1164,6 +1164,7 @@ label.rowi { cursor: pointer; }
 .rowi .num { flex: none; width: 22px; padding-top: 3px; font-size: 0.72rem; color: var(--subtle); font-variant-numeric: tabular-nums; }
 .rowi .tag { flex: none; padding-top: 3px; font-size: 0.74rem; font-weight: 600; color: var(--subtle); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .rowi .tag.is-new { color: var(--gold-text); }
+.rowi .tag.is-todo { color: var(--warn); }
 
 /* A box that grows with its text (autoGrow in ui.js): no scrolling inside it. */
 .editor.grows { overflow: hidden; resize: none; }

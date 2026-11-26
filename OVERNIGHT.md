@@ -520,6 +520,8 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 
 - Log, status line: with only Retrieve's 1, 1 left to fill in, it reads "1 of 8 filled in" in amber instead of a red "1 exercise · 2 sets" that looked like an error. Real problems still turn it red. Checked on the phone.
 
+- Log, check list: exercises still on Retrieve's 1, 1 show a quiet dash, "Left out when you save" and an amber "To fill in" tag, not a red ⓘ with a long warning each. The red list above it becomes one muted note ("7 exercises still have Retrieve's 1, 1…"); real errors stay red. Checked on the phone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
