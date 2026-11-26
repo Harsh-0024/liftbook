@@ -1492,3 +1492,14 @@ Settings and Stats (headline and end tag agree, tile lines).
 - Seen again: after the keyboard closes, Safari leaves the Save bar higher for a moment; one scroll
   puts it back (noted before, Safari's viewport, not the app).
 - Checked on the iPhone in dark mode. Checks: diff --check, marker grep, sw.js rebuilt, npm test 128 pass.
+
+### design/plan-dock-labels
+- A plan page's floating bar (Edit · Share · Log · Copy) showed Share and Log as bare icons on
+  phones. The share arrow is well known; a bare ⊕ doesn't say "open this on the Log page". On
+  screens up to 430px the Log button now keeps its word and only Share falls back to its icon;
+  below 380px both are icons as before (each keeps its name for screen readers).
+- Tried showing both words first: on the 402pt iPhone Copy then touched the bar's edge, so Share
+  stays an icon.
+- Checked on the iPhone 18 Pro (402pt): Edit, share icon, "⊕ Log", Copy fit with even padding.
+  Not checked on a 380-400pt screen; by the widths measured it should fit.
+- Checks: diff --check, marker grep, sw.js rebuilt, npm test 128 pass.

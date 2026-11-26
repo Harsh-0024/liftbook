@@ -108,7 +108,7 @@ function output(ctx, result, back, { kicker = '', number = '', name = '', fallba
   copyBtn.addEventListener('click', copy);
   const share = navigator.share ? h('button', { class: 'btn small', type: 'button', onclick: async () => {
     try { await navigator.share({ text }); } catch { /* closed */ }
-  }, 'aria-label': 'Share' }, icon('share'), h('span', { class: 'lbl' }, 'Share')) : null;
+  }, 'aria-label': 'Share' }, icon('share'), h('span', { class: 'lbl lbl-share' }, 'Share')) : null;
   const logIt = () => {
     try {
       localStorage.setItem(DRAFT_KEY, text);
