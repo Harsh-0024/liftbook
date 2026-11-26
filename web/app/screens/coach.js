@@ -307,7 +307,7 @@ export function coachScreen(ctx) {
   const keysButton = h('button', { class: 'btn small', type: 'button', onclick: () => {
     showKeys = !showKeys;
     paintKeys();
-  } }, 'AI keys');
+  } }, 'Your keys');
 
   page.append(
     h('div', { class: 'page-head' }, h('h1', {}, 'AI coach'), h('div', { class: 'row' }, fresh, keysButton)),
