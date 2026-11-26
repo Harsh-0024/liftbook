@@ -505,6 +505,14 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+## fix/chart-tip-scroll (26 Nov)
+
+1. **Chart boxes on a phone.** A swipe that started on a chart opened its box and left it riding up
+   the screen as the page scrolled; now the box closes when the touch turns into a scroll. And a
+   first tap where the box opens (below the point, near the top of the chart) used to land on the
+   box and jump straight into that workout; now the first tap only opens the box, and a second tap
+   on it opens the workout. Checked both on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

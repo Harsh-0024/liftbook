@@ -404,7 +404,18 @@ function chartTips(svg, points, { W, H, bottom, top }, tip) {
   };
   svg.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') show(e.clientX, false); });
   svg.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') hide(); });
-  svg.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') show(e.clientX, true); });
+  // The box can open right under the finger; the click that same tap sends must not land on it and
+  // open the workout. Only a second tap, on the box itself, does that.
+  let openedAt = 0;
+  card.addEventListener('click', (e) => { if (performance.now() - openedAt < 500) e.preventDefault(); });
+  svg.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse') return;
+    openedAt = performance.now();
+    show(e.clientX, true);
+  });
+  // A finger that lands on the chart and then scrolls the page wasn't a tap: the browser cancels
+  // the touch, and the box it opened goes away instead of riding up the screen.
+  svg.addEventListener('pointercancel', (e) => { if (e.pointerType !== 'mouse') hide(); });
   svg.addEventListener('click', (e) => {
     if (e.pointerType && e.pointerType !== 'mouse') return;
     show(e.clientX, false);
