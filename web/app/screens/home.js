@@ -65,6 +65,14 @@ export function homeScreen(ctx) {
       doneToday ? h('p', { class: 'note' }, 'Nice work today.')
         : !workouts.length ? h('p', { class: 'note muted' }, 'Your workouts will show up here.') : null),
     h('div', { class: 'home-actions' }, actions),
+    // Before the first workout, the page says how the three parts fit instead of leaving blank space.
+    !workouts.length ? h('section', { class: 'section', 'aria-label': 'How Liftbook works' },
+      h('div', { class: 'label' }, 'How it works'),
+      h('div', { class: 'group' },
+        rowItem({ href: '#/settings/plan', ico: 'plan', title: 'Set up your plan', desc: 'Your days, exercises and target reps' }),
+        rowItem({ href: '#/retrieve', ico: 'list', title: 'Retrieve a session', desc: 'Targets and your bests, ready for Notes' }),
+        rowItem({ href: '#/log', ico: 'log', title: 'Log what you lifted', desc: 'Paste it back after the gym' })),
+      h('a', { class: 'see-all', href: '#/settings/import' }, 'Have old workouts? Bulk import them')) : null,
     // The plan's next session, with its targets one tap away (not once today's workout is in).
     next && !doneToday ? h('section', { class: 'section', 'aria-label': 'Up next' },
       h('div', { class: 'label' }, 'Up next'),
@@ -89,12 +97,17 @@ export function homeScreen(ctx) {
         const split = splitSessionTitle(w.title);
         return rowItem({ href: `#/workout/${w.day}`, title: split.title, desc: split.session || undefined, value: softDay(w.day, today) });
       })),
+      // The link right under the list it continues, as on the old site; the totals after it.
+      h('a', { class: 'see-all', href: '#/history' }, 'See all workouts'),
+      // Each total says what it counts, as the Stats tiles do: no bare number over an empty line.
       h('div', { class: 'grid-3 home-stats' },
         // Each number opens where it comes from.
-        h('a', { class: 'stat', href: '#/history', 'aria-label': `${o.total} workouts: see all` }, h('span', {}, 'Workouts'), h('b', {}, o.total)),
-        h('a', { class: 'stat', href: '#/stats', 'aria-label': `${week.weeks} week streak: see stats` }, h('span', {}, 'Week streak'), h('b', { class: 'gold' }, week.weeks)),
-        h('a', { class: 'stat', href: '#/stats/bests', 'aria-label': `${o.exercises} exercises: see your bests` }, h('span', {}, 'Exercises'), h('b', {}, o.exercises))),
-      h('a', { class: 'see-all', href: '#/history' }, 'See all workouts')) : null);
+        h('a', { class: 'stat', href: '#/history', 'aria-label': `${o.total} workouts: see all` }, h('span', {}, 'Workouts'), h('b', {}, o.total),
+          h('small', {}, `since ${formatDay(workouts[workouts.length - 1].day, { weekday: false, year: workouts[workouts.length - 1].day.slice(0, 4) !== todayIso.slice(0, 4) })}`)),
+        h('a', { class: 'stat', href: '#/stats', 'aria-label': `${week.weeks} week streak: see stats` }, h('span', {}, 'Week streak'), h('b', { class: 'gold' }, week.weeks),
+          h('small', {}, week.weeks ? `week${week.weeks === 1 ? '' : 's'} in a row` : 'none this week yet')),
+        h('a', { class: 'stat', href: '#/stats/bests', 'aria-label': `${o.exercises} exercises: see your bests` }, h('span', {}, 'Exercises'), h('b', {}, o.exercises),
+          h('small', {}, 'different lifts')))) : null);
 }
 
 const LONG_MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];

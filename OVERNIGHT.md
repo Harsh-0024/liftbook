@@ -864,6 +864,41 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
 - A card header's small note (Muscle balance's "sets a week") sits on the title's baseline, with no stray margin below it.
 - Checked on the iPhone 18 Pro (light): Stats > Muscle balance, and the Personal bests header (unchanged look). 115 tests pass.
 
+### Branch `design/home` (from `improve/round-4`)
+
+- **Avatar initial in Inter, as on the old site.** Home's big avatar (and the small ones in
+  Settings) set the initial in Cormorant, whose thin strokes read faint inside the gold ring; the
+  old site and the "LB" mark use Inter 600. Now the same. One line in styles.css (`.avatar`) if the
+  serif is wanted back. Checked in dark mode next to the old site.
+- **The week row reads in light mode.** Home's Last 7 days rings used the divider line (8% black on
+  cream) and today's a pale gold, so in light mode the row looked empty. Day rings now come from
+  the muted ink at 30% and today's ring is full gold. Checked in light and dark.
+
+## design/home: See all workouts (25 Nov)
+
+- "See all workouts" sat under the three totals (Workouts, Week streak, Exercises), apart from the
+  Recent list it continues. It now comes right under that list, as on the old site's home page, and
+  the totals follow with a little more room above them. Checked on the iPhone.
+- Home totals: "Workouts 40", "Week streak 15", "Exercises 22" were bare numbers over an empty
+  line, unlike the Stats tiles. Each now says what it counts: "since 23 Aug" (with the year when
+  the first workout was in another year), "weeks in a row" ("none this week yet" at 0),
+  "different lifts". Checked on iPhone 18 Pro.
+- Home before the first workout: a greeting, two buttons, then empty page. Now a short "How it
+  works" list under the buttons: Set up your plan, Retrieve a session, Log what you lifted (each a
+  link, one line each on the phone), and "Have old workouts? Bulk import them". Gone once a
+  workout is logged. Checked on iPhone 18 Pro with an empty demo account.
+- Stats before the first workout showed the search box, Personal bests, the Strength / Rate /
+  Consistency and 1M–All pills over an empty chart ("Nothing to chart yet"), and an empty Exercise
+  card. Now one card: "Your charts start here", a line on what Stats will show, and two buttons,
+  Log a workout and Import old workouts. Everything comes back with the first workout. Checked on
+  iPhone 18 Pro with the empty account, and with the demo data (unchanged). Retrieve needed nothing:
+  a new account already sees the default plan to pick from.
+- Personal bests before the first workout said "0 exercises" beside Latest / Highest / A to Z
+  buttons over an empty list. Now the same kind of card as Stats: "No bests yet", what will land
+  there, and a Log a workout button. Checked on iPhone 18 Pro with the empty account.
+- Those cards' two buttons, stacked on the phone, were each as wide as their words. They now
+  share one width (up to 230 px, side by side on wider screens). Checked in dark mode too.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
