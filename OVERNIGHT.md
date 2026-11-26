@@ -505,6 +505,12 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `improve/exercise-search-count` (26 Nov)
+
+- Settings, Exercises: searching left the count at "65 exercises" over a list of four. It now says
+  "4 of 65" while a search is on (and "0 of 65" with no match), and goes back to "65 exercises" when
+  the search is cleared. Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

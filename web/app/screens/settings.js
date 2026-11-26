@@ -460,9 +460,14 @@ function exercises(ctx) {
       // Nothing logged yet: the name is the plan's, changed on the Workout plan page.
       !counts.get(n) ? null : h('div', { class: 'blk sub' }, h('label', { class: 'sub-label' }, 'Rename'), h('div', { class: 'row rename-row' }, to, go), info)].filter(Boolean);
   };
+  const total = `${names.length} exercise${names.length === 1 ? '' : 's'}`;
+  // The count follows the search ("4 of 65"): it had stayed at 65 over a list of four.
+  const count = h('span', {}, total);
   const paint = () => {
     const q = search.value.trim().toLowerCase();
-    const shown = names.filter((n) => !q || n.toLowerCase().includes(q)).slice(0, 100);
+    const matches = names.filter((n) => !q || n.toLowerCase().includes(q));
+    count.textContent = q ? `${matches.length} of ${names.length}` : total;
+    const shown = matches.slice(0, 100);
     group.replaceChildren(...(shown.length ? shown.flatMap(row)
       : [h('div', { class: 'empty' }, icon('search'), names.length ? `Nothing matches “${search.value.trim()}”.` : 'Exercises show up here once you log them.')]));
   };
@@ -472,7 +477,7 @@ function exercises(ctx) {
   const renames = lb.renames();
   return h('div', {},
     h('div', { class: 'search' }, icon('search'), search),
-    h('section', { class: 'section' }, h('div', { class: 'label' }, 'Your exercises', h('span', {}, `${names.length} exercise${names.length === 1 ? '' : 's'}`)), group),
+    h('section', { class: 'section' }, h('div', { class: 'label' }, 'Your exercises', count), group),
     renames.length ? h('section', { class: 'section' }, h('div', { class: 'label' }, 'Renamed'),
       h('div', { class: 'group' }, renames.map((r) => {
         const undo = h('button', { class: 'btn small', type: 'button' }, 'Undo');
