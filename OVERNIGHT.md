@@ -1410,3 +1410,9 @@ Settings and Stats (headline and end tag agree, tile lines).
   Still clamped to two lines; dates stay Inter.
 - Also reviewed the 25 Nov workout page top to bottom on the phone: no other change needed.
 - Checked on the iPhone simulator (dark); sw.js rebuilt; tests 127/127.
+
+## improve/coach-back (26 Nov)
+- The AI coach page had no way back on a phone, while Settings (the other header button) has a
+  back arrow. The coach now uses the shared pageHead with a back link to Home; its "New chat" and
+  "Your keys" buttons stay on the right (as the heading's aside).
+- Checked on the iPhone simulator (dark): arrow shows, tap goes Home. sw.js rebuilt; tests 127/127.
