@@ -1133,3 +1133,6 @@ moved on to something else meanwhile.
 ## improve/csv-dates (26 Nov)
 
 1. Sync and data: the From / To dates sit under both Backup file and Spreadsheet, but only the spreadsheet uses them. The hint "Leave the dates empty for all of it." is now "Spreadsheet only. Leave empty for everything." (one line on the iPhone 18 Pro). Checked on the simulator.
+## improve/delete-confirm (26 Nov)
+
+1. Delete my account: the confirm box had the username as its placeholder, so it read "demo" in grey, which looks already typed, and the faded Delete button then seemed broken. The placeholder is gone; the label above still says which username to type. Checked on the iPhone 18 Pro simulator. Nothing was typed in or deleted.
