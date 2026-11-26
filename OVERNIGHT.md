@@ -1370,3 +1370,11 @@ Settings and Stats (headline and end tag agree, tile lines).
   section drops its top margin. A list right under a search now starts 24px down.
 - Checked on the iPhone 18 Pro simulator (demo user). sw.js rebuilt, 127/127 tests pass,
   `git diff --check` clean.
+
+## design/retrieve-tiles (26 Nov)
+- Retrieve's session names now use the serif (Cormorant), like the page titles and the old
+  site's headings, instead of small sans text. Long names wrap to two lines, which reads fine.
+- The "Next" tile lost its hard 2px gold bar along the top (it sat on the tile above). It is now
+  a soft gold wash like the gold cards. A 1px gold outline was tried, but it ran square over the
+  group's rounded corner, so it was dropped.
+- Checked on the iPhone simulator; sw.js rebuilt; tests 127/127.
