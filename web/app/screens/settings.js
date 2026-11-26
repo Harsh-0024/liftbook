@@ -65,7 +65,8 @@ export function setTheme(value) {
 
 const THEMES = [['dark', 'Dark', 'moon'], ['light', 'Light', 'sun'], ['auto', 'Auto', 'monitor']];
 
-function themeSeg() {
+/** onPaint(icon name) lets a row's own icon follow the chosen theme. */
+function themeSeg(onPaint) {
   const seg = h('div', { class: 'seg', role: 'radiogroup', 'aria-label': 'Appearance' });
   // One Tab stop (the chosen theme); ← → choose the next, as radio buttons do.
   const paint = (focus = false) => {
@@ -75,6 +76,7 @@ function themeSeg() {
         setTheme(v);
         paint(true);
       } }, icon(ic), l)));
+    onPaint?.(THEMES.find(([v]) => v === now)?.[2] || 'monitor');
     if (focus) seg.querySelector('[aria-checked="true"]')?.focus();
   };
   seg.addEventListener('keydown', (e) => {
@@ -124,9 +126,14 @@ function index(ctx) {
         h('div', { class: 'rowi' }, h('span', { class: 'ico' }, icon('scale')),
           h('label', { class: 'main', for: 'bw-inline', style: 'margin:0;color:inherit' }, h('span', { class: 'title' }, 'Bodyweight'), h('span', { class: 'desc' }, 'For bodyweight exercises')),
           bodyweightInput(ctx)),
-        h('div', { class: 'blk' },
-          h('div', { class: 'row', style: 'gap:14px;margin-bottom:12px' }, h('span', { class: 'ico' }, icon('moon')), h('span', { class: 'title' }, 'Appearance')),
-          themeSeg()))),
+        (() => {
+          // The row's icon is the chosen theme's, not always a moon.
+          const ico = h('span', { class: 'ico' });
+          const seg = themeSeg((name) => ico.replaceChildren(icon(name)));
+          return h('div', { class: 'blk' },
+            h('div', { class: 'row', style: 'gap:14px;margin-bottom:12px' }, ico, h('span', { class: 'title' }, 'Appearance')),
+            seg);
+        })())),
 
     h('section', { class: 'section' }, h('div', { class: 'label' }, 'Training'),
       h('div', { class: 'group' },

@@ -1476,3 +1476,8 @@ Settings and Stats (headline and end tag agree, tile lines).
 - On a short page (Page not found, and any page shorter than the screen), the footer's "© 2026 Liftbook" was hidden under the tab bar on the iPhone: only its gold line showed.
 - The cause: the page's minimum height was 100vh, which in Safari counts the toolbar's hidden height too. It now uses 100dvh (the visible height), with 100vh kept as a fallback.
 - Checked on the iPhone (Page not found: footer fully above the tab bar). npm test 128 pass.
+
+### design/appearance-icon-follows
+- Settings → Appearance: the row's icon was always a moon, even with Light or Auto picked. It now shows the chosen theme's icon (moon, sun or monitor) and changes when you pick another.
+- Light mode checked on the iPhone (Home, Stats, chart, Settings): reads well. The darker search-box border is kept on purpose (3:1 contrast for boxes you type into).
+- Checks: diff --check, marker grep, sw.js rebuilt, npm test 128 pass.
