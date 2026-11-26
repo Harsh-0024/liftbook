@@ -1429,3 +1429,8 @@ Settings and Stats (headline and end tag agree, tile lines).
 - core/bests.js: rows get withBw (the best set had a bodyweight offset). New test in core/test/bests.test.js.
 - Also checked this round: Liftbook's text fields are already 16px on phones (no iOS zoom, unlike payment-tracker had); the Stats chart curve can't overshoot its points.
 - sw.js rebuilt; npm test 128 pass. Checked on the iPhone.
+
+## design/title-ampersand
+- Retrieve's session tiles broke "Shoulders & Forearms" as "Shoulders &" / "Forearms", leaving the ampersand hanging at the line's end. A no-break space after "&" now carries it down with the next word: "Shoulders" / "& Forearms". One-line titles are unchanged.
+- Also looked at this round: Log (Save dimmed while empty, today's date in the example) and the rest of Retrieve; nothing else to change.
+- sw.js rebuilt; npm test 128 pass. Checked on the iPhone.

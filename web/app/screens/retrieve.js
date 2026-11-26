@@ -38,7 +38,9 @@ export function retrieveScreen(ctx) {
       title: `${dayName}${title ? ` · ${title}` : ''} (${count} exercises)${lastWords}`,
       'aria-label': `${isNext ? 'Next: ' : ''}${dayName}${title ? `, ${title}` : ''}, ${count} exercises${lastWords}` },
     h('small', {}, category === 'Session' && Number(id) === next ? `Next · ${dayName}` : dayName),
-    h('b', {}, title || `${(plans.workout[category][dayName] || []).length} exercises`),
+    // "Shoulders &" / "Forearms" left the ampersand hanging at a line's end: it goes down with
+    // the word after it ("Shoulders" / "& Forearms").
+    h('b', {}, title ? title.replace(/ & /g, ' &\u00a0') : `${(plans.workout[category][dayName] || []).length} exercises`),
     // Once any session shows a date, the rest say "Not done yet" (quieter), so every tile answers
     // "when did I last do this?" and every cycle's row is the same height.
     when ? h('span', { class: 'last-done' }, when)
