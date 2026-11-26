@@ -933,6 +933,12 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   as the icon; real sets keep the monospace look. Checked on the iPhone in dark mode; 115 tests
   pass.
 
+### Branch `design/serif-numbers` (26 Nov)
+
+- Numbers in the serif (Cormorant) used its old-style figures: Stats' big "+10%" read as "+IO%",
+  the 1 and 0 at letter height. Headings, the Stats hero number and the editable plan title now use
+  lining figures. Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
