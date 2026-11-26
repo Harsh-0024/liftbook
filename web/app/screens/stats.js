@@ -384,7 +384,9 @@ export function statsScreen(ctx) {
           metric = v;
           paint();
         }, 'Measure'),
-        lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1])}${tagUnit}` : null, tip: exerciseTip,
+        // The end tag rounds as the big number above does, so they don't read 25 kg and 25.3 kg;
+        // pointing at a session still gives the exact value.
+        lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1], 0)}${tagUnit}` : null, tip: exerciseTip,
           name: `${exercise}, ${(metrics.find(([v]) => v === metric) || metrics[0])[1].toLowerCase()}`, say: (v) => `${fmtNum(v)}${tagUnit}` }),
         h('div', { class: 'grid-3', style: 'margin-top:14px' },
           tile('Best', withKg(st.max_1rm), c.is_timed ? 'weight × √seconds' : null, 'gold'),

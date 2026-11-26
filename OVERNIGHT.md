@@ -605,6 +605,11 @@ as asked on 24 Nov; `improve/round-4` above holds everything before that.
   row that is its own card; .rowi's transparent background overrode the card surface, so in light
   mode they showed the darker page and looked greyed out. They now have the surface like every other
   card, and still change on hover. Checked in light mode.
+## fix/stats-numbers (25 Nov)
+
+- Stats > exercise: the big number said "25 kg" but the chart's end tag right under it said
+  "25.3 kg". The tag now rounds as the big number does; pointing at a session still shows the
+  exact value. Checked on the iPhone.
 
 ## Waiting list
 
