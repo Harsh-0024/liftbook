@@ -1020,3 +1020,6 @@ moved on to something else meanwhile.
 ## design/exercise-icons (26 Nov)
 
 1. Settings → Exercises: every row had the same dumbbell icon, even "Crunches A — Bodyweight added". Timed exercises now show a stopwatch (a new `timer` icon in web/app/ui.js), bodyweight ones the standing figure Settings uses for Bodyweight, and the rest keep the dumbbell. Switching Timed or Bodyweight on a row changes its icon at once. Checked on the iPhone 18 Pro simulator: Crunches A (figure), Rope Crunches (dumbbell), and Plank switched to Timed and back on the mock demo user (stopwatch, then dumbbell; left as it was).
+## design/gold-edge (26 Nov)
+
+1. Gold fills (chosen tab pills such as Latest / Highest / A to Z, primary buttons, the chosen weekday dot) had a faint pale rim on their left and top edges: the border is transparent, the gradient was painted inside the padding and tiled under the border, so its light far end showed in the border strip. `--gold-fill` (all three themes) now paints at `border-box`. Same flaw and fix as Muhurta's design/gold-edge. Checked on the iPhone 18 Pro simulator (Personal bests).

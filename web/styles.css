@@ -26,7 +26,8 @@
   --gold: #d4af37;
   --gold-bright: #f4d03f;
   --gold-text: #d4af37;
-  --gold-fill: linear-gradient(135deg, #d4af37 0%, #e9c75a 100%);
+  /* Painted under the border too (border-box): over a see-through border the gradient tiled and left a pale rim on the left and top. */
+  --gold-fill: linear-gradient(135deg, #d4af37 0%, #e9c75a 100%) border-box;
   --gold-soft: rgba(212, 175, 55, 0.1);
   --gold-glow: rgba(212, 175, 55, 0.3);
   --glow: rgba(212, 175, 55, 0.1);
@@ -75,7 +76,7 @@
     --gold: #c9a961;
     --gold-bright: #d4af37;
     --gold-text: #8a6512;
-    --gold-fill: linear-gradient(135deg, #b08a3e 0%, #c9a961 100%);
+    --gold-fill: linear-gradient(135deg, #b08a3e 0%, #c9a961 100%) border-box;
     --gold-soft: rgba(201, 169, 97, 0.1);
     --gold-glow: rgba(201, 169, 97, 0.25);
     --glow: rgba(201, 169, 97, 0.07);
@@ -114,7 +115,7 @@
   --gold: #c9a961;
   --gold-bright: #d4af37;
   --gold-text: #8a6512;
-  --gold-fill: linear-gradient(135deg, #b08a3e 0%, #c9a961 100%);
+  --gold-fill: linear-gradient(135deg, #b08a3e 0%, #c9a961 100%) border-box;
   --gold-soft: rgba(201, 169, 97, 0.1);
   --gold-glow: rgba(201, 169, 97, 0.25);
   --glow: rgba(201, 169, 97, 0.07);
