@@ -847,3 +847,11 @@ moved on to something else meanwhile.
 ## design/settings-align (from improve/round-4)
 - Settings → Preferences: the Appearance icon now sits in the same 22px column as the row icons, so "Appearance" lines up with "Bodyweight" (it was 4px left) and its moon is the same 20px size. Checked on the iPhone.
 - Settings → Preferences: the Bodyweight note "Used for bodyweight exercises" was bold, because the row text is a <label> and took the form-label weight; it is plain now like every other row note. Checked on the iPhone with the demo data; 115 tests pass.
+## Even line breaks (branch `design/text-wrap`)
+- Headings use `text-wrap: balance`; paragraphs, row descriptions and muted notes use `text-wrap: pretty`.
+- No more single short word alone on the last line (Apple Shortcuts: "…paste your key when asked" used to leave "it" by itself).
+- Checked on the iPhone 18 Pro simulator. Browsers without support just wrap as before.
+- Note: the mock server on 8791 stopped answering the phone (white page; it still answers curl). A second copy runs on 8793 for phone checks.
+
+- Workout page meta line: each item ("3,693 kg lifted", "bodyweight 79.5 kg") now stays whole on a phone; when the line wraps, the dot ends the line above. Checked on the iPhone.
+- Older/newer workout links under a workout: a lone link (newest or oldest workout) now takes the whole row instead of half, and long names wrap to two lines before being cut ("Shoulders & For…" → "Shoulders & Forearms"). Checked on the iPhone.
