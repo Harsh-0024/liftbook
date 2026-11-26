@@ -633,7 +633,10 @@ input.rp-title[type="text"]:focus { outline: none; box-shadow: none; border-bott
   .rp-row { padding: 15px 16px; }
   .rp-dock { bottom: calc(var(--tabbar-h) + var(--safe-bottom)); padding-bottom: 10px; }
 }
-@media (max-width: 430px) { .rp-bar { padding-left: 8px; } .rp-bar.many .lbl { display: none; } .rp-bar.many .btn:has(.lbl) { padding: 0 11px; } }
+/* On a phone the bar can't hold every word: Share keeps only its well-known icon, while Log keeps its word,
+   since a bare ⊕ doesn't say what it does. Narrower still, both are icons (named for screen readers). */
+@media (max-width: 430px) { .rp-bar { padding-left: 8px; } .rp-bar.many .lbl-share { display: none; } .rp-bar.many .btn:has(.lbl-share) { padding: 0 11px; } }
+@media (max-width: 379px) { .rp-bar.many .lbl { display: none; } .rp-bar.many .btn:has(.lbl) { padding: 0 11px; } }
 
 /* chips (ranges, modes) and the segmented control */
 .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
