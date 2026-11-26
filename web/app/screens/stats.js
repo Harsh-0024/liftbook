@@ -403,6 +403,9 @@ export function statsScreen(ctx) {
         return { date: formatDay(day), title: tipTitle(title), value: `${fmtNum(vals[i])}${tagUnit}`,
           set: set ? `Top set ${set}` : '', href: lb.workout(day) ? `#/workout/${day}` : null };
       };
+      // The big number and the chart's end tag agree: whole kilos for an estimate or volume, but a top
+      // set keeps its half kilo (22.5 kg is a real plate load, not 23).
+      const places = metric === 'weight' ? 1 : 0;
       const head = exerciseHeadline(labels, vals, { metric, isTimed: c.is_timed });
       let exHero = null;
       if (head) {
@@ -412,9 +415,8 @@ export function statsScreen(ctx) {
         const change = !ch ? null
           : ch.direction === 'level' ? h('small', { class: 'hero-change' }, `Level with ${when}`)
             : h('small', { class: `hero-change ${ch.direction}` },
-              h('strong', {}, `${ch.direction === 'down' ? '↓' : '↑'} ${fmtNum(ch.amount, 0)}${u}`), ` ${ch.direction === 'down' ? 'less' : 'more'} than in ${when}`);
-        // The same rounding as the chart's tags (82.2 kg on both), but volume stays in whole kilos.
-        exHero = h('div', { class: 'hero' }, h('b', {}, `${fmtNum(head.value, metric === 'volume' ? 0 : 1)}${u}`), h('span', {}, head.what), change);
+              h('strong', {}, `${ch.direction === 'down' ? '↓' : '↑'} ${fmtNum(ch.amount, places)}${u}`), ` ${ch.direction === 'down' ? 'less' : 'more'} than in ${when}`);
+        exHero = h('div', { class: 'hero' }, h('b', {}, `${fmtNum(head.value, places)}${u}`), h('span', {}, head.what), change);
       }
       // The session with the highest estimated max, for the Best tile's date.
       const bestAt = (c.data || []).reduce((b, v, i) => (v !== null && v !== undefined && (b < 0 || v > c.data[b]) ? i : b), -1);
@@ -425,9 +427,7 @@ export function statsScreen(ctx) {
           metric = v;
           paint();
         }, 'Measure'),
-        // The end tag rounds as the big number above does, so they don't read 25 kg and 25.3 kg;
-        // pointing at a session still gives the exact value.
-        lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1], 0)}${tagUnit}` : null, tip: exerciseTip,
+        lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1], places)}${tagUnit}` : null, tip: exerciseTip,
           name: `${exercise}, ${(metrics.find(([v]) => v === metric) || metrics[0])[1].toLowerCase()}`, say: (v) => `${fmtNum(v)}${tagUnit}` }),
         h('div', { class: 'grid-3', style: 'margin-top:14px' },
           // Every tile has its line underneath, as the Overall tiles do: the day of the best, and the

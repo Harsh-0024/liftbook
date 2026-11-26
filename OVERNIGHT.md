@@ -1109,6 +1109,16 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
 - Serif numbers: Cormorant's default old-style "1" looks like a capital I, so the Stats headline "+11%" read "+II%". The headline and h1–h3 now use lining figures (font-variant-numeric: lining-nums); "+11%" reads plainly. Checked on the iPhone (light).
 - Light mode: the charts' line and dots were --gold (#c9a961), which faded into the cream cards. A new --chart-line token keeps the gold in dark mode and uses a deeper gold (#a37b2c) in light mode, for the line, the dots and the guide. Checked on the iPhone in light mode; 115/115 tests pass.
 
+## fix/stats-rounding (25 Nov)
+
+1. Stats, Exercise card: the big number and the chart's end tag now agree. An estimated max showed
+   "25 kg" above a chart tagged "25.3 kg"; both now say 25 kg. The Top weight view no longer rounds a
+   real plate load: 107.5 kg showed as "108 kg" and now stays 107.5 kg, with the change ("↑ 27.5 kg")
+   kept to the half kilo too. Checked with the demo data in the browser; 115 tests pass.
+2. Charts: the end tag ("107.5 kg") ran into the card's right edge, since the chart kept a fixed
+   54 px for it. The room on the right now grows with the tag's text. Checked on the iPhone, along
+   with entry 1 (125 kg headline and tag agree; Back Squat top weight shows 107.5 kg).
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
