@@ -25,6 +25,7 @@
   --gold-bright: #f4d03f;
   --gold-text: #d4af37;
   --gold-fill: linear-gradient(135deg, #d4af37 0%, #e9c75a 100%);
+  --chart-line: var(--gold); /* the charts' line and dots */
   --gold-soft: rgba(212, 175, 55, 0.1);
   --gold-glow: rgba(212, 175, 55, 0.3);
   --glow: rgba(212, 175, 55, 0.1);
@@ -72,6 +73,7 @@
     --gold-bright: #d4af37;
     --gold-text: #8a6512;
     --gold-fill: linear-gradient(135deg, #b08a3e 0%, #c9a961 100%);
+    --chart-line: #a37b2c; /* --gold faded into the cream cards */
     --gold-soft: rgba(201, 169, 97, 0.1);
     --gold-glow: rgba(201, 169, 97, 0.25);
     --glow: rgba(201, 169, 97, 0.07);
@@ -109,6 +111,7 @@
   --gold-bright: #d4af37;
   --gold-text: #8a6512;
   --gold-fill: linear-gradient(135deg, #b08a3e 0%, #c9a961 100%);
+  --chart-line: #a37b2c; /* --gold faded into the cream cards */
   --gold-soft: rgba(201, 169, 97, 0.1);
   --gold-glow: rgba(201, 169, 97, 0.25);
   --glow: rgba(201, 169, 97, 0.07);
@@ -571,11 +574,11 @@ input.rp-title[type="text"]:focus { outline: none; box-shadow: none; border-bott
 .chart { width: 100%; height: 240px; display: block; overflow: visible; }
 .chart .axis { stroke: var(--hair); }
 .chart .base { stroke: var(--subtle); stroke-dasharray: 4 4; opacity: 0.6; }
-.chart .line { fill: none; stroke: var(--gold); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(0 2px 6px var(--gold-glow)); }
-.chart .dot { fill: var(--gold); stroke: none; }
+.chart .line { fill: none; stroke: var(--chart-line); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(0 2px 6px var(--gold-glow)); }
+.chart .dot { fill: var(--chart-line); stroke: none; }
 .chart .dot.last { r: 5; stroke: var(--surface); stroke-width: 2; }
 .chart .below { fill: var(--bad-soft); stroke: none; }
-.chart .guide { stroke: var(--gold); stroke-dasharray: 2 4; opacity: 0.45; }
+.chart .guide { stroke: var(--chart-line); stroke-dasharray: 2 4; opacity: 0.45; }
 .chart text { fill: var(--subtle); font: 500 11px var(--font); }
 .chart .tag rect { fill: var(--gold-soft); stroke: var(--gold); }
 .chart .tag text { fill: var(--gold-text); font-weight: 700; }
