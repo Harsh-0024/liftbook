@@ -3,7 +3,7 @@
 // so it needs a connection; the keys are managed here too. Offline, the built-in answers
 // (web/core/history_qa.js) still answer the questions they know. The chat stays while the app is open.
 
-import { h, toast, busy, ago, formatDay, ask } from '../ui.js';
+import { h, toast, busy, ago, formatDay, ask, pageHead } from '../ui.js';
 import { Online, KEY_LINKS } from '../online.js';
 import { coachData, suggestions } from '../../core/coach_tools.js';
 import { rulesReply } from '../../core/history_qa.js';
@@ -325,7 +325,8 @@ export function coachScreen(ctx) {
   } }, 'Your keys');
 
   page.append(
-    h('div', { class: 'page-head' }, h('h1', {}, 'AI coach'), h('div', { class: 'row' }, fresh, keysButton)),
+    // A way back, as Settings has: both open from the header, and the coach had none on a phone.
+    pageHead('AI coach', '', { back: '#/', aside: h('div', { class: 'row' }, fresh, keysButton) }),
     keysCard, thread, starters, askArea, past,
   );
   paintThread();
