@@ -40,6 +40,7 @@
   --warn: #fbbf24;
   --new: #60a5fa;
   --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --tab-shadow: 0 -8px 32px rgba(0, 0, 0, 0.25);
   --shadow-gold: 0 8px 32px rgba(212, 175, 55, 0.25);
   --bar: rgba(0, 0, 0, 0.72);
   --tab-bg: #0f0f11;
@@ -89,6 +90,7 @@
     --warn: #92400e;
     --new: #1d4ed8;
     --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --tab-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
     --shadow-gold: 0 4px 16px rgba(201, 169, 97, 0.3);
     --bar: rgba(252, 250, 247, 0.85);
     --tab-bg: #fcfaf7;
@@ -128,6 +130,7 @@
   --warn: #92400e;
   --new: #1d4ed8;
   --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --tab-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
   --shadow-gold: 0 4px 16px rgba(201, 169, 97, 0.3);
   --bar: rgba(252, 250, 247, 0.85);
   --tab-bg: #fcfaf7;
@@ -231,7 +234,7 @@ svg.i { width: 1.1em; height: 1.1em; flex: none; fill: none; stroke: currentColo
   padding: 6px 8px var(--safe-bottom);
   background: var(--tab-bg);
   border-top: 1px solid var(--line);
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--tab-shadow); /* a grey band on the light theme at the dark theme's strength */
 }
 .tabbar a {
   flex: 1; max-width: 96px; margin: 2px;

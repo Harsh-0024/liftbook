@@ -918,6 +918,13 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   their own now, "Overall", and "See all workouts" sits right under the Recent list it belongs to.
   Checked on the iPhone.
 
+### Branch `design/light-tabbar` (26 Nov)
+
+- The bottom tab bar's shadow was 25% black in both themes. On the light theme that showed as a grey
+  band over the page above the bar, heaviest on the "Opening…" screen. It is now a theme token
+  (`--tab-shadow`): unchanged on dark, a light 5% on light, in step with the light theme's other shadows
+  (8%). Checked on the iPhone in light mode.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
