@@ -1465,3 +1465,9 @@ Settings and Stats (headline and end tag agree, tile lines).
 - Home → Recent (and All workouts): a workout with no session line ("Push") made a shorter row than its neighbours (about 62 vs 72 px).
 - Workout rows now share a 72px minimum height, so the list reads as even rows.
 - Checked on the iPhone (Back & Triceps, Shoulders & Forearms, Push all the same height). npm test 128 pass.
+
+## design/plan-meta-case (27 Nov)
+- Retrieve → a session's plan: the line under the title read "8 exercises · 20 sets · Bodyweight 79.5 kg", with a capital B mid-line. The workout page writes the same thing as "· bodyweight 79.5 kg".
+- The plan line now uses "bodyweight" in lower case, like the workout page.
+- Looked at, left alone: the 🥇🥈🥉 medals on a workout's "vs best" pill are colour emoji among line icons, but each tier has its own meaning (explained in the help), so they stay.
+- Checked on the iPhone (Session 4 · Legs). npm test 128 pass.

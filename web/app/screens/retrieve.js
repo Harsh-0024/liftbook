@@ -145,7 +145,7 @@ function output(ctx, result, back, { kicker = '', number = '', name = '', fallba
   const ex = d.exercises || [];
   // A plan never logged said "No history yet" under every exercise: say it once, up here.
   const allFresh = ex.length > 1 && ex.every((e) => e.fresh);
-  const meta = `${result.exercises} exercise${result.exercises === 1 ? '' : 's'} · ${result.sets} set${result.sets === 1 ? '' : 's'}${d.bodyweight ? ` · Bodyweight ${d.bodyweight}` : ''}${allFresh ? ' · Nothing logged yet' : ''}`;
+  const meta = `${result.exercises} exercise${result.exercises === 1 ? '' : 's'} · ${result.sets} set${result.sets === 1 ? '' : 's'}${d.bodyweight ? ` · bodyweight ${d.bodyweight}` : ''}${allFresh ? ' · Nothing logged yet' : ''}`;
   return h('div', { class: 'rp' },
     h('header', { class: 'page-head' }, h('div', {},
       back ? h('a', { class: 'back', href: back, 'aria-label': 'Back' }, icon('back')) : null,
