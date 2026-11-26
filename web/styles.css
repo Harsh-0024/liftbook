@@ -963,10 +963,12 @@ label.rowi { cursor: pointer; }
 .pick:first-child { border-top: 0; }
 .pick.other { color: var(--muted); }
 .pick-name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-.pick-tick { flex: none; display: inline-flex; color: var(--gold-text); opacity: 0; transform: scale(0.6); transition: opacity var(--fast), transform var(--fast); }
-.pick-tick svg { width: 18px; height: 18px; }
+/* the same ring as picking workouts on All workouts (.group.picking .tick) */
+.pick-tick { flex: none; width: 24px; height: 24px; border-radius: 50%; display: inline-grid; place-items: center; border: 1.5px solid var(--line); color: var(--on-gold); transition: background var(--fast), border-color var(--fast); }
+.pick-tick svg { width: 14px; height: 14px; stroke-width: 2.6; opacity: 0; transform: scale(0.6); transition: opacity var(--fast), transform var(--fast); }
 .pick.on { color: var(--gold-text); font-weight: 600; }
-.pick.on .pick-tick { opacity: 1; transform: none; }
+.pick.on .pick-tick { background: var(--gold); border-color: var(--gold); }
+.pick.on .pick-tick svg { opacity: 1; transform: none; }
 .pick:active { opacity: 0.7; }
 .picker-groups > .pick-list { padding: 4px 20px 8px; }
 .pick-list.less { animation: ex-open 0.2s var(--ease); }

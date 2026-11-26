@@ -772,6 +772,11 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
    sentence. They now sit in small gold-tinted chips with dark text, so what to type stands apart
    from what it means. Checked on the iPhone in light and dark; 115 tests pass.
 
+## design/custom-picker (25 Nov)
+- Custom workout picker on the iPhone: unpicked exercises had nothing on the right, so a row didn't look tappable; the tick only appeared after picking.
+- Now every row ends in an empty ring (the field-line colour, 3:1 contrast) that fills gold with a check when picked. Checked in light and dark on the simulator.
+- Then matched it to the ring All workouts already uses when picking workouts (24px, the soft line colour, 14px check), so the app has one selection ring, not two.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
