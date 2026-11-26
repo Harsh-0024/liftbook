@@ -189,8 +189,13 @@ export function coachScreen(ctx) {
   }
 
   ask.addEventListener('click', () => send(input.value));
+  // Enter sends, as on the old site; Shift+Enter starts a new line. On a phone the keyboard's
+  // return key adds a line instead, since there's no Shift there and Send sits beside the box.
   input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) send(input.value);
+    if (e.key !== 'Enter' || e.isComposing || e.shiftKey) return;
+    if (!(e.metaKey || e.ctrlKey) && matchMedia('(pointer: coarse)').matches) return;
+    e.preventDefault();
+    send(input.value);
   });
 
   /* ---------------- keys ---------------- */

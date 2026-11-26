@@ -1,7 +1,7 @@
 // Settings: profile, plan and rep ranges, exercises (timed, bodyweight, renames), feedback,
 // sync and the account.
 
-import { describe, h, icon, rowItem, pageHead, toast, busy, ago, formatDay, fmtNum, copyText, ask, deviceDraft, keptNote, tapWord } from '../ui.js';
+import { describe, h, icon, rowItem, pageHead, toast, busy, ago, formatDay, fmtNum, copyText, ask, deviceDraft, keptNote, tapWord, popover } from '../ui.js';
 import { avatar } from './home.js';
 import { toggleHelp } from '../shortcuts.js';
 import { Online } from '../online.js';
@@ -317,10 +317,10 @@ function plan(ctx) {
     toast('Copied. The plan is yours to edit now.');
   }));
   // How to write a plan, tucked behind "Format" beside the label as the old page had it.
-  const format = h('details', { class: 'fmt' }, h('summary', {}, 'Format'),
+  const format = popover(h('details', { class: 'fmt' }, h('summary', {}, 'Format'),
     h('div', { class: 'fmt-pop group' },
       h('pre', { class: 'mono' }, 'Cycle 1\nSession 1 – Chest & Biceps\nFlat Barbell Press\nRope Hammer Curl – [2]'),
-      h('p', {}, 'A session starts with ', h('b', {}, 'Session'), '. Add ', h('b', {}, '– [2]'), ' after an exercise to set how many sets, or ', h('b', {}, '– [3, 5-8]'), ' for sets and reps. Leave the plan empty to use the built-in one.')));
+      h('p', {}, 'A session starts with ', h('b', {}, 'Session'), '. Add ', h('b', {}, '– [2]'), ' after an exercise to set how many sets, or ', h('b', {}, '– [3, 5-8]'), ' for sets and reps. Leave the plan empty to use the built-in one.'))));
   const planEditor = editorGroup(planText, 'plan', 'Save plan', 'Plan saved.');
   const followingNote = h('div', { class: 'group empty' }, icon('person'),
     h('p', {}, 'You’re using the shared plan.', h('br'), 'Turn the switch off, or copy it, to write your own.'));

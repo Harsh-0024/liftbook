@@ -1,7 +1,7 @@
 // Home (a welcome: you, two ways in, the last few workouts), every workout, one workout, and
 // editing it. The layout follows the original app's.
 
-import { h, icon, rowItem, pageHead, softDay, formatDay, copyText, toast, busy, fmtNum, ask, autoGrow, deviceDraft, keptNote } from '../ui.js';
+import { h, icon, rowItem, pageHead, softDay, formatDay, copyText, toast, busy, fmtNum, ask, autoGrow, deviceDraft, keptNote, popover } from '../ui.js';
 import { formatSetsDisplay } from '../../core/logging.js';
 import { attachSuggestions } from '../suggest.js';
 import { attachPasteTidy } from '../paste.js';
@@ -248,9 +248,9 @@ function vsBest(c) {
 
 /** A small "i" that opens a few lines explaining a block. */
 function infoPop(label, items) {
-  return h('details', { class: 'info-pop' },
+  return popover(h('details', { class: 'info-pop' },
     h('summary', { 'aria-label': label }, icon('info')),
-    h('div', { class: 'pop' }, h('ul', {}, items.filter(Boolean).map((x) => h('li', {}, x)))));
+    h('div', { class: 'pop' }, h('ul', {}, items.filter(Boolean).map((x) => h('li', {}, x))))));
 }
 
 const SVG = 'http://www.w3.org/2000/svg';
@@ -597,6 +597,15 @@ export function editScreen(ctx, day) {
   for (const el of [title, date, ta]) el.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(check, 200); });
   check();
   const btn = h('button', { class: 'btn primary small', type: 'button' }, 'Save');
+  // Cmd+Enter (Ctrl+Enter elsewhere) saves from anywhere on the page, as the old edit page did.
+  const saveKey = (e) => {
+    if (!btn.isConnected) { document.removeEventListener('keydown', saveKey); return; }
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter' && !e.isComposing) {
+      e.preventDefault();
+      if (!btn.disabled) btn.click();
+    }
+  };
+  document.addEventListener('keydown', saveKey);
   btn.addEventListener('click', busy(btn, async () => {
     if (!date.value) {
       err.replaceChildren(h('p', { class: 'errors' }, 'Pick a date.'));

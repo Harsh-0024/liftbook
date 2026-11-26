@@ -557,6 +557,33 @@ as asked on 24 Nov; `improve/round-4` above holds everything before that.
    day then kept that line and said "Your unsaved workout is still here". A box holding only a date
    line is no longer saved, and one already saved that way switches to the day asked for. A real
    unsaved workout is still kept, with its note (checked both; 115 tests pass).
+### Branch `improve/keyboard-parity` (from `improve/round-4`)
+
+1. **Keys the old site had.** Two shortcuts were missing against the old Flask pages:
+   - **AI coach:** Enter sends the question again, and Shift+Enter starts a new line (before,
+     only Cmd/Ctrl+Enter sent). On a touch screen the return key still adds a line, since
+     there's no Shift there and Send sits beside the box.
+   - **Edit workout:** Cmd+Enter (Ctrl+Enter elsewhere) saves from anywhere on the page, as the
+     old edit page did. The key stops listening once you leave the page.
+   Checked in the browser: Cmd+Enter saved an edit and went back to the workout; Enter sent a
+   coach question, Shift+Enter didn't. 115 tests pass.
+2. **The workout page's "i" notes close like before.** On the old page only one could be open,
+   and Escape or a tap anywhere else closed it. In the new app they stayed open until their "i"
+   was tapped again, and several could pile up. Now opening one closes the others, and Escape or a
+   tap away closes it. Checked in the browser; 115 tests pass.
+3. **Enter in a search box puts the keyboard away.** The old site's search boxes (All workouts,
+   Exercises, Retrieve) dropped the keyboard on Enter or a phone's "Search" key, so the filtered
+   list could be seen; the new ones kept it up. Now every search box does this, except Stats,
+   where Enter still jumps to the exercise typed. Checked in All workouts and Stats; 115 tests pass.
+4. **Reorder a custom workout from the keyboard.** The picked exercises could only be dragged
+   by their handle with a mouse or finger. The handle can now take keyboard focus (it turns gold),
+   and the up and down arrows move the exercise; focus stays with it, and a screen reader hears
+   where it is ("2 of 3"). Checked in the browser; 115 tests pass.
+5. **The plan's Format note closes the same way.** Settings > Workout plan's "Format" opens a note
+   over the plan text, and it stayed open until "Format" was tapped again. It now shares the "i"
+   notes' behaviour (item 2): Escape or a tap elsewhere closes it, one note open at a time. The
+   closing code moved into one helper (`popover` in `web/app/ui.js`) used by both. Checked both
+   pages; 115 tests pass.
 
 ## Waiting list
 
@@ -570,6 +597,9 @@ moved on to something else meanwhile.
   workout's action row (it wraps with the others on a narrow screen), the Retrieve rows on two
   columns, the Consistency year grid (should scroll sideways at 12px squares, as before), and
   tapping a chart (the box should move to the tapped point; tapping the box opens the workout).
+- **iPhone check of `improve/keyboard-parity`** (waits on: the iOS Simulator): the keyboard's
+  "Search" key should close the keyboard in All workouts, Exercises and Retrieve; in the coach
+  box, return should add a line; a workout's "i" notes should close on a tap elsewhere.
 
 ## Next when resumed
 
