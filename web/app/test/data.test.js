@@ -247,10 +247,12 @@ test('the check says which names are new, and suggests the one you meant', async
   assert.match(other.notes[1].note, /Also at no\. 1/);
 });
 
-test('sets right under the first line say that line is the title', async () => {
+test('sets right under the first line: that line is the exercise, not a title', async () => {
   const lb = await app();
+  // fix/first-line-exercise reads "Back Squat" as the exercise, so nothing is left nameless.
   const c = lb.check('Back Squat\n100 100, 5 5\n\nLeg Press\n120, 10');
-  assert.match(c.errors.join(' '), /Line 1 \(\u201cBack Squat\u201d\) is read as the workout\u2019s date and title/);
+  assert.deepEqual(c.errors, []);
+  assert.deepEqual(c.parsed.exercises.map((e) => e.name), ['Back Squat', 'Leg Press']);
   // Further down, the plain message stays.
   const later = lb.check('26/11/26 Legs\n\n100, 5');
   assert.match(later.errors.join(' '), /Line 3: sets without an exercise name above them/);
