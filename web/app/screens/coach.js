@@ -311,7 +311,7 @@ export function coachScreen(ctx) {
     try {
       const rows = await online.recentAnswers();
       body.replaceWith(rows.length ? h('ul', { class: 'list' }, rows.map((r) => h('li', {},
-        h('details', {}, h('summary', { class: 'item' }, h('span', {}, r.question), h('span', { class: 'meta' }, formatDay(r.created_at, { weekday: false }))),
+        h('details', {}, h('summary', { class: 'item' }, h('span', {}, r.question), h('span', { class: 'meta' }, formatDay(r.created_at, { weekday: false, year: String(r.created_at).slice(0, 4) !== String(new Date().getFullYear()) }))),
           formatAnswer(r.answer, (d) => days.has(d)))))) : h('p', { class: 'subtle' }, 'No answers yet.'));
     } catch (err) {
       body.replaceWith(h('p', { class: 'error' }, err.message));

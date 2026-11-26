@@ -1025,6 +1025,15 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   Also looked at: Bulk import (fine), the "1." / "3." step numbers (old-style figures, already
   fixed on `design/lining-figures`) and the footer (same "2026 Liftbook" as the old site).
 
+### Branch `design/coach` (from `improve/round-4`)
+
+- **Coach replies have even padding.** A reply card ended with its last paragraph's (or error's)
+  12px bottom margin, so it had more room under the text than above. Whatever ends a reply, or ends
+  the answer inside it, now adds no gap. Checked on the iPhone simulator with the "local coach is
+  not running" error (the mock has no coach); the rest of Coach on the phone looked right.
+
+- Coach, Earlier answers: the date no longer wraps ("9 Nov / 2026" on long questions). The year is left off for this year's answers and the date stays on one line. Checked on the phone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
