@@ -138,7 +138,9 @@ function output(ctx, result, back, { kicker = '', number = '', name = '', fallba
     }, 0);
   }
   const ex = d.exercises || [];
-  const meta = `${result.exercises} exercise${result.exercises === 1 ? '' : 's'} · ${result.sets} set${result.sets === 1 ? '' : 's'}${d.bodyweight ? ` · Bodyweight ${d.bodyweight}` : ''}`;
+  // A plan never logged said "No history yet" under every exercise: say it once, up here.
+  const allFresh = ex.length > 1 && ex.every((e) => e.fresh);
+  const meta = `${result.exercises} exercise${result.exercises === 1 ? '' : 's'} · ${result.sets} set${result.sets === 1 ? '' : 's'}${d.bodyweight ? ` · Bodyweight ${d.bodyweight}` : ''}${allFresh ? ' · Nothing logged yet' : ''}`;
   return h('div', { class: 'rp' },
     h('header', { class: 'page-head' }, h('div', {},
       back ? h('a', { class: 'back', href: back, 'aria-label': 'Back' }, icon('back')) : null,
@@ -150,7 +152,7 @@ function output(ctx, result, back, { kicker = '', number = '', name = '', fallba
       h('div', { class: 'group' }, ex.length ? ex.map((e) => h('div', { class: 'rp-row' },
         h('div', { class: 'rp-main' },
           h('span', { class: 'rp-name' }, e.name),
-          h('span', { class: `rp-sets${e.fresh ? ' fresh' : ''}` }, e.fresh ? 'No history yet' : e.sets_label)),
+          allFresh ? null : h('span', { class: `rp-sets${e.fresh ? ' fresh' : ''}` }, e.fresh ? 'No history yet' : e.sets_label)),
         e.target ? h('span', { class: 'rp-target' }, e.target) : null))
         : h('pre', { class: 'out', style: 'padding:18px 20px' }, text)),
       h('details', { class: 'rp-text' },
