@@ -1093,3 +1093,6 @@ moved on to something else meanwhile.
 ## design/plan-label (26 Nov)
 
 1. Workout plan: the "Plan" label (the one with the Format link beside it) showed in small sentence case, while "REP RANGES" below it showed as an uppercase section label. ui.js wraps a label's leading words in `<span role="heading">` when the label also holds a link, and the broad `.label span` rule (meant for counts like "1 workout") then un-capitalised it. A new rule, `.label > span[role="heading"]`, gives that span the label's own look back. Checked on the iPhone 18 Pro simulator. On Home, Stats, Retrieve, Settings, Sync and data, Shortcuts, Personal bests and Log no label gets such a span, so they don't change.
+## design/signout-icon (26 Nov)
+
+1. "Sign out of this device" in Settings used an arrow pointing into a door frame on the right, the usual sign-in symbol. The `logout` icon in web/app/ui.js is mirrored: frame on the left, arrow leaving it. Only that row uses the icon. Checked on the iPhone 18 Pro simulator in dark mode.
