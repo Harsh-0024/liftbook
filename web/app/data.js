@@ -317,9 +317,22 @@ export class Liftbook {
         : ' Write the day first, as 13/02 or 13 Feb.';
       errors.push(`\u201c${bad}\u201d isn\u2019t a date this app can read.${hint}`);
     }
+    // A sets line with a typo ("be/4" for "bw/4") reads as an exercise of its own, named
+    // "Be/4 Be/4", under a name left with no sets: it is that name's sets, unreadable, so it is
+    // quoted there and not saved as an exercise.
+    const typoSets = new Map();
+    exercises.forEach((e, i) => {
+      const next = exercises[i + 1];
+      const line = String(next?.exercise_string || '').trim();
+      if (e.valid !== false || e.missing_name || String(e.exercise_string || '').includes('\n')) return;
+      if (!next || next.valid === false || line.includes('\n') || !line.includes(',') || !/\d/.test(line.split(',')[0])) return;
+      next.valid = false;
+      typoSets.set(e, line);
+      typoSets.set(next, null);
+    });
     const invalid = exercises.filter((e) => e.valid === false || e.missing_name);
-    for (const e of invalid.filter((x) => x.valid === false)) {
-      const sets = String(e.exercise_string || '').split('\n').slice(1).join(' ').trim();
+    for (const e of invalid.filter((x) => x.valid === false && typoSets.get(x) !== null)) {
+      const sets = typoSets.get(e) || String(e.exercise_string || '').split('\n').slice(1).join(' ').trim();
       // A name with nothing under it has no sets to quote.
       errors.push(sets ? `“${e.name}”: couldn’t read its sets (“${sets}”).` : `“${e.name}”: no sets under it.`);
     }
