@@ -899,6 +899,13 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
 - Those cards' two buttons, stacked on the phone, were each as wide as their words. They now
   share one width (up to 230 px, side by side on wider screens). Checked in dark mode too.
 
+### Branch `design/bests-icon` (26 Nov)
+
+- **Stats: Personal bests has its own icon.** The Personal bests row used the chart icon, the same
+  one as the Stats tab right below it, so it didn't say "bests". It now uses the medal icon that
+  already marks a new personal best on shared workouts. Checked on the iPhone in dark mode;
+  115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
