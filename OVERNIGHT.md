@@ -1361,3 +1361,12 @@ Settings and Stats (headline and end tag agree, tile lines).
 - Looked over Retrieve, Log, Home and a workout in dark and light mode on the iPhone 18 Pro
   simulator (demo user); nothing else stood out. sw.js rebuilt, 127/127 tests pass,
   `git diff --check` clean.
+
+## design/history-list (26 Nov)
+
+- All workouts: each row's day number (25, 16, 9…) is now a serif figure, like the page title,
+  Home's totals and a workout's counts, with the weekday under it as before.
+- The first month label ("November 2026") sat 8px under the search field, because the first
+  section drops its top margin. A list right under a search now starts 24px down.
+- Checked on the iPhone 18 Pro simulator (demo user). sw.js rebuilt, 127/127 tests pass,
+  `git diff --check` clean.
