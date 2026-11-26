@@ -161,6 +161,22 @@ function isDefaultNumericSets(value) {
   return normalized === '1 1 1, 1 1 1' || normalized === '1, 1';
 }
 
+/**
+ * True when an exercise's sets are still what Retrieve writes under an exercise with no history
+ * ("1, 1", "1 1, 1 1", "bw/4 bw/4, 1 1") for you to fill in. Saved as they are, they would be
+ * real 1 kg x 1 sets, and turn up as personal bests (services/log_check.py skips them too).
+ */
+export function isRetrievePlaceholder(exerciseString) {
+  const lines = String(exerciseString || '').split('\n').map((l) => l.trim()).filter(Boolean);
+  if (lines.length !== 2) return false;
+  const parts = lines[1].toLowerCase().split(',');
+  if (parts.length !== 2) return false;
+  const [weights, reps] = parts.map((p) => p.trim().split(/\s+/).filter(Boolean));
+  if (!weights.length || !reps.length) return false;
+  const sameWeight = weights.every((w) => w === '1') || weights.every((w) => w === 'bw/4');
+  return sameWeight && reps.every((r) => r === '1');
+}
+
 const DATA_LIKE = (s) => Boolean(re('^(?:bw|,|-?\\d)').match(strip(s || '').toLowerCase()));
 
 function extractSetsLine(bestString, exercise) {

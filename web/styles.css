@@ -551,6 +551,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--g
 }
 .editor-meta { flex: 1 1 160px; min-width: 0; font-size: 0.8rem; color: var(--subtle); font-variant-numeric: tabular-nums; }
 .editor-meta .ok { font-weight: 600; }
+.editor-meta .to-fill { color: var(--warn); font-weight: 600; }
 .meta-btn { background: none; border: 0; padding: 0; text-align: left; font-family: inherit; cursor: pointer; min-height: 24px; display: inline-flex; align-items: center; } /* 24px to click; 40px on touch, below */
 @media (max-width: 759.98px) { .editor-bar { bottom: calc(var(--tabbar-h) + var(--safe-bottom)); } }
 
@@ -1262,6 +1263,7 @@ label.rowi { cursor: pointer; }
 .rowi .num { flex: none; width: 22px; padding-top: 3px; font-size: 0.72rem; color: var(--subtle); font-variant-numeric: tabular-nums; }
 .rowi .tag { flex: none; padding-top: 3px; font-size: 0.74rem; font-weight: 600; color: var(--subtle); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .rowi .tag.is-new { color: var(--gold-text); }
+.rowi .tag.is-todo { color: var(--warn); }
 
 /* A box that grows with its text (autoGrow in ui.js): no scrolling inside it. */
 .editor.grows { overflow: hidden; resize: none; }

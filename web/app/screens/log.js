@@ -133,6 +133,12 @@ export function logScreen(ctx) {
     preview.replaceChildren(c.parsed
       ? h('span', { class: c.errors.length && started ? 'error' : 'ok' }, `${c.exercise_count} exercise${c.exercise_count === 1 ? '' : 's'} · ${c.set_count} set${c.set_count === 1 ? '' : 's'}`)
       : 'Nothing to check yet');
+    // Retrieve's 1, 1 still waiting under an exercise isn't a mistake: say how much is filled in
+    // ("1 of 8 filled in"), and keep red for real problems.
+    const toFill = exercises.filter((e) => e.placeholder).length;
+    if (c.parsed && toFill && c.errors.length === toFill) {
+      preview.replaceChildren(h('span', { class: 'to-fill' }, `${c.exercise_count} of ${c.exercise_count + toFill} filled in`));
+    }
     // Each fact stays whole when the line wraps ("Back & Triceps" never splits after "Back").
     const whole = (t) => h('span', { class: 'whole' }, t);
     // No title typed and the day has a workout: it joins that one's title, so don't say "Workout".
@@ -150,18 +156,22 @@ export function logScreen(ctx) {
         ? h('button', { class: 'btn small', type: 'button', 'aria-label': `Use it: ${n.suggestion} on line ${e.line}`, onclick: () => useLine(e.line, n.fixLine) }, 'Use it')
         : null;
       const sets = (e.reps || []).length;
-      const tag = bad || fix ? null : n?.state === 'new' ? 'New' : `${sets} set${sets === 1 ? '' : 's'}`;
+      // Retrieve's 1, 1 not filled in yet: a quiet "To fill in", not a red warning on every row.
+      const tag = e.placeholder ? 'To fill in' : bad || fix ? null : n?.state === 'new' ? 'New' : `${sets} set${sets === 1 ? '' : 's'}`;
       // A tap on the row puts the cursor on that exercise's line in the box.
       const row = h('div', { class: `rowi check-row${flagged && n.state !== 'new' ? ' warn' : ''}`, role: 'button', tabindex: '0' },
-        bad ? h('span', { class: 'ico', style: 'color:var(--bad)' }, icon('info')) : h('span', { class: 'num', 'aria-hidden': 'true' }, String(order += 1)),
+        e.placeholder ? h('span', { class: 'num', 'aria-hidden': 'true' }, '–')
+          : bad ? h('span', { class: 'ico', style: 'color:var(--bad)' }, icon('info')) : h('span', { class: 'num', 'aria-hidden': 'true' }, String(order += 1)),
         h('span', { class: 'main' }, h('span', { class: 'title' }, e.name),
-          // Sets read as code; a problem reads as a sentence, in the warning's red.
-          h('span', bad ? { class: 'desc', style: 'color:var(--bad)' } : { class: 'desc mono' }, !bad ? e.sets_label
-            : String(e.exercise_string || '').split('\n').slice(1).join('').trim() ? 'Couldn’t read these sets' : 'No sets under it'),
+          // Sets read as code; a problem reads as a sentence, in the warning's red. Retrieve's 1, 1 is
+          // only waiting to be filled in, so it isn't red.
+          h('span', e.placeholder ? { class: 'desc' } : bad ? { class: 'desc', style: 'color:var(--bad)' } : { class: 'desc mono' }, !bad ? e.sets_label
+            : e.placeholder ? 'Left out when you save'
+              : String(e.exercise_string || '').split('\n').slice(1).join('').trim() ? 'Couldn’t read these sets' : 'No sets under it'),
           // "New" is said by the tag on the right.
           flagged && tag !== 'New' ? h('span', { class: `desc name-note is-${n.state}` }, n.note) : null),
         fix,
-        tag ? h('span', { class: `tag${tag === 'New' ? ' is-new' : ''}` }, tag) : null);
+        tag ? h('span', { class: `tag${tag === 'New' ? ' is-new' : tag === 'To fill in' ? ' is-todo' : ''}` }, tag) : null);
       const jump = (ev) => {
         if (ev.target.closest('button')) return;
         if (ev.type === 'keydown') {
@@ -174,10 +184,15 @@ export function logScreen(ctx) {
       row.addEventListener('keydown', jump);
       return row;
     }));
+    const realErrors = c.errors.filter((m) => !m.includes('still has Retrieve’s 1, 1'));
     problems.replaceChildren(
       c.future && c.day ? h('p', { class: 'wo-note log-future' }, icon('calendar'),
         h('span', {}, `This is dated ${formatDay(c.day)}, after today. Check the year on the first line.`)) : '',
-      c.errors.length && started ? h('ul', { class: 'errors' }, c.errors.map((e) => h('li', {}, e))) : '');
+      // Retrieve's 1, 1 under several exercises is one quiet note, not a red line for each.
+      realErrors.length && started ? h('ul', { class: 'errors' }, realErrors.map((e) => h('li', {}, e))) : '',
+      toFill ? h('p', { class: 'wo-note', style: 'margin-bottom:22px' }, icon('info'), h('span', {}, toFill === 1
+        ? 'One exercise still has Retrieve’s 1, 1. Fill in its sets, or it won’t be saved.'
+        : `${toFill} exercises still have Retrieve’s 1, 1. Fill in their sets, or they won’t be saved.`)) : '');
     // The workout already on that day, by its name as Home and All workouts show it. Save then
     // asks whether to add to it or open it.
     if (c.existing) checkHead.append(' · ', whole(`also on this day: ${splitSessionTitle(c.existing.title).title || c.existing.title}`));

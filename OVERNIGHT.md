@@ -1060,6 +1060,23 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   bodyweight figure for bodyweight. It changes with the switches. Checked in the browser, with the
   demo user's Barbell Curl switched to Timed and back.
 
+## fix/retrieve-placeholders (from improve/round-4)
+
+- Retrieve writes "1, 1" (or "bw/4, 1") under an exercise with no history, for you to fill in.
+  Logged unchanged, the offline app saved them as real 1 kg × 1 sets, and they turned up as
+  personal bests (the demo had "Chest-Supported Machine High Row: 1 kg"). The old site's check
+  (services/log_check.py) skipped them; the offline app didn't. Now the Log check marks such an
+  exercise "Still Retrieve's 1, 1: fill in your sets, or it won't be saved" and saving leaves it
+  out. It also catches the per-set form Retrieve writes for a plan's set count ("1 1, 1 1",
+  "bw/4 bw/4, 1 1"), which the old exact-match list missed. New test; 116 pass. Checked on
+  iPhone 18 Pro.
+- Not done: the two placeholder logs already in the demo data stay; delete them from History
+  if wanted.
+
+- Log, status line: with only Retrieve's 1, 1 left to fill in, it reads "1 of 8 filled in" in amber instead of a red "1 exercise · 2 sets" that looked like an error. Real problems still turn it red. Checked on the phone.
+
+- Log, check list: exercises still on Retrieve's 1, 1 show a quiet dash, "Left out when you save" and an amber "To fill in" tag, not a red ⓘ with a long warning each. The red list above it becomes one muted note ("7 exercises still have Retrieve's 1, 1…"); real errors stay red. Checked on the phone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
