@@ -1455,3 +1455,8 @@ Settings and Stats (headline and end tag agree, tile lines).
 - Coach → "Earlier answers": the card's title was plain sans while every other card title is serif, and the questions under it were as large as the title.
 - The title now uses the serif card-title style; questions are 0.95rem, and the open question turns gold so you can see which answer you're reading.
 - Checked on the iPhone (closed and open). npm test 128 pass.
+
+## design/settings-account-row (27 Nov)
+- Settings: the ACCOUNT section's first row was titled "Account" too, which said nothing.
+- The row and its page are now "Email and password". The row's line reads "Change them, sign out, delete the account". The page's line no longer lists "appearance" first, and it says "sign out" (that button signs out of this device only).
+- Checked on the iPhone (the row and the page). npm test 128 pass.

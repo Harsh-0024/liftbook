@@ -22,7 +22,7 @@ const SECTIONS = [
   ['feedback', 'Feedback', 'Tell the developer what works for you, what doesn’t, and what you’d like next.'],
   ['sync', 'Sync and data', 'Sync between devices, a backup file and a spreadsheet of everything you logged.'],
   ['import', 'Bulk import', 'Paste many workout days at once. Each day starts with a date, day first: 03/02 or 3 Feb. Days you’ve already logged are skipped.'],
-  ['account', 'Account', 'Email, password, appearance, sign out, delete'],
+  ['account', 'Email and password', 'Change your email or password, sign out, or delete your account.'],
 ];
 
 // Pages inside a section: [key, title, back to]. The admin page shows only to admins.
@@ -143,7 +143,7 @@ function index(ctx) {
 
     h('section', { class: 'section' }, h('div', { class: 'label' }, 'Account'),
       h('div', { class: 'group' },
-        rowItem({ href: '#/settings/account', ico: 'lock', title: 'Account', desc: 'Email, password, sign out, delete' }),
+        rowItem({ href: '#/settings/account', ico: 'lock', title: 'Email and password', desc: 'Change them, sign out, delete the account' }),
         ctx.lb.isAdmin() ? rowItem({ href: '#/settings/admin', ico: 'shield', title: 'Admin', desc: 'Feedback, people, coach answers' }) : null)),
 
     h('section', { class: 'section' }, h('div', { class: 'label' }, 'Help make it better'),
