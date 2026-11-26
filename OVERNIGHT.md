@@ -1119,6 +1119,13 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
    54 px for it. The room on the right now grows with the tag's text. Checked on the iPhone, along
    with entry 1 (125 kg headline and tag agree; Back Squat top weight shows 107.5 kg).
 
+### Branch `design/log-bar` (26 Nov)
+- Log: the floating Save bar lay over the bottom of the text box, and the box's rounded edge showed through as a second outline. The bar now has a raised face, a gold-tinted rim and a shadow cast upward, so it reads as floating above what scrolls under it. Checked on the iPhone simulator.
+- Light mode: the same upward shadow was a heavy grey smear and the raised face came out grey. Two tokens (`--bar-face`, `--bar-lift`) now give light mode a light face and a faint warm shade. Checked in both modes on the simulator.
+- The plan page's Edit / Log / Copy bar and the plan-picker bar get the same raised face, gold rim and upward shade, so every floating bar in the app looks alike. Checked on the simulator.
+
+- Log bar after Clear: "Cleared", Undo, Paste and Save stay on one row on a phone. The count's 160px minimum pushed the three buttons onto a second row; it now gives way down to 60px. Checked on the phone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
@@ -1134,6 +1141,13 @@ moved on to something else meanwhile.
 - **iPhone check of `improve/keyboard-parity`** (waits on: the iOS Simulator): the keyboard's
   "Search" key should close the keyboard in All workouts, Exercises and Retrieve; in the coach
   box, return should add a line; a workout's "i" notes should close on a tap elsewhere.
+
+- **Merging this branch: keep the light-mode bar tokens** (waits on: the merge). The light theme
+  sets `--bar-face` and `--bar-lift` on the line after `--gold-fill`, in both the
+  `prefers-color-scheme: light` block and `[data-theme="light"]`. Branches that change `--gold-fill`
+  (it gained `border-box` elsewhere) conflict on that spot; an automatic "theirs" merge dropped
+  both lines in the all-branches preview, and light mode got the dark mode's black 50% shade over
+  the editor again. Keep the two lines when resolving.
 
 ## Next when resumed
 

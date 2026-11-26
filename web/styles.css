@@ -11,6 +11,7 @@
   --bg-2: #0a0a0a;
   --surface: #0f0f11;
   --surface-2: #17171a;
+  --bar-face: var(--surface-2); --bar-lift: rgba(0, 0, 0, 0.5); /* the floating Log bar: its face and the shade it casts upward */
   --hover: rgba(255, 255, 255, 0.03);
   --seg-on: #26262b; /* the chosen option in a switch: lifted above the card, not sunk into it */
   --input: rgba(255, 255, 255, 0.03);
@@ -64,6 +65,7 @@
     --surface: #fcfaf7;
     --surface-2: #f3efe9;
     --seg-on: var(--surface);
+    --bar-face: var(--surface); --bar-lift: rgba(70, 50, 20, 0.10);
     --hover: rgba(0, 0, 0, 0.025);
     --input: #fff;
     --line: rgba(0, 0, 0, 0.08);
@@ -105,6 +107,7 @@
   --surface: #fcfaf7;
   --surface-2: #f3efe9;
   --seg-on: var(--surface);
+  --bar-face: var(--surface); --bar-lift: rgba(70, 50, 20, 0.10);
   --hover: rgba(0, 0, 0, 0.025);
   --input: #fff;
   --line: rgba(0, 0, 0, 0.08);
@@ -552,7 +555,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--g
   padding: 10px 12px 10px 20px; border-top: 1px solid var(--hair);
   position: sticky; bottom: 0; z-index: 2; background: var(--surface);
 }
-.editor-meta { flex: 1 1 160px; min-width: 0; font-size: 0.8rem; color: var(--subtle); font-variant-numeric: tabular-nums; }
+.editor-meta { flex: 1 1 60px; min-width: 0; font-size: 0.8rem; color: var(--subtle); font-variant-numeric: tabular-nums; }
 .editor-meta .ok { font-weight: 600; }
 .editor-meta .to-fill { color: var(--warn); font-weight: 600; }
 .meta-btn { background: none; border: 0; padding: 0; text-align: left; font-family: inherit; cursor: pointer; min-height: 24px; display: inline-flex; align-items: center; } /* 24px to click; 40px on touch, below */
@@ -596,7 +599,7 @@ input.rp-title[type="text"]:focus { outline: none; box-shadow: none; border-bott
 /* Copy stays in reach while scrolling, resting just above the tab bar on phones. */
 .rp-dock { position: sticky; bottom: 0; z-index: 7; margin-top: 12px; padding: 18px 0 16px; pointer-events: none; transition: background var(--fast); }
 .rp-dock.floating { background: linear-gradient(to bottom, transparent, var(--bg) 18px); }
-.rp-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 8px 8px 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface-2); box-shadow: var(--shadow); pointer-events: auto; }
+.rp-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 8px 8px 16px; border-radius: 16px; border: 1px solid color-mix(in srgb, var(--gold-text) 22%, var(--line)); background: var(--bar-face); box-shadow: 0 -14px 26px -10px var(--bar-lift), var(--shadow); pointer-events: auto; } /* the same raised bar as Log's */
 .rp-bar .row { gap: 6px; flex-wrap: nowrap; }
 .rp-bar-meta { min-width: 0; font-size: 0.82rem; color: var(--subtle); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* "Copied": a soft wash of the app's own green, not a loud lime slab, and Copy keeps one width so Log doesn't jump. */
@@ -1080,7 +1083,7 @@ label.rowi { cursor: pointer; }
 }
 @media (prefers-reduced-motion: reduce) { .cr .cr-mine, .pick-tick, .cr-bar-chev { transition: none !important; } }
 .picked .rowi { padding-top: 10px; padding-bottom: 10px; }
-.pick-bar { position: sticky; bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 10px); margin-top: 10px; z-index: 5; box-shadow: 0 8px 28px rgba(0,0,0,0.25); }
+.pick-bar { position: sticky; bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 10px); margin-top: 10px; z-index: 5; background: var(--bar-face); border-color: color-mix(in srgb, var(--gold-text) 22%, var(--line)); box-shadow: 0 -14px 26px -10px var(--bar-lift), 0 8px 28px rgba(0,0,0,0.12); }
 .pick-bar .editor-bar { position: static; border-top: 0; }
 .cr-out:not(:empty) { margin-top: 36px; }
 @media (min-width: 760px) { .pick-bar { display: none; } }
@@ -1276,8 +1279,10 @@ label.rowi { cursor: pointer; }
 /* A box that grows with its text (autoGrow in ui.js): no scrolling inside it. */
 .editor.grows { overflow: hidden; resize: none; }
 /* Log: the count and Save float above the tab bar while everything scrolls under them. */
-.log-bar { position: sticky; bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 10px); margin-top: 14px; z-index: 5; box-shadow: 0 8px 28px rgba(0,0,0,0.18); }
-.log-bar .editor-bar { position: static; border-top: 0; }
+/* Floating, it lies over the bottom of the text box, whose rounded edge showed through as a second
+   outline. A raised face, a gold-tinted rim and a shadow cast upward set it apart from what's under it. */
+.log-bar { position: sticky; bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 10px); margin-top: 14px; z-index: 5; background: var(--bar-face); border-color: color-mix(in srgb, var(--gold-text) 22%, var(--line)); box-shadow: 0 -14px 26px -10px var(--bar-lift), 0 8px 28px rgba(0,0,0,0.12); }
+.log-bar .editor-bar { position: static; border-top: 0; background: transparent; }
 @media (min-width: 760px) { .log-bar { bottom: 16px; } }
 .log-flow > .section:first-of-type, .log-flow > [role=alert] { margin-top: 0; }
 
