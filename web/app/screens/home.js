@@ -30,7 +30,9 @@ export { avatar };
 
 const hello = (now = new Date()) => {
   const hr = now.getHours();
-  return hr >= 5 && hr < 12 ? 'Good morning' : hr >= 12 && hr < 17 ? 'Good afternoon' : 'Good evening';
+  // After midnight "Good evening" read wrong at 12:30 a.m.; until 5 it says "Up late".
+  if (hr < 5) return 'Up late';
+  return hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
 };
 
 export function homeScreen(ctx) {
