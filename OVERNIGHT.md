@@ -508,6 +508,16 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    defaults to old-style figures, so the Stats headline "+10%" read as "+IO%". Headings, the Stats
    hero, the workout-title field and the avatar now use lining figures (full-height digits).
    Checked on the iPhone with the demo data; 115 tests pass.
+20. **Exercise stats: every tile has a second line (branch `design/exercise-tiles`).** Only
+   Sessions had one ("last 25 Nov"), so Best and Since first sat over empty space. Best now says
+   when it was set ("on 8 Nov", the same session the Best badge marks) and Since first where it
+   started ("from 32 kg"), like the Bodyweight tiles. Timed exercises keep "weight × √seconds".
+   Checked on the iPhone with the demo data; 115 tests pass.
+   Same branch: the Bodyweight Range tile's note "kg, low to high" wrapped onto two lines on a
+   phone, making that tile taller than Now and Change; it reads "kg, low–high" now, one line.
+   Same branch, Personal bests: the Exercises tile gets a note too ("in 40 workouts"), and the
+   "22 exercises" count beside the sort buttons, which sat 9px high (it kept the footnote margins),
+   is level with them.
 
 ### Branch `design/exercise-options` (from `improve/round-4`)
 
