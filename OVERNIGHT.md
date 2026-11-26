@@ -519,6 +519,12 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    question, shifting the row. Buttons with only an icon now keep their icon and just dim while
    working (and tell screen readers they're busy); text buttons still say "Working…". Found while
    saving and deleting a test workout end to end on the mock server (both worked). 115 tests pass.
+### Branch `improve/workout-not-found` (from `improve/round-4`)
+
+1. **A day with no workout says so.** Opening a workout's address for a day with nothing logged
+   said "Workout not found. It may have been deleted on another device." It now reads "No workout
+   that day: Nothing is logged on Wed 1 Jan 2020", keeps the deleted-elsewhere note as a maybe,
+   and offers Log workout beside All workouts.
 
 ## Waiting list
 
