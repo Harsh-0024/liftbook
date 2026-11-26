@@ -701,6 +701,21 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   tests); 118 pass. Checked on iPhone 18 Pro: "rdl" on All workouts lists the Legs days;
   "db press" in Retrieve > Custom workout lists Incline, Flat and Seated Dumbbell (Overhead) Press.
 
+### Branch `fix/added-day-bests` (from `improve/round-4`)
+
+- Adding exercises to a day that already had a workout ("Add to that day") opened the day with
+  "Added to this day · a new best — Pull-Ups. Well lifted.", though Pull-Ups was logged earlier
+  and only Flat Barbell Press was added. The note now names only bests among the exercises just
+  added (`saveWorkout` returns `added`); a plain save is unchanged. Checked in the browser:
+  adding Barbell Curl to that day now says just "Added to this day".
+- Log screen on the iPhone (light mode): looks right, the check updates as you type, and Save →
+  "That day already has a workout" → Add to that day works. Just after the keyboard closes, Safari
+  briefly leaves the floating Save bar where it sat above the keyboard, over the check card; the
+  next scroll puts it back. A Safari quirk, left as is.
+- Test: joining a day returns `added` with only the new exercise (data.test.js).
+- Day page lower half on the iPhone: the uneven Edit/Repeat/Copy/Share buttons and the clipped
+  lone "previous workout" link are both already fixed on `design/workout-page`.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

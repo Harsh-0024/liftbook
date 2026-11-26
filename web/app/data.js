@@ -420,7 +420,7 @@ export class Liftbook {
     }
     const timedPrompts = [...new Set(result.summary.filter((r) => r.timed_prompt_needed).map((r) => r.timed_prompt_exercise))];
     const needsBodyweight = !this.profile()?.bodyweight && rows.some((l) => l.uses_bodyweight);
-    return { summary: result.summary, day: dayOf(parsed.date), appended: Boolean(existing), timedPrompts, skipped: check.errors, needsBodyweight };
+    return { summary: result.summary, day: dayOf(parsed.date), appended: Boolean(existing), added: rows.map((l) => l.exercise), timedPrompts, skipped: check.errors, needsBodyweight };
   }
 
   /** Soft-deletes the day's logs; returns their ids so restoreLogs() can bring them back. */

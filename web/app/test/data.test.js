@@ -32,6 +32,8 @@ test('a second workout the same day asks first, or joins it', async () => {
   assert.deepEqual(again.existing, { day: '2026-10-31', title: 'Session 1' });
   const joined = await lb.log('31/10/26 Extra\n\nCurl\n20 x 10', { append: true });
   assert.equal(joined.appended, true);
+  // Only what was just added, so the day page doesn't hail earlier exercises as news.
+  assert.deepEqual(joined.added.map((n) => n.toLowerCase()), ['curl']);
   const w = lb.workout('2026-10-31');
   assert.equal(w.logs.length, 3);
   assert.equal(w.title, 'Session 1');
