@@ -22,7 +22,7 @@ const SECTIONS = [
   ['feedback', 'Feedback', 'Tell the developer what works for you, what doesn’t, and what you’d like next.'],
   ['sync', 'Sync and data', 'Sync between devices, a backup file and a spreadsheet of everything you logged.'],
   ['import', 'Bulk import', 'Paste many workout days at once. Each day starts with a date, day first: 03/02 or 3 Feb. Days you’ve already logged are skipped.'],
-  ['account', 'Account', 'Password, theme, sign out, delete'],
+  ['account', 'Account', 'Email, password, theme, sign out, delete'],
 ];
 
 // Pages inside a section: [key, title, back to]. The admin page shows only to admins.
@@ -161,6 +161,10 @@ function field(label, input, hint) {
   const note = hint ? describe(input, h('div', { class: 'hint' }, hint)) : null;
   return h('div', { class: 'field' }, h('label', { for: input.id }, label), input, note);
 }
+
+/** On an iPhone or iPad (an iPad says it is a Mac, but has touch), where shortcuts install directly. */
+const onIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent)
+  || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
 /* ---------------- profile ---------------- */
 
@@ -707,7 +711,9 @@ function shortcuts(ctx) {
           h('div', { class: 'row' }, make, remove)) : make),
       h('div', { class: 'card' },
         h('h2', {}, '2. Add the shortcuts'),
-        h('p', { class: 'subtle' }, 'Open this page on your iPhone, tap a shortcut to add it, and paste your key when asked.'),
+        h('p', { class: 'subtle' }, onIOS()
+          ? 'Tap a shortcut to add it, and paste your key when asked.'
+          : 'Open this page on your iPhone, tap a shortcut to add it, and paste your key when asked.'),
         h('ul', { class: 'list' }, SHORTCUT_FILES.map(([name, sub]) => h('li', {},
           h('a', { class: 'item chev', href: `shortcuts/${encodeURIComponent(name)}.shortcut`, download: `${name}.shortcut` },
             h('div', {}, h('div', { style: 'font-weight:600' }, name), h('div', { class: 'meta' }, sub))))))),
@@ -767,7 +773,7 @@ function sync(ctx) {
   const paint = (st) => {
     status.replaceChildren(
       h('span', { class: 'title' }, st.running ? 'Syncing now…' : st.error === 'offline' ? 'Offline. Changes are kept on this device.' : st.error ? `Problem: ${st.error}` : 'Up to date'),
-      h('span', { class: 'desc' }, `Last synced ${ago(st.last_sync)} · ${st.pending} change${st.pending === 1 ? '' : 's'} waiting to upload`));
+      h('span', { class: 'desc' }, `Last synced ${ago(st.last_sync)}${st.pending ? ` · ${st.pending} change${st.pending === 1 ? '' : 's'} waiting to upload` : ''}`));
   };
   paint(ctx.sync.status());
   const off = ctx.sync.onStatus((st) => (status.isConnected ? paint(st) : off()));
@@ -796,7 +802,7 @@ function sync(ctx) {
       h('p', { class: 'foot', style: 'margin-top:10px' }, 'Everything is kept on this device and works offline. Changes go to your account when you’re online, and your other devices pick them up when they open or come back online.')),
     h('section', { class: 'section' }, h('div', { class: 'label' }, 'Your data'),
       h('div', { class: 'group' },
-        row('download', 'Backup file', `${counts.total} workouts, ${lb.history().length} exercise logs, ${counts.exercises} exercises`,
+        row('download', 'Backup file', `${counts.total} workouts, ${lb.history().length} exercise logs, ${counts.exercises} different lifts`,
           h('button', { class: 'btn small', type: 'button', onclick: backup }, 'Download')),
         row('clipboard', 'Spreadsheet', 'Every exercise you logged, one row each, for Excel, Numbers or Google Sheets',
           h('button', { class: 'btn small', type: 'button', onclick: spreadsheet }, 'Download')),

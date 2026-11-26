@@ -783,6 +783,14 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
 - a6d566a: on a phone the workout's buttons wrap onto two rows (Edit, Repeat / Copy as text, Share link, trash) that ended at different points. Under 560px the buttons grow to fill their row, so both rows line up edge to edge; the trash button stays square. Checked on the iPhone; Copy as text still says "Copied". Tests: 115 pass.
 - The line under a workout's title (date · exercises · sets · kg lifted · bodyweight) wrapped on the phone inside "3,693 kg lifted", leaving "lifted" alone at the start of the second line; kept whole, the second line then began with a dot. Now each item stays whole, lines break only between items, and no line starts with a dot (each item carries its dot; the first one on a line is clipped). Checked on iPhone 18 Pro. Tests: 115 pass.
 
+## improve/settings-copy (25 Nov)
+
+- Settings > Sync and data: the status line always ended "· 0 changes waiting to upload". It now
+  just says "Last synced just now"; the waiting count appears only when something is waiting.
+  Checked on the iPhone.
+- Settings > Account: the subtitle said "Password, theme, sign out, delete" but the first card on
+  the page is Email. It now reads "Email, password, theme, sign out, delete". Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
@@ -866,3 +874,10 @@ moved on to something else meanwhile.
 
 - Workout page meta line: each item ("3,693 kg lifted", "bodyweight 79.5 kg") now stays whole on a phone; when the line wraps, the dot ends the line above. Checked on the iPhone.
 - Older/newer workout links under a workout: a lone link (newest or oldest workout) now takes the whole row instead of half, and long names wrap to two lines before being cut ("Shoulders & For…" → "Shoulders & Forearms"). Checked on the iPhone.
+- Sync and data: the backup line said "22 exercises" while Settings → Exercises lists 65 (that list
+  also has the lifts only in your plan). The 22 are the different lifts you have logged, so it now
+  says "22 different lifts", the words Home uses for the same count. Checked on the iPhone.
+- Apple Shortcuts: step 2 told you to "Open this page on your iPhone" even when you already had. On
+  an iPhone or iPad (an iPad that reports itself as a Mac counts, by its touch screen) it now just
+  says "Tap a shortcut to add it, and paste your key when asked."; a computer keeps the full
+  sentence. Checked on the iPhone.
