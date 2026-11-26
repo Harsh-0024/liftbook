@@ -333,7 +333,9 @@ main.wide { max-width: 860px; }
 }
 .card { padding: 20px; }
 .group { overflow: hidden; overflow: clip; }
-.card.gold, .group.gold { border-color: var(--line-gold); box-shadow: 0 0 0 4px var(--gold-soft); }
+/* A highlighted card: one gold edge, a faint gold wash and a soft glow. The hard 4px ring it had
+   read as a second outline around the card on the dark theme. */
+.card.gold, .group.gold { border-color: var(--line-gold); background-image: linear-gradient(135deg, var(--gold-soft), transparent 65%); box-shadow: 0 6px 24px -8px var(--gold-soft), 0 0 18px -6px var(--line-gold); }
 .card > h2:first-child, .card > summary h2 { font-size: 1.4rem; }
 .foot { font-size: 0.8rem; color: var(--subtle); line-height: 1.5; margin: -4px 4px 14px; }
 
