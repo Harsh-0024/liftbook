@@ -430,7 +430,8 @@ a.stat:active { background: var(--gold-soft); }
 .nums { display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); padding: 18px 6px; }
 .nums > div { text-align: center; padding: 0 4px; min-width: 0; }
 .nums > div + div { border-left: 1px solid var(--hair); }
-.nums b { display: block; font-size: 1.4rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+/* Serif figures, like Home's totals and the Stats headline (always whole counts, so they fit). */
+.nums b { display: block; font: 700 1.85rem/1 var(--serif); font-variant-numeric: lining-nums; }
 .nums span { display: block; margin-top: 5px; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .nums .gold b { color: var(--gold-text); }
 .nums .good b { color: var(--good); }
