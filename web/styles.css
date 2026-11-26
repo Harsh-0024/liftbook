@@ -351,6 +351,9 @@ button.rowi { width: 100%; border: 0; text-align: left; font: inherit; cursor: p
 .rowi .desc { display: block; font-size: 0.8rem; color: var(--muted); line-height: 1.4; margin-top: 2px; }
 /* An exercise that matches the search, in All workouts: first in the line and in the text colour. */
 .rowi .desc .hit { color: var(--text); font-weight: 500; }
+.rowi .status { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--subtle); line-height: 1.4; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.rowi .status::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--good); }
+.rowi .status.warn::before { background: var(--warn); }
 .rowi .value { flex: none; font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
 .rowi .chev, .chev-i { flex: none; color: var(--subtle); opacity: 0.7; }
 .rowi .chev svg.i, .chev-i svg.i { width: 15px; height: 15px; }

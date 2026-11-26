@@ -956,6 +956,13 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   of "Bodyweight". It now uses the same title style and icon column, so both titles line up and match.
   Checked on the iPhone.
 
+### Branch `design/settings-sync-status` (26 Nov)
+
+- Settings, "Sync and data": the sync status ("Synced just now", "3 to sync") sat beside the row
+  and squeezed the description onto two lines on a phone. It is now a line of its own under the
+  description, with a dot: green when synced, amber when changes are waiting. rowItem() takes
+  `status` (and `warn`) for this. Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

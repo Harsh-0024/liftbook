@@ -137,7 +137,7 @@ function index(ctx) {
     h('section', { class: 'section' }, h('div', { class: 'label' }, 'Data and connections'),
       h('div', { class: 'group' },
         rowItem({ href: '#/settings/sync', ico: 'sync', title: 'Sync and data', desc: 'Devices, backup file, export',
-          value: st.pending ? `${st.pending} to sync` : st.last_sync ? `Synced ${ago(st.last_sync)}` : '' }),
+          status: st.pending ? `${st.pending} to sync` : st.last_sync ? `Synced ${ago(st.last_sync)}` : '', warn: Boolean(st.pending) }),
         rowItem({ href: '#/settings/import', ico: 'clipboard', title: 'Bulk import', desc: 'Paste many workout days at once' }),
         rowItem({ href: '#/settings/shortcuts', ico: 'phone', title: 'Apple Shortcuts', desc: 'Log and get workouts from Notes on your iPhone' }))),
 
