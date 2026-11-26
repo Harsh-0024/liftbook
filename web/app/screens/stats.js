@@ -160,7 +160,8 @@ function bodyweightCard(lb, from, short) {
   const signed = (v) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${fmtNum(Math.abs(v))} kg`;
   return h('div', { class: 'card' },
     h('div', { class: 'card-head', style: 'margin-bottom:12px' }, h('h2', {}, 'Bodyweight')),
-    lineChart(labels.map(short), vals, { unit: ' kg', tag: `${fmtNum(t.current)} kg`, height: 200, name: 'Bodyweight',
+    // Bare numbers on the axis, as the exercise chart has; the tag at the end says "kg".
+    lineChart(labels.map(short), vals, { tag: `${fmtNum(t.current)} kg`, height: 200, name: 'Bodyweight', say: (v) => `${fmtNum(v)} kg`,
       // Pointing at it: the day, the workout it was saved with, and the weight; a click opens that workout.
       tip: (i) => {
         const day = labels[i];
@@ -395,6 +396,9 @@ export function statsScreen(ctx) {
         // The same rounding as the chart's tags (82.2 kg on both), but volume stays in whole kilos.
         exHero = h('div', { class: 'hero' }, h('b', {}, `${fmtNum(head.value, metric === 'volume' ? 0 : 1)}${u}`), h('span', {}, head.what), change);
       }
+      // The session with the highest estimated max, for the Best tile's date.
+      const bestAt = (c.data || []).reduce((b, v, i) => (v !== null && v !== undefined && (b < 0 || v > c.data[b]) ? i : b), -1);
+      const bestDay = bestAt >= 0 ? c.labels[bestAt] : null;
       exerciseCard = h('div', {},
         exHero,
         tabs(metrics, metric, (v) => {
@@ -406,10 +410,13 @@ export function statsScreen(ctx) {
         lineChart(labels.map(short), vals, { unit, tag: vals.length ? `${fmtNum(vals[vals.length - 1], 0)}${tagUnit}` : null, tip: exerciseTip,
           name: `${exercise}, ${(metrics.find(([v]) => v === metric) || metrics[0])[1].toLowerCase()}`, say: (v) => `${fmtNum(v)}${tagUnit}` }),
         h('div', { class: 'grid-3', style: 'margin-top:14px' },
-          tile('Best', withKg(st.max_1rm), c.is_timed ? 'weight × √seconds' : null, 'gold'),
+          // Every tile has its line underneath, as the Overall tiles do: the day of the best, and the
+          // day "since first" counts from. A timed hold's best says how its score is worked out instead.
+          tile('Best', withKg(st.max_1rm), c.is_timed ? 'weight × √seconds' : bestDay ? formatDay(bestDay, { weekday: false, year: false }) : null, 'gold'),
           // One session has nothing to be "since": say so instead of a flat 0%.
           c.labels.length < 2 ? tile('Since first', '–', 'one session so far')
-            : tile('Since first', pctText(st.improvement_pct || 0, Math.abs(st.improvement_pct || 0) < 10 ? 1 : 0)),
+            : tile('Since first', pctText(st.improvement_pct || 0, Math.abs(st.improvement_pct || 0) < 10 ? 1 : 0),
+              `from ${formatDay(c.labels[0], { weekday: false, year: false })}`),
           tile('Sessions', String(c.labels.length), c.labels.length ? `last ${formatDay(c.labels[c.labels.length - 1], { weekday: false, year: false })}` : null)),
         sessionList(lb.exerciseSessions(exercise), c));
     }
@@ -486,12 +493,14 @@ export function bestsScreen(ctx) {
           // The top set's day shows only when it differs from the best's, which sits beside the number.
           // An exercise left for two months says when it was last done rather than how it stands "now".
           const under = r.lastDay && r.lastDay < resting ? `last done ${day(r.lastDay)}`
-            : r.belowPct >= 1 ? `now ${fmtNum(r.belowPct, r.belowPct < 10 ? 1 : 0)}% under` : r.sessions > 1 ? 'at your best now' : 'first session';
+            : r.belowPct >= 1 ? `now ${fmtNum(r.belowPct, r.belowPct < 10 ? 1 : 0)}% under` : r.sessions > 1 ? 'at your best now' : 'one session so far';
+          // Standing at your best reads in green, as other good news does (the sync dot, "up" pills).
+          const atBest = under === 'at your best now';
           return h('a', { class: 'rowi best-row', href: `#/stats?exercise=${encodeURIComponent(r.value)}` },
             h('span', { class: 'main' },
               h('span', { class: 'title' }, r.label, r.fresh ? h('span', { class: 'pill best' }, 'New') : null),
               h('span', { class: 'desc' }, r.top ? `Top set ${r.top}${r.topDay === r.bestDay ? '' : ` · ${day(r.topDay)}`}` : `${r.sessions} session${r.sessions === 1 ? '' : 's'}`),
-              h('span', { class: 'desc subtle' }, under)),
+              h('span', { class: `desc subtle${atBest ? ' at-best' : ''}` }, under)),
             // Whole kilos for an estimated max, a whole score for a timed hold (as the exercise tiles show them).
             h('span', { class: 'value' }, h('b', {}, r.isTimed ? `${fmtNum(r.best, 0)} score` : `${fmtNum(r.best, 0)} kg`), h('small', {}, day(r.bestDay))),
             h('span', { class: 'chev-i' }, icon('chev')));

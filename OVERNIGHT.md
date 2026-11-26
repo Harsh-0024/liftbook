@@ -826,6 +826,34 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   an empty half. With both, a long name wraps to two lines before it is cut. Checked on the iPhone
   (25 Nov: one link; 16 Nov: both).
 
+### Branch `design/stats-tiles` (from `improve/round-4`)
+
+- **Every Stats tile has its caption.** Under an exercise's chart, Best and Since first had no line
+  underneath while Sessions did, so the three tiles sat uneven and the Overall tiles above all had
+  one. Best now gives the day of the best ("28 Oct"; a timed hold keeps "weight × √seconds"), and
+  Since first the day it counts from ("from 23 Aug"). Checked on the mock data.
+- **Bodyweight axis without "kg".** Its axis read "77 kg … 80 kg" while the exercise chart's reads
+  bare numbers; it now matches, and the tag at the line's end still says "79.5 kg" (as does the
+  chart's spoken summary).
+- **Personal bests: status lines.** "at your best now" reads in green, as other good news does;
+  "first session" reads "one session so far", the words the exercise tile already uses.
+- Checked in dark mode too: the green is the dark theme's brighter one, and the Stats tiles and
+  captions read cleanly on the dark cards.
+- **Tile numbers line up on a phone.** On the iPhone "MOST IMPROVED" wraps to two lines and pushed
+  its number below Best's and New bests'. Each row of tiles now shares its label, number and
+  caption lines (CSS subgrid), so the numbers sit level whatever wraps. Desktop is unchanged (all
+  tiles 108px, numbers level). Checked on the iPhone 18 Pro simulator.
+- **More iPhone checks passed (from the waiting list):** Retrieve on two columns, the "SESSION 2"
+  kicker, the Consistency year grid (scrolls sideways, opens on recent months), and the Overall
+  chart's red stretch under the start line with its guide line. Still to see on a phone: the gold
+  "a new best" note after saving, and a timed exercise's best and chart.
+
+## Muscle balance numbers (branch `design/stats-tiles`, 25 Nov 2026)
+
+- Every muscle's sets-a-week figure now shows one decimal (6.0, 9.0, 2.9, 10.6), so the column lines up instead of mixing whole numbers and decimals.
+- A card header's small note (Muscle balance's "sets a week") sits on the title's baseline, with no stray margin below it.
+- Checked on the iPhone 18 Pro (light): Stats > Muscle balance, and the Personal bests header (unchanged look). 115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
