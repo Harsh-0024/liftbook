@@ -6,7 +6,7 @@ import { formatSetsDisplay } from '../../core/logging.js';
 import { attachSuggestions } from '../suggest.js';
 import { attachPasteTidy } from '../paste.js';
 import { shareLinkBox } from '../share.js';
-import { splitSessionTitle, lastDoneBySession } from '../../core/sessions.js';
+import { splitSessionTitle, sessionTitleText, lastDoneBySession } from '../../core/sessions.js';
 import { exerciseMatches } from '../../core/search.js';
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -469,7 +469,7 @@ export function workoutScreen(ctx, day) {
   // A trash button at the end of the row (named for screen readers), so the row stays on one line.
   const del = h('button', { class: 'btn danger trash-end', type: 'button', 'aria-label': 'Delete workout', title: 'Delete workout' }, icon('trash'));
   del.addEventListener('click', busy(del, async () => {
-    if (!(await ask('This removes it from all your devices.', { title: `Delete ${w.title} on ${formatDay(day)}?`, yes: 'Delete', danger: true }))) return;
+    if (!(await ask('This removes it from all your devices.', { title: `Delete ${sessionTitleText(w.title)} on ${formatDay(day)}?`, yes: 'Delete', danger: true }))) return;
     const ids = await lb.deleteWorkout(day);
     toast('Workout deleted.', { ms: 8000, action: 'Undo', onAction: async () => {
       await lb.restoreLogs(ids);

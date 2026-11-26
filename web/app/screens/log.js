@@ -5,7 +5,7 @@ import { h, icon, pageHead, formatDay, busy, toast, autoGrow, rowItem } from '..
 import { attachSuggestions } from '../suggest.js';
 import { attachPasteTidy, tidyPaste, showFromTop } from '../paste.js';
 import { scrollBehavior } from '../motion.js';
-import { splitSessionTitle } from '../../core/sessions.js';
+import { splitSessionTitle, sessionTitleText } from '../../core/sessions.js';
 
 export const DRAFT_KEY = 'liftbook-log-draft';
 
@@ -261,7 +261,7 @@ export function logScreen(ctx) {
         icon('calendar'),
         h('div', {},
           h('strong', {}, 'That day already has a workout.'),
-          h('p', { style: 'margin:4px 0 10px' }, `${r.existing.title} is logged on ${formatDay(r.existing.day)}. Add these exercises to it, or open it.`),
+          h('p', { style: 'margin:4px 0 10px' }, `${sessionTitleText(r.existing.title)} is logged on ${formatDay(r.existing.day)}. Add these exercises to it, or open it.`),
           h('div', { class: 'row' },
             h('button', { class: 'btn primary small', type: 'button', onclick: (e) => busy(e.currentTarget, () => doSave(true))(e) }, 'Add to that day'),
             h('a', { class: 'btn small', href: `#/workout/${r.existing.day}` }, 'Open it')))));

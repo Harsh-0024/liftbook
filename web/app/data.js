@@ -29,7 +29,7 @@ import {
 } from '../core/renames.js';
 import { parseDate, deviceDay, addDays } from '../core/dates.js';
 import { weekStrip } from '../core/week.js';
-import { nextSessionId } from '../core/sessions.js';
+import { nextSessionId, sessionTitleText } from '../core/sessions.js';
 import { personalBests } from '../core/bests.js';
 import { bodyweightTrend } from '../core/weight_trend.js';
 import { muscleBalance } from '../core/balance.js';
@@ -890,7 +890,7 @@ export class Liftbook {
       if (date > today) return { ...day, status: 'failed', reason: day.guessed ? 'Lands in the future: write its year' : 'In the future' };
       const c = this.check(b.text, { now, date });
       if (!c.ok) return { ...day, status: 'failed', reason: c.errors[0] || 'Nothing to save', check: c };
-      if (c.existing || seen.has(date)) return { ...day, status: 'skipped', reason: c.existing ? `${c.existing.title} is already logged` : 'Pasted twice', check: c };
+      if (c.existing || seen.has(date)) return { ...day, status: 'skipped', reason: c.existing ? `${sessionTitleText(c.existing.title)} is already logged` : 'Pasted twice', check: c };
       seen.add(date);
       return { ...day, status: 'ready', check: c };
     });
