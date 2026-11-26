@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/settings-sync-status` (26 Nov)
+
+- Settings, "Sync and data": the sync status ("Synced just now", "3 to sync") sat beside the row
+  and squeezed the description onto two lines on a phone. It is now a line of its own under the
+  description, with a dot: green when synced, amber when changes are waiting. rowItem() takes
+  `status` (and `warn`) for this. Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

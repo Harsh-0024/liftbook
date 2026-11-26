@@ -193,11 +193,14 @@ export function icon(name, cls = '') {
 }
 
 /** A row in a group: icon, title, description, a value on the right, and a chevron when it opens something. */
-export function rowItem({ href, onclick, ico, title, desc, value, chev = Boolean(href || onclick), cls = '' }) {
+/** `status` is a live line under the description, with a dot ("Synced 2 min ago"): beside the row it
+ * took the description's room on a phone. `warn` colours its dot for something waiting. */
+export function rowItem({ href, onclick, ico, title, desc, value, status, warn = false, chev = Boolean(href || onclick), cls = '' }) {
   const tag = href ? 'a' : onclick ? 'button' : 'div';
   return h(tag, { class: `rowi ${cls}`.trim(), href, type: onclick ? 'button' : null, onclick },
     ico ? h('span', { class: 'ico' }, icon(ico)) : null,
-    h('span', { class: 'main' }, h('span', { class: 'title' }, title), desc ? h('span', { class: 'desc' }, desc) : null),
+    h('span', { class: 'main' }, h('span', { class: 'title' }, title), desc ? h('span', { class: 'desc' }, desc) : null,
+      status ? h('span', { class: warn ? 'status warn' : 'status' }, status) : null),
     value !== undefined && value !== null && value !== '' ? h('span', { class: 'value' }, value) : null,
     chev ? h('span', { class: 'chev-i' }, icon('chev')) : null);
 }
