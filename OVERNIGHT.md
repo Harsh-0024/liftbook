@@ -1002,3 +1002,6 @@ moved on to something else meanwhile.
 ## Bodyweight Range tile (branch `design/stats-consistency`)
 - The Range tile's note "kg, low to high" wrapped to two lines on a phone, making it taller than Now and Change. It now says "kg" (the label already says Range), so the three tiles match.
 - Checked on the iPhone 18 Pro simulator.
+## design/bests-count-align (26 Nov)
+
+1. Personal bests: the "22 exercises" count sat about 9pt above the middle of the Latest / Highest / A to Z pills, because `.foot` kept its own 14px bottom margin inside the header row. `.card-head .foot { margin: 0; }` centres it and lines its left edge up with the search box and list. The same rule fixes "sets a week" beside the Muscle balance heading. Checked on the iPhone 18 Pro simulator.
