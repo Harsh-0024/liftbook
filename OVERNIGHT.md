@@ -642,6 +642,9 @@ as asked on 24 Nov; `improve/round-4` above holds everything before that.
 - Bodyweight's note is plain (not the form labels' semibold) and Appearance lines up with the rows
   above, on the iPhone too. The rest of Settings (Training, Account, Help make it better, Sign out)
   reads evenly. Nothing to change.
+## design/gold-edges (25 Nov)
+- Same flaw as Muhurta: gradient fills (primary buttons, active tabs, done-day dots, "Copied") have a transparent border, and the gradient repeated underneath it, leaving a faint sliver of the far-end colour at the edges.
+- All four now use `background-origin: border-box`. Checked on the iPhone simulator (Home: Today's workout, the week dots).
 
 ## Waiting list
 
