@@ -913,6 +913,8 @@ details.ex-open .vs { gap: 14px; }
 .cycle .last-done { display: block; margin-top: 4px; font-size: 0.72rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 /* Home's "Up next" names the session in the serif, as the Retrieve tiles do. */
 .rowi.next-row .title { font: 600 1.32rem/1.15 var(--serif); letter-spacing: 0.005em; }
+/* Workout lists (Home's Recent, All workouts): the session name in the serif, as everywhere else. */
+.rowi.w-row .title { font: 600 1.2rem/1.2 var(--serif); letter-spacing: 0.005em; }
 /* Settings: your name in the serif, as Home greets you. */
 .profile-row .title { font: 600 1.45rem/1.15 var(--serif); letter-spacing: 0.005em; }
 @media (max-width: 600px) {
