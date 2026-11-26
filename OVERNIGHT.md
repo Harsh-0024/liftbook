@@ -632,3 +632,15 @@ moved on to something else meanwhile.
   the title now has the whole line and the date sits under it, with the same 18px between them as
   between other fields. Wider screens keep the two side by side. Checked on the iPhone 18 Pro
   simulator; 115 tests pass.
+### Branch `fix/edit-check` (from improve/round-4)
+
+- **Edit workout's Check list wrote sets its own way.** A plank showed as "0×60 · 0×45" and a
+  bodyweight set had no "BW". It now uses the same set text as the Log page and the workout page
+  (`BW×60s`), and shows the Log page's name notes with "Use it" for a close misspelling of a known
+  name.
+- Showing those notes showed a second bug: every row said "Already in that day's workout", because
+  the check compared the workout with itself. `lb.check()` takes `replaceDay`, and Edit passes the
+  day it is editing. Test added (116 pass); checked on the iPhone 18 Pro simulator.
+- Limit: a misspelling that is already saved in your history ("Lateral Raize" in the demo data)
+  counts as a known name, so Edit doesn't flag it. Rename it in Settings → Exercises to fix it
+  everywhere.

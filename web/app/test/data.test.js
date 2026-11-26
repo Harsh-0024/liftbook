@@ -250,3 +250,11 @@ test('a month-first date gets the day-first fix in its message', async () => {
   const unclear = lb.check('45/45 Push\n\nSquat\n100 x 5').errors.find((e) => e.includes('isn’t a date'));
   if (unclear) assert.match(unclear, /Write the day first, as 13\/02 or 13 Feb\./);
 });
+
+test('checking an edit doesn’t call the workout’s own exercises “already in that day’s workout”', async () => {
+  const lb = await app();
+  await lb.log('1/9/26 Push\n\nFlat Barbell Press\n50, 8');
+  const text = '1/9/26 Push\n\nFlat Barbell Press\n52.5, 8';
+  assert.equal(lb.check(text).notes[0].state, 'dup');
+  assert.notEqual(lb.check(text, { replaceDay: '2026-09-01' }).notes[0].state, 'dup');
+});

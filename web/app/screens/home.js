@@ -579,18 +579,35 @@ export function editScreen(ctx, day) {
   const checkBox = h('section', { class: 'section', 'aria-label': 'Check before saving' }, h('div', { class: 'label' }, 'Check'), checkList);
   const err = h('div', { role: 'alert' });
   const check = () => {
-    const c = lb.check(text());
+    const c = lb.check(text(), { replaceDay: day });
     const exercises = c.parsed?.exercises || [];
     meta.replaceChildren(h('span', { class: c.errors.length ? 'error' : 'ok' },
       `${c.exercise_count || 0} exercise${c.exercise_count === 1 ? '' : 's'} · ${c.set_count || 0} set${c.set_count === 1 ? '' : 's'}`));
     checkBox.hidden = !exercises.length;
-    checkList.replaceChildren(...exercises.map((e) => {
+    // The same check as the Log page: sets as the workout page writes them ("60s" for a plank, not
+    // "0×60"), and a close misspelling ("Lateral Raize") with "Use it" to put the known name in.
+    checkList.replaceChildren(...exercises.map((e, i) => {
       const bad = e.valid === false || e.missing_name;
-      const sets = (e.reps || []).map((r, k) => `${e.weights?.[k] ?? ''}${e.weights?.[k] !== undefined && e.weights?.[k] !== null ? '×' : ''}${r}`);
-      return h('div', { class: 'rowi' },
+      const n = c.notes?.[i];
+      const flagged = n && n.state !== 'ok' && n.state !== 'new';
+      // Lines in the checked text: the date and title, a blank line, then the box.
+      const at = e.line - 3;
+      const fix = n?.state === 'suggest' && n.fixLine !== null && at >= 0
+        ? h('button', { class: 'btn small', type: 'button', 'aria-label': `Use it: ${n.suggestion}`, onclick: () => {
+          const rows = ta.value.trim().split('\n');
+          if (at >= rows.length) return;
+          rows[at] = n.fixLine;
+          ta.value = rows.join('\n');
+          ta.dispatchEvent(new Event('input'));
+          check();
+        } }, 'Use it')
+        : null;
+      return h('div', { class: `rowi check-row${flagged ? ' warn' : ''}` },
         h('span', { class: 'ico', style: bad ? 'color:var(--bad)' : '' }, icon(bad ? 'info' : 'check')),
         h('span', { class: 'main' }, h('span', { class: 'title' }, e.name),
-          h('span', { class: 'desc mono' }, bad ? 'Couldn’t read these sets' : sets.join('  ·  '))));
+          h('span', { class: 'desc mono' }, bad ? 'Couldn’t read these sets' : e.sets_label),
+          flagged ? h('span', { class: `desc name-note is-${n.state}` }, n.note) : null),
+        fix);
     }));
   };
   let timer = null;
