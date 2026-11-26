@@ -26,7 +26,7 @@ export function topSetText({ weight, reps, offset = null, isTimed = false }) {
 /**
  * charts: [{ value, label, chart }] where chart is getChartData's answer.
  * Returns one row per exercise that has a score, unsorted:
- * { value, label, isTimed, best, bestDay, current, belowPct, top, topDay, sessions, lastDay, fresh }
+ * { value, label, isTimed, best, withBw, bestDay, current, belowPct, top, topDay, sessions, lastDay, fresh }
  * bestDay is the first day the best was reached. fresh: reached in the last 30 days, and not on
  * the exercise's very first session (a first session is a start, not a record).
  */
@@ -53,6 +53,8 @@ export function personalBests(charts, today) {
       label,
       isTimed: Boolean(chart.is_timed),
       best: data[bi],
+      // The best counted the lifter's bodyweight (BW, BW+10…): its kilos include them.
+      withBw: chart.bodyweight_offset?.[bi] !== null && chart.bodyweight_offset?.[bi] !== undefined,
       bestDay,
       current,
       belowPct: current < data[bi] ? ((data[bi] - current) / data[bi]) * 100 : 0,

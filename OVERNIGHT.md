@@ -1423,3 +1423,9 @@ Settings and Stats (headline and end tag agree, tile lines).
   Up next, the workout page and its older/newer links. Session label and exercise line stay Inter.
   Select mode keeps the same rows (the class is on the button too).
 - Checked All workouts on the iPhone simulator (dark). sw.js rebuilt; tests 127/127.
+
+## design/bests-with-bw
+- Personal bests showed "82 kg" beside "Top set BW × 1" for Hyper Extension, which read as an 82 kg load. The estimated max of a bodyweight set counts the bodyweight (as Stats does), so the row now says so: a small "with BW" under the number, above the date.
+- core/bests.js: rows get withBw (the best set had a bodyweight offset). New test in core/test/bests.test.js.
+- Also checked this round: Liftbook's text fields are already 16px on phones (no iOS zoom, unlike payment-tracker had); the Stats chart curve can't overshoot its points.
+- sw.js rebuilt; npm test 128 pass. Checked on the iPhone.

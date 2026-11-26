@@ -29,6 +29,17 @@ test('the best is the first day the highest score was reached', () => {
   assert.equal(Math.round(row.belowPct), 5);
 });
 
+test('withBw: a best set with bodyweight counts its kilos with bodyweight', () => {
+  const bw = chart(['2026-11-20', '2026-11-25'], [80, 82], [80, 82], [1, 1]);
+  bw.bodyweight_offset = [null, 0];
+  const [row] = personalBests([{ value: 'hyper', label: 'Hyper Extension', chart: bw }], '2026-11-27');
+  assert.equal(row.top, 'BW × 1');
+  assert.equal(row.withBw, true);
+  const [plain] = personalBests([{ value: 'bench', label: 'Bench Press',
+    chart: chart(['2026-11-25'], [100], [80], [5]) }], '2026-11-27');
+  assert.equal(plain.withBw, false);
+});
+
 test('fresh: a best from the last 30 days, but not a first session', () => {
   const rows = personalBests([
     { value: 'a', label: 'A', chart: chart(['2026-10-01', '2026-11-10'], [90, 100], [70, 80], [8, 5]) },
