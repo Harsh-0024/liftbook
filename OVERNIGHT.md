@@ -906,6 +906,11 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   already marks a new personal best on shared workouts. Checked on the iPhone in dark mode;
   115 tests pass.
 
+### Branch `design/curly-apostrophes` (26 Nov)
+
+- Stats → Muscle balance note: "exercise's" now uses the curly apostrophe (’) like the rest of the app. Checked in the page.
+- Left as they are: the rename message ("That's already its name.") and the coach's built-in answers. They are checked against fixtures from the Python site, so changing them needs both sides changed.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
