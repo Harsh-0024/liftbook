@@ -697,6 +697,8 @@ a.wday:focus-visible .dot { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--gol
 .ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .label span { font-weight: 500; letter-spacing: 0; text-transform: none; font-size: 0.78rem; }
 .label .whole { white-space: nowrap; }
+/* A label whose text is wrapped as a heading (it shares the row with a link, like Plan · Format) keeps the label look. */
+.label > span[role="heading"] { font: inherit; letter-spacing: inherit; text-transform: inherit; }
 
 /* ---------- workout ---------- */
 .wo-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }

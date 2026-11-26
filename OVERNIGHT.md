@@ -1045,3 +1045,6 @@ moved on to something else meanwhile.
 ## design/gold-edge (26 Nov)
 
 1. Gold fills (chosen tab pills such as Latest / Highest / A to Z, primary buttons, the chosen weekday dot) had a faint pale rim on their left and top edges: the border is transparent, the gradient was painted inside the padding and tiled under the border, so its light far end showed in the border strip. `--gold-fill` (all three themes) now paints at `border-box`. Same flaw and fix as Muhurta's design/gold-edge. Checked on the iPhone 18 Pro simulator (Personal bests).
+## design/plan-label (26 Nov)
+
+1. Workout plan: the "Plan" label (the one with the Format link beside it) showed in small sentence case, while "REP RANGES" below it showed as an uppercase section label. ui.js wraps a label's leading words in `<span role="heading">` when the label also holds a link, and the broad `.label span` rule (meant for counts like "1 workout") then un-capitalised it. A new rule, `.label > span[role="heading"]`, gives that span the label's own look back. Checked on the iPhone 18 Pro simulator. On Home, Stats, Retrieve, Settings, Sync and data, Shortcuts, Personal bests and Log no label gets such a span, so they don't change.
