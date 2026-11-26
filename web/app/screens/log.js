@@ -112,6 +112,8 @@ export function logScreen(ctx) {
   const paintPaste = () => {
     paste.replaceChildren(...(ta.value.trim() ? [icon('trash'), 'Clear'] : [icon('clipboard'), 'Paste']));
     if (startRow) startRow.hidden = Boolean(ta.value.trim());
+    // An empty box has nothing to save: a bright gold Save there only led to an error.
+    save.disabled = !ta.value.trim();
   };
 
   let timer = null;
