@@ -756,8 +756,16 @@ function sessionNames(ctx) {
       h('a', { class: 'btn', href: '#/settings/plan' }, 'Open your plan'));
   }
   const saved = customKeys(lb.text('shortcut_keys'));
+  // Shown as "Session 1 · Chest & Biceps", like the rest of the app (the label itself stays as
+  // Get Workout lists it), and each box suggests that session's own first word: "chest", "legs".
+  const shown = (d) => d.label.replace(/^(Session \d+) - /, '$1 · ');
+  const example = (d) => {
+    const title = /^Session \d+ - (.+)$/.exec(d.label);
+    const word = title ? title[1].split(/[^A-Za-z]+/).find(Boolean) : '';
+    return `e.g. ${(word || 'push').toLowerCase()}`;
+  };
   const inputs = days.map((d, i) => h('input', {
-    id: `day-key-${i}`, type: 'text', maxlength: 120, value: saved[d.token] || '', placeholder: 'e.g. push',
+    id: `day-key-${i}`, type: 'text', maxlength: 120, value: saved[d.token] || '', placeholder: example(d),
     autocomplete: 'off', autocapitalize: 'off', 'data-token': d.token,
   }));
   const save = h('button', { class: 'btn primary', type: 'button' }, 'Save names');
@@ -769,7 +777,7 @@ function sessionNames(ctx) {
   }));
   return h('div', { class: 'card' },
     h('p', { class: 'subtle' }, 'Give a session your own word, like “push” or “legs”, and say or type it in Get Workout.'),
-    days.map((d, i) => field(d.label, inputs[i], d.label.toLowerCase().startsWith(`${d.category} ${d.day_id}`.toLowerCase()) ? null : `${d.category} ${d.day_id}`)),
+    days.map((d, i) => field(shown(d), inputs[i], d.label.toLowerCase().startsWith(`${d.category} ${d.day_id}`.toLowerCase()) ? null : `${d.category} ${d.day_id}`)),
     h('p', { class: 'subtle' }, 'Leave a box empty to use the session’s own name. Capitals and punctuation don’t matter.'),
     save);
 }
