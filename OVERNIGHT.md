@@ -1323,3 +1323,12 @@ Settings and Stats (headline and end tag agree, tile lines).
    sets under it" and "Be/4 · No sets under it". Now there is one row, "Hyper Extension ·
    Couldn't read "Be/4, 12"", and the typo line gets no row of its own. Test added; 127 pass.
    Checked on the iPhone 18 Pro simulator. Merged back into `improve/round-4` once checked.
+
+## design/plan-targets (26 Nov)
+
+1. A Retrieve plan page's right-hand column said "10–20 reps" on one row, "2 sets" on the next and
+   nothing on others: only a "[2]" in the plan was ever shown, while every other line quietly
+   meant 3 sets (as the "20 sets" in the header counts them). Now every row says its sets:
+   "3 sets", "2 sets", or "3 × 10–20" with a rep range. Only the page's display changed; the
+   Retrieve text and its match with the old Python site are as before. 127 tests pass. Checked on
+   the iPhone 18 Pro simulator (Session 4 · Legs). Merged back into `improve/round-4`.

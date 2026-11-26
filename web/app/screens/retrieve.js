@@ -154,12 +154,24 @@ function output(ctx, result, back, { kicker = '', number = '', name = '', fallba
         h('div', { class: 'rp-main' },
           h('span', { class: 'rp-name' }, e.name),
           allFresh ? null : h('span', { class: `rp-sets${e.fresh ? ' fresh' : ''}` }, e.fresh ? 'No history yet' : e.sets_label)),
-        e.target ? h('span', { class: 'rp-target' }, e.target) : null))
+        h('span', { class: 'rp-target' }, planTarget(e.target))))
         : h('pre', { class: 'out', style: 'padding:18px 20px' }, text)),
       h('details', { class: 'rp-text' },
         h('summary', {}, 'View as text', h('span', { class: 'ex-chev' }, icon('chev'))),
         h('div', { class: 'group' }, pre))),
     dock, dockEnd);
+}
+
+/**
+ * The right-hand column of a plan row, always in sets: "3 sets", "2 sets" or "3 × 10–20". A plan
+ * line without "[2]" gets 3 sets (as the header's count has it), but only a "[2]" was ever said, so
+ * "10–20 reps" sat over a row of "2 sets" and some rows said nothing.
+ */
+function planTarget(target) {
+  const t = String(target || '').trim();
+  if (!t) return '3 sets';
+  if (/^\d+ (sets?|×)/.test(t)) return t;
+  return `3 × ${t.replace(/ reps$/, '')}`;
 }
 
 /** ("Session 4 · Cycle 1", "Legs") as the old page header had it. */
