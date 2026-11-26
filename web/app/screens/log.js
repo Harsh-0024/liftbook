@@ -94,7 +94,7 @@ export function logScreen(ctx) {
     const next = workouts.length && workouts[0].day !== iso ? lb.nextSession() : null;
     if (next) {
       const name = `Session ${next.id}${next.title ? ` · ${next.title}` : ''}`;
-      startRow = h('div', { class: 'group log-start' }, rowItem({
+      startRow = h('div', { class: 'group gold log-start' }, rowItem({
         ico: 'list', title: `Start from ${name}`,
         desc: `Next in your plan${next.exercises ? `: ${next.exercises} exercise${next.exercises === 1 ? '' : 's'}` : ''}, with your last numbers to fill in`,
         onclick: () => {

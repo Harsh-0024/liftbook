@@ -1351,7 +1351,7 @@ button.rowi.more-sessions .title { color: var(--gold-text); font-size: 0.86rem; 
 .balance-track i { display: block; height: 100%; border-radius: 999px; background: var(--gold-fill, var(--gold)); }
 .balance-row b { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
 
-/* Log: start from the next session, shown while the box is empty. */
+/* Log: start from the next session, shown while the box is empty. Gold, like Home's "Up next". */
 .log-start { margin-bottom: 14px; }
 .log-start[hidden] { display: none; }
 
