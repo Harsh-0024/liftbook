@@ -1136,3 +1136,6 @@ moved on to something else meanwhile.
 ## improve/delete-confirm (26 Nov)
 
 1. Delete my account: the confirm box had the username as its placeholder, so it read "demo" in grey, which looks already typed, and the faded Delete button then seemed broken. The placeholder is gone; the label above still says which username to type. Checked on the iPhone 18 Pro simulator. Nothing was typed in or deleted.
+## improve/exercise-counts (26 Nov)
+
+1. Settings → Exercises: each row said "12 logged" without saying 12 of what. The number counts the workouts that include the exercise, which Stats calls "Sessions", so the rows now say "12 sessions" ("1 session" for one). Checked on the iPhone 18 Pro simulator.
