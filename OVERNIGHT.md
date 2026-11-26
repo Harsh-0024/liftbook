@@ -1471,3 +1471,8 @@ Settings and Stats (headline and end tag agree, tile lines).
 - The plan line now uses "bodyweight" in lower case, like the workout page.
 - Looked at, left alone: the 🥇🥈🥉 medals on a workout's "vs best" pill are colour emoji among line icons, but each tier has its own meaning (explained in the help), so they stay.
 - Checked on the iPhone (Session 4 · Legs). npm test 128 pass.
+
+## fix/short-page-footer (27 Nov)
+- On a short page (Page not found, and any page shorter than the screen), the footer's "© 2026 Liftbook" was hidden under the tab bar on the iPhone: only its gold line showed.
+- The cause: the page's minimum height was 100vh, which in Safari counts the toolbar's hidden height too. It now uses 100dvh (the visible height), with 100vh kept as a fallback.
+- Checked on the iPhone (Page not found: footer fully above the tab bar). npm test 128 pass.
