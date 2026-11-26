@@ -1397,3 +1397,9 @@ Settings and Stats (headline and end tag agree, tile lines).
 - Settings' profile card shows your name in the serif (1.45rem), as Home's greeting does, so
   the name reads the same on both pages; @username and email stay in Inter.
 - Checked on the iPhone simulator (dark); sw.js rebuilt; tests 127/127.
+
+## design/bests-tiles (26 Nov)
+- Personal bests' three tiles (Exercises, New bests, Latest best) hold short figures, so they now
+  use the serif like Home's totals (class bests-stats; colours unchanged, New bests stays gold).
+  The main Stats tiles keep Inter: they hold words like "Wednesday".
+- Checked on the iPhone simulator (dark): "25 Nov" fits its tile. sw.js rebuilt; tests 127/127.

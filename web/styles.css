@@ -419,6 +419,8 @@ input.inline-num[type] { width: 72px; padding: 7px 10px; text-align: right; font
 /* Home's three totals, as on the old site: large serif figures in a gold gradient. (Only Home:
    the Stats tiles hold words and units, like "Wednesday" or "102.5 kg", that need the smaller face.) */
 .home-stats .stat b { font: 700 clamp(1.7rem, 8vw, 2.3rem)/1.05 var(--serif); font-variant-numeric: lining-nums; color: var(--gold-text); background: var(--num-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+/* Personal bests' three tiles hold short figures ("22", "7", "25 Nov"), so they take the serif too. */
+.bests-stats .stat b { font: 700 clamp(1.5rem, 7vw, 2rem)/1.1 var(--serif); font-variant-numeric: lining-nums; letter-spacing: 0; }
 .stat b.gold { color: var(--gold-text); }
 a.stat { display: block; text-decoration: none !important; color: inherit; transition: border-color var(--fast), background var(--fast); }
 @media (hover: hover) { a.stat:hover { border-color: var(--line-gold); } }
