@@ -19,3 +19,12 @@ test('overall progress matches Python', (t) => {
     }));
 });
 test.after(() => console.log(`# ${tally.compared} numbers compared, ${tally.inexact} equal only to within 1e-9`));
+
+test('the bodyweight notice names each exercise once, however it was spelled', async () => {
+  const { bodyweightWarningExercises } = await import('../stats.js');
+  const { deepStrictEqual } = await import('node:assert');
+  const log = (exercise) => ({ exercise, exercise_string: `${exercise}\nbw, 8 8 8` });
+  const history = [log('Pull Ups'), log('Pull-Ups'), log('Hyper Extension'), { exercise: 'Squat', exercise_string: 'Squat\n100, 5 5 5' }];
+  deepStrictEqual(bodyweightWarningExercises({ history }), ['Hyper Extension', 'Pull Ups']);
+  deepStrictEqual(bodyweightWarningExercises({ history, bodyweight: 79.5 }), []);
+});

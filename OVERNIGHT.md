@@ -593,6 +593,12 @@ as asked on 24 Nov; `improve/round-4` above holds everything before that.
 - The guide's examples ("100 x 5, 5, 4", "bw+10 x 6", "Bodyweight - 72") were grey monospace text
   running straight into grey explanations. Each example now sits on a soft chip in the text colour,
   so it reads apart from what it means. Checked on the iPhone 18 Pro in dark and light. 115 tests pass.
+## fix/bodyweight-notice (from improve/round-4)
+
+- Stats, with no bodyweight set: the notice read "so Hyper Extension, Pull Ups, Pull-Ups count your
+  bodyweight": one lift logged under two spellings, named twice. It now names each exercise once
+  (matched the way Stats matches names), keeping the first spelling. New test; 116 pass. Checked on
+  iPhone 18 Pro: "so Hyper Extension, Pull Ups count your bodyweight."
 
 ## Waiting list
 
