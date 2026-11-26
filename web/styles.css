@@ -330,6 +330,9 @@ main.wide { max-width: 860px; }
 .label a, .label button { text-transform: none; letter-spacing: 0; font-weight: 600; font-size: 0.8rem; }
 .section { margin-top: 30px; }
 .section:first-child { margin-top: 0; }
+/* A list right under a search box (All workouts) keeps a gap: its first month label sat 8px
+   under the field. */
+.search + * > .section:first-child { margin-top: 24px; }
 .card, .group {
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
   margin-bottom: 14px;
@@ -731,7 +734,8 @@ a.wday:focus-visible .dot { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--gol
 .search-clear[hidden] { display: none; }
 @media (hover: hover) { .search-clear:hover { background: var(--hover); } }
 .datebox { flex: none; width: 34px; text-align: center; line-height: 1; }
-.datebox b { display: block; font-size: 1.15rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+/* The day as a serif figure, like the app's other numbers and titles. */
+.datebox b { display: block; font: 600 1.5rem/1 var(--serif); font-variant-numeric: lining-nums; }
 .datebox small { display: block; margin-top: 4px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--subtle); }
 .ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .label span { font-weight: 500; letter-spacing: 0; text-transform: none; font-size: 0.78rem; }
