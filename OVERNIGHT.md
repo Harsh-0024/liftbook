@@ -512,6 +512,8 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 - The clipboard icon (Bulk import, Spreadsheet export, the Log page's Paste button, the share page)
   had a 1px clip that didn't show at 18px, so it looked the same as the plan sheet beside it in
   Settings. It has a real clip now. Checked both on the iPhone.
+- Stats, "Personal bests": its icon was the Stats tab's chart, twice on one screen. It is the medal
+  now, the app's sign for a best everywhere else. Checked on the iPhone.
 
 ## Waiting list
 
