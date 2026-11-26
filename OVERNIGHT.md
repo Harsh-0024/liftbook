@@ -505,6 +505,12 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/serif-numbers` (26 Nov)
+
+- Numbers in the serif (Cormorant) used its old-style figures: Stats' big "+10%" read as "+IO%",
+  the 1 and 0 at letter height. Headings, the Stats hero number and the editable plan title now use
+  lining figures. Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
