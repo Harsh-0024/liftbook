@@ -554,6 +554,8 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--g
 table.summary { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
 table.summary th, table.summary td { text-align: left; padding: 10px 8px; border-top: 1px solid var(--hair); vertical-align: top; }
 table.summary th { color: var(--subtle); font-weight: 700; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em; border-top: 0; }
+/* A bit of code in a sentence (a field or a link's ending): a small chip that never breaks. */
+code { font: 0.86em/1 var(--mono); white-space: nowrap; padding: 2px 5px; border-radius: 6px; background: var(--gold-soft); color: var(--text-2); }
 pre.out { white-space: pre-wrap; word-break: break-word; font: 14px/1.75 var(--mono); margin: 0; }
 
 /* Retrieve: the workout to copy. Name first with the target beside it, best numbers quietly below. */

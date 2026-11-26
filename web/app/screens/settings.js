@@ -730,7 +730,7 @@ function shortcuts(ctx) {
         h('p', { class: 'subtle' }, 'The shortcuts use one folder in Apple Notes called Workout Logs, and make it the first time. Get Workout saves every workout there, and Log Workout only offers notes from there.')),
       h('details', { class: 'card' },
         h('summary', { class: 'linkish' }, 'Links for your own shortcut'),
-        h('p', { class: 'subtle' }, 'Log: POST the note as workout_text. Get: add ?key= and a session name, or ?list=1 for the sessions.'),
+        h('p', { class: 'subtle' }, 'Log: POST the note as ', h('code', {}, 'workout_text'), '. Get: add ', h('code', {}, '?key='), ' and a session name, or ', h('code', {}, '?list=1'), ' for the sessions.'),
         h('div', { class: 'field' }, h('label', {}, 'Log URL'), copyRow(urls.log, 'Log URL')),
         h('div', { class: 'field' }, h('label', {}, 'Get URL'), copyRow(urls.pick, 'Get URL'))),
     );

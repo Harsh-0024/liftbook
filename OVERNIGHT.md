@@ -963,6 +963,14 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   description, with a dot: green when synced, amber when changes are waiting. rowItem() takes
   `status` (and `warn`) for this. Checked on the iPhone.
 
+### Branch `design/shortcut-links` (26 Nov)
+
+- **Apple Shortcuts, "Links for your own shortcut": the bits of code stay whole.** The help line
+  broke "?key=" across two lines, leaving "?" alone at the end of one. `workout_text`, `?key=`
+  and `?list=1` are now small monospace chips on a soft gold ground that never break (a new
+  `code` style in styles.css; nothing else in the app used `<code>`). Checked on the iPhone;
+  115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
