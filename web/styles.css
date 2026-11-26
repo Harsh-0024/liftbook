@@ -27,6 +27,7 @@
   --gold: #d4af37;
   --gold-bright: #f4d03f;
   --gold-text: #d4af37;
+  --num-grad: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
   /* Painted under the border too (border-box): over a see-through border the gradient tiled and left a pale rim on the left and top. */
   --gold-fill: linear-gradient(135deg, #d4af37 0%, #e9c75a 100%) border-box;
   --chart-line: var(--gold); /* the charts' line and dots */
@@ -80,6 +81,7 @@
     --gold: #c9a961;
     --gold-bright: #d4af37;
     --gold-text: #8a6512;
+    --num-grad: linear-gradient(135deg, #8a6512 0%, #b08a2e 100%);
     --gold-fill: linear-gradient(135deg, #b08a3e 0%, #c9a961 100%) border-box;
     --chart-line: #a37b2c; /* --gold faded into the cream cards */
     --gold-soft: rgba(201, 169, 97, 0.1);
@@ -122,6 +124,7 @@
   --gold: #c9a961;
   --gold-bright: #d4af37;
   --gold-text: #8a6512;
+  --num-grad: linear-gradient(135deg, #8a6512 0%, #b08a2e 100%);
   --gold-fill: linear-gradient(135deg, #b08a3e 0%, #c9a961 100%) border-box;
   --chart-line: #a37b2c; /* --gold faded into the cream cards */
   --gold-soft: rgba(201, 169, 97, 0.1);
@@ -410,6 +413,9 @@ input.inline-num[type] { width: 72px; padding: 7px 10px; text-align: right; font
 .stat::before { content: ""; position: absolute; top: 0; left: 16px; right: 16px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: 0.35; }
 .stat span { display: block; font-size: 0.64rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
 .stat b { display: block; font: 700 clamp(1.05rem, 4.8vw, 1.5rem)/1.15 var(--font); color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; letter-spacing: -0.01em; }
+/* Home's three totals, as on the old site: large serif figures in a gold gradient. (Only Home:
+   the Stats tiles hold words and units, like "Wednesday" or "102.5 kg", that need the smaller face.) */
+.home-stats .stat b { font: 700 clamp(1.7rem, 8vw, 2.3rem)/1.05 var(--serif); font-variant-numeric: lining-nums; color: var(--gold-text); background: var(--num-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .stat b.gold { color: var(--gold-text); }
 a.stat { display: block; text-decoration: none !important; color: inherit; transition: border-color var(--fast), background var(--fast); }
 @media (hover: hover) { a.stat:hover { border-color: var(--line-gold); } }
