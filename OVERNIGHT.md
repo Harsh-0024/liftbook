@@ -507,6 +507,7 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 
 ### Branch `design/log-bar` (26 Nov)
 - Log: the floating Save bar lay over the bottom of the text box, and the box's rounded edge showed through as a second outline. The bar now has a raised face, a gold-tinted rim and a shadow cast upward, so it reads as floating above what scrolls under it. Checked on the iPhone simulator.
+- Light mode: the same upward shadow was a heavy grey smear and the raised face came out grey. Two tokens (`--bar-face`, `--bar-lift`) now give light mode a light face and a faint warm shade. Checked in both modes on the simulator.
 
 ## Waiting list
 
