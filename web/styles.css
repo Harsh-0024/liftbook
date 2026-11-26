@@ -1018,6 +1018,9 @@ label.rowi { cursor: pointer; }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 .toast-act { margin-left: 14px; padding: 0; border: 0; background: none; color: var(--gold-text); font: 600 0.9rem var(--font); cursor: pointer; }
 .pick-group > .rowi.sub .title { font-weight: 500; color: var(--muted); }
+/* Settings > Exercises reuses these rows for an exercise's options: there "Timed" and "Bodyweight"
+   are live switches, so their names read in full ink (grey made them look switched off). */
+.group.pick-group > .rowi.sub .title { color: var(--text); }
 @media (max-width: 759.98px) { .cr:not(.has-picks) .pick-bar { display: none; } .cr .pick-bar { animation: rise 0.25s var(--ease); } }
 .cr-row .icon-btn { border-color: transparent; background: none; }
 @media (max-width: 759.98px) {
