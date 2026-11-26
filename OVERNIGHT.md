@@ -1351,3 +1351,13 @@ Settings and Stats (headline and end tag agree, tile lines).
   at that size, so they keep the smaller face.
 - Checked on the iPhone 18 Pro simulator (demo user): Home totals and the Stats tiles. sw.js
   rebuilt, 127/127 tests pass, `git diff --check` clean.
+
+## design/serif-counts (26 Nov)
+
+- A workout's summary counts (New best · Improving · Dipping · Steady) and the share card's
+  counts (Exercises · Sets · New bests) now use the serif display face at 1.85rem, in their
+  existing colours, so they match the workout's serif title, Home's totals and the Stats
+  headline. They are always whole counts, so the larger face fits the four columns.
+- Looked over Retrieve, Log, Home and a workout in dark and light mode on the iPhone 18 Pro
+  simulator (demo user); nothing else stood out. sw.js rebuilt, 127/127 tests pass,
+  `git diff --check` clean.
