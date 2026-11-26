@@ -510,6 +510,8 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 - Light mode: the same upward shadow was a heavy grey smear and the raised face came out grey. Two tokens (`--bar-face`, `--bar-lift`) now give light mode a light face and a faint warm shade. Checked in both modes on the simulator.
 - The plan page's Edit / Log / Copy bar and the plan-picker bar get the same raised face, gold rim and upward shade, so every floating bar in the app looks alike. Checked on the simulator.
 
+- Log bar after Clear: "Cleared", Undo, Paste and Save stay on one row on a phone. The count's 160px minimum pushed the three buttons onto a second row; it now gives way down to 60px. Checked on the phone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
