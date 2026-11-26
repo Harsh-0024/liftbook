@@ -1017,3 +1017,6 @@ moved on to something else meanwhile.
 ## design/bests-count-align (26 Nov)
 
 1. Personal bests: the "22 exercises" count sat about 9pt above the middle of the Latest / Highest / A to Z pills, because `.foot` kept its own 14px bottom margin inside the header row. `.card-head .foot { margin: 0; }` centres it and lines its left edge up with the search box and list. The same rule fixes "sets a week" beside the Muscle balance heading. Checked on the iPhone 18 Pro simulator.
+## design/exercise-icons (26 Nov)
+
+1. Settings → Exercises: every row had the same dumbbell icon, even "Crunches A — Bodyweight added". Timed exercises now show a stopwatch (a new `timer` icon in web/app/ui.js), bodyweight ones the standing figure Settings uses for Bodyweight, and the rest keep the dumbbell. Switching Timed or Bodyweight on a row changes its icon at once. Checked on the iPhone 18 Pro simulator: Crunches A (figure), Rope Crunches (dumbbell), and Plank switched to Timed and back on the mock demo user (stopwatch, then dumbbell; left as it was).
