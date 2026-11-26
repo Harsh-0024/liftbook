@@ -114,7 +114,7 @@ export function historyScreen(ctx) {
   const pick = ctx.redrawing && ctx.historyPick ? ctx.historyPick : { on: fromSettings, days: new Set(), limit: PAGE };
   ctx.historyPick = pick;
   for (const d of [...pick.days]) if (!lb.workout(d)) pick.days.delete(d);
-  const search = h('input', { type: 'search', placeholder: 'Search workouts or exercises', 'aria-label': 'Search workouts', autocomplete: 'off' });
+  const search = h('input', { type: 'search', placeholder: 'Search workouts or exercises', autocorrect: 'off', spellcheck: 'false', autocapitalize: 'off', 'aria-label': 'Search workouts', autocomplete: 'off' });
   const body = h('div', {});
   const toggle = h('button', { class: 'btn small ghost', type: 'button' });
   const count = h('span', { class: 'count', 'aria-live': 'polite' });
@@ -541,7 +541,7 @@ export function editScreen(ctx, day) {
   const lines = lb.workoutText(w).split('\n');
   const title = h('input', { id: 'edit_title', type: 'text', value: w.title, autocomplete: 'off', 'aria-label': 'Title' });
   const date = h('input', { id: 'edit_date', type: 'date', value: day, required: true, 'aria-label': 'Date' });
-  const ta = h('textarea', { id: 'workout_text', class: 'editor', spellcheck: 'false', autocapitalize: 'off', 'aria-label': 'The exercises and their sets' },
+  const ta = h('textarea', { id: 'workout_text', class: 'editor', spellcheck: 'false', autocorrect: 'off', autocapitalize: 'off', 'aria-label': 'The exercises and their sets' },
     lines.slice(1).join('\n').trim());
   // Unsaved changes are kept on the device until saved or cancelled, and come back only if the
   // workout hasn't changed since (another device, a sync).

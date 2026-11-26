@@ -724,6 +724,20 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
 - Checked on the iPhone 18 Pro: "1 exercise · 3 sets", Squat 60×8 · 70×6 · 80×5. Draft cleared afterwards, nothing saved.
 - Then: with no title typed and a workout already on that day, the check line no longer says "Workout" (a title that wouldn't be used). It reads "Wed 25 Nov 2026 · adds to Session 3 - Back & Triceps if you choose". Checked on the iPhone.
 
+### Branch `fix/phone-autocorrect` (from `improve/round-4`)
+
+- On an iPhone, typing "bw/4" in Log became "Be/4 be/4": iOS autocorrect still ran in the workout
+  box (only spell-check and, elsewhere, capitals were off), and Liftbook then could not read the
+  line ("“Hyper Extension”: no sets under it."). Autocorrect is now off in every box that takes
+  workout text: Log, a workout's Edit, Bulk import, and the plan and rep-range boxes in Settings.
+  Log keeps its capital at the start of a line (exercise names), which reads fine ("Bw" works).
+  Checked on iPhone 18 Pro: "bw bw, 30 30" stays as typed and is read without an error. Tests: 115
+  pass.
+- The same for the boxes that take an exercise name: the searches on All workouts, Retrieve,
+  Settings > Exercises, Stats and Personal bests, and the Rename box. Autocorrect and spell-check
+  are off there too; All workouts' search also stops capitalising the first letter, as the others
+  already did. Checked on iPhone 18 Pro: "bw rdl" stays "bw rdl". Tests: 115 pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

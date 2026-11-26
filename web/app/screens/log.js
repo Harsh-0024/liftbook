@@ -48,7 +48,7 @@ export function logScreen(ctx) {
   const now = new Date();
   const today = `${now.getDate()}/${now.getMonth() + 1}/${String(now.getFullYear()).slice(2)}`;
   const ta = h('textarea', {
-    id: 'workout_text', class: 'editor', spellcheck: 'false', autocapitalize: 'sentences', autocomplete: 'off',
+    id: 'workout_text', class: 'editor', spellcheck: 'false', autocorrect: 'off', autocapitalize: 'sentences', autocomplete: 'off',
     placeholder: `${today} - Session 1 - Chest & Biceps\n\nFlat Barbell Press - [5-8]\n32.5 27.5 25, 6 7 8\n\nBarbell Curl - [6-10]\n20 17.5, 8 10`,
   }, readDraft());
   // Opened for a given day ("#/log?day=2026-11-20", from a day with no workout): an empty box

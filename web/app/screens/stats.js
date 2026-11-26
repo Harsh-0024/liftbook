@@ -181,7 +181,7 @@ export function statsScreen(ctx) {
   const body = h('div', {});
   // Search an exercise, as the old Stats page had: picking one opens it in the Exercise card.
   const list = h('datalist', { id: 'stats-exercises' });
-  const search = h('input', { id: 'stats-search', type: 'search', list: 'stats-exercises', placeholder: 'Search an exercise',
+  const search = h('input', { id: 'stats-search', type: 'search', autocorrect: 'off', spellcheck: 'false', list: 'stats-exercises', placeholder: 'Search an exercise',
     'aria-label': 'Search an exercise', autocapitalize: 'off', autocomplete: 'off', enterkeyhint: 'go' });
   const jump = () => {
     const q = search.value.trim().toLowerCase();
@@ -450,7 +450,7 @@ export function bestsScreen(ctx) {
   const { lb } = ctx;
   const all = lb.bests();
   let sort = BEST_SORTS.some(([v]) => v === remembered(BEST_SORT_KEY)) ? remembered(BEST_SORT_KEY) : 'recent';
-  const search = h('input', { type: 'search', placeholder: 'Search an exercise', 'aria-label': 'Search an exercise', autocomplete: 'off', autocapitalize: 'off' });
+  const search = h('input', { type: 'search', placeholder: 'Search an exercise', autocorrect: 'off', spellcheck: 'false', 'aria-label': 'Search an exercise', autocomplete: 'off', autocapitalize: 'off' });
   const body = h('div', {});
   const day = (d) => formatDay(d, { weekday: false, year: String(d).slice(0, 4) !== deviceDay().slice(0, 4) });
   const resting = addDays(deviceDay(), -56);

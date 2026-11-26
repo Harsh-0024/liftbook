@@ -244,8 +244,8 @@ function plan(ctx) {
     toast(followReps.checked ? 'Following the shared rep ranges.' : 'Using your own rep ranges.');
   });
 
-  const planText = h('textarea', { id: 'plan', class: 'editor mono', spellcheck: 'false', 'aria-label': 'Your plan', placeholder: DEFAULT_PLAN.trim() }, lb.text('plan'));
-  const repText = h('textarea', { id: 'rep_ranges', class: 'editor mono', spellcheck: 'false', 'aria-label': 'Your rep ranges', placeholder: defaultRepRangesText().trim() }, lb.text('rep_ranges'));
+  const planText = h('textarea', { id: 'plan', class: 'editor mono', spellcheck: 'false', autocorrect: 'off', 'aria-label': 'Your plan', placeholder: DEFAULT_PLAN.trim() }, lb.text('plan'));
+  const repText = h('textarea', { id: 'rep_ranges', class: 'editor mono', spellcheck: 'false', autocorrect: 'off', 'aria-label': 'Your rep ranges', placeholder: defaultRepRangesText().trim() }, lb.text('rep_ranges'));
   // Each editor says whether what's in it is saved, as the old plan page did.
   // Unsaved edits are kept on this device, as the Log box's are: a tap on another tab, or the
   // website reloading itself for an update while you copy something from Notes, would lose them.
@@ -376,7 +376,7 @@ function exercises(ctx) {
   const loggedKeys = new Set([...counts.keys()].map((n) => normalizeExerciseName(n)));
   for (const it of lb.exerciseCatalog()) if (!loggedKeys.has(it.key) && !counts.has(it.name)) counts.set(it.name, 0);
   const names = [...counts.keys()].sort((a, b) => a.localeCompare(b));
-  const search = h('input', { id: 'ex-search', type: 'search', placeholder: 'Search your exercises', autocapitalize: 'off', 'aria-label': 'Search your exercises' });
+  const search = h('input', { id: 'ex-search', type: 'search', autocorrect: 'off', spellcheck: 'false', placeholder: 'Search your exercises', autocapitalize: 'off', 'aria-label': 'Search your exercises' });
   const group = h('div', { class: 'group pick-group' });
   const kind = (s) => [s.is_timed ? 'Timed' : null, s.is_bodyweight ? 'Bodyweight added' : null].filter(Boolean).join(' · ');
   // The switches show what the app does now, built-in timed and bodyweight exercises included.
@@ -446,7 +446,7 @@ function exercises(ctx) {
       }));
       return box;
     };
-    const to = h('input', { type: 'text', value: n, maxlength: 100, 'aria-label': `New name for ${n}` });
+    const to = h('input', { type: 'text', value: n, autocorrect: 'off', spellcheck: 'false', maxlength: 100, 'aria-label': `New name for ${n}` });
     const info = h('div', { class: 'hint' }, 'Its history comes along.');
     const go = h('button', { class: 'btn small primary', type: 'button' }, 'Rename');
     to.addEventListener('input', () => {
@@ -813,7 +813,7 @@ function sync(ctx) {
 function bulkImport(ctx) {
   const { lb } = ctx;
   const ta = h('textarea', {
-    class: 'editor', spellcheck: 'false', autocapitalize: 'off', autocomplete: 'off', 'aria-label': 'Workouts to import',
+    class: 'editor', spellcheck: 'false', autocorrect: 'off', autocapitalize: 'off', autocomplete: 'off', 'aria-label': 'Workouts to import',
     placeholder: '03/02 Back & Biceps\nPull-Ups - [6-10]\nbw, 10 8 6\n\n04/02 Chest & Shoulders\nBench Press - [6-10]\n80 75, 8 10',
   });
   const meta = h('span', { class: 'editor-meta', 'aria-live': 'polite' }, 'Nothing is saved yet');
