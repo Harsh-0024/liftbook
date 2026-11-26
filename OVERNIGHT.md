@@ -738,6 +738,18 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   are off there too; All workouts' search also stops capitalising the first letter, as the others
   already did. Checked on iPhone 18 Pro: "bw rdl" stays "bw rdl". Tests: 115 pass.
 
+## improve/search-hits (25 Nov)
+
+1. **Search shows what matched.** In All workouts, searching "curl" found the right workouts, but
+   a row like "Session 3 · Pull-Ups · Incline EZ-Bar Sku…" cut off before the curl, so you could
+   not see why it matched. While searching, matching exercises now come first in each row and in
+   the text colour: "Session 3 · **Barbell Curl** · Pull-Ups · Incli…". No search: unchanged.
+   Checked on the iPhone.
+2. **No autocorrect in exercise searches.** On the iPhone, typing "curl" in All workouts became
+   "Curl" with a "Curls" suggestion; names like "RDL" or "EZ-Bar" could be "corrected" away. The
+   four exercise searches (All workouts, Retrieve, Stats, Settings → Exercises) now turn off
+   autocorrect, spell check and capitals. Checked on the iPhone in All workouts.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

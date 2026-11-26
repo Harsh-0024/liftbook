@@ -133,6 +133,14 @@ export function historyScreen(ctx) {
     const everyShown = shown.length && shown.every((w) => pick.days.has(w.day));
     all.textContent = everyShown ? 'Select none' : 'Select all';
   };
+  // While searching, the exercises that match come first and in the text colour, so "curl" shows
+  // "Barbell Curl" in a row that would otherwise cut it off at "Pull-Ups · Incline EZ-Bar Sku…".
+  const exerciseLine = (names, q) => {
+    if (!q) return names.join(' · ');
+    const hit = (n) => n.toLowerCase().includes(q);
+    const ordered = [...names.filter(hit), ...names.filter((n) => !hit(n))];
+    return ordered.flatMap((n, i) => [i ? ' · ' : null, hit(n) ? h('span', { class: 'hit' }, n) : n]).filter((x) => x !== null);
+  };
   const paint = () => {
     const q = search.value.trim().toLowerCase();
     shown = q
@@ -165,7 +173,7 @@ export function historyScreen(ctx) {
             // "Session 2 - Legs" reads as Legs, with the session in front of its exercises.
             h('span', { class: 'main' }, h('span', { class: 'title' }, split.title),
               h('span', { class: 'desc ellipsis' }, split.session ? [h('span', { class: 'session' }, split.session), ' · '] : null,
-                w.logs.map((l) => l.exercise).join(' · ')))];
+                exerciseLine(w.logs.map((l) => String(l.exercise)), q)))];
           if (!pick.on) return h('a', { class: 'rowi', href: `#/workout/${w.day}` }, ...inner, h('span', { class: 'chev-i' }, icon('chev')));
           const on = pick.days.has(w.day);
           const row = h('button', { class: `rowi${on ? ' picked' : ''}`, type: 'button', role: 'checkbox', 'aria-checked': String(on) },
