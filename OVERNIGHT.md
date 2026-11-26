@@ -1481,3 +1481,14 @@ Settings and Stats (headline and end tag agree, tile lines).
 - Settings → Appearance: the row's icon was always a moon, even with Light or Auto picked. It now shows the chosen theme's icon (moon, sun or monitor) and changes when you pick another.
 - Light mode checked on the iPhone (Home, Stats, chart, Settings): reads well. The darker search-box border is kept on purpose (3:1 contrast for boxes you type into).
 - Checks: diff --check, marker grep, sw.js rebuilt, npm test 128 pass.
+
+### design/tabbar-fade
+- Log: in the thin gap between the floating Save bar and the tab bar, the workout text showed
+  through sliced in half (a stray "1, 1" cut by the tab bar's top edge). The tab bar now has a
+  16px fade above it in its own colour, so text scrolling into it fades out. The same softer
+  edge applies on every page. The floating bar itself stays as designed on 26 Nov.
+- The "1, 1" rows in "Start from Session 4 · Legs" are right for the demo: it has never logged
+  those Legs exercises, so there are no last numbers to fill in.
+- Seen again: after the keyboard closes, Safari leaves the Save bar higher for a moment; one scroll
+  puts it back (noted before, Safari's viewport, not the app).
+- Checked on the iPhone in dark mode. Checks: diff --check, marker grep, sw.js rebuilt, npm test 128 pass.
