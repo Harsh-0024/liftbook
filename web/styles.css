@@ -403,6 +403,8 @@ a.stat:active { background: var(--gold-soft); }
 
 /* ---------- buttons ---------- */
 .btn.trash-end { margin-left: auto; padding: 0 15px; }
+/* Phone: the workout's buttons wrap onto two rows; each row fills the width so the edges line up */
+@media (max-width: 560px) { .wo-actions > .btn:not(.trash-end) { flex: 1 1 auto; justify-content: center; } }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   min-height: 46px; padding: 0 20px; border-radius: 12px;
@@ -1240,6 +1242,9 @@ a.group.rowi.bests-link { margin-bottom: 18px; }
 .wo-step small { display: block; font-size: 0.76rem; margin-top: 1px; }
 .wo-step svg.i { flex: none; width: 16px; height: 16px; color: var(--subtle); }
 .wo-step .flip { display: inline-flex; transform: scaleX(-1); }
+/* Newest or oldest workout: only one neighbour, so it takes the whole row instead of half (no cut-off title) */
+.wo-steps > span:empty { display: none; }
+.wo-steps:has(> span:empty) > a { grid-column: 1 / -1; }
 
 /* Custom workout: arranging a group (keep on top / less often) */
 .pick-tools { display: flex; justify-content: flex-end; gap: 8px; padding: 2px 16px 12px; }

@@ -531,7 +531,7 @@ export function workoutScreen(ctx, day) {
         : null,
       h('div', { class: 'ex-cols', 'aria-hidden': 'true' }, h('span', {}, 'Exercise'), h('span', {}, 'vs recent'), h('span', {}, 'vs best'), h('i')),
       cmp.map((c) => exerciseRow(ctx, c, day))),
-    h('div', { class: 'row', style: 'margin-top:6px' },
+    h('div', { class: 'row wo-actions', style: 'margin-top:6px' },
       h('a', { class: 'btn', href: `#/workout/${day}/edit` }, icon('edit'), 'Edit'),
       repeatPicks.length ? h('button', { class: 'btn', type: 'button', onclick: repeat, title: 'Do these exercises again, with targets from your latest numbers' }, icon('log'), 'Repeat') : null,
       h('button', { class: 'btn', type: 'button', onclick: () => copyText(lb.workoutText(w)) }, icon('copy'), 'Copy as text'),
