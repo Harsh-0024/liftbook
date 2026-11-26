@@ -95,7 +95,7 @@ export function homeScreen(ctx) {
       h('div', { class: 'group' }, recent.map((w) => {
         // "Session 2 - Legs" reads as Legs, with the session underneath (as in All workouts).
         const split = splitSessionTitle(w.title);
-        return rowItem({ href: `#/workout/${w.day}`, title: split.title, desc: split.session || undefined, value: softDay(w.day, today) });
+        return rowItem({ href: `#/workout/${w.day}`, title: split.title, desc: split.session || undefined, value: softDay(w.day, today), cls: 'w-row' });
       })),
       h('a', { class: 'see-all', href: '#/history' }, 'See all workouts')) : null,
     // The totals under a label of their own: just under "Last 7 days" and "Recent", "40 workouts"
@@ -188,9 +188,9 @@ export function historyScreen(ctx) {
             h('span', { class: 'main' }, h('span', { class: 'title' }, split.title),
               h('span', { class: 'desc ellipsis' }, split.session ? [h('span', { class: 'session' }, split.session), ' · '] : null,
                 exerciseLine(w.logs.map((l) => String(l.exercise)), q)))];
-          if (!pick.on) return h('a', { class: 'rowi', href: `#/workout/${w.day}` }, ...inner, h('span', { class: 'chev-i' }, icon('chev')));
+          if (!pick.on) return h('a', { class: 'rowi w-row', href: `#/workout/${w.day}` }, ...inner, h('span', { class: 'chev-i' }, icon('chev')));
           const on = pick.days.has(w.day);
-          const row = h('button', { class: `rowi${on ? ' picked' : ''}`, type: 'button', role: 'checkbox', 'aria-checked': String(on) },
+          const row = h('button', { class: `rowi w-row${on ? ' picked' : ''}`, type: 'button', role: 'checkbox', 'aria-checked': String(on) },
             ...inner, h('span', { class: 'tick', 'aria-hidden': 'true' }, icon('check')));
           row.addEventListener('click', () => {
             const now = !pick.days.has(w.day);

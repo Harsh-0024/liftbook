@@ -1416,3 +1416,10 @@ Settings and Stats (headline and end tag agree, tile lines).
   back arrow. The coach now uses the shared pageHead with a back link to Home; its "New chat" and
   "Your keys" buttons stay on the right (as the heading's aside).
 - Checked on the iPhone simulator (dark): arrow shows, tap goes Home. sw.js rebuilt; tests 127/127.
+
+## design/workout-list-serif (26 Nov)
+- Home's "Recent" list and All workouts now name each session in the serif (class w-row, 1.2rem),
+  matching the serif day numbers beside them in All workouts and the session names on Retrieve,
+  Up next, the workout page and its older/newer links. Session label and exercise line stay Inter.
+  Select mode keeps the same rows (the class is on the button too).
+- Checked All workouts on the iPhone simulator (dark). sw.js rebuilt; tests 127/127.
