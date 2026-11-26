@@ -453,7 +453,11 @@ export function busy(button, fn) {
     // save): it reads as off while working, and what the work set is kept at the end.
     let after = false;
     Object.defineProperty(button, 'disabled', { configurable: true, get: () => true, set: (v) => { after = Boolean(v); } });
-    button.textContent = 'Working…';
+    // A text button says "Working…"; an icon-only one (the trash on a workout) keeps its icon and
+    // just dims, so it doesn't swell into a wide pill and shift the row while a question is open.
+    const iconOnly = !button.textContent.trim();
+    if (iconOnly) button.setAttribute('aria-busy', 'true');
+    else button.textContent = 'Working…';
     try {
       await fn(event);
     } catch (err) {
@@ -461,8 +465,9 @@ export function busy(button, fn) {
     } finally {
       delete button.disabled;
       button.disabled = after;
+      button.removeAttribute('aria-busy');
       if (button.isConnected) {
-        button.replaceChildren(...label);
+        if (!iconOnly) button.replaceChildren(...label);
         const lost = !document.activeElement || document.activeElement === document.body;
         if (had && lost) button.focus({ preventScroll: true });
       }

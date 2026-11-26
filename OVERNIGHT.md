@@ -512,6 +512,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    Retrieve's tucked-away groups, which this list shares) while "Rename" below was dark, so the
    switches read as unavailable. Their names are now in full ink there; Retrieve keeps its grey.
    Checked both pages; 115 tests pass.
+### Branch `fix/busy-icon-button` (from `improve/round-4`)
+
+1. **The trash button no longer swells while you're asked.** Tapping the trash on a workout
+   turned the small icon button into a wide "Working…" pill behind the "Delete this workout?"
+   question, shifting the row. Buttons with only an icon now keep their icon and just dim while
+   working (and tell screen readers they're busy); text buttons still say "Working…". Found while
+   saving and deleting a test workout end to end on the mock server (both worked). 115 tests pass.
 
 ## Waiting list
 
