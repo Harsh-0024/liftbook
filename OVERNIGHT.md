@@ -1403,3 +1403,10 @@ Settings and Stats (headline and end tag agree, tile lines).
   use the serif like Home's totals (class bests-stats; colours unchanged, New bests stays gold).
   The main Stats tiles keep Inter: they hold words like "Wednesday".
 - Checked on the iPhone simulator (dark): "25 Nov" fits its tile. sw.js rebuilt; tests 127/127.
+
+## design/workout-steps-serif (26 Nov)
+- The older / newer links at the foot of a workout ("← Push, 9 Nov" and "Back & Triceps,
+  25 Nov →") name the session in the serif, as Retrieve, Home's Up next and the page title do.
+  Still clamped to two lines; dates stay Inter.
+- Also reviewed the 25 Nov workout page top to bottom on the phone: no other change needed.
+- Checked on the iPhone simulator (dark); sw.js rebuilt; tests 127/127.
