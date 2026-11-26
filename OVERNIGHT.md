@@ -1121,3 +1121,6 @@ moved on to something else meanwhile.
 ## design/signout-icon (26 Nov)
 
 1. "Sign out of this device" in Settings used an arrow pointing into a door frame on the right, the usual sign-in symbol. The `logout` icon in web/app/ui.js is mirrored: frame on the left, arrow leaving it. Only that row uses the icon. Checked on the iPhone 18 Pro simulator in dark mode.
+## fix/sync-status (26 Nov)
+
+1. Sync and data: the status title said "Up to date" whenever sync wasn't running and had no error, even with changes still waiting to upload. It now says "Changes waiting to upload" then. The line under it dropped "· 0 changes waiting to upload" when nothing waits (it only made the line wrap); with changes waiting it still shows "· N changes waiting to upload". Checked on the iPhone 18 Pro simulator with nothing waiting. Not seen with changes waiting (the mock syncs straight away).
