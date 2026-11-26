@@ -671,7 +671,7 @@ function admin(ctx) {
 /* ---------------- Apple Shortcuts ---------------- */
 
 const SHORTCUT_FILES = [
-  ['Log Workout', 'Pick one of your newest workout notes and log it'],
+  ['Log Workout', 'Log one of your newest workout notes'],
   ['Get Workout', 'Pick a session and save its targets as a note'],
 ];
 

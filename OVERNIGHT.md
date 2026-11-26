@@ -1017,6 +1017,14 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   first word ("e.g. chest", "e.g. legs"; "e.g. push" when a session has no title). The label
   Get Workout lists is unchanged. Checked on the iPhone; 115 tests pass.
 
+### Branch `improve/shortcuts-copy` (26 Nov)
+
+- **Apple Shortcuts: the Log Workout line fits on one line.** "Pick one of your newest workout
+  notes and log it" left "it" alone on a second line on an iPhone. It now reads "Log one of your
+  newest workout notes", one line like Get Workout's. Checked on the iPhone; 115 tests pass.
+  Also looked at: Bulk import (fine), the "1." / "3." step numbers (old-style figures, already
+  fixed on `design/lining-figures`) and the footer (same "2026 Liftbook" as the old site).
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
