@@ -311,8 +311,13 @@ export class Liftbook {
     }
     const errors = [];
     if (!exercises.length) errors.push('No exercises found. Put each exercise on its own line, its sets on the next.');
+    const firstLine = clean.split('\n')[0].trim();
     for (const e of exercises.filter((x) => x.missing_name && x.valid !== false)) {
-      errors.push(`Line ${e.line}: sets without an exercise name above them (\u201c${e.exercise_string}\u201d).`);
+      // Sets straight under the first line: that line was read as the workout's date and title, so
+      // typing "Back Squat" then its sets with no title above left the sets nameless. Say so.
+      errors.push(e.line === 2
+        ? `Line 1 (\u201c${firstLine}\u201d) is read as the workout\u2019s date and title, so the sets under it have no exercise. Put a title line first, such as \u201cLegs\u201d, then the exercise name above its sets.`
+        : `Line ${e.line}: sets without an exercise name above them (\u201c${e.exercise_string}\u201d).`);
     }
     if (parsed.invalid_date_text) {
       // "02/13" is month first: say the day goes first, and offer the swapped date when the

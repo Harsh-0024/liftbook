@@ -1095,6 +1095,13 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   match." while searching. Clear empties the box, brings back the full list and keeps the
   keyboard up. Checked on the iPhone.
 
+## improve/log-messages (26 Nov)
+
+1. Log: typing an exercise and its sets with no title line first ("Back Squat", then "100 100, 5 5")
+   made the exercise the workout's title and said only "Line 2: sets without an exercise name above
+   them". It now says line 1 was read as the date and title and to put a title such as "Legs" first.
+   Sets further down keep the plain message. New test; 116 tests pass. Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
@@ -1231,3 +1238,7 @@ moved on to something else meanwhile.
 ## improve/exercise-counts (26 Nov)
 
 1. Settings → Exercises: each row said "12 logged" without saying 12 of what. The number counts the workouts that include the exercise, which Stats calls "Sessions", so the rows now say "12 sessions" ("1 session" for one). Checked on the iPhone 18 Pro simulator.
+- Log parser: "120, 10x" reads as 3 sets of 120 × 1 (the trailing "x" makes 10 drop to 1), where
+  "120, 10" reads as 120 × 10. Seen 26 Nov. Checked: the Python parser on main reads it the same
+  way (and "120, 10x 8x" as 10 × 8 in both), so this is how Liftbook has always read it. Changing it
+  means changing both parsers and their tests; your call. (A short list filling up to 3 sets is on purpose.)
