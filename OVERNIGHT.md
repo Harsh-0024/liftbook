@@ -1034,6 +1034,14 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
 
 - Coach, Earlier answers: the date no longer wraps ("9 Nov / 2026" on long questions). The year is left off for this year's answers and the date stays on one line. Checked on the phone.
 
+## design/key-field (26 Nov)
+
+1. **"AIza", not "Alza".** In Inter a capital I looks like a lowercase l, so the AI key field's hint
+   read "Alza… or gsk_…" (Gemini keys start "AIza") and the coach's button read "Al keys". The key
+   field is now in the app's monospace, where I and l differ, and the button says "Your keys" (the
+   page is already titled AI coach). Inter's serifed-I option isn't in the bundled font, so a
+   wider fix wasn't possible. Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

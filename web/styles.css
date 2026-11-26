@@ -517,6 +517,8 @@ select {
 }
 select option { background: var(--surface); color: var(--text); }
 textarea { font: 15px/1.75 var(--mono); min-height: 220px; resize: vertical; }
+/* An AI key in Inter reads "Alza…": its capital I is a lowercase l. Monospace tells them apart. */
+#key_value { font-family: var(--mono); letter-spacing: 0; }
 /* Phones: the workout text a little smaller and tighter, as on the old site, so a line like
    "24/11/26 - Session 1 - Chest & Biceps" fits on one line. iPhone Safari would zoom into a box
    under 16px when it's tapped; index.html tells it not to (pinch-zoom still works there). */
