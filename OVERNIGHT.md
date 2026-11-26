@@ -525,6 +525,18 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    said "Workout not found. It may have been deleted on another device." It now reads "No workout
    that day: Nothing is logged on Wed 1 Jan 2020", keeps the deleted-elsewhere note as a maybe,
    and offers Log workout beside All workouts.
+### Branch `feature/chart-hover` (from `improve/round-4`)
+
+From here on each kind of work has its own branch (design/, fix/, feature/, improve/ + topic),
+as asked on 24 Nov; `improve/round-4` above holds everything before that.
+
+1. **Bodyweight chart: hover box too.** Pointing at it shows the day, the workout the weight was
+   saved with, and the weight; a click opens that workout.
+2. **Workout names in the hover boxes** read "Session 2 · Shoulders & Forearms" (not " - "), and a
+   bare "Workout" is left out.
+3. **Charts from the keyboard.** Tab reaches a chart (a rounded gold focus ring); the arrows step
+   through its sessions with the box following, Home and End jump to the first and latest, Enter
+   opens that workout, Escape closes the box. The box is read out by screen readers as it changes.
 
 ## Waiting list
 
