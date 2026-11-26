@@ -12,6 +12,7 @@
   --surface: #0f0f11;
   --surface-2: #17171a;
   --hover: rgba(255, 255, 255, 0.03);
+  --seg-on: #26262b; /* the chosen option in a switch: lifted above the card, not sunk into it */
   --input: rgba(255, 255, 255, 0.03);
   --line: rgba(255, 255, 255, 0.08);
   --field-line: #6e6452; /* a box you type into: warm, and 3:1+ on every dark surface */
@@ -58,6 +59,7 @@
     --bg-2: #f0ede9;
     --surface: #fcfaf7;
     --surface-2: #f3efe9;
+    --seg-on: var(--surface);
     --hover: rgba(0, 0, 0, 0.025);
     --input: #fff;
     --line: rgba(0, 0, 0, 0.08);
@@ -95,6 +97,7 @@
   --bg-2: #f0ede9;
   --surface: #fcfaf7;
   --surface-2: #f3efe9;
+  --seg-on: var(--surface);
   --hover: rgba(0, 0, 0, 0.025);
   --input: #fff;
   --line: rgba(0, 0, 0, 0.08);
@@ -324,9 +327,13 @@ main.wide { max-width: 860px; }
 @media (hover: hover) { a.rowi:hover, button.rowi:hover { background: var(--hover); color: var(--text); } }
 a.rowi:active, button.rowi:active { background: var(--gold-soft); }
 button.rowi { width: 100%; border: 0; text-align: left; font: inherit; cursor: pointer; }
-.rowi .ico { flex: none; width: 22px; display: grid; place-items: center; color: var(--gold-text); }
-.rowi .ico svg.i { width: 20px; height: 20px; }
+/* A block's heading icon (Appearance in Settings) takes the same 22px slot as a row's, so its title
+   lines up with the row titles above it. */
+.rowi .ico, .blk > .row > .ico { flex: none; width: 22px; display: grid; place-items: center; color: var(--gold-text); }
+.rowi .ico svg.i, .blk > .row > .ico svg.i { width: 20px; height: 20px; }
 .rowi .main { flex: 1; min-width: 0; }
+/* A row whose text is a <label> (Bodyweight) would take label's small bold muted type into its note. */
+.rowi label.main { font-weight: 400; font-size: inherit; }
 .rowi .title { display: block; font-size: 0.95rem; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
 .rowi .desc { display: block; font-size: 0.8rem; color: var(--muted); line-height: 1.4; margin-top: 2px; }
 .rowi .value { flex: none; font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
@@ -570,7 +577,7 @@ input.rp-title[type="text"]:focus { outline: none; box-shadow: none; border-bott
   display: flex; align-items: center; justify-content: center; gap: 6px;
   background: transparent; color: var(--muted); font: 600 0.84rem var(--font); cursor: pointer; white-space: nowrap;
 }
-.seg button.on { background: var(--surface); color: var(--gold-text); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--hair); }
+.seg button.on { background: var(--seg-on); color: var(--gold-text); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--hair); }
 
 .exercise { padding: 12px 0; border-top: 1px solid var(--hair); }
 .exercise:first-child { border-top: 0; }
@@ -1135,6 +1142,9 @@ label.rowi { cursor: pointer; }
 .sync-lines { display: flex; flex-direction: column; gap: 2px; }
 .group > .blk .date-pair { gap: 12px; }
 .group > .blk .field { margin: 0; }
+/* Fields stacked in one card (Profile: Name, Username, Bodyweight) keep space between them; the rule
+   above was for a lone field and put each box right on the next label. */
+.group > .blk .field + .field { margin-top: 16px; }
 .photo-btns { flex: none; gap: 8px; flex-wrap: nowrap; }
 @media (max-width: 479.98px) { .profile-photo { flex-wrap: wrap; } .profile-photo .photo-btns { width: 100%; padding-left: 78px; margin-top: -4px; } }
 

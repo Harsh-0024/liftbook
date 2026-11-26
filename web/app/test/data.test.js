@@ -268,3 +268,11 @@ test('a typo in a sets line is quoted as that exercise’s sets, not “no sets 
   assert.deepEqual(lb.workout('2026-09-01').logs.map((l) => l.exercise), ['Plank']);
   assert.ok(lb.check('1/9/26 Legs\n\nHyper Extension\n\nPlank\nBw bw, 30 30').errors.includes('“Hyper Extension”: no sets under it.'));
 });
+
+test('timedOn: the built-in list, your own choice, and plain lifts', async () => {
+  const lb = await app();
+  assert.equal(lb.timedOn('Plank'), true);
+  assert.equal(lb.timedOn('Barbell Curl'), false);
+  await lb.setExerciseSetting('Barbell Curl', { is_timed: true });
+  assert.equal(lb.timedOn('Barbell Curl'), true);
+});

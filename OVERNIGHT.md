@@ -615,13 +615,40 @@ as asked on 24 Nov; `improve/round-4` above holds everything before that.
 - With no AI key turned on, the Coach page hid its Ask box but still showed six starter questions;
   tapping one only gave an error, since the built-in answers can't handle any of them. They now
   appear once a key is on, like the Ask box. Checked on the iPhone without a key.
+### Branch `design/settings` (from `improve/round-4`)
+
+- **Settings' Preferences card lines up and reads right.** The Bodyweight row's text is a `<label>`
+  (so tapping it focuses the kg box), and it took label's bold type into its note: "Used for
+  bodyweight exercises" was bold where every other row's note is plain. Appearance's moon icon had
+  no fixed slot, so its title sat 4pt left of Bodyweight's. Both now match the rows around them.
+  Checked on the iPhone simulator.
+- **Sign out's icon points out.** It was the "sign in" picture (an arrow going into a door on the
+  right); now the arrow leaves a door on the left, as sign-out icons usually do. Only Sign out uses
+  it. Checked on the iPhone simulator. The rest of Settings on the phone looked right.
+- **In dark mode the chosen option in a switch shows.** The chosen Dark/Light/Auto option used the
+  card colour (#0f0f11), which in dark mode is darker than the switch's track, so it looked sunk in
+  and only its gold text marked it. It now sits on a lifted #26262b in dark mode; light mode keeps
+  its white chip. Applies to every `.seg` switch. Checked on the iPhone simulator in dark mode, and
+  tapping Light then Auto still switches the theme.
+- Dark-mode pass on the iPhone simulator: sign-in, Home, Settings, Stats (chart, tiles, sessions),
+  Retrieve and a plan page all read well; nothing else needed changing. A plan's right-hand column
+  (sets, a rep range, or nothing) follows what the plan itself declares, so it is left as is.
+  Tip: Safari's cached app on 127.0.0.1 swallows `/__signin`; the Mac's address
+  (http://192.168.29.209:8791/__signin?to=/) is a clean origin that works.
+- Nov 25, light mode on iPhone: the Bodyweight row's description looked bold on `design/charts`, which lacks this branch's `.rowi label.main` weight fix. On this branch it is regular, like every other row. Merge this branch to fix it everywhere.
+
+## design/settings: checked on the iPhone (25 Nov)
+
+- Bodyweight's note is plain (not the form labels' semibold) and Appearance lines up with the rows
+  above, on the iPhone too. The rest of Settings (Training, Account, Help make it better, Sign out)
+  reads evenly. Nothing to change.
 
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
 moved on to something else meanwhile.
 
-- **iPhone checks** (waits on: the iOS Simulator working again). Everything in round 4 was checked
+- ~~**iPhone checks**~~ **Done 25 Nov** (the last one, the gold "a new best" note after saving, was checked on the iPhone in dark mode: Pull-Ups 9 reps gave "Saved · a new best" and a 🥇 +8.3% chip; nothing to change. The colour medal emoji stays on purpose: gold/silver/bronze say which set beat the best). Original note: (waits on: the iOS Simulator working again). Everything in round 4 was checked
   on a computer only. To see on an iPhone: the charts' red stretch under the start line and the
   guide line, the gold "a new best" note after saving, the "SESSION 2" kicker on a workout, timed
   exercises' bests and charts, the exercise card's big number, the trash button at the end of a
@@ -673,3 +700,15 @@ moved on to something else meanwhile.
 - Opening an exercise from Personal bests (or a workout's Full progress) centred the exercise picker, leaving the chart half off a phone screen. Now the Exercise card's top lands under the header, so picker, headline and chart are all in view. Checked on the iPhone.
 ## improve/home-stat-links (from improve/round-4)
 - Home: the three number tiles now open where the number comes from: Workouts → All workouts, Week streak → Stats, Exercises → Personal bests (same 22). Gold border on hover, gold tint on tap. Checked on the iPhone.
+- Settings → Exercises: every row said "Weight and reps" under the name, which hid the few that are
+  timed or have bodyweight added. Now only those say what they are ("Timed", "Bodyweight added");
+  plain lifts show just the name, and the list is shorter to scroll. Checked on the iPhone.
+- Settings → Exercises read only the saved timed choice, so Plank (timed by the built-in list, and
+  logged in seconds) showed its Timed switch off and no "Timed" line. Before the change above it even
+  said "Weight and reps". New `lb.timedOn(name)` uses the same rule as logging (your choice, the
+  built-in list, or times in its logs), as `bodyweightOn` already did for bodyweight. Plank now says
+  "Timed" with its switch on. Test added (116 pass); checked on the iPhone.
+- Profile: Name, Username and Bodyweight sat with each box right on the next field's label. A rule
+  for a lone field in a card (`.group > .blk .field { margin: 0 }`) also removed the space between
+  stacked fields. Neighbouring fields in a card now have 16px between them; a card with one field
+  is unchanged. Checked on the iPhone.
