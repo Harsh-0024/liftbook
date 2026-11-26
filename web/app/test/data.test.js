@@ -289,6 +289,10 @@ test('a typo in a sets line is quoted as that exercise’s sets, not “no sets 
   const c = lb.check('1/9/26 Legs\n\nHyper Extension\nBe/4 be/4, 1 1\n\nPlank\nBw bw, 30 30');
   assert.deepEqual(c.errors, ['“Hyper Extension”: couldn’t read its sets (“Be/4 be/4, 1 1”).']);
   assert.equal(c.exercise_count, 1, 'the typo line is not an exercise of its own');
+  // The check list quotes the line under its exercise and gives the line no row.
+  const hyper = c.parsed.exercises.find((e) => e.name === 'Hyper Extension');
+  assert.equal(hyper.typo_sets, 'Be/4 be/4, 1 1');
+  assert.ok(c.parsed.exercises.some((e) => e.typo_line));
   await lb.log('1/9/26 Legs\n\nHyper Extension\nBe/4 be/4, 1 1\n\nPlank\nBw bw, 30 30');
   assert.deepEqual(lb.workout('2026-09-01').logs.map((l) => l.exercise), ['Plank']);
   assert.ok(lb.check('1/9/26 Legs\n\nHyper Extension\n\nPlank\nBw bw, 30 30').errors.includes('“Hyper Extension”: no sets under it.'));

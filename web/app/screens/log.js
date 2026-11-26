@@ -148,6 +148,8 @@ export function logScreen(ctx) {
     // Rows count the exercises 1, 2, 3 and say how many sets each has, as the old check did.
     let order = 0;
     checkList.replaceChildren(...exercises.map((e, i) => {
+      // A sets line with a typo ("Be/4, 12") is quoted under its exercise, not listed as one.
+      if (e.typo_line) return null;
       const bad = e.valid === false || e.missing_name;
       // Names you haven't used, close misspellings ("Use it" puts the known name on that line), repeats.
       const n = c.notes?.[i];
@@ -167,6 +169,7 @@ export function logScreen(ctx) {
           // only waiting to be filled in, so it isn't red.
           h('span', e.placeholder ? { class: 'desc' } : bad ? { class: 'desc', style: 'color:var(--bad)' } : { class: 'desc mono' }, !bad ? e.sets_label
             : e.placeholder ? 'Left out when you save'
+              : e.typo_sets ? `Couldn’t read “${e.typo_sets}”`
               : String(e.exercise_string || '').split('\n').slice(1).join('').trim() ? 'Couldn’t read these sets' : 'No sets under it'),
           // "New" is said by the tag on the right.
           flagged && tag !== 'New' ? h('span', { class: `desc name-note is-${n.state}` }, n.note) : null),
@@ -183,7 +186,7 @@ export function logScreen(ctx) {
       row.addEventListener('click', jump);
       row.addEventListener('keydown', jump);
       return row;
-    }));
+    }).filter(Boolean));
     const realErrors = c.errors.filter((m) => !m.includes('still has Retrieve’s 1, 1'));
     problems.replaceChildren(
       c.future && c.day ? h('p', { class: 'wo-note log-future' }, icon('calendar'),

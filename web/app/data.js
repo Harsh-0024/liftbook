@@ -341,6 +341,9 @@ export class Liftbook {
       next.valid = false;
       typoSets.set(e, line);
       typoSets.set(next, null);
+      // For the check list: the name's row quotes the line, and the line gets no row of its own.
+      e.typo_sets = line;
+      next.typo_line = true;
     });
     const invalid = exercises.filter((e) => e.valid === false || e.missing_name);
     for (const e of invalid.filter((x) => x.valid === false && typoSets.get(x) !== null)) {
