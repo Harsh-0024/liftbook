@@ -518,6 +518,11 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   lines up on the text baseline: both end at the same line (measured in the browser, seen on the
   iPhone). A search with no match shows a calm "Nothing matches …" card: fine as it is.
 
+- All workouts search: a gold "Clear" now sits inside the box while it has text (the same on every
+  browser; Safari's own small x is hidden), and the line under the title reads "14 of 40 workouts
+  match." while searching. Clear empties the box, brings back the full list and keeps the
+  keyboard up. Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

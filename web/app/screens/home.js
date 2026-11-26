@@ -230,15 +230,34 @@ export function historyScreen(ctx) {
     if (e.key === 'Escape' && pick.on) toggle.click();
   };
   document.addEventListener('keydown', onKey);
+  // While searching, the line under the title counts what matches, and Clear empties the box.
+  const logged = workouts.length ? `${workouts.length} workout${workouts.length === 1 ? '' : 's'} logged.` : 'Nothing logged yet.';
+  const head = pageHead('All workouts', logged, { back: fromSettings ? '#/settings' : '#/', aside: toggle });
+  const countLine = head.querySelector('p');
+  const clear = h('button', { type: 'button', class: 'search-clear', 'aria-label': 'Clear search', hidden: true }, 'Clear');
+  const showSearch = () => {
+    const q = search.value.trim();
+    clear.hidden = !search.value;
+    if (countLine) countLine.textContent = q ? `${shown.length} of ${workouts.length} workout${workouts.length === 1 ? '' : 's'} match.` : logged;
+  };
   search.addEventListener('input', (e) => {
     // A new search starts from the first page; the app putting back your search after a redraw doesn't.
     if (e.isTrusted) pick.limit = PAGE;
     paint();
+    showSearch();
+  });
+  clear.addEventListener('click', () => {
+    search.value = '';
+    pick.limit = PAGE;
+    paint();
+    showSearch();
+    search.focus();
   });
   paint();
+  showSearch();
   return h('div', {},
-    pageHead('All workouts', workouts.length ? `${workouts.length} workout${workouts.length === 1 ? '' : 's'} logged.` : 'Nothing logged yet.', { back: fromSettings ? '#/settings' : '#/', aside: toggle }),
-    workouts.length ? h('div', { class: 'search' }, icon('search'), search) : null,
+    head,
+    workouts.length ? h('div', { class: 'search' }, icon('search'), search, clear) : null,
     body, bar);
 }
 
