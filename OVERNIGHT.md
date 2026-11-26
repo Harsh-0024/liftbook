@@ -644,3 +644,5 @@ moved on to something else meanwhile.
 - Limit: a misspelling that is already saved in your history ("Lateral Raize" in the demo data)
   counts as a known name, so Edit doesn't flag it. Rename it in Settings → Exercises to fix it
   everywhere.
+## fix/exercise-label (from improve/round-4)
+- Stats lists named an exercise typed two ways by whichever spelling sorted first, so Personal bests said "Pull Ups" while workouts say "Pull-Ups". Now the spelling used most recently names it (list still A–Z). New test; 116 pass. Checked on the iPhone.

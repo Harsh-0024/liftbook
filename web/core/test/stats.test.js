@@ -28,3 +28,14 @@ test('the bodyweight notice names each exercise once, however it was spelled', a
   deepStrictEqual(bodyweightWarningExercises({ history }), ['Hyper Extension', 'Pull Ups']);
   deepStrictEqual(bodyweightWarningExercises({ history, bodyweight: 79.5 }), []);
 });
+test('an exercise written two ways is named the newer way', async () => {
+  const { statsExerciseOptions } = await import('../stats.js');
+  const assert = (await import('node:assert/strict')).default;
+  const history = [
+    { exercise: 'Pull Ups', date: '2026-11-01T10:00:00Z' },
+    { exercise: 'Pull-Ups', date: '2026-11-20T10:00:00Z' },
+    { exercise: 'Bench Press', date: '2026-11-10T10:00:00Z' },
+  ];
+  const opts = statsExerciseOptions({ history });
+  assert.deepEqual(opts.map((o) => [o.label, o.sessions]), [['Bench Press', 1], ['Pull-Ups', 2]]);
+});
