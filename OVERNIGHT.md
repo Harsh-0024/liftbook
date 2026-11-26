@@ -690,6 +690,17 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
   triangle, which read as a plain OS default. It is now a thin chevron, like the old site's
   Bootstrap pickers, in each theme's quiet grey. Checked on the iPhone in dark and light.
 
+### Branch `feature/search-short-names` (from `improve/round-4`)
+
+- Searching "rdl" found nothing, though Romanian Deadlift is logged most Legs days. The exercise
+  searches (All workouts, Retrieve, Settings > Exercises, Stats, Personal bests) now know gym short
+  names (web/core/search.js): rdl, sldl, ohp, bp, dl, bss, lpd, pullups/chinups/pushups for a whole
+  lift; db, bb, kb, ez, bw, ext, tri, bi, incl, decl for one word. Words typed may come in any
+  order ("press incl db"), and a short word matches from the start of a word in the name, so "bb"
+  doesn't find Dumbbell. Plain text still matches as before. New test file search.test.js (3
+  tests); 118 pass. Checked on iPhone 18 Pro: "rdl" on All workouts lists the Legs days;
+  "db press" in Retrieve > Custom workout lists Incline, Flat and Seated Dumbbell (Overhead) Press.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work

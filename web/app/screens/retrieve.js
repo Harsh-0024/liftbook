@@ -6,6 +6,7 @@ import { DRAFT_KEY } from './log.js';
 import { muscleGroup } from '../../core/coach_tools.js';
 import { scrollBehavior } from '../motion.js';
 import { lastDoneBySession } from '../../core/sessions.js';
+import { exerciseMatches } from '../../core/search.js';
 
 function dayLabel(plans, category, dayName) {
   const id = dayName.slice(category.length).trim();
@@ -339,7 +340,7 @@ export function retrieveCustomScreen(ctx) {
   const paint = () => {
     const q = search.value.trim().toLowerCase();
     if (q) {
-      const hits = catalog.filter((c) => c.name.toLowerCase().includes(q)).slice(0, 200);
+      const hits = catalog.filter((c) => exerciseMatches(c.name, q)).slice(0, 200);
       picker.replaceChildren(...(hits.length ? [h('div', { class: 'pick-list' }, hits.map(option))] : [h('p', { class: 'subtle', style: 'padding:16px 20px;margin:0' }, 'No exercise by that name.')]));
     } else {
       // By muscle group, as the old page had it; a tap opens the group. What you train often

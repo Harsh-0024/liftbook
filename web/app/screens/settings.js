@@ -12,6 +12,7 @@ import { deviceDay } from '../../core/dates.js';
 import { normalizeExerciseName } from '../../core/names.js';
 import { planDays, customKeys, nicknamesText } from '../../core/sessions.js';
 import { isNative, pickPhoto, saveFile, linkBackUrl } from '../native.js';
+import { exerciseMatches } from '../../core/search.js';
 
 const SECTIONS = [
   ['profile', 'Profile', 'Name, username, bodyweight, photo'],
@@ -465,7 +466,7 @@ function exercises(ctx) {
   };
   const paint = () => {
     const q = search.value.trim().toLowerCase();
-    const shown = names.filter((n) => !q || n.toLowerCase().includes(q)).slice(0, 100);
+    const shown = names.filter((n) => exerciseMatches(n, q)).slice(0, 100);
     group.replaceChildren(...(shown.length ? shown.flatMap(row)
       : [h('div', { class: 'empty' }, icon('search'), names.length ? `Nothing matches “${search.value.trim()}”.` : 'Exercises show up here once you log them.')]));
   };
