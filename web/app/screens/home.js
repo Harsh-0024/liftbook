@@ -97,11 +97,12 @@ export function homeScreen(ctx) {
         const split = splitSessionTitle(w.title);
         return rowItem({ href: `#/workout/${w.day}`, title: split.title, desc: split.session || undefined, value: softDay(w.day, today) });
       })),
-      // The link right under the list it continues, as on the old site; the totals after it.
-      h('a', { class: 'see-all', href: '#/history' }, 'See all workouts'),
-      // Each total says what it counts, as the Stats tiles do: no bare number over an empty line.
+      h('a', { class: 'see-all', href: '#/history' }, 'See all workouts')) : null,
+    // The totals under a label of their own: just under "Last 7 days" and "Recent", "40 workouts"
+    // read as if it were this week's. Each says what it counts, and opens where it comes from.
+    workouts.length ? h('section', { class: 'section', 'aria-label': 'Overall' },
+      h('div', { class: 'label' }, 'Overall'),
       h('div', { class: 'grid-3 home-stats' },
-        // Each number opens where it comes from.
         h('a', { class: 'stat', href: '#/history', 'aria-label': `${o.total} workouts: see all` }, h('span', {}, 'Workouts'), h('b', {}, o.total),
           h('small', {}, `since ${formatDay(workouts[workouts.length - 1].day, { weekday: false, year: workouts[workouts.length - 1].day.slice(0, 4) !== todayIso.slice(0, 4) })}`)),
         h('a', { class: 'stat', href: '#/stats', 'aria-label': `${week.weeks} week streak: see stats` }, h('span', {}, 'Week streak'), h('b', { class: 'gold' }, week.weeks),

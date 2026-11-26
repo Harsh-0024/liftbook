@@ -911,6 +911,13 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
 - Stats → Muscle balance note: "exercise's" now uses the curly apostrophe (’) like the rest of the app. Checked in the page.
 - Left as they are: the rename message ("That's already its name.") and the coach's built-in answers. They are checked against fixtures from the Python site, so changing them needs both sides changed.
 
+### Branch `design/home-all-time` (26 Nov)
+
+- Home: the three totals (Workouts, Week streak, Exercises) sat unlabelled under "Recent", just
+  below "Last 7 days · 1 workout", so "40 workouts" could read as this week's. They are a section of
+  their own now, "Overall", and "See all workouts" sits right under the Recent list it belongs to.
+  Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
