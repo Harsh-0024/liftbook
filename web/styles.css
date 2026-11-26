@@ -1397,3 +1397,7 @@ button.rowi.more-sessions .title { color: var(--gold-text); font-size: 0.86rem; 
     outline-offset: 2px;
   }
 }
+
+/* Sign out ends the session: red like iOS, so it stops reading as one more page to open. */
+.rowi.signout .title,
+.rowi.signout .ico { color: var(--bad); }

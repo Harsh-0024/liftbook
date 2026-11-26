@@ -154,7 +154,7 @@ function index(ctx) {
           : null)),
 
     h('div', { class: 'group', style: 'margin-top:30px' },
-      rowItem({ onclick: (e) => busy(e.currentTarget, () => ctx.signOut())(e), ico: 'logout', title: 'Sign out of this device', chev: false })));
+      rowItem({ onclick: (e) => busy(e.currentTarget, () => ctx.signOut())(e), ico: 'logout', title: 'Sign out of this device', chev: false, cls: 'signout' })));
 }
 
 function field(label, input, hint) {
