@@ -1130,3 +1130,6 @@ moved on to something else meanwhile.
 ## improve/coach-no-key (26 Nov)
 
 1. AI coach with no key turned on: the question box was hidden, but the six suggested questions still showed, and each tap only failed. The "AI keys" button did nothing either, since the key card was already showing. A new `canAsk(on)` in web/app/screens/coach.js now shows or hides the question box, the suggested questions and the "AI keys" button together, so the screen shows only the key card and Earlier answers until a key is on. Checked on the iPhone 18 Pro simulator with no key. Not checked with a key on, because the mock's coach bridge isn't running; that path calls the same `canAsk(true)`.
+## improve/csv-dates (26 Nov)
+
+1. Sync and data: the From / To dates sit under both Backup file and Spreadsheet, but only the spreadsheet uses them. The hint "Leave the dates empty for all of it." is now "Spreadsheet only. Leave empty for everything." (one line on the iPhone 18 Pro). Checked on the simulator.

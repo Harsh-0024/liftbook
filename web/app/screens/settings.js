@@ -813,7 +813,7 @@ function sync(ctx) {
         row('clipboard', 'Spreadsheet', 'Every exercise you logged, one row each, for Excel, Numbers or Google Sheets',
           h('button', { class: 'btn small', type: 'button', onclick: spreadsheet }, 'Download')),
         h('div', { class: 'blk' }, h('div', { class: 'date-pair' }, field('From', from), field('To', to)),
-          h('div', { class: 'hint' }, 'Leave the dates empty for all of it.')))),
+          h('div', { class: 'hint' }, 'Spreadsheet only. Leave empty for everything.')))),
     h('section', { class: 'section' }, h('div', { class: 'label' }, 'Clean up'),
       h('div', { class: 'group' },
         rowItem({ href: '#/settings/exercises', ico: 'edit', title: 'Rename an exercise', desc: 'Its history comes along' }),
