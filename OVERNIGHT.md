@@ -1386,3 +1386,9 @@ Settings and Stats (headline and end tag agree, tile lines).
 - Also looked over Retrieve (light), a plan page and Stats (light): no change needed. The search
   box's darker border is the 3:1 field line on purpose; the avatar initial stays Inter on purpose.
 - Checked on the iPhone simulator (light); sw.js rebuilt; tests 127/127.
+
+## design/log-start-gold (26 Nov)
+- Log's "Start from Session 4 · Legs" card is the same suggestion as Home's "Up next", but it
+  was a plain grey card. It now uses the gold card (gold edge, soft wash and glow) so the next
+  session looks the same wherever it is offered.
+- Checked on the iPhone simulator (dark); sw.js rebuilt; tests 127/127.
