@@ -368,7 +368,9 @@ a.group.rowi { display: flex; }
 .profile-row .desc + .desc { margin-top: 0; }
 .inline-unit { display: inline-flex; align-items: center; gap: 6px; }
 .inline-unit small { color: var(--muted); font-size: 0.8rem; }
-input.inline-num { width: 84px; padding: 7px 10px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; border-radius: 10px; }
+/* [type] outweighs the general "input[type=number] { width: 100% }" further down, which had kept this
+   box at the full width the row could give it. */
+input.inline-num[type] { width: 72px; padding: 7px 10px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; border-radius: 10px; }
 
 /* the older list markup, restyled to match */
 .list { list-style: none; margin: 0; padding: 0; }

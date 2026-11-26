@@ -1042,6 +1042,10 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
    page is already titled AI coach). Inter's serifed-I option isn't in the bundled font, so a
    wider fix wasn't possible. Checked on the iPhone.
 
+### Branch `design/settings-bodyweight` (26 Nov)
+- Settings: the Bodyweight box was meant to be narrow, but the general `input[type=number] { width: 100% }` rule further down won, so the box took 92 px and pushed "Used for bodyweight exercises" onto two lines. The box's own rule now carries `[type]` and wins (72 px, its own padding), and the line reads "For bodyweight exercises". One line on the iPhone simulator.
+- Settings: "For bodyweight exercises" was set heavier than every other row's description, because that row is a <label> and the app's label style is semibold. `.rowi .desc` now sets its own regular weight, so no wrapper can make a description heavy. Checked on the iPhone (light mode); 115/115 tests pass.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
