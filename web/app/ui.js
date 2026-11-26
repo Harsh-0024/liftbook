@@ -168,6 +168,7 @@ const ICONS = {
   check: '<path d="m5 12 5 5L20 7"/>',
   // A clip that reads as one at 18px: the old 1px nub left it the same sheet as "plan".
   clipboard: '<rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2.5" width="6" height="3.5" rx="1"/><path d="M9 11h6M9 15h4"/>',
+  timer: '<circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 2M10 2.5h4M12 2.5v3.5M18.5 6.5l1.5-1.5"/>',
   calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
   heart: '<path d="M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3 4.8 4.8 0 0 1 9 3c-2 4.6-9 9-9 9z"/>',
   thumbdown: '<path d="M10 15v4a2.5 2.5 0 0 0 2.5 2.5L16 14V3H6.7a2 2 0 0 0-2 1.7L3.3 12a2 2 0 0 0 2 2.3H10zM16 3h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/>',

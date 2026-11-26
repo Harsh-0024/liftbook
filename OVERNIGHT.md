@@ -514,6 +514,10 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
   Settings. It has a real clip now. Checked both on the iPhone.
 - Stats, "Personal bests": its icon was the Stats tab's chart, twice on one screen. It is the medal
   now, the app's sign for a best everywhere else. Checked on the iPhone.
+- Settings, Exercises: every row had the same dumbbell. The icon now says the kind, as the line
+  under the name does: a dumbbell for weight and reps, a stopwatch (new "timer" icon) for timed, the
+  bodyweight figure for bodyweight. It changes with the switches. Checked in the browser, with the
+  demo user's Barbell Curl switched to Timed and back.
 
 ## Waiting list
 
