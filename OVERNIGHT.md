@@ -1340,3 +1340,14 @@ Settings and Stats (headline and end tag agree, tile lines).
   Now: one gold edge, a faint gold wash from the top-left corner, and a soft gold glow.
 - Checked on the iPhone 18 Pro simulator (demo user, http://127.0.0.1:8794/). sw.js rebuilt,
   127/127 tests pass, `git diff --check` clean.
+
+## design/stat-numbers (26 Nov)
+
+- Home's three totals (Workouts, Week streak, Exercises) now look like the old site's
+  `.stat-value`: large Cormorant Garamond figures in a gold gradient (dark: #d4af37 → #f4d03f;
+  light: a deeper #8a6512 → #b08a2e so they stay readable on cream), matching the serif "+10%"
+  on Stats. New token `--num-grad`.
+- Only Home: the Stats tiles hold words and units ("Wednesday", "34.8 kg") that would overflow
+  at that size, so they keep the smaller face.
+- Checked on the iPhone 18 Pro simulator (demo user): Home totals and the Stats tiles. sw.js
+  rebuilt, 127/127 tests pass, `git diff --check` clean.
