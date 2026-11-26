@@ -1125,6 +1125,25 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
 - The plan page's Edit / Log / Copy bar and the plan-picker bar get the same raised face, gold rim and upward shade, so every floating bar in the app looks alike. Checked on the simulator.
 
 - Log bar after Clear: "Cleared", Undo, Paste and Save stay on one row on a phone. The count's 160px minimum pushed the three buttons onto a second row; it now gives way down to 60px. Checked on the phone.
+20. **Workout page: back arrow level with the buttons (branch `design/workout-head`).** The back
+   arrow's usual 10px bottom margin, meant for pages where it sits over a title, lifted it 5px above
+   the edit and share buttons in the workout header row. It is now centred with them. Checked on the
+   iPhone; 115 tests pass.
+21. **Workout page: action buttons fill each row on a phone (same branch).** "Edit · Repeat" wrapped
+   onto a row with a gap after them, and "Copy as text · Share link" left a different gap below.
+   Under 600px the labelled buttons now grow to fill their row; the trash button keeps its size.
+   Checked on the iPhone with the demo data; 115 tests pass.
+
+### Branch `design/workout-head`, more (26 Nov)
+
+- Workout page: the Share icon was 15px beside Edit's 18px. Icons size to the text, and a `<button>`
+  (Share) has a smaller font than a link (Edit). Icon buttons now draw their icon at 18px, so both
+  match. Measured in the browser (Edit 18, Share 18); no other page shows these buttons apart from the
+  coach's reply row (34px buttons). Checked on the iPhone: equal, and level with the back arrow.
+- The line under the title (date · exercises · sets · kg lifted · bodyweight) keeps each item whole
+  when it wraps. On the iPhone "3,693 kg" ended one line and "lifted" started the next. A wrapped
+  line also no longer starts with a "·" (each item's dot is clipped when it starts a line). Checked
+  on the iPhone: "Wed 25 Nov 2026 · 10 exercises · 25 sets" then "3,693 kg lifted · bodyweight 79.5 kg".
 
 ## Waiting list
 
