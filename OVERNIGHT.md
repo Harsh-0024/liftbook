@@ -505,6 +505,9 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/settings-bodyweight` (26 Nov)
+- Settings: the Bodyweight box was meant to be narrow, but the general `input[type=number] { width: 100% }` rule further down won, so the box took 92 px and pushed "Used for bodyweight exercises" onto two lines. The box's own rule now carries `[type]` and wins (72 px, its own padding), and the line reads "For bodyweight exercises". One line on the iPhone simulator.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
