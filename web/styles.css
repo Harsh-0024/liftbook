@@ -708,6 +708,11 @@ a.wday:focus-visible .dot { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--gol
 .search { position: relative; margin-bottom: 8px; }
 .search > svg.i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--subtle); pointer-events: none; }
 .search > input { padding-left: 42px; height: 46px; }
+.search > input::-webkit-search-cancel-button { display: none; } /* Clear does this, the same on every browser */
+.search > input:has(+ .search-clear:not([hidden])) { padding-right: 72px; }
+.search-clear { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); min-height: 34px; padding: 0 12px; border: 0; border-radius: 10px; background: none; color: var(--gold-text); font: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+.search-clear[hidden] { display: none; }
+@media (hover: hover) { .search-clear:hover { background: var(--hover); } }
 .datebox { flex: none; width: 34px; text-align: center; line-height: 1; }
 .datebox b { display: block; font-size: 1.15rem; font-weight: 600; font-variant-numeric: tabular-nums; }
 .datebox small { display: block; margin-top: 4px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--subtle); }

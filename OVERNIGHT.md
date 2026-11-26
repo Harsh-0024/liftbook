@@ -1077,6 +1077,24 @@ pass on the result. Six pairs touch the same lines and need a hand merge:
 
 - Log, check list: exercises still on Retrieve's 1, 1 show a quiet dash, "Left out when you save" and an amber "To fill in" tag, not a red ⓘ with a long warning each. The red list above it becomes one muted note ("7 exercises still have Retrieve's 1, 1…"); real errors stay red. Checked on the phone.
 
+### Branch `improve/history-search` (from `improve/round-4`)
+
+- All workouts, searching "curl": Back & Triceps matched, but its row read "Session 3 · Pull-Ups ·
+  Incline EZ-Bar Sku…", cutting off the Barbell Curl it matched on. While searching, the exercises
+  that match now come first in each row, in the ink colour (`mark.hit`), so every result shows
+  why it is there. Checked on the iPhone and in the browser (no console errors).
+- Also on the iPhone: Home (light mode) looks right; Week streak 15 checked against the dates
+  (weeks run Monday to Sunday, and 9, 16 and 25 Nov fall in three weeks in a row).
+- All workouts' "Select" sat about 6pt above "40 workouts logged." beside it (the header lined up
+  box bottoms, and the button's padding lifted its text). A page head with a text button now
+  lines up on the text baseline: both end at the same line (measured in the browser, seen on the
+  iPhone). A search with no match shows a calm "Nothing matches …" card: fine as it is.
+
+- All workouts search: a gold "Clear" now sits inside the box while it has text (the same on every
+  browser; Safari's own small x is hidden), and the line under the title reads "14 of 40 workouts
+  match." while searching. Clear empties the box, brings back the full list and keeps the
+  keyboard up. Checked on the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
