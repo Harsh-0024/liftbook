@@ -106,6 +106,12 @@ export function logScreen(ctx) {
     preview.replaceChildren(c.parsed
       ? h('span', { class: c.errors.length ? 'error' : 'ok' }, `${c.exercise_count} exercise${c.exercise_count === 1 ? '' : 's'} · ${c.set_count} set${c.set_count === 1 ? '' : 's'}`)
       : 'Nothing to check yet');
+    // Retrieve's 1, 1 still waiting under an exercise isn't a mistake: say how much is filled in
+    // ("1 of 8 filled in"), and keep red for real problems.
+    const toFill = exercises.filter((e) => e.placeholder).length;
+    if (c.parsed && toFill && c.errors.length === toFill) {
+      preview.replaceChildren(h('span', { class: 'to-fill' }, `${c.exercise_count} of ${c.exercise_count + toFill} filled in`));
+    }
     checkHead.textContent = c.parsed ? `${formatDay(c.day)} · ${c.parsed.workout_name || 'Workout'}` : '';
     checkBox.hidden = !exercises.length;
     // Rows count the exercises 1, 2, 3 and say how many sets each has, as the old check did.

@@ -518,6 +518,8 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
 - Not done: the two placeholder logs already in the demo data stay; delete them from History
   if wanted.
 
+- Log, status line: with only Retrieve's 1, 1 left to fill in, it reads "1 of 8 filled in" in amber instead of a red "1 exercise · 2 sets" that looked like an error. Real problems still turn it red. Checked on the phone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
