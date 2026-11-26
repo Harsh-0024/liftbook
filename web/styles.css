@@ -1323,7 +1323,7 @@ a.group.rowi.bests-link { margin-bottom: 18px; }
 .wo-step.newer { justify-content: flex-end; text-align: right; }
 .wo-step > span:not(.flip) { display: block; min-width: 0; }
 /* A long name wraps to two lines before it is cut; with only one neighbour, that link takes the whole row. */
-.wo-step b { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; white-space: normal; font-size: 0.9rem; font-weight: 600; line-height: 1.3; color: var(--text); }
+.wo-step b { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; white-space: normal; font: 600 1.12rem/1.2 var(--serif); color: var(--text); } /* the session name in the serif, as on Retrieve and Home */
 .wo-steps > span:empty { display: none; }
 .wo-steps:has(> span:empty) { grid-template-columns: minmax(0, 1fr); }
 .wo-step small { display: block; font-size: 0.76rem; margin-top: 1px; }
