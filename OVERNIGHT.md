@@ -1378,3 +1378,11 @@ Settings and Stats (headline and end tag agree, tile lines).
   a soft gold wash like the gold cards. A 1px gold outline was tried, but it ran square over the
   group's rounded corner, so it was dropped.
 - Checked on the iPhone simulator; sw.js rebuilt; tests 127/127.
+
+## design/up-next-serif (26 Nov)
+- Home's "Up next" card names the session in the serif ("Legs"), as the Retrieve tiles now do,
+  so the next session reads the same on both pages. Only that row (cls next-row); other list rows
+  keep Inter.
+- Also looked over Retrieve (light), a plan page and Stats (light): no change needed. The search
+  box's darker border is the 3:1 field line on purpose; the avatar initial stays Inter on purpose.
+- Checked on the iPhone simulator (light); sw.js rebuilt; tests 127/127.
