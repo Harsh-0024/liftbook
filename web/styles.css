@@ -328,7 +328,7 @@ button.rowi { width: 100%; border: 0; text-align: left; font: inherit; cursor: p
 .rowi .ico svg.i { width: 20px; height: 20px; }
 .rowi .main { flex: 1; min-width: 0; }
 .rowi .title { display: block; font-size: 0.95rem; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
-.rowi .desc { display: block; font-size: 0.8rem; color: var(--muted); line-height: 1.4; margin-top: 2px; }
+.rowi .desc { display: block; font-size: 0.8rem; font-weight: 400; color: var(--muted); line-height: 1.4; margin-top: 2px; }
 .rowi .value { flex: none; font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
 .rowi .chev, .chev-i { flex: none; color: var(--subtle); opacity: 0.7; }
 .rowi .chev svg.i, .chev-i svg.i { width: 15px; height: 15px; }
