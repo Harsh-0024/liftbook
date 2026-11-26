@@ -1332,3 +1332,11 @@ Settings and Stats (headline and end tag agree, tile lines).
    "3 sets", "2 sets", or "3 × 10–20" with a rep range. Only the page's display changed; the
    Retrieve text and its match with the old Python site are as before. 127 tests pass. Checked on
    the iPhone 18 Pro simulator (Session 4 · Legs). Merged back into `improve/round-4`.
+
+## design/gold-card (26 Nov)
+
+- Highlighted cards (`.card.gold`, `.group.gold`: Home's "Up next", the coach's keys card) had a
+  hard 4px ring outside their gold border, which read as a second outline on the dark theme.
+  Now: one gold edge, a faint gold wash from the top-left corner, and a soft gold glow.
+- Checked on the iPhone 18 Pro simulator (demo user, http://127.0.0.1:8794/). sw.js rebuilt,
+  127/127 tests pass, `git diff --check` clean.
