@@ -431,7 +431,7 @@ export function workoutScreen(ctx, day) {
         : 'This address doesn\'t match a workout.', { back: '#/history' }),
       h('div', { class: 'row' },
         h('a', { class: 'btn', href: '#/history' }, icon('calendar'), 'All workouts'),
-        h('a', { class: 'btn', href: '#/log' }, icon('log'), 'Log workout')));
+        h('a', { class: 'btn', href: real ? `#/log?day=${day}` : '#/log' }, icon('log'), real ? 'Log a workout that day' : 'Log workout')));
   }
   // Opened from another workout's chart or table: the back arrow goes back there.
   const from = /^\d{4}-\d{2}-\d{2}$/.exec(new URLSearchParams(location.hash.split('?')[1] || '').get('from') || '')?.[0] || null;

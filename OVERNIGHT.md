@@ -538,6 +538,26 @@ as asked on 24 Nov; `improve/round-4` above holds everything before that.
    through its sessions with the box following, Home and End jump to the first and latest, Enter
    opens that workout, Escape closes the box. The box is read out by screen readers as it changes.
 
+### Branch `feature/log-for-day` (from `improve/workout-not-found`)
+
+1. **Log a workout for a given day.** The no-workout page's button now reads "Log a workout that
+   day" and opens Log with that day's date line ready ("20/11/26 - ").
+   (`#/log?day=2026-11-20`.) An unsaved workout already in the box is never replaced; a note says
+   to change its first line to that date instead.
+2. **No complaints while only the first line is written.** A box with just the date and title
+   showed a red "No exercises found" and a red count before anything else was typed. Those wait
+   now until there is a second line; saving still checks everything as before.
+3. **Cursor ready, and no false warning.** The cursor now waits after the date line for the title.
+   Found while doing it: the page is drawn a second time once the data loads, and that second
+   drawing took its own date line for someone's unsaved work and showed "Your unsaved workout is
+   still here". A box already on the asked day is now recognised as such; the note only shows for a
+   draft dated otherwise (checked both).
+4. **A bare date line isn't kept as a draft.** Opening "Log a workout that day" and leaving without
+   typing left "10/11/26 - " saved as unsaved work; the next "Log a workout that day" for another
+   day then kept that line and said "Your unsaved workout is still here". A box holding only a date
+   line is no longer saved, and one already saved that way switches to the day asked for. A real
+   unsaved workout is still kept, with its note (checked both; 115 tests pass).
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
