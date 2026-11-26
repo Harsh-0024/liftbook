@@ -664,3 +664,5 @@ moved on to something else meanwhile.
 - A link to a page Liftbook doesn't have (old bookmark, typo) used to quietly show Home, as if it had worked.
 - It now shows "Page not found" with a "Go to Home" button, in the same style as "Workout not found". No tab is highlighted.
 - Checked on the iPhone 18 Pro simulator (#/nope, then the button back to Home).
+## improve/bests-jump (from improve/round-4)
+- Opening an exercise from Personal bests (or a workout's Full progress) centred the exercise picker, leaving the chart half off a phone screen. Now the Exercise card's top lands under the header, so picker, headline and chart are all in view. Checked on the iPhone.
