@@ -248,6 +248,10 @@ svg.i { width: 1.1em; height: 1.1em; flex: none; fill: none; stroke: currentColo
   border-top: 1px solid var(--line);
   box-shadow: var(--tab-shadow); /* a grey band on the light theme at the dark theme's strength */
 }
+.tabbar::before { /* what scrolls into the tab bar fades out instead of showing as a sliced line, as under the floating Save bar */
+  content: ''; position: absolute; left: 0; right: 0; bottom: 100%; height: 16px; pointer-events: none;
+  background: linear-gradient(to top, var(--tab-bg), color-mix(in srgb, var(--tab-bg) 0%, transparent));
+}
 .tabbar a {
   flex: 1; max-width: 96px; margin: 2px;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
