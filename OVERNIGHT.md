@@ -505,6 +505,13 @@ site (local copy of `main`, demo data) in the iPhone simulator and on desktop.
    touch screen a tap moves the box and tapping the box opens the workout, as on the old site
    (the touch part is on the waiting list for the iPhone check).
 
+### Branch `design/stat-tiles` (26 Nov)
+
+- A row of three number tiles (Stats, Home, Personal bests, Bulk import) shares its rows now: label,
+  number, note. On a phone "Most improved" took two lines and dropped its number and note below the
+  other two tiles'; now all three numbers sit on one line. CSS subgrid, behind @supports. Checked on
+  the iPhone.
+
 ## Waiting list
 
 Tasks skipped because something they need isn't there yet. Each says what it waits on; the work
